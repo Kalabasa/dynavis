@@ -1,5 +1,5 @@
 <?php
-class Elect extends Entity {
+class Elect extends RefEntity {
 	const TABLE = "elect";
 	protected $official_id = null;
 	protected $year = null;
@@ -9,18 +9,11 @@ class Elect extends Entity {
 	protected $area_code = null;
 	protected $party_id = null;
 
-	function __construct($param) {
-		if(is_int($param)){
-			parent::__construct($param);
-		}elseif(is_array($param)) {
-			parent::__construct();
-			$this->set($param["official"], $param["area"], $param["party"]);
-		}else{
-			throw new InvalidArgumentException("Constructor only accepts an integer ID or an array.");
-		}
-	}
-
-	public function set($official, $area, $party) {
+	public function set($param) {
+		$official = $param["official"];
+		$area = $param["area"];
+		$party = $param["party"];
+		
 		if(is_null($official->get_id()) || is_null($area->get_id()) || is_null($party->get_id())) {
 			throw new RuntimeException("The official, the area, or the party is not yet stored in the database.");
 		}
