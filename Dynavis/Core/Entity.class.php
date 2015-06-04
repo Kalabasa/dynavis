@@ -29,7 +29,7 @@ abstract class Entity {
 		foreach($columns as $c) {
 			if($c["Key"] == "PRI") {
 				if(isset($this->_key_field)){
-					throw new RuntimeException("Multiple primary keys are not supported.");
+					throw new \RuntimeException("Multiple primary keys are not supported.");
 				}
 				$this->_key_field = $c["Field"];
 			}
@@ -42,7 +42,7 @@ abstract class Entity {
 			if($this->_db->has(static::TABLE, [$this->_key_field => $id])) {
 				$this->_id = (int) $id;
 			}else{
-				throw new RuntimeException("Entity ID is not in the database. " . get_class($this), 1);
+				throw new \RuntimeException("Entity ID is not in the database. " . get_class($this), 1);
 			}
 		}else{
 			$this->_data = [];
@@ -51,7 +51,7 @@ abstract class Entity {
 
 	public function __get($prop) {
 		if(!in_array($prop, $this->_fields, true) || !property_exists($this, $prop)){
-			throw new RuntimeException("Property is not accessible. " . get_class($this) . "::" . $prop);
+			throw new \RuntimeException("Property is not accessible. " . get_class($this) . "::" . $prop);
 		}
 
 		$this->load();
@@ -60,7 +60,7 @@ abstract class Entity {
 
 	public function __set($prop, $value) {
 		if(!in_array($prop, $this->_fields, true) || !property_exists($this, $prop)){
-			throw new RuntimeException("Property is not accessible. " . get_class($this) . "::" . $prop);
+			throw new \RuntimeException("Property is not accessible. " . get_class($this) . "::" . $prop);
 		}
 
 		$this->load();
@@ -77,13 +77,13 @@ abstract class Entity {
 	
 	public function delete() {
 		if(!isset($this->_id)){
-			throw new RuntimeException("Cannot delete a new entity.");
+			throw new \RuntimeException("Cannot delete a new entity.");
 		}
 
 		$ret = $this->_db->delete(static::TABLE, [$this->_key_field => $this->_id]);
 
 		if(!$ret){
-			throw new RuntimeException("Error deleting entity from the database. " . get_class($this));
+			throw new \RuntimeException("Error deleting entity from the database. " . get_class($this));
 		}
 
 		$this->_data = null;
@@ -114,7 +114,7 @@ abstract class Entity {
 			$ret = $this->_db->update(static::TABLE, $update_data, [$this->_key_field => $this->_id]);
 
 			if(!$ret) {
-				throw new RuntimeException("Error updating entity in the database. " . get_class($this));
+				throw new \RuntimeException("Error updating entity in the database. " . get_class($this));
 			}
 
 			foreach ($update_data as $key => $value) {
@@ -133,7 +133,7 @@ abstract class Entity {
 
 		if(!in_array($this->_key_field, $this->_fields)) {
 			if(!$ret) {
-				throw new RuntimeException("Error adding entity to the database. " . get_class($this));
+				throw new \RuntimeException("Error adding entity to the database. " . get_class($this));
 			}
 
 			$this->_id = (int) $ret;

@@ -9,7 +9,7 @@ abstract class RefEntity extends Entity {
 			parent::__construct();
 			$this->set($param);
 		}else{
-			throw new InvalidArgumentException("Constructor only accepts an integer ID or an array.");
+			throw new \InvalidArgumentException("Constructor only accepts an integer ID or an array.");
 		}
 	}
 	

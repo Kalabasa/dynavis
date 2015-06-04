@@ -13,7 +13,7 @@ class Datapoint extends \Dynavis\Core\RefEntity {
 		$area = $param["area"];
 
 		if(is_null($dataset->get_id()) || is_null($area->get_id())) {
-			throw new RuntimeException("The dataset or the area is not yet stored in the database.");
+			throw new \RuntimeException("The dataset or the area is not yet stored in the database.");
 		}
 
 		$this->load();

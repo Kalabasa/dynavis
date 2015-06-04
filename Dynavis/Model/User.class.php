@@ -23,7 +23,7 @@ class User extends \Dynavis\Core\Entity {
 	public function check_password($password) {
 		$this->load();
 		if(is_null($this->pw_hash) || is_null($this->salt)) {
-			throw new RuntimeException("Password not set yet.");
+			throw new \RuntimeException("Password not set yet.");
 		}
 		
 		return $this->pw_hash == $this->hash_password($password);

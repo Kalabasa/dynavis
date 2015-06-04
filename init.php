@@ -1,6 +1,6 @@
 <?php
-require_once 'Slim/Slim.php';
-require_once 'medoo.min.php';
+require_once 'lib/Slim/Slim.php';
+require_once 'lib/medoo.min.php';
 require_once 'db_config.php';
 
 \Slim\Slim::registerAutoloader();

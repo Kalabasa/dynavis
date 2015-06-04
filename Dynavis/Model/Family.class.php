@@ -9,7 +9,7 @@ class Family extends \Dynavis\Core\Entity {
 
 	public function add_member($official) {
 		if($this->is_member($official)) {
-			throw new Exception("Cannot add an already-added member.");
+			throw new \Exception("Cannot add an already-added member.");
 		}
 
 		$this->_db->insert(self::TABLE_FAMILY_MEMBERSHIP, [
@@ -29,7 +29,7 @@ class Family extends \Dynavis\Core\Entity {
 
 	public function is_member($official) {
 		if(is_null($official->get_id()) or is_null($this->get_id())) {
-			throw new RuntimeException("The official or the family is not yet stored in the database.");
+			throw new \RuntimeException("The official or the family is not yet stored in the database.");
 		}
 
 		return $this->_db->has(self::TABLE_FAMILY_MEMBERSHIP, [ "AND" => [
@@ -40,7 +40,7 @@ class Family extends \Dynavis\Core\Entity {
 
 	public function remove_member($official) {
 		if(!$this->is_member($official)) {
-			throw new Exception("Cannot remove a non-member.");
+			throw new \Exception("Cannot remove a non-member.");
 		}
 
 		$ret = $this->_db->delete(self::TABLE_FAMILY_MEMBERSHIP, [ "AND" => [
@@ -49,7 +49,7 @@ class Family extends \Dynavis\Core\Entity {
 		]]);
 
 		if(!$ret) { 
-			throw new RuntimeException("Error removing family membership from the database.");
+			throw new \RuntimeException("Error removing family membership from the database.");
 		}
 	}
 }

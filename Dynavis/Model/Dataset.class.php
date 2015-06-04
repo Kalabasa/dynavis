@@ -11,7 +11,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 		$user = $param["user"];
 		
 		if(is_null($user->get_id())) {
-			throw new RuntimeException("The user is not yet stored in the database.");
+			throw new \RuntimeException("The user is not yet stored in the database.");
 		}
 
 		$this->load();

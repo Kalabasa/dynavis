@@ -17,7 +17,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$party = $param["party"];
 		
 		if(is_null($official->get_id()) || is_null($area->get_id()) || is_null($party->get_id())) {
-			throw new RuntimeException("The official, the area, or the party is not yet stored in the database.");
+			throw new \RuntimeException("The official, the area, or the party is not yet stored in the database.");
 		}
 
 		$this->load();
@@ -28,7 +28,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 
 	public function save() {
 		if($this->year >= $this->year_end) {
-			throw new Exception("'year' must be less than 'year_end'.");
+			throw new \RuntimeException("'year' must be less than 'year_end'.");
 		}
 
 		// TODO: check year-area-position overlap
