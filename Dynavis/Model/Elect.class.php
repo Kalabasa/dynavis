@@ -1,5 +1,7 @@
 <?php
-class Elect extends RefEntity {
+namespace Dynavis\Model;
+
+class Elect extends \Dynavis\Core\RefEntity {
 	const TABLE = "elect";
 	protected $official_id = null;
 	protected $year = null;

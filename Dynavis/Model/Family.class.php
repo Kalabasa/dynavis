@@ -1,5 +1,7 @@
 <?php
-class Family extends Entity {
+namespace Dynavis\Model;
+
+class Family extends \Dynavis\Core\Entity {
 	const TABLE = "family";
 	protected $name = null;
 

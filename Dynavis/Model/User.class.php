@@ -1,5 +1,7 @@
 <?php
-class User extends Entity{
+namespace Dynavis\Model;
+
+class User extends \Dynavis\Core\Entity {
 	const TABLE = "user";
 	protected $username = null;
 	protected $pw_hash = null;

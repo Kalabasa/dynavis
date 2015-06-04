@@ -1,6 +1,5 @@
 <?php
-require_once 'medoo.min.php';
-require_once 'db_config.php';
+namespace Dynavis\Core;
 
 abstract class Entity {
 	private static $medoo;
@@ -146,7 +145,7 @@ abstract class Entity {
 	}
 
 	public static function init() {
-		self::$medoo = new medoo(DB_CONFIG);
+		self::$medoo = new \medoo(DB_CONFIG);
 	}
 }
 

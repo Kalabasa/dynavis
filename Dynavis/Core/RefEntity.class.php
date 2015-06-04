@@ -1,4 +1,6 @@
 <?
+namespace Dynavis\Core;
+
 abstract class RefEntity extends Entity {
 	function __construct($param) {
 		if(is_int($param)){

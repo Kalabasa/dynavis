@@ -1,5 +1,7 @@
 <?php
-class Datapoint extends RefEntity {
+namespace Dynavis\Model;
+
+class Datapoint extends \Dynavis\Core\RefEntity {
 	const TABLE = "datapoint";
 	protected $dataset_id = null;
 	protected $year = null;

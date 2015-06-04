@@ -1,5 +1,7 @@
 <?php
-class Dataset extends RefEntity {
+namespace Dynavis\Model;
+
+class Dataset extends \Dynavis\Core\RefEntity {
 	const TABLE = "dataset";
 	protected $user_id = null;
 	protected $name = null;
