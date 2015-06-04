@@ -9,7 +9,6 @@ spl_autoload_register(function ($class) {
 $app = new \Slim\Slim(['debug' => true]);
 
 $app->get('/test', function () {
-	$u = new User(4);
 });
 
 $app->run();
