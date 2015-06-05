@@ -59,9 +59,10 @@ $app->post("/api/officials", function () { generic_post_item("Official"); } );
 $app->post("/api/families", function () { generic_post_item("Family"); } );
 $app->post("/api/parties", function () { generic_post_item("Party"); } );
 $app->post("/api/areas", "post_area");
-// $app->post("/api/elections", "post_election");
+$app->post("/api/elections", "post_election");
 $app->post("/api/users", "post_user");
 // $app->post("/api/datasets", "post_dataset");
+
 
 //-----------------------------------------------------------------------------
 // Function definitions
@@ -235,6 +236,30 @@ function post_area() {
 		"barangay" => 3,
 	][$data["level"]];
 	$area->save();
+}
+
+// Elections
+
+function post_election() {
+	global $app;
+	$data = $app->request->post();
+
+	if(!isset($data["official_id"], $data["year"], $data["year_end"], $data["position"], $data["votes"], $data["area_code"])) throw new Exception("Incomplete POST data.");
+
+	$official = new Official((int) $data["official_id"]);
+	$area = new Area((int) $data["area_code"]);
+	$party = isset($data["party_id"]) ? new Party((int) $data["party_id"]) : null;
+
+	$elect = new Elect([
+		"official" => $official,
+		"area" => $area,
+		"party" => $party,
+	]);
+	$elect->year = (int) $data["year"];
+	$elect->year_end = (int) $data["year_end"];
+	$elect->position = $data["position"];
+	$elect->votes = (int) $data["votes"];
+	$elect->save();
 }
 
 // Users

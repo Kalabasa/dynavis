@@ -17,14 +17,14 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$official = $param["official"];
 		$area = $param["area"];
 		$party = $param["party"];
-		
-		if(is_null($official->get_id()) || is_null($area->get_id()) || is_null($party->get_id())) {
+
+		if(is_null($official->get_id()) || is_null($area->get_id()) || (!is_null($party) && is_null($party->get_id()))) {
 			throw new \RuntimeException("The official, the area, or the party is not yet stored in the database.");
 		}
 
 		$this->official_id = $official->get_id();
 		$this->area_code = $area->get_id();
-		$this->party_id = $party->get_id();
+		$this->party_id = is_null($party) ? null : $party->get_id();
 	}
 
 	public function save() {
