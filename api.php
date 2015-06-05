@@ -60,7 +60,7 @@ $app->post("/api/families", function () { generic_post_item("Family"); } );
 $app->post("/api/parties", function () { generic_post_item("Party"); } );
 $app->post("/api/areas", "post_area");
 // $app->post("/api/elections", "post_election");
-// $app->post("/api/users", "post_user");
+$app->post("/api/users", "post_user");
 // $app->post("/api/datasets", "post_dataset");
 
 //-----------------------------------------------------------------------------
@@ -247,6 +247,19 @@ function get_user_datasets($id) {
 		"total" => count($datasets),
 		"data" => $datasets,
 	]);
+}
+
+function post_user() {
+	global $app;
+	$data = $app->request->post();
+
+	if(!isset($data["username"], $data["password"])) throw new Exception("Incomplete POST data.");
+
+	$user = new User();
+	$user->username = $data["username"];
+	$user->set_password($data["password"]);
+	$user->type = 0;
+	$user->save();
 }
 
 // Datasets
