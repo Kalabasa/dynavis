@@ -1,13 +1,13 @@
 <?php
-require_once 'lib/Slim/Slim.php';
-require_once 'lib/medoo.min.php';
-require_once 'db_config.include.php';
+require_once 'php/lib/Slim/Slim.php';
+require_once 'php/lib/medoo.min.php';
+require_once 'php/db_config.include.php';
 
 \Slim\Slim::registerAutoloader();
 
 spl_autoload_register(function ($class) {
 	$className = ltrim($class, '\\');
-	$fileName  = '';
+	$fileName  = 'php/';
 	$namespace = '';
 	if ($lastNsPos = strripos($className, '\\')) {
 		$namespace = substr($className, 0, $lastNsPos);
