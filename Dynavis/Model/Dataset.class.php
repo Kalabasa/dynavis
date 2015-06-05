@@ -8,11 +8,11 @@ class Dataset extends \Dynavis\Core\RefEntity {
 	public function set($param) {
 		$user = $param["user"];
 		
-		if(is_null($user->get_id())) {
+		if(!is_null($user) && is_null($user->get_id())) {
 			throw new \RuntimeException("The user is not yet stored in the database.");
 		}
 
-		$this->user_id = $user->get_id();
+		$this->user_id = is_null($user) ? null : $user->get_id();
 	}
 
 	public function get_points() {

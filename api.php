@@ -61,7 +61,8 @@ $app->post("/api/parties", function () { generic_post_item("Party"); } );
 $app->post("/api/areas", "post_area");
 $app->post("/api/elections", "post_election");
 $app->post("/api/users", "post_user");
-// $app->post("/api/datasets", "post_dataset");
+$app->post("/api/datasets", "post_dataset");
+$app->post("/api/datasets/:id/datapoints", "post_dataset_datapoint");
 
 
 //-----------------------------------------------------------------------------
@@ -297,4 +298,36 @@ function get_dataset_datapoints($id) {
 		"total" => count($datapoints),
 		"data" => $datapoints,
 	]);
+}
+
+function post_dataset() {
+	global $app;
+	$data = $app->request->post();
+
+	if(!isset($data["name"], $data["description"])) throw new Exception("Incomplete POST data.");
+
+	$user = isset($data["user_id"]) ? new Party((int) $data["user_id"]) : null;
+
+	$dataset = new Dataset(["user" => $user]);
+	$dataset->name = $data["name"];
+	$dataset->description = $data["description"];
+	$dataset->save();
+}
+
+function post_dataset_datapoint($id) {
+	global $app;
+	$data = $app->request->post();
+
+	if(!isset($data["year"], $data["area_code"], $data["value"])) throw new Exception("Incomplete POST data.");
+
+	$dataset = new Dataset((int) $id);
+	$area = new Area((int) $data["area_code"]);
+
+	$datapoint = new Datapoint([
+		"dataset" => $dataset,
+		"area" => $area,
+	]);
+	$datapoint->year = $data["year"];
+	$datapoint->value = $data["value"];	
+	$datapoint->save();
 }
