@@ -22,7 +22,6 @@ class Elect extends \Dynavis\Core\RefEntity {
 			throw new \RuntimeException("The official, the area, or the party is not yet stored in the database.");
 		}
 
-		$this->load();
 		$this->official_id = $official->get_id();
 		$this->area_code = $area->get_id();
 		$this->party_id = $party->get_id();
