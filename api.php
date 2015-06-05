@@ -1,4 +1,6 @@
 <?php
+require 'php/init.include.php';
+
 use \Dynavis\Core\Entity;
 use \Dynavis\Model\Official;
 use \Dynavis\Model\Family;
@@ -7,62 +9,80 @@ use \Dynavis\Model\Area;
 use \Dynavis\Model\Elect;
 use \Dynavis\Model\User;
 use \Dynavis\Model\Dataset;
-// use \Dynavis\Model\Datapoint;
+use \Dynavis\Model\Datapoint;
 
 \Slim\Route::setDefaultConditions([
-	"id" => "\d+"
+	"id" => "\d+",
+	"code" => "\d{9}",
 ]);
 
+$app = new \Slim\Slim(["debug" => true]);
 
 //-----------------------------------------------------------------------------
 // GET requests
 //-----------------------------------------------------------------------------
 
 // Officials
-$app->get("/api/officials", function () { generic_get_list("Official"); } );
-$app->get("/api/officials/:id", function ($id) { generic_get_item("Official", $id); } );
-$app->get("/api/officials/:id/families", "get_official_families");
+$app->get("/officials", function () { generic_get_list("Official"); } );
+$app->get("/officials/:id", function ($id) { generic_get_item("Official", $id); } );
+$app->get("/officials/:id/families", "get_official_families");
 
 // Families
-$app->get("/api/families", function () { generic_get_list("Family"); } );
-$app->get("/api/families/:id", "get_family");
+$app->get("/families", function () { generic_get_list("Family"); } );
+$app->get("/families/:id", "get_family");
 
 // Parties
-$app->get("/api/parties", function () { generic_get_list("Party"); } );
-$app->get("/api/parties/:id", "get_party");
+$app->get("/parties", function () { generic_get_list("Party"); } );
+$app->get("/parties/:id", "get_party");
 
 // Areas
-$app->get("/api/areas/:level", "get_areas")->conditions(["level" => "region|province|municipality|barangay"]);
-$app->get("/api/areas/:id", function ($id) { generic_get_item("Area", $id); } );
-$app->get("/api/areas/:id/officials", "get_area_officials");
+$app->get("/areas/:level", "get_areas")->conditions(["level" => "region|province|municipality|barangay"]);
+$app->get("/areas/:code", function ($code) { generic_get_item("Area", $code); } );
+$app->get("/areas/:code/officials", "get_area_officials");
 
 // Elections
-$app->get("/api/elections", function () { generic_get_list("Elect"); } );
-$app->get("/api/elections/:id", function ($id) { generic_get_item("Elect", $id); } );
+$app->get("/elections", function () { generic_get_list("Elect"); } );
+$app->get("/elections/:id", function ($id) { generic_get_item("Elect", $id); } );
 
 // Users
-$app->get("/api/users", function () { generic_get_list("User"); } );
-$app->get("/api/users/:id", function ($id) { generic_get_item("User", $id); } );
-$app->get("/api/users/:id/datasets", "get_user_datasets");
+$app->get("/users", function () { generic_get_list("User"); } );
+$app->get("/users/:id", function ($id) { generic_get_item("User", $id); } );
+$app->get("/users/:id/datasets", "get_user_datasets");
 
 // Datasets
-$app->get("/api/datasets", function () { generic_get_list("Dataset"); } );
-$app->get("/api/datasets/:id", function ($id) { generic_get_item("Dataset", $id); } );
-$app->get("/api/datasets/:id/datapoints", "get_dataset_datapoints");
+$app->get("/datasets", function () { generic_get_list("Dataset"); } );
+$app->get("/datasets/:id", function ($id) { generic_get_item("Dataset", $id); } );
+$app->get("/datasets/:id/datapoints", "get_dataset_datapoints");
 
 
 //-----------------------------------------------------------------------------
 // POST requests
 //-----------------------------------------------------------------------------
 
-$app->post("/api/officials", function () { generic_post_item("Official"); } );
-$app->post("/api/families", function () { generic_post_item("Family"); } );
-$app->post("/api/parties", function () { generic_post_item("Party"); } );
-$app->post("/api/areas", "post_area");
-$app->post("/api/elections", "post_election");
-$app->post("/api/users", "post_user");
-$app->post("/api/datasets", "post_dataset");
-$app->post("/api/datasets/:id/datapoints", "post_dataset_datapoint");
+$app->post("/officials", function () { generic_post_item("Official"); } );
+$app->post("/families", function () { generic_post_item("Family"); } );
+$app->post("/parties", function () { generic_post_item("Party"); } );
+$app->post("/areas", "post_area");
+$app->post("/elections", "post_election");
+$app->post("/users", "post_user");
+$app->post("/datasets", "post_dataset");
+$app->post("/datasets/:id/datapoints", "post_dataset_datapoint");
+
+
+//-----------------------------------------------------------------------------
+// DELETE requests
+//-----------------------------------------------------------------------------
+
+$app->delete("/officials/:id", function ($id) { generic_delete_item("Official", $id); } );
+$app->delete("/families/:id", function ($id) { generic_delete_item("Family", $id); } );
+$app->delete("/parties/:id", function ($id) { generic_delete_item("Party", $id); } );
+$app->delete("/areas/:code", function ($code) { generic_delete_item("Area", $code); } );
+$app->delete("/elections/:id", function ($id) { generic_delete_item("Elect", $id); } );
+$app->delete("/users/:id", function ($id) { generic_delete_item("User", $id); } );
+$app->delete("/datasets/:id", function ($id) { generic_delete_item("Dataset", $id); } );
+$app->delete("/datapoints/:id", function ($id) { generic_delete_item("Datapoint", $id); } );
+
+$app->run();
 
 
 //-----------------------------------------------------------------------------
@@ -127,6 +147,12 @@ function generic_post_item($class) {
 		$item->$field = $data[$field];
 	}
 	$item->save();
+}
+
+function generic_delete_item($class, $id) {
+	$class = "\\Dynavis\\Model\\" . $class;
+	$item = new $class((int)$id);
+	$item->delete();
 }
 
 // Officials
@@ -210,8 +236,8 @@ function get_areas($level) {
 	]);
 }
 
-function get_area_officials($id) {
-	$area = new Area((int) $id);
+function get_area_officials($code) {
+	$area = new Area((int) $code);
 	$officials = $area->get_officials();
 
 	echo json_encode([
