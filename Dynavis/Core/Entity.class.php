@@ -46,6 +46,7 @@ abstract class Entity implements \JsonSerializable{
 
 	public static function list_items($count, $start) {
 		static::init();
+		if($count < 0 || $start < -1) return [];
 		return self::$medoo->select(static::TABLE, [static::PRIMARY_KEY], ["LIMIT" => [(int) $start , (int) $count]]);
 	}
 
