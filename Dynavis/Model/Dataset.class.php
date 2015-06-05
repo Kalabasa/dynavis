@@ -3,9 +3,7 @@ namespace Dynavis\Model;
 
 class Dataset extends \Dynavis\Core\RefEntity {
 	const TABLE = "dataset";
-	protected $user_id = null;
-	protected $name = null;
-	protected $description = null;
+	const FIELDS = ["user_id", "name", "description"];
 
 	public function set($param) {
 		$user = $param["user"];
@@ -20,10 +18,16 @@ class Dataset extends \Dynavis\Core\RefEntity {
 
 	public function get_points() {
 		return array_map(
-			function ($x) {
-				return new Datapoint((int) $x["id"]);
+			function ($item) {
+				return new Datapoint((int) $item[Datapoint::PRIMARY_KEY], false);
 			},
-			$this->_db->select(Datapoint::TABLE, ["[><]" . self::TABLE => ["dataset_id" => "id"]], [Datapoint::TABLE . ".id"])
+			\Dynavis\Core\Entity::$medoo->select(Datapoint::TABLE, [
+				"[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]
+			], [
+				Datapoint::TABLE . "." . Datapoint::PRIMARY_KEY
+			],[
+				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+			])
 		);
 	}
 }

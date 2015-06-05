@@ -3,13 +3,15 @@ namespace Dynavis\Model;
 
 class Elect extends \Dynavis\Core\RefEntity {
 	const TABLE = "elect";
-	protected $official_id = null;
-	protected $year = null;
-	protected $year_end = null;
-	protected $position = null;
-	protected $votes = null;
-	protected $area_code = null;
-	protected $party_id = null;
+	const FIELDS = [
+		"official_id",
+		"year",
+		"year_end",
+		"position",
+		"votes",
+		"area_code",
+		"party_id",
+	];
 
 	public function set($param) {
 		$official = $param["official"];

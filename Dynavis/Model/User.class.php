@@ -3,15 +3,33 @@ namespace Dynavis\Model;
 
 class User extends \Dynavis\Core\Entity {
 	const TABLE = "user";
-	protected $username = null;
-	protected $pw_hash = null;
-	protected $type = null;
-	protected $salt = null;
+	const FIELDS = [
+		"username",
+		"pw_hash",
+		"type",
+		"salt",
+	];
 
 	public static function get($username) {
-		$ret = $this->db->get(self::TABLE, ["id"], ["username" => $username]);
+		static::init();
+		$ret = $this->db->get(static::TABLE, [static::PRIMARY_KEY], ["username" => $username]);
 		if(!$ret) return null;
-		return new User($ret);
+		return new User((int) $ret);
+	}
+
+	public function get_datasets() {
+		return array_map(
+			function ($item) {
+				return new Dataset((int) $item[Dataset::PRIMARY_KEY], false);
+			},
+			\Dynavis\Core\Entity::$medoo->select(Dataset::TABLE, [
+				"[><]" . static::TABLE => ["user_id" => static::PRIMARY_KEY]
+			], [
+				Dataset::TABLE . "." . Dataset::PRIMARY_KEY
+			],[
+				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+			])
+		);
 	}
 
 	public function set_password($password) {
@@ -32,5 +50,12 @@ class User extends \Dynavis\Core\Entity {
 	private function hash_password($password) {
 		$this->load();
 		return password_hash($password, PASSWORD_BCRYPT, ["salt" => $this->salt]);
+	}
+
+	public function jsonSerialize() {
+		$data = parent::jsonSerialize();
+		unset($data["pw_hash"]);
+		unset($data["salt"]);
+		return $data;
 	}
 }

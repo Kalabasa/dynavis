@@ -3,7 +3,23 @@ namespace Dynavis\Model;
 
 class Official extends \Dynavis\Core\Entity {
 	const TABLE = "official";
-	protected $surname = null;
-	protected $name = null;
-	protected $nickname = null;
+	const FIELDS = ["surname", "name", "nickname"];
+
+	const TABLE_FAMILY_MEMBERSHIP = "family_membership";
+
+	public function get_families() {
+		return array_map(
+			function ($item) {
+				return new Family((int) $item[Family::PRIMARY_KEY], false);
+			},
+			\Dynavis\Core\Entity::$medoo->select(Family::TABLE, [
+				"[><]" . static::TABLE_FAMILY_MEMBERSHIP => [Family::PRIMARY_KEY => "family_id"],
+				"[><]" . static::TABLE => [static::TABLE_FAMILY_MEMBERSHIP . ".official_id" => static::PRIMARY_KEY],
+			], [
+				Family::TABLE . "." . Family::PRIMARY_KEY
+			], [
+				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+			])
+		);
+	}
 }

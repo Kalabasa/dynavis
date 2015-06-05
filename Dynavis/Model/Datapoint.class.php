@@ -3,10 +3,7 @@ namespace Dynavis\Model;
 
 class Datapoint extends \Dynavis\Core\RefEntity {
 	const TABLE = "datapoint";
-	protected $dataset_id = null;
-	protected $year = null;
-	protected $area_code = null;
-	protected $value = null;
+	const FIELDS = ["dataset_id", "year", "area_code", "value"];
 
 	public function set($param) {
 		$dataset = $param["dataset"];

@@ -1,4 +1,4 @@
-<?
+<?php
 namespace Dynavis\Core;
 
 abstract class RefEntity extends Entity {
