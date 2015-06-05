@@ -55,8 +55,13 @@ $app->get("/api/datasets/:id/datapoints", "get_dataset_datapoints");
 // POST requests
 //-----------------------------------------------------------------------------
 
-// Officials
 $app->post("/api/officials", function () { generic_post_item("Official"); } );
+$app->post("/api/families", function () { generic_post_item("Family"); } );
+$app->post("/api/parties", function () { generic_post_item("Party"); } );
+$app->post("/api/areas", "post_area");
+// $app->post("/api/elections", "post_election");
+// $app->post("/api/users", "post_user");
+// $app->post("/api/datasets", "post_dataset");
 
 //-----------------------------------------------------------------------------
 // Function definitions
@@ -109,8 +114,17 @@ function generic_get_item($class, $id) {
 }
 
 function generic_post_item($class) {
+	$class = "\\Dynavis\\Model\\" . $class;
+
 	global $app;
-	$app->request->post();
+	$data = $app->request->post();
+
+	$item = new $class();
+	foreach ($class::FIELDS as $field) {
+		if(!isset($data[$field])) throw new Exception("Incomplete POST data.");
+		$item->$field = $data[$field];
+	}
+	$item->save();
 }
 
 // Officials
@@ -168,21 +182,20 @@ function get_areas($level) {
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
 
-	$level_i = 0;
-	switch ($level) {
-		case "region": $level_i = 0; break;
-		case "province": $level_i = 1; break;
-		case "municipality": $level_i = 2; break;
-		case "barangay": $level_i = 3; break;
-	}
+	$type = [
+		"region" => 0,
+		"province" => 1,
+		"municipality" => 2,
+		"barangay" => 3,
+	][$level];
 
 	$areas = array_map(
 		function ($item) {
 			return new Area((int) $item[Area::PRIMARY_KEY]);
 		},
-		Area::list_areas($count, $start, $level_i)
+		Area::list_areas($count, $start, $type)
 	);
-	$total = Area::count($level_i);
+	$total = Area::count($type);
 
 	$end = $start + $count;
 	if($end > $total) $end = $total;
@@ -203,6 +216,25 @@ function get_area_officials($id) {
 		"total" => count($officials),
 		"data" => $officials,
 	]);
+}
+
+function post_area() {
+	global $app;
+	$data = $app->request->post();
+
+	if(!isset($data["code"], $data["name"], $data["level"])) throw new Exception("Incomplete POST data.");
+
+	$parent = isset($data["parent_code"]) ? new Area((int) $data["parent_code"]) : null;
+	$area = new Area(["parent" => $parent]);
+	$area->code = $data["code"];
+	$area->name = $data["name"];
+	$area->type = [
+		"region" => 0,
+		"province" => 1,
+		"municipality" => 2,
+		"barangay" => 3,
+	][$data["level"]];
+	$area->save();
 }
 
 // Users

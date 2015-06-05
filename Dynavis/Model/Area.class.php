@@ -9,22 +9,26 @@ class Area extends \Dynavis\Core\RefEntity {
 	public function set($param) {
 		$parent = $param["parent"];
 		
-		if(!is_null($parent) && is_null($parent->get_id())) {
-			throw new \RuntimeException("The parent area is not yet stored in the database.");
-		}
+		if(is_null($parent)) {
+			$this->parent_code = null;
+		}else{
+			if(is_null($parent->get_id())) {
+				throw new \RuntimeException("The parent area is not yet stored in the database.");
+			}
 
-		$this->load();
-		$this->parent_code = $parent->get_id();
+			$this->parent_code = $parent->get_id();
+		}
 	}
 
 	public static function list_areas($count, $start, $type) {
 		static::init();
+		if($count < 0 || $start < -1) return [];
 		return self::$medoo->select(static::TABLE, [static::PRIMARY_KEY], ["LIMIT" => [(int) $start , (int) $count], "type" => (int) $type]);
 	}
 
 	public function get_parent() {
 		if($type == 0) return null;
-		return new Area($parent_code);
+		return new Area($this->parent_code);
 	}
 
 	public function get_elections() {
@@ -56,25 +60,5 @@ class Area extends \Dynavis\Core\RefEntity {
 				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
 			])
 		);
-	}
-
-	public function get_region_code() {
-		$code_string = str_pad($code, 9, "0", STR_PAD_LEFT);
-		return (int) substr($code_string, 0, 2);
-	}
-
-	public function get_province_code() {
-		$code_string = str_pad($code, 9, "0", STR_PAD_LEFT);
-		return (int) substr($code_string, 2, 2);
-	}
-
-	public function get_municipality_code() {
-		$code_string = str_pad($code, 9, "0", STR_PAD_LEFT);
-		return (int) substr($code_string, 4, 2);
-	}
-
-	public function get_barangay_code() {
-		$code_string = str_pad($code, 9, "0", STR_PAD_LEFT);
-		return (int) substr($code_string, 6, 3);
 	}
 }
