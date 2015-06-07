@@ -28,7 +28,7 @@ abstract class Entity implements \JsonSerializable{
 			if(!$check || self::$medoo->has(static::TABLE, [static::PRIMARY_KEY => $id])) {
 				$this->_id = (int) $id;
 			}else{
-				throw new \RuntimeException("Entity ID is not in the database. " . get_class($this), 1);
+				throw new NotFoundException("Entity ID is not in the database. " . get_class($this), 1);
 			}
 		}else{
 			$this->_data = [];
@@ -66,7 +66,7 @@ abstract class Entity implements \JsonSerializable{
 		$ret = self::$medoo->delete(static::TABLE, [static::PRIMARY_KEY => $this->_id]);
 
 		if(!$ret){
-			throw new \RuntimeException("Error deleting entity from the database. " . get_class($this));
+			throw new DataException("Error deleting entity from the database. " . get_class($this));
 		}
 
 		$this->_data = null;
@@ -126,7 +126,7 @@ abstract class Entity implements \JsonSerializable{
 			$ret = self::$medoo->update(static::TABLE, $update_data, [static::PRIMARY_KEY => $this->_id]);
 
 			if(!$ret) {
-				throw new \RuntimeException("Error updating entity in the database. " . get_class($this));
+				throw new DataException("Error updating entity in the database. " . get_class($this));
 			}
 
 			foreach ($update_data as $key => $value) {
@@ -145,7 +145,7 @@ abstract class Entity implements \JsonSerializable{
 
 		if(!in_array(static::PRIMARY_KEY, static::FIELDS)) {
 			if(!$ret) {
-				throw new \RuntimeException("Error adding entity to the database. " . get_class($this));
+				throw new DataException("Error adding entity to the database. " . get_class($this));
 			}
 
 			$this->_id = (int) $ret;

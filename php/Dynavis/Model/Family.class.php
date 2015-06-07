@@ -9,16 +9,18 @@ class Family extends \Dynavis\Core\Entity {
 
 	public function add_member($official) {
 		if($this->is_member($official)) {
-			throw new \Exception("Cannot add an already-added member.");
+			throw new \Dynavis\Core\DataException("Cannot add an already-added member.");
 		}
 
-		Entity::$medoo->insert(static::TABLE_FAMILY_MEMBERSHIP, [
+		\Dynavis\Core\Entity::$medoo->insert(static::TABLE_FAMILY_MEMBERSHIP, [
 			"official_id" => $official->get_id(),
 			"family_id" => $this->get_id(),
 		]);
 	}
 
 	public function get_members() {
+		// TODO: add year parameter to get_members and is_member
+		// * The set Members(f,t) is dependent of family f and time t.
 		return array_map(
 			function ($item) {
 				return new Official((int) $item[Official::PRIMARY_KEY], false);
@@ -39,7 +41,7 @@ class Family extends \Dynavis\Core\Entity {
 			throw new \RuntimeException("The official or the family is not yet stored in the database.");
 		}
 
-		return Entity::$medoo->has(static::TABLE_FAMILY_MEMBERSHIP, [ "AND" => [
+		return \Dynavis\Core\Entity::$medoo->has(static::TABLE_FAMILY_MEMBERSHIP, [ "AND" => [
 			"official_id" => $official->get_id(),
 			"family_id" => $this->get_id(),
 		]]);
@@ -47,16 +49,16 @@ class Family extends \Dynavis\Core\Entity {
 
 	public function remove_member($official) {
 		if(!$this->is_member($official)) {
-			throw new \Exception("Cannot remove a non-member.");
+			throw new \Dynavis\Core\DataException("Cannot remove a non-member.");
 		}
 
-		$ret = Entity::$medoo->delete(static::TABLE_FAMILY_MEMBERSHIP, [ "AND" => [
+		$ret = \Dynavis\Core\Entity::$medoo->delete(static::TABLE_FAMILY_MEMBERSHIP, [ "AND" => [
 			"official_id" => $official->get_id(),
 			"family_id" => $this->get_id(),
 		]]);
 
 		if(!$ret) { 
-			throw new \RuntimeException("Error removing family membership from the database.");
+			throw new \Dynavis\Core\DataException("Error removing family membership from the database.");
 		}
 	}
 }
