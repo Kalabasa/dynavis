@@ -1,5 +1,6 @@
 <?php
 namespace Dynavis\Model;
+use \Dynavis\Database;
 
 class Dataset extends \Dynavis\Core\RefEntity {
 	const TABLE = "dataset";
@@ -65,7 +66,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			function ($row) {
 				return join(",", array_map(
 					function ($x) {
-						return \Dynavis\Core\Entity::$medoo->quote($x);
+						return Database::get()->quote($x);
 					},
 					$row
 				));
@@ -73,7 +74,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			$insert_data
 		)) . ")";
 
-		$ret = \Dynavis\Core\Entity::$medoo->query("insert into " . Datapoint::TABLE . " (dataset_id,year,area_code,value) values " . $values_string);
+		$ret = Database::get()->query("insert into " . Datapoint::TABLE . " (dataset_id,year,area_code,value) values " . $values_string);
 
 		if(!$ret) {
 			throw new \Dynavis\Core\DataException("Error adding file data to the database.");
@@ -85,7 +86,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			function ($item) {
 				return new Datapoint((int) $item[Datapoint::PRIMARY_KEY], false);
 			},
-			\Dynavis\Core\Entity::$medoo->select(Datapoint::TABLE, [
+			Database::get()->select(Datapoint::TABLE, [
 				"[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]
 			], [
 				Datapoint::TABLE . "." . Datapoint::PRIMARY_KEY
@@ -93,5 +94,12 @@ class Dataset extends \Dynavis\Core\RefEntity {
 				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
 			])
 		);
+	}
+
+	public function jsonSerialize() {
+		$data = parent::jsonSerialize();
+		$data["username"] = new User((int) $data["user_id"])->username;
+		unset($data["user_id"]);
+		return $data;
 	}
 }

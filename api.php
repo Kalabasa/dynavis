@@ -1,9 +1,11 @@
 <?php
 require 'php/init.include.php';
 
+use \Dynavis\Database;
 use \Dynavis\Core\Entity;
 use \Dynavis\Core\NotFoundException;
 use \Dynavis\Core\DataException;
+
 use \Dynavis\Model\Official;
 use \Dynavis\Model\Family;
 use \Dynavis\Model\Party;
@@ -12,6 +14,7 @@ use \Dynavis\Model\Elect;
 use \Dynavis\Model\User;
 use \Dynavis\Model\Dataset;
 use \Dynavis\Model\Datapoint;
+use \Dynavis\Model\Token;
 
 \Slim\Route::setDefaultConditions([
 	"id" => "\d+",
@@ -20,6 +23,10 @@ use \Dynavis\Model\Datapoint;
 ]);
 
 $app = new \Slim\Slim(["debug" => true]);
+$auth_admin = authenticator(["roles" => ["admin"]]);
+$auth_username = authenticator(["username_match" => true]);
+$auth_token = authenticator(["token_match" => true]);
+$auth_username_or_admin = authenticator(["username_match" => true, "roles" => ["admin"]]);
 
 //-----------------------------------------------------------------------------
 // GET requests
@@ -31,66 +38,69 @@ $app->get("/officials/:id/families", "get_official_families");
 $app->get("/families", function () { generic_get_list("Family"); } );
 $app->get("/families/:id", "get_family")->name("families");
 $app->get("/families/:id/officials", "get_family_officials");
-// TODO: get official-family => true/false
 $app->get("/parties", function () { generic_get_list("Party"); } );
-$app->get("/parties/:id", "get_party")->name("parties");
+$app->get("/parties/:id", function ($id) { generic_get_item("Party", $id); })->name("parties");
+$app->get("/parties/:id/elections", "get_party_elections");
 $app->get("/areas/:level", "get_areas");
 $app->get("/areas/:code", function ($code) { generic_get_item("Area", $code); } )->name("areas");
-$app->get("/areas/:code/officials", "get_area_officials");
+$app->get("/areas/:code/elections", "get_area_elections");
 $app->get("/elections", function () { generic_get_list("Elect"); } );
-$app->get("/elections/:id", function ($id) { generic_get_item("Elect", $id); } )->name("elects");
+$app->get("/elections/:id", function ($id) { generic_get_item("Elect", $id); } )->name("elections");
 $app->get("/users", function () { generic_get_list("User"); } );
-$app->get("/users/:id", function ($id) { generic_get_item("User", $id); } )->name("users");
-$app->get("/users/:id/datasets", "get_user_datasets");
+$app->get("/users/:username", "get_user")->name("users");
+$app->get("/users/:username/datasets", "get_user_datasets");
+$app->get("/users/:username/datasets/:id", "get_user_dataset");
+$app->get("/users/:username/datasets/:id/datapoints", "get_user_dataset_datapoints");
 $app->get("/datasets", function () { generic_get_list("Dataset"); } );
-$app->get("/datasets/:id", function ($id) { generic_get_item("Dataset", $id); } )->name("datasets");
-$app->get("/datasets/:id/datapoints", "get_dataset_datapoints");
+$app->get("/tokens/:id", $auth_token, function ($id) { generic_get_item("Token", $id); } )->name("tokens");
 
 
 //-----------------------------------------------------------------------------
 // POST requests
 //-----------------------------------------------------------------------------
 
-$app->post("/officials", function () { generic_post_item("Official", "officials"); } );
-$app->post("/officials/:id/families", "post_official_family");
-$app->post("/families", function () { generic_post_item("Family", "families"); } );
-$app->post("/families/:id/officials", "post_family_official");
-$app->post("/parties", function () { generic_post_item("Party", "parties"); } );
-$app->post("/areas", "post_area");
-$app->post("/elections", "post_election");
+$app->post("/officials", $auth_admin, function () { generic_post_item("Official", "officials"); } );
+$app->post("/officials/:id/families", $auth_admin, "post_official_family");
+$app->post("/families", $auth_admin, function () { generic_post_item("Family", "families"); } );
+$app->post("/families/:id/officials", $auth_admin, "post_family_official");
+$app->post("/parties", $auth_admin, function () { generic_post_item("Party", "parties"); } );
+$app->post("/areas", $auth_admin, "post_area");
+$app->post("/elections", $auth_admin, "post_election");
 $app->post("/users", "post_user");
-$app->post("/datasets", "post_dataset");
-$app->post("/datasets/:id/datapoints", "post_dataset_datapoint");
+$app->post("/users/:username/datasets", $auth_username, "post_user_dataset");
+$app->post("/users/:username/datasets/:id/datapoints", $auth_username, "post_user_dataset_datapoint");
+$app->post("/tokens", "post_token");
 
 
 //-----------------------------------------------------------------------------
 // PUT requests
 //-----------------------------------------------------------------------------
 
-$app->put("/officials/:id", function ($id) { generic_put_item("Official", $id); } );
-$app->put("/families/:id", function ($id) { generic_put_item("Family", $id); } );
-$app->put("/parties/:id", function ($id) { generic_put_item("Party", $id); } );
-$app->put("/areas/:code", function ($code) { generic_put_item("Area", $code); } );
-$app->put("/elections/:id", function ($id) { generic_put_item("Elect", $id); } );
-$app->put("/users/:id", function ($id) { generic_put_item("User", $id); } );
-$app->put("/datasets/:id", function ($id) { generic_put_item("Dataset", $id); } );
-$app->put("/datapoints/:id", function ($id) { generic_put_item("Datapoint", $id); } );
+$app->put("/officials/:id", $auth_admin, function ($id) { generic_put_item("Official", $id); } );
+$app->put("/families/:id", $auth_admin, function ($id) { generic_put_item("Family", $id); } );
+$app->put("/parties/:id", $auth_admin, function ($id) { generic_put_item("Party", $id); } );
+$app->put("/areas/:code", $auth_admin, function ($code) { generic_put_item("Area", $code); } );
+$app->put("/elections/:id", $auth_admin, function ($id) { generic_put_item("Elect", $id); } );
+$app->put("/users/:username", $auth_username, "put_user" );
+$app->put("/users/:username/datasets/:id", $auth_username, "put_user_dataset" );
+$app->put("/users/:username/datasets/:dataset_id/datapoints/:id", $auth_username, "put_user_dataset_datapoint" );
 
 
 //-----------------------------------------------------------------------------
 // DELETE requests
 //-----------------------------------------------------------------------------
 
-$app->delete("/officials/:id", function ($id) { generic_delete_item("Official", $id); } );
-$app->delete("/officials/:id/families/:id", "delete_official_family");
-$app->delete("/families/:id", function ($id) { generic_delete_item("Family", $id); } );
-$app->delete("/families/:id/officials/:id", "delete_family_official");
-$app->delete("/parties/:id", function ($id) { generic_delete_item("Party", $id); } );
-$app->delete("/areas/:code", function ($code) { generic_delete_item("Area", $code); } );
-$app->delete("/elections/:id", function ($id) { generic_delete_item("Elect", $id); } );
-$app->delete("/users/:id", function ($id) { generic_delete_item("User", $id); } );
-$app->delete("/datasets/:id", function ($id) { generic_delete_item("Dataset", $id); } );
-$app->delete("/datapoints/:id", function ($id) { generic_delete_item("Datapoint", $id); } );
+$app->delete("/officials/:id", $auth_admin, function ($id) { generic_delete_item("Official", $id); } );
+$app->delete("/officials/:official_id/families/:id", $auth_admin, "delete_official_family");
+$app->delete("/families/:id", $auth_admin, function ($id) { generic_delete_item("Family", $id); } );
+$app->delete("/families/:family_id/officials/:id", $auth_admin, "delete_family_official");
+$app->delete("/parties/:id", $auth_admin, function ($id) { generic_delete_item("Party", $id); } );
+$app->delete("/areas/:code", $auth_admin, function ($code) { generic_delete_item("Area", $code); } );
+$app->delete("/elections/:id", $auth_admin, function ($id) { generic_delete_item("Elect", $id); } );
+$app->delete("/users/:username", $auth_username_or_admin, "delete_user" );
+$app->delete("/users/:username/datasets/:id", $auth_username_or_admin, "delete_user_dataset" );
+$app->delete("/users/:username/datapoints/:id", $auth_username, "delete_user_dataset_datapoint" );
+$app->delete("/tokens/:id", $auth_token, function ($id) { generic_delete_item("Token", $id); } );
 
 $app->run();
 
@@ -105,6 +115,49 @@ function defaults($params, $defaults){
 	}
 	return $defaults;
 }
+
+function authenticator($options) {
+	global $app;
+	return function($route) use ($options, $app) {
+		$auth = $app->request->headers->get("Authorization");
+
+		if(!isset($auth)) {
+			$app->halt(401);
+		}
+
+		$matches = array();
+		preg_match('/Token token="(.*)"/', $auth, $matches);
+		if(isset($matches[1])){
+			$token_string = $matches[1];
+		}else{
+			$app->halt(401);
+		}
+
+		$token = \Dynavis\Model\Token::get_by_token($token_string);
+		if(!$token || !$token->valid()) {
+			$app->halt(401);
+		}
+
+		$user = $token->get_user();
+		$role = ["user", "admin"][$user->type];
+
+		$allow = false;
+		if(isset($options["roles"]) && in_array($role, $options["roles"])) {
+			$allow = true;
+		}else if(isset($options["username_match"]) && $route->getParam("username") === $user->username) {
+			$allow = true;
+		}else if(isset($options["token_match"]) && (int) $route->getParam("id") === $token->get_id()) {
+			$allow = true;
+		}
+
+		if(!$allow) {
+			$app->halt(403);
+		}
+
+		$app->user_id = $user->get_id();
+	};
+}
+
 
 // Generic
 
@@ -212,7 +265,10 @@ function generic_delete_item($class, $id) {
 	}catch(DataException $e) {
 		$app->halt(400, $e->getMessage());
 	}
+
+	$app->response->setStatus(204);
 }
+
 
 // Officials
 
@@ -289,7 +345,10 @@ function delete_official_family($official_id, $family_id) {
 	}catch(DataException $e) {
 		$app->halt(404);
 	}
+
+	$app->response->setStatus(204);
 }
+
 
 // Families
 
@@ -366,26 +425,26 @@ function delete_family_official($family_id, $official_id) {
 	}catch(DataException $e) {
 		$app->halt(404);
 	}
+
+	$app->response->setStatus(204);
 }
+
 
 // Parties
 
-function get_party($id) {
+function get_party_elections($id) {
 	global $app;
 	try {
 		$party = new Party((int) $id);
 	}catch(NotFoundException $e) {
 		$app->halt(404);
 	}
-	$members = $party->get_members();
+	$elections = $party->get_elections();
 
-	$obj = $party->jsonSerialize();
-	$obj["members"] = [
-		"total" => count($members),
-		"data" => $members,
-	];
-
-	echo json_encode($obj);
+	echo json_encode([
+		"total" => count($elections),
+		"data" => $elections,
+	]);
 }
 
 
@@ -401,20 +460,13 @@ function get_areas($level) {
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
 
-	$type = [
-		"region" => 0,
-		"province" => 1,
-		"municipality" => 2,
-		"barangay" => 3,
-	][$level];
-
 	$areas = array_map(
 		function ($item) {
 			return new Area((int) $item[Area::PRIMARY_KEY]);
 		},
-		Area::list_areas($count, $start, $type)
+		Area::list_areas($count, $start, $level)
 	);
-	$total = Area::count($type);
+	$total = Area::count($level);
 
 	$end = $start + $count;
 	if($end > $total) $end = $total;
@@ -427,18 +479,18 @@ function get_areas($level) {
 	]);
 }
 
-function get_area_officials($code) {
+function get_area_elections($code) {
 	global $app;
 	try {
 		$area = new Area((int) $code);
 	}catch(NotFoundException $e) {
 		$app->halt(404);
 	}
-	$officials = $area->get_officials();
+	$elections = $area->get_elections();
 
 	echo json_encode([
-		"total" => count($officials),
-		"data" => $officials,
+		"total" => count($elections),
+		"data" => $elections,
 	]);
 }
 
@@ -474,11 +526,16 @@ function post_area() {
 	$app->response->headers->set("Location", $app->urlFor("areas", [Area::PRIMARY_KEY => $area->get_id()]));
 }
 
+
 // Elections
 
 function post_election() {
 	global $app;
 	$data = $app->request->post();
+
+	if(isset($_FILES["file"])) {
+		return post_elections_file($_FILES["file"]);
+	}
 
 	if(!isset($data["official_id"], $data["year"], $data["year_end"], $data["position"], $data["votes"], $data["area_code"])) {
 		$app->halt(400, "Incomplete data.");
@@ -519,21 +576,22 @@ function post_election() {
 	$app->response->headers->set("Location", $app->urlFor("elections", [Elect::PRIMARY_KEY => $elect->get_id()]));
 }
 
+function post_elections_file($file) {
+	// TODO: file upload
+	global $app;
+	$app->halt(501);
+}
+
+
 // Users
 
-function get_user_datasets($id) {
+function get_user($username) {
 	global $app;
-	try {
-		$user = new User((int) $id);
-	}catch(NotFoundException $e) {
+	$user = User::get_by_username($username);
+	if(!$user) {
 		$app->halt(404);
 	}
-	$datasets = $user->get_datasets();
-
-	echo json_encode([
-		"total" => count($datasets),
-		"data" => $datasets,
-	]);
+	echo json_encode($user);
 }
 
 function post_user() {
@@ -555,18 +613,103 @@ function post_user() {
 	}
 
 	$app->response->setStatus(201);
-	$app->response->headers->set("Location", $app->urlFor("users", [User::PRIMARY_KEY => $user->get_id()]));
+	$app->response->headers->set("Location", $app->urlFor("users", ["username" => $user->username]));
 }
+
+function put_user($username) {
+	global $app;
+	$data = $app->request->put();
+
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
+	}
+
+	foreach ($data as $key => $value) {
+		if(!in_array($key, $class::FIELDS)) {
+			$app->halt(400, "Invalid property. " . $key);
+		}
+		$item->$key = $value;
+	}
+	try {
+		$item->save();
+	}catch(DataException $e) {
+		$app->halt(400, "Invalid data.");
+	}
+
+	echo json_encode($item);
+}
+
+function delete_user($username) {
+	global $app;
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
+	}
+
+	try {
+		$user->delete();
+	}catch(DataException $e) {
+		$app->halt(400, $e->getMessage());
+	}
+
+	$app->response->setStatus(204);
+}
+
 
 // Datasets
 
-function get_dataset_datapoints($id) {
+function get_user_datasets($username) {
 	global $app;
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
+	}
+	$datasets = $user->get_datasets();
+
+	echo json_encode([
+		"total" => count($datasets),
+		"data" => $datasets,
+	]);
+}
+
+function get_user_dataset($username, $dataset_id) {
+	global $app;
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
+	}
+
 	try {
-		$dataset = new Dataset((int) $id);
+		$dataset = new Dataset((int) $dataset_id);
 	}catch(NotFoundException $e) {
 		$app->halt(404);
 	}
+
+	if($dataset->user_id != $user->get_id()) {
+		$app->halt(404);
+	}
+
+	echo json_encode($dataset);
+}
+
+function get_user_dataset_datapoints($username, $dataset_id) {
+	global $app;
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
+	}
+
+	try {
+		$dataset = new Dataset((int) $dataset_id);
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+
+	if($dataset->user_id != $user->get_id()) {
+		$app->halt(404);
+	}
+
 	$datapoints = $dataset->get_points();
 
 	echo json_encode([
@@ -575,7 +718,7 @@ function get_dataset_datapoints($id) {
 	]);
 }
 
-function post_dataset() {
+function post_user_dataset($username) {
 	global $app;
 	$data = $app->request->post();
 
@@ -583,13 +726,10 @@ function post_dataset() {
 		$app->halt(400, "Incomplete data.");
 	}
 
-	try{
-		$user = isset($data["user_id"]) ? new Party((int) $data["user_id"]) : null;
-	}catch(NotFoundException $e) {
-		$app->halt(400, "Invalid user ID.");
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
 	}
-
-	Entity::$medoo->pdo->beginTransaction();
 
 	$dataset = new Dataset(["user" => $user]);
 	$dataset->name = $data["name"];
@@ -597,38 +737,47 @@ function post_dataset() {
 	try {
 		$dataset->save();
 	}catch(DataException $e) {
-		Entity::$medoo->pdo->rollBack();
 		$app->halt(400, "Invalid data.");
 	}
 
 	if(isset($_FILES["file"])) {
+		Database::get()->pdo->beginTransaction();
 		try {
 			$dataset->file($_FILES["file"]);
 		}catch(DataException $e) {
-			Entity::$medoo->pdo->rollBack();
+			Database::get()->pdo->rollBack();
 			$app->halt(400, "Invalid file.");
 		}
+		Database::get()->pdo->commit();
 	}
 
-	Entity::$medoo->pdo->commit();
-
 	$app->response->setStatus(201);
-	$app->response->headers->set("Location", $app->urlFor("datasets", [Dataset::PRIMARY_KEY => $dataset->get_id()]));
+	$app->response->headers->set("Location", "/users/".urlencode($username)."/datasets/".$dataset->get_id());
 }
 
-function post_dataset_datapoint($id) {
+function post_user_dataset_datapoint($username, $dataset_id) {
 	global $app;
 	$data = $app->request->post();
+
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
+	}
+
+	try {
+		$dataset = new Dataset((int) $dataset_id);
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+
+	if($dataset->user_id != $user->get_id()) {
+		$app->halt(404);
+	}
 
 	if(!isset($data["year"], $data["area_code"], $data["value"])) {
 		$app->halt(400, "Incomplete data.");
 	}
 
-	try {
-		$dataset = new Dataset((int) $id);
-	}catch(NotFoundException $e) {
-		$app->halt(400, "Invalid dataset ID.");
-	}
 	try {
 		$area = new Area((int) $data["area_code"]);
 	}catch(NotFoundException $e) {
@@ -648,5 +797,150 @@ function post_dataset_datapoint($id) {
 	}
 
 	$app->response->setStatus(201);
-	$app->response->headers->set("Location", "/datasets/" . $id . "/datapoints");
+	$app->response->headers->set("Location", "/users/".urlencode($username)."/datasets/".$dataset_id."/datapoints/".$datapoint->get_id());
+}
+
+function put_user_dataset($username, $dataset_id) {
+	global $app;
+	$data = $app->request->post();
+
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
+	}
+
+	try{
+		$dataset = new Dataset((int) $dataset_id);
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+
+	if($dataset->user_id != $user->get_id()) {
+			$app->halt(404);
+	}
+
+	foreach ($data as $key => $value) {
+		if(!in_array($key, Dataset::FIELDS)) {
+			$app->halt(400, "Invalid property. " . $key);
+		}
+		$dataset->$key = $value;
+	}
+	try {
+		$dataset->save();
+	}catch(DataException $e) {
+		$app->halt(400, "Invalid data.");
+	}
+}
+
+function put_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
+	global $app;
+	$data = $app->request->post();
+
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
+	}
+
+	try{
+		$dataset = new Dataset((int) $dataset_id);
+		if($dataset->user_id != $user->get_id()) {
+			$app->halt(404);
+		}
+		$datapoint = new Datapoint((int) $datapoint_id);
+		if($datapoint->dataset_id != $dataset_id) {
+			$app->halt(404);
+		}
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+
+	foreach ($data as $key => $value) {
+		if(!in_array($key, Datapoint::FIELDS)) {
+			$app->halt(400, "Invalid property. " . $key);
+		}
+		$datapoint->$key = $value;
+	}
+	try {
+		$datapoint->save();
+	}catch(DataException $e) {
+		$app->halt(400, "Invalid data.");
+	}
+}
+
+function delete_user_dataset($username, $dataset_id) {
+	global $app;
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
+	}
+
+	try{
+		$dataset = new Dataset((int) $dataset_id);
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+
+	if($dataset->user_id != $user->get_id()) {
+			$app->halt(404);
+	}
+
+	try {
+		$dataset->delete();
+	}catch(DataException $e) {
+		$app->halt(400, $e->getMessage());
+	}
+
+	$app->response->setStatus(204);
+}
+
+function delete_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
+	global $app;
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
+	}
+
+	try{
+		$dataset = new Dataset((int) $dataset_id);
+		if($dataset->user_id != $user->get_id()) {
+			$app->halt(404);
+		}
+		$datapoint = new Datapoint((int) $datapoint_id);
+		if($datapoint->dataset_id != $dataset_id) {
+			$app->halt(404);
+		}
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+
+	try {
+		$datapoint->delete();
+	}catch(DataException $e) {
+		$app->halt(400, $e->getMessage());
+	}
+
+	$app->response->setStatus(204);
+}
+
+
+// Tokens
+
+function post_token() {
+	global $app;
+	$data = $app->request->post();
+
+	if(!isset($data["username"], $data["password"])) {
+		$app->halt(400, "Incomplete data.");
+	}
+
+	$user = User::get_by_username($data["username"]);
+	if(is_null($user) || !$user->check_password($data["password"])) {
+		$app->halt(400, "Invalid username or password.");
+	}
+
+	$token = new Token(["user" => $user]);
+	$token->save();
+
+	$app->response->setStatus(201);
+	echo json_encode($token);
 }

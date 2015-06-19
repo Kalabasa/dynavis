@@ -1,5 +1,6 @@
 <?php
 namespace Dynavis\Model;
+use \Dynavis\Database;
 
 class Area extends \Dynavis\Core\RefEntity {
 	const TABLE = "area";
@@ -20,10 +21,27 @@ class Area extends \Dynavis\Core\RefEntity {
 		}
 	}
 
-	public static function list_areas($count, $start, $type) {
-		static::init();
+	public static function list_areas($count, $start, $level) {
 		if($count < 0 || $start < -1) return [];
-		return self::$medoo->select(static::TABLE, [static::PRIMARY_KEY], ["LIMIT" => [(int) $start , (int) $count], "type" => (int) $type]);
+		switch ($level) {
+			case "region": $type = 0; break;
+			case "province": $type = 1; break;
+			case "municipality": $type = 2; break;
+			case "barangay": $type = 3; break;
+			default: return []; break;
+		}
+		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], ["LIMIT" => [(int) $start , (int) $count], "type" => $type]);
+	}
+
+	public static function count($level) {
+		switch ($level) {
+			case "region": $type = 0; break;
+			case "province": $type = 1; break;
+			case "municipality": $type = 2; break;
+			case "barangay": $type = 3; break;
+			default: return []; break;
+		}
+		return Database::get()->count(static::TABLE, ["type" => $type]);
 	}
 
 	public function get_parent() {
@@ -36,7 +54,7 @@ class Area extends \Dynavis\Core\RefEntity {
 			function ($item) {
 				return new Elect((int) $item[Elect::PRIMARY_KEY]);
 			},
-			\Dynavis\Core\Entity::$medoo->select(Elect::TABLE, [
+			Database::get()->select(Elect::TABLE, [
 				"[><]" . static::TABLE => ["area_code" => static::PRIMARY_KEY]
 			], [
 				Elect::TABLE . "." . Elect::PRIMARY_KEY
@@ -51,7 +69,7 @@ class Area extends \Dynavis\Core\RefEntity {
 			function ($item) {
 				return new Official((int) $item[Official::PRIMARY_KEY], false);
 			},
-			\Dynavis\Core\Entity::$medoo->select(Official::TABLE, [
+			Database::get()->select(Official::TABLE, [
 				"[><]" . Elect::TABLE => [Official::PRIMARY_KEY => "official_id"],
 				"[><]" . static::TABLE => [Elect::TABLE . ".area_code" => static::PRIMARY_KEY],
 			], [
@@ -60,5 +78,12 @@ class Area extends \Dynavis\Core\RefEntity {
 				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
 			])
 		);
+	}
+
+	public function jsonSerialize() {
+		$data = parent::jsonSerialize();
+		$data["level"] = ["region", "province", "municipality", "barangay"][$data["type"]];
+		unset($data["type"]);
+		return $data;
 	}
 }

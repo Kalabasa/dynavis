@@ -1,16 +1,22 @@
 "use strict";
-
+var models = models || {};
+var collections = collections || {};
 (function() {
-	app.models.User = Backbone.Model.extend({
+	models.User = Backbone.Model.extend({
+		urlRoot: "api.php/users",
 		defaults: {
 			id: null,
 			username: null,
 			type: null,
 		},
+		idAttribute: "username",
 	});
 
-	app.models.UserCollection = Backbone.Collection.extend({
+	collections.User = Backbone.Collection.extend({
 		url: "api.php/users",
-		model: app.models.User,
+		model: models.User,
+		parse: function(data) {
+			return data.data;
+		},
 	});
 })();

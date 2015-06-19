@@ -1,5 +1,6 @@
 <?php
 namespace Dynavis\Core;
+use \Dynavis\Database;
 
 abstract class Entity implements \JsonSerializable{
 	// Table name
@@ -11,9 +12,6 @@ abstract class Entity implements \JsonSerializable{
 	// Name of primary key field
 	const PRIMARY_KEY = "id";
 
-	// Medoo
-	public static $medoo = null;
-
 	// ID of this entity
 	private $_id = null;
 
@@ -21,11 +19,9 @@ abstract class Entity implements \JsonSerializable{
 	private $_data = null;
 
 	public function __construct($id = null, $check = true) {
-		static::init();
-
 		// Get the item data if id is given
 		if(isset($id)) {
-			if(!$check || self::$medoo->has(static::TABLE, [static::PRIMARY_KEY => $id])) {
+			if(!$check || Database::get()->has(static::TABLE, [static::PRIMARY_KEY => $id])) {
 				$this->_id = (int) $id;
 			}else{
 				throw new NotFoundException("Entity ID is not in the database. " . get_class($this), 1);
@@ -35,19 +31,13 @@ abstract class Entity implements \JsonSerializable{
 		}
 	}
 
-	public static function init() {
-		if(!isset(self::$medoo)) self::$medoo = new \medoo(DB_CONFIG);
-	}
-
 	public static function count() {
-		static::init();
-		return (int) self::$medoo->count(static::TABLE);
+		return (int) Database::get()->count(static::TABLE);
 	}
 
 	public static function list_items($count, $start) {
-		static::init();
 		if($count < 0 || $start < -1) return [];
-		return self::$medoo->select(static::TABLE, [static::PRIMARY_KEY], ["LIMIT" => [(int) $start , (int) $count]]);
+		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], ["LIMIT" => [(int) $start , (int) $count]]);
 	}
 
 	public function save() {
@@ -63,7 +53,7 @@ abstract class Entity implements \JsonSerializable{
 			throw new \RuntimeException("Cannot delete a new entity.");
 		}
 
-		$ret = self::$medoo->delete(static::TABLE, [static::PRIMARY_KEY => $this->_id]);
+		$ret = Database::get()->delete(static::TABLE, [static::PRIMARY_KEY => $this->_id]);
 
 		if(!$ret){
 			throw new DataException("Error deleting entity from the database. " . get_class($this));
@@ -75,8 +65,9 @@ abstract class Entity implements \JsonSerializable{
 	public function get_id() { return $this->_id; }
 
 	protected function load() {
-		if(is_null($this->_data) && isset($this->_id)){
-			$this->_data = self::$medoo->get(static::TABLE, static::FIELDS, [static::PRIMARY_KEY => $this->_id]);
+		if(is_null($this->_data) && isset($this->_id)) {
+			$this->_data = Database::get()->get(static::TABLE, static::FIELDS, [static::PRIMARY_KEY => $this->_id]);
+			// TODO: cast values to field types
 			foreach ($this->_data as $key => $value) {
 				$this->$key = $value;
 			}
@@ -123,7 +114,7 @@ abstract class Entity implements \JsonSerializable{
 		}
 
 		if(!empty($update_data)){
-			$ret = self::$medoo->update(static::TABLE, $update_data, [static::PRIMARY_KEY => $this->_id]);
+			$ret = Database::get()->update(static::TABLE, $update_data, [static::PRIMARY_KEY => $this->_id]);
 
 			if(!$ret) {
 				throw new DataException("Error updating entity in the database. " . get_class($this));
@@ -141,7 +132,7 @@ abstract class Entity implements \JsonSerializable{
 			$insert_data[$f] = $this->$f;
 		}
 
-		$ret = self::$medoo->insert(static::TABLE, $insert_data);
+		$ret = Database::get()->insert(static::TABLE, $insert_data);
 
 		if(!in_array(static::PRIMARY_KEY, static::FIELDS)) {
 			if(!$ret) {
@@ -156,4 +147,3 @@ abstract class Entity implements \JsonSerializable{
 		$this->_data = $insert_data;
 	}
 }
-Entity::init();

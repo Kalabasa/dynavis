@@ -1,5 +1,6 @@
 <?php
 namespace Dynavis\Model;
+use \Dynavis\Database;
 
 class Official extends \Dynavis\Core\Entity {
 	const TABLE = "official";
@@ -12,7 +13,7 @@ class Official extends \Dynavis\Core\Entity {
 			function ($item) {
 				return new Family((int) $item[Family::PRIMARY_KEY], false);
 			},
-			\Dynavis\Core\Entity::$medoo->select(Family::TABLE, [
+			Database::get()->select(Family::TABLE, [
 				"[><]" . static::TABLE_FAMILY_MEMBERSHIP => [Family::PRIMARY_KEY => "family_id"],
 				"[><]" . static::TABLE => [static::TABLE_FAMILY_MEMBERSHIP . ".official_id" => static::PRIMARY_KEY],
 			], [
