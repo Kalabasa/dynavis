@@ -38,26 +38,31 @@ var models = models || {};
 
 		login: function(username, password) {
 			var that = this;
-			$.post(this.urlRoot, {
-				username: username,
-				password: password,
-			}, function(data) {
-				$.ajaxSetup({
-					headers: {"Authorization": 'Token token="' + data.token + '"'}
-				});
-				that.set(data);
-				that.fetch();
-				docCookies.setItem("dynavis_token", JSON.stringify(data), data.expiry); // TODO: secure cookie (https)
-			}, "json")
-				.fail(function() {
+			$.ajax({
+				method: "POST",
+				url: that.urlRoot,
+				data: JSON.stringify({username: username, password: password}),
+				processData: false,
+				dataType: "json",
+				success: function(data) {
+					$.ajaxSetup({
+						headers: {"Authorization": 'Token token="' + data.token + '"'}
+					});
+					that.set(data);
+					that.fetch();
+					docCookies.setItem("dynavis_token", JSON.stringify(data), data.expiry); // TODO: secure cookie (https)
+				},
+				error: function() {
 					console.log("LOGIN FAIL");
-				});
+				},
+			});
 		},
 
 		logout: function() {
 			var that = this;
-			$.ajax(this.url(), {
+			$.ajax({
 				method: "DELETE",
+				url: that.url(),
 				success: function() {
 					$.ajaxSetup();
 					that.clear();
@@ -65,6 +70,7 @@ var models = models || {};
 				},
 				error: function() {
 					console.log("logout error");
+					that.fetch();
 				},
 			});
 		},

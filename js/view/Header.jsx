@@ -5,7 +5,7 @@ var components = components || {};
 		render: function() {
 			return (
 				<div>
-					<components.HeaderLogin model={this.getModel()} />
+					<components.HeaderLogin model={this.model()} />
 				</div>
 			);
 		},

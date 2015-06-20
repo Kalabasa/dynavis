@@ -4,7 +4,7 @@ var components = components || {};
 	components.HeaderLogin = React.createBackboneClass({
 		mixins: [React.BackboneMixin({renderOn: "all"})],
 		render: function() {
-			var user = this.getModel().get_user();
+			var user = this.model().get_user();
 			if(user) {
 				return (
 					<div>
@@ -30,12 +30,11 @@ var components = components || {};
 			var $el = $(this.el());
 			var username = $el.find("#username").val();
 			var password = $el.find("#password").val();
-			this.getModel().login(username, password);
+			this.model().login(username, password);
 		},
 
 		handle_logout: function(e) {
-			e.preventDefault();
-			this.getModel().logout();
+			this.model().logout();
 		},
 	});
 })();

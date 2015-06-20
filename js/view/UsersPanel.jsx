@@ -6,7 +6,11 @@ var components = components || {};
 			return (
 				<div>
 					<h1>Users</h1>
-					<components.UserTable collection={this.getCollection()} />
+					<ul>
+						{this.collection().map(function(user) {
+							return <components.UserRow key={user.id} model={user} />;
+						})}
+					</ul>
 				</div>
 			);
 		},

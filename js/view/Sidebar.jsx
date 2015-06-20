@@ -7,10 +7,8 @@ var components = components || {};
 				<div>
 					<h1>Siedbar</h1>
 					<ul>
+						<li><a href="#officials">Officials</a></li>
 						<li><a href="#users">Users</a></li>
-						<li><a href="#things">things</a></li>
-						<li><a href="#stuff">stuff</a></li>
-						<li><a href="#">click</a></li>
 					</ul>
 				</div>
 			);

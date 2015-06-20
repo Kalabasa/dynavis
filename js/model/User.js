@@ -5,9 +5,8 @@ var collections = collections || {};
 	models.User = Backbone.Model.extend({
 		urlRoot: "api.php/users",
 		defaults: {
-			id: null,
 			username: null,
-			type: null,
+			role: null,
 		},
 		idAttribute: "username",
 	});
