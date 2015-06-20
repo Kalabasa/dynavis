@@ -55,6 +55,7 @@ class User extends \Dynavis\Core\Entity {
 	public function jsonSerialize() {
 		$data = parent::jsonSerialize();
 		$data["role"] = ["user", "admin"][$data["type"]];
+		unset($data["id"]);
 		unset($data["type"]);
 		unset($data["pw_hash"]);
 		unset($data["salt"]);

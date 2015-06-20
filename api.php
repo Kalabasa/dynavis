@@ -79,9 +79,9 @@ $app->post("/tokens", "post_token");
 $app->put("/officials/:id", $auth_admin, function ($id) { generic_put_item("Official", $id); } );
 $app->put("/families/:id", $auth_admin, function ($id) { generic_put_item("Family", $id); } );
 $app->put("/parties/:id", $auth_admin, function ($id) { generic_put_item("Party", $id); } );
-$app->put("/areas/:code", $auth_admin, function ($code) { generic_put_item("Area", $code); } );
+$app->put("/areas/:code", $auth_admin, "put_area" );
 $app->put("/elections/:id", $auth_admin, function ($id) { generic_put_item("Elect", $id); } );
-$app->put("/users/:username", $auth_username, "put_user" );
+$app->put("/users/:username", $auth_username_or_admin, "put_user" );
 $app->put("/users/:username/datasets/:id", $auth_username, "put_user_dataset" );
 $app->put("/users/:username/datasets/:dataset_id/datapoints/:id", $auth_username, "put_user_dataset_datapoint" );
 
@@ -207,7 +207,10 @@ function generic_post_item($class, $name) {
 	global $app;
 	$class = "\\Dynavis\\Model\\" . $class;
 
-	$data = $app->request->post();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	$item = new $class();
 	foreach ($class::FIELDS as $field) {
@@ -230,7 +233,10 @@ function generic_put_item($class, $id) {
 	global $app;
 	$class = "\\Dynavis\\Model\\" . $class;
 
-	$data = $app->request->put();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	try {
 		$item = new $class((int) $id);
@@ -307,7 +313,10 @@ function get_official_families($id) {
 
 function post_official_family($id) {
 	global $app;
-	$data = $app->request->post();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	try {
 		$official = new Official((int) $id);
@@ -387,7 +396,10 @@ function get_family_officials($id) {
 
 function post_family_official($id) {
 	global $app;
-	$data = $app->request->post();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	try {
 		$family = new Family((int) $id);
@@ -494,9 +506,47 @@ function get_area_elections($code) {
 	]);
 }
 
+function put_area($code) {
+	global $app;
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
+
+	$area = new Area((int)$code);
+	if(!$area) {
+		$app->halt(404);
+	}
+
+	$data["type"] = [
+		"region" => 0,
+		"province" => 1,
+		"municipality" => 2,
+		"barangay" => 3,
+	][$data["level"]];
+	unset($data["level"]);
+
+	foreach ($data as $key => $value) {
+		if(!in_array($key, Area::FIELDS)) {
+			$app->halt(400, "Invalid property. " . $key);
+		}
+		$area->$key = $value;
+	}
+	try {
+		$area->save();
+	}catch(DataException $e) {
+		$app->halt(400, "Invalid data.");
+	}
+
+	echo json_encode($area);
+}
+
 function post_area() {
 	global $app;
-	$data = $app->request->post();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	if(!isset($data["code"], $data["name"], $data["level"])) {
 		$app->halt(400, "Incomplete data.");
@@ -531,7 +581,10 @@ function post_area() {
 
 function post_election() {
 	global $app;
-	$data = $app->request->post();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	if(isset($_FILES["file"])) {
 		return post_elections_file($_FILES["file"]);
@@ -596,7 +649,10 @@ function get_user($username) {
 
 function post_user() {
 	global $app;
-	$data = $app->request->post();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	if(!isset($data["username"], $data["password"])) {
 		$app->halt(400, "Incomplete data.");
@@ -618,26 +674,35 @@ function post_user() {
 
 function put_user($username) {
 	global $app;
-	$data = $app->request->put();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	$user = User::get_by_username($username);
 	if(!$user) {
 		$app->halt(404);
 	}
 
+	$data["type"] = [
+		"user" => 0,
+		"admin" => 1,
+	][$data["role"]];
+	unset($data["role"]);
+
 	foreach ($data as $key => $value) {
-		if(!in_array($key, $class::FIELDS)) {
+		if(!in_array($key, User::FIELDS)) {
 			$app->halt(400, "Invalid property. " . $key);
 		}
-		$item->$key = $value;
+		$user->$key = $value;
 	}
 	try {
-		$item->save();
+		$user->save();
 	}catch(DataException $e) {
 		$app->halt(400, "Invalid data.");
 	}
 
-	echo json_encode($item);
+	echo json_encode($user);
 }
 
 function delete_user($username) {
@@ -720,7 +785,10 @@ function get_user_dataset_datapoints($username, $dataset_id) {
 
 function post_user_dataset($username) {
 	global $app;
-	$data = $app->request->post();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	if(!isset($data["name"], $data["description"])) {
 		$app->halt(400, "Incomplete data.");
@@ -757,7 +825,10 @@ function post_user_dataset($username) {
 
 function post_user_dataset_datapoint($username, $dataset_id) {
 	global $app;
-	$data = $app->request->post();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	$user = User::get_by_username($username);
 	if(!$user) {
@@ -802,7 +873,10 @@ function post_user_dataset_datapoint($username, $dataset_id) {
 
 function put_user_dataset($username, $dataset_id) {
 	global $app;
-	$data = $app->request->post();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	$user = User::get_by_username($username);
 	if(!$user) {
@@ -834,7 +908,10 @@ function put_user_dataset($username, $dataset_id) {
 
 function put_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
 	global $app;
-	$data = $app->request->post();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	$user = User::get_by_username($username);
 	if(!$user) {
@@ -927,7 +1004,10 @@ function delete_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
 
 function post_token() {
 	global $app;
-	$data = $app->request->post();
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
 
 	if(!isset($data["username"], $data["password"])) {
 		$app->halt(400, "Incomplete data.");
