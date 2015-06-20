@@ -1,5 +1,5 @@
 $header-height: 75px;
-$sidebar-width: 100px;
+$sidebar-width: 200px;
 
 body { margin: 0 }
 .row, .col { overflow: hidden; position: absolute; }
@@ -8,6 +8,22 @@ body { margin: 0 }
 .scroll-x { overflow-x: auto; }
 .scroll-y { overflow-y: auto; }
 
-.header.row { height: $header-height; top: 0; }
-.sidebar.col { width: $sidebar-width; top: $header-height; left: 0; }
-.body.row { top: $header-height; left: $sidebar-width; }
+.header.row {
+	height: $header-height;
+	top: 0;
+
+	background-color: #ffcc88;
+}
+.sidebar.col {
+	width: $sidebar-width;
+	top: $header-height;
+	left: 0;
+
+	background-color: #88ffcc;
+}
+.body.row {
+	top: $header-height;
+	left: $sidebar-width;
+
+	background-color: #88ccff;
+}
