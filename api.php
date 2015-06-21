@@ -324,12 +324,12 @@ function post_official_family($id) {
 		$app->halt(404);
 	}
 
-	if(!isset($data["family_id"])) {
+	if(!isset($data["id"])) {
 		$app->halt(400, "Incomplete data.");
 	}
 
 	try {
-		$family = new Family((int) $data["family_id"]);
+		$family = new Family((int) $data["id"]);
 	}catch(NotFoundException $e) {
 		$app->halt(400, "Invalid family ID.");
 	}
@@ -340,7 +340,7 @@ function post_official_family($id) {
 	}
 
 	$app->response->setStatus(201);
-	$app->response->headers->set("Location", "/officials/" . $id . "/families");
+	echo json_encode($family);
 }
 
 function delete_official_family($official_id, $family_id) {
@@ -407,12 +407,12 @@ function post_family_official($id) {
 		$app->halt(404);
 	}
 
-	if(!isset($data["official_id"])) {
+	if(!isset($data["id"])) {
 		$app->halt(400, "Incomplete data.");
 	}
 
 	try {
-		$official = new Official((int) $data["official_id"]);
+		$official = new Official((int) $data["id"]);
 	}catch(NotFoundException $e) {
 		$app->halt(400, "Invalid official ID.");
 	}
@@ -423,7 +423,7 @@ function post_family_official($id) {
 	}
 
 	$app->response->setStatus(201);
-	$app->response->headers->set("Location", "/families/" . $id . "/officials");
+	echo json_encode($official);
 }
 
 function delete_family_official($family_id, $official_id) {
@@ -820,7 +820,7 @@ function post_user_dataset($username) {
 	}
 
 	$app->response->setStatus(201);
-	$app->response->headers->set("Location", "/users/".urlencode($username)."/datasets/".$dataset->get_id());
+	$app->response->headers->set("Location", $app->request->getRootUri() . "/users/".urlencode($username)."/datasets/".$dataset->get_id());
 }
 
 function post_user_dataset_datapoint($username, $dataset_id) {
@@ -868,7 +868,7 @@ function post_user_dataset_datapoint($username, $dataset_id) {
 	}
 
 	$app->response->setStatus(201);
-	$app->response->headers->set("Location", "/users/".urlencode($username)."/datasets/".$dataset_id."/datapoints/".$datapoint->get_id());
+	$app->response->headers->set("Location", $app->request->getRootUri() . "/users/".urlencode($username)."/datasets/".$dataset_id."/datapoints/".$datapoint->get_id());
 }
 
 function put_user_dataset($username, $dataset_id) {
