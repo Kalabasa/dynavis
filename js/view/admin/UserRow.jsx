@@ -6,7 +6,7 @@ var components = components || {};
 			return (
 				<li>
 					<div>
-						<h1>{this.model().get("username")}</h1>
+						<h2>{this.model().get("username")}</h2>
 						<input type="checkbox" checked={this.model().get("role")==="admin"} onChange={this.handle_toggle_admin} /> admin
 						<button onClick={this.handle_delete}>Delete</button>
 					</div>

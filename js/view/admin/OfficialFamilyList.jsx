@@ -12,7 +12,7 @@ var components = components || {};
 			});
 			return (
 				<div>
-					Families:
+					<h3>Families:</h3>
 					{tokens}
 					<form>
 						<input type="text" value={this.state.input} onChange={this.handle_change} />

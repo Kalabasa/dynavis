@@ -7,7 +7,7 @@ var components = components || {};
 			official_families.fetch();
 			return (
 				<li>
-					{this.model().get("surname")}, {this.model().get("name")}.
+					<h2>{this.model().get("surname")}, {this.model().get("name")}.</h2>
 					<components.OfficialFamilyList collection={official_families} families={this.props.families}/>
 				</li>
 			);
