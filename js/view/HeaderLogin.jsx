@@ -2,7 +2,6 @@
 var components = components || {};
 (function(){
 	components.HeaderLogin = React.createBackboneClass({
-		mixins: [React.BackboneMixin({renderOn: "all"})],
 		render: function() {
 			var user = this.model().get_user();
 			if(user) {

@@ -4,37 +4,42 @@
 	<title>Dynadmite</title>
 
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
+
 	<script src="js/lib/jquery-2.1.4.min.js"></script>
 	<script src="js/lib/underscore-min.js"></script>
-	<script src="js/lib/backbone-min.js"></script>
+
+	<script src="js/lib/backbone.js"></script>
+	<script src="js/lib/JSXTransformer.js"></script>
 	<script src="js/lib/react.js"></script>
 	<script src="js/lib/react.backbone.js"></script>
-	<script src="js/lib/JSXTransformer.js"></script>
+
 	<script src="js/lib/cookies.js"></script>
 </head>
 <body>
 	<div id="main">
-		<div id="header" class="header row">
-			header
-		</div>
-
-		<div id="sidebar" class="sidebar col">
-			left
-		</div>
-
-		<div id="body" class="body row scroll-y">
-			body
-		</div>
+		<div id="header" class="header row"></div>
+		<div id="sidebar" class="sidebar col"></div>
+		<div id="body" class="body row scroll-y"></div>
 	</div>
 
 	<script src="js/model/User.js"></script>
+	<script src="js/model/Official.js"></script>
+	<script src="js/model/Family.js"></script>
 	<script src="js/model/Token.js"></script>
 	<script type="text/jsx" src="js/view/Header.jsx"></script>
 	<script type="text/jsx" src="js/view/HeaderLogin.jsx"></script>
-	<script type="text/jsx" src="js/view/Sidebar.jsx"></script>
-	<script type="text/jsx" src="js/view/UsersPanel.jsx"></script>
-	<script type="text/jsx" src="js/view/UserRow.jsx"></script>
-	<script src="js/AdminApp.js"></script>
+	<script type="text/jsx" src="js/view/admin/Sidebar.jsx"></script>
+	<script type="text/jsx" src="js/view/admin/OfficialsPanel.jsx"></script>
+	<script type="text/jsx" src="js/view/admin/OfficialRow.jsx"></script>
+	<script type="text/jsx" src="js/view/admin/OfficialFamilyList.jsx"></script>
+	<script type="text/jsx" src="js/view/admin/OfficialFamilyToken.jsx"></script>
+	<script type="text/jsx" src="js/view/admin/FamiliesPanel.jsx"></script>
+	<script type="text/jsx" src="js/view/admin/FamilyBox.jsx"></script>
+	<script type="text/jsx" src="js/view/admin/FamilyMemberList.jsx"></script>
+	<script type="text/jsx" src="js/view/admin/FamilyMemberItem.jsx"></script>
+	<script type="text/jsx" src="js/view/admin/UsersPanel.jsx"></script>
+	<script type="text/jsx" src="js/view/admin/UserRow.jsx"></script>
+	<script type="text/jsx" src="js/AdminApp.jsx"></script>
 	<script type="text/jsx">
 		var app = new AdminApp();
 		app.start();

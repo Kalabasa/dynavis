@@ -1,5 +1,5 @@
 "use strict";
 (function(){
-	var app = new Application();
+	var app = new AdminApp();
 	app.start();
 })();

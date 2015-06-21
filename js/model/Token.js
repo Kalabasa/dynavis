@@ -53,7 +53,7 @@ var models = models || {};
 					docCookies.setItem("dynavis_token", JSON.stringify(data), data.expiry); // TODO: secure cookie (https)
 				},
 				error: function() {
-					console.log("LOGIN FAIL");
+					console.error("Error login");
 				},
 			});
 		},
@@ -69,7 +69,7 @@ var models = models || {};
 					docCookies.removeItem("dynavis_token");
 				},
 				error: function() {
-					console.log("logout error");
+					console.error("Error logout");
 					that.fetch();
 				},
 			});

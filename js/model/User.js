@@ -3,7 +3,6 @@ var models = models || {};
 var collections = collections || {};
 (function() {
 	models.User = Backbone.Model.extend({
-		urlRoot: "api.php/users",
 		defaults: {
 			username: null,
 			role: null,
