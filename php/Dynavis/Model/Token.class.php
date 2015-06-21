@@ -51,4 +51,9 @@ class Token extends \Dynavis\Core\RefEntity {
 		unset($data["user_id"]);
 		return $data;
 	}
+
+	public static function cleanup() {
+		$dt = new \DateTime("1 hour ago");
+		Database::get()->delete(static::TABLE, "*", ["expiry[<]" => $dt->format("Y-m-d H:i:s")]);
+	}
 }

@@ -1021,6 +1021,8 @@ function post_token() {
 	$token = new Token(["user" => $user]);
 	$token->save();
 
+	Token::cleanup();
+
 	$app->response->setStatus(201);
 	echo json_encode($token);
 }

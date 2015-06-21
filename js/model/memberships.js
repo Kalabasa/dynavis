@@ -2,25 +2,33 @@
 var models = models || {};
 var collections = collections || {};
 (function() {
-	models.Official = Backbone.Model.extend({
-		defaults: {
-			id: null,
-			surname: null,
-			name: null,
-			nickname: null,
+	collections.FamilyMember = Backbone.Collection.extend({
+		initialize: function(models, options) {
+			this.family_id = options.family_id;
 		},
-
-		families: function() {
-			return new collections.OfficialFamily(null, {official_id: this.get("id")});
+		url: function() {
+			return "api.php/families/" + this.family_id + "/officials";
 		},
-	});
-
-	// TODO: paginat
-	collections.Official = Backbone.Collection.extend({
-		url: "api.php/officials",
 		model: models.Official,
 		parse: function(data) {
 			return data.data;
+		},
+
+		add_member: function(id) {
+			var that = this;
+			$.ajax({
+				method: "POST",
+				url: that.url(),
+				data: JSON.stringify({id: id}),
+				processData: false,
+				dataType: "json",
+				success: function() {
+					that.fetch();
+				},
+				error: function() {
+					console.error("Error add_official");
+				},
+			});
 		},
 	});
 
