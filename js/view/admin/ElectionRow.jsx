@@ -7,13 +7,18 @@ var components = components || {};
 			var area_code = this.model().get("area_code");
 			var party_id = this.model().get("party_id");
 
+			var cache = this.props.instance_cache;
+			var official = cache.get("official", official_id);
+			var area = cache.get("area", area_code);
+			// var party = cache.get("party", party_id);
+
 			return (
 				<li>
-					<h2>{official_id}</h2>
+					<components.OfficialName model={official} />
 					<div>{this.model().get("position")}</div>
 					<div>{this.model().get("year")} - {this.model().get("year_end")}</div>
 					<div>{this.model().get("votes")}</div>
-					<div>{area_code}</div>
+					<components.AreaName model={area} />
 					<div>{party_id}</div>
 				</li>
 			);
