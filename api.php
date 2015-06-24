@@ -161,7 +161,7 @@ function authenticator($options) {
 
 // Generic
 
-function generic_get_list($class, $search_fields) {
+function generic_get_list($class, $search_fields = null) {
 	global $app;
 	$class = "\\Dynavis\\Model\\" . $class;
 
@@ -173,7 +173,7 @@ function generic_get_list($class, $search_fields) {
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
-	if(isset($params["q"])) $query = $params["q"];
+	if(!is_null($search_fields) && isset($params["q"])) $query = $params["q"];
 
 	$list = array_map(
 		function ($item) use ($class) {
