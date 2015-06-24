@@ -14,16 +14,16 @@ var collections = collections || {};
 			return data.data;
 		},
 
-		add_member: function(id) {
+		add_member: function(official) {
 			var that = this;
 			$.ajax({
 				method: "POST",
 				url: that.url(),
-				data: JSON.stringify({id: id}),
+				data: JSON.stringify({id: official.id}),
 				processData: false,
 				dataType: "json",
 				success: function() {
-					that.fetch();
+					that.add(official);
 				},
 				error: function() {
 					console.error("Error add_official");
@@ -44,16 +44,16 @@ var collections = collections || {};
 			return data.data;
 		},
 
-		add_family: function(id) {
+		add_family: function(family) {
 			var that = this;
 			$.ajax({
 				method: "POST",
 				url: that.url(),
-				data: JSON.stringify({id: id}),
+				data: JSON.stringify({id: family.id}),
 				processData: false,
 				dataType: "json",
 				success: function() {
-					that.fetch();
+					that.add(family);
 				},
 				error: function() {
 					console.error("Error add_family");

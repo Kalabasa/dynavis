@@ -64,7 +64,7 @@ var components = components || {};
 		handle_select: function(official) {
 			var $input = $(React.findDOMNode(this.refs.input));
 
-			this.collection().add_member(official.id);
+			this.collection().add_member(official);
 			$input.typeahead("val", "");
 			this.setState({input: ""});
 		},

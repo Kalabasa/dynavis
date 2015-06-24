@@ -62,7 +62,7 @@ var components = components || {};
 		handle_select: function(family) {
 			var $input = $(React.findDOMNode(this.refs.input));
 
-			this.collection().add_family(family.id);
+			this.collection().add_family(family);
 			$input.typeahead("val", "");
 			this.setState({input: ""});
 		},
