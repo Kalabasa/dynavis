@@ -7,8 +7,8 @@ var components = components || {};
 		},
 
 		render: function() {
-			var tokens = this.collection().map(function(family) {
-				return <components.FamilyMemberItem model={family} />;
+			var tokens = this.collection().map(function(official) {
+				return <components.FamilyMemberItem key={official.id} model={official} />;
 			});
 			return (
 				<div>

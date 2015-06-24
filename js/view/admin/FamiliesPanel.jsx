@@ -4,7 +4,7 @@ var components = components || {};
 	components.FamiliesPanel = React.createBackboneClass({
 		getInitialState: function() {
 			var officials = new collections.Official();
-			officials.fetch();
+			officials.fetch(); // FIXME: This should fetch all, but is paginated by server
 			return {officials: officials};
 		},
 
