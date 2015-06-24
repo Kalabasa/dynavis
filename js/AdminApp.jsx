@@ -9,6 +9,7 @@ var AdminApp = AdminApp || null;
 				"": "users", // FIXME: add home page?
 				"officials": "officials",
 				"families": "families",
+				"elections": "elections",
 				"users": "users",
 			},
 			officials: function() {
@@ -20,6 +21,11 @@ var AdminApp = AdminApp || null;
 				var family_collection = new collections.Family();
 				React.render(<components.FamiliesPanel collection={family_collection} />, document.getElementById("body"));
 				family_collection.fetch();
+			},
+			elections: function() {
+				var election_collection = new collections.Election();
+				React.render(<components.ElectionsPanel collection={election_collection} />, document.getElementById("body"));
+				election_collection.fetch();
 			},
 			users: function() {
 				var user_collection = new collections.User();
