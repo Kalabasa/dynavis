@@ -19,7 +19,7 @@ class Token extends \Dynavis\Core\RefEntity {
 
 		$this->user_id = $user->get_id();
 		$this->token = base64_encode(openssl_random_pseudo_bytes(96));
-		$this->expiry = (new \DateTime("+30 minutes"))->format("Y-m-d H:i:s");
+		$this->expiry = (new \DateTime("+10 days"))->format("Y-m-d H:i:s");
 	}
 
 	public static function get_by_token($token) {
@@ -53,7 +53,7 @@ class Token extends \Dynavis\Core\RefEntity {
 	}
 
 	public static function cleanup() {
-		$dt = new \DateTime("1 hour ago");
+		$dt = new \DateTime("-10 hours");
 		Database::get()->delete(static::TABLE, "*", ["expiry[<]" => $dt->format("Y-m-d H:i:s")]);
 	}
 }
