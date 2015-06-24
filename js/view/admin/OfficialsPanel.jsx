@@ -3,9 +3,19 @@ var components = components || {};
 (function(){
 	components.OfficialsPanel = React.createBackboneClass({
 		getInitialState: function() {
-			var families = new collections.Family();
-			families.fetch();
-			return {families: families};
+			return {
+				family_hound: new Bloodhound({
+					queryTokenizer: Bloodhound.tokenizers.whitespace,
+					datumTokenizer: Bloodhound.tokenizers.whitespace,
+					remote: {
+						url: "api.php/families?q=%QUERY",
+						wildcard: "%QUERY",
+						transform: function(data) {
+							return data.data;
+						},
+					},
+				})
+			};
 		},
 
 		render: function() {
@@ -15,7 +25,7 @@ var components = components || {};
 					<h1>Officials</h1>
 					<ul>
 						{this.collection().map(function(official) {
-							return <components.OfficialRow key={official.id} model={official} families={that.state.families} />;
+							return <components.OfficialRow key={official.id} model={official} family_hound={that.state.family_hound} />;
 						})}
 					</ul>
 				</div>

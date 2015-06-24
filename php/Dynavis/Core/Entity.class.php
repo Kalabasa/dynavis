@@ -40,6 +40,18 @@ abstract class Entity implements \JsonSerializable{
 		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], ["LIMIT" => [(int) $start , (int) $count]]);
 	}
 
+	public static function query_items($count, $start, $query, $fields) {
+		if($count < 0 || $start < -1) return [];
+		$search = [];
+		foreach ($fields as $f) {
+			$search[$f . "[~]"] = $query;
+		}
+		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
+			"OR" => $search,
+			"LIMIT" => [(int) $start , (int) $count]
+		]);
+	}
+
 	public function save() {
 		if(isset($this->_id)) {
 			$this->update();

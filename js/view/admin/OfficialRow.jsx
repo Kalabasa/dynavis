@@ -8,7 +8,7 @@ var components = components || {};
 			return (
 				<li>
 					<h2>{this.model().get("surname")}, {this.model().get("name")}.</h2>
-					<components.OfficialFamilyList collection={official_families} families={this.props.families}/>
+					<components.OfficialFamilyList collection={official_families} family_hound={this.props.family_hound} />
 				</li>
 			);
 		},

@@ -32,13 +32,13 @@ $auth_username_or_admin = authenticator(["username_match" => true, "roles" => ["
 // GET requests
 //-----------------------------------------------------------------------------
 
-$app->get("/officials", function () { generic_get_list("Official"); } );
+$app->get("/officials", function () { generic_get_list("Official", ["surname", "name"]); } );
 $app->get("/officials/:id", "get_official" )->name("officials");
 $app->get("/officials/:id/families", "get_official_families");
-$app->get("/families", function () { generic_get_list("Family"); } );
+$app->get("/families", function () { generic_get_list("Family", ["name"]); } );
 $app->get("/families/:id", "get_family")->name("families");
 $app->get("/families/:id/officials", "get_family_officials");
-$app->get("/parties", function () { generic_get_list("Party"); } );
+$app->get("/parties", function () { generic_get_list("Party", ["name"]); } );
 $app->get("/parties/:id", function ($id) { generic_get_item("Party", $id); })->name("parties");
 $app->get("/parties/:id/elections", "get_party_elections");
 $app->get("/areas/:level", "get_areas");
@@ -161,23 +161,27 @@ function authenticator($options) {
 
 // Generic
 
-function generic_get_list($class) {
+function generic_get_list($class, $search_fields) {
 	global $app;
 	$class = "\\Dynavis\\Model\\" . $class;
 
 	$params = defaults($app->request->get(), [
 		"count" => 100,
 		"start" => 0,
+		"q" => null,
 	]);
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
+	if(isset($params["q"])) $query = $params["q"];
 
 	$list = array_map(
 		function ($item) use ($class) {
 			return new $class((int) $item[$class::PRIMARY_KEY]);
 		},
-		$class::list_items($count, $start)
+		isset($query)
+			? $class::query_items($count, $start, $query, $search_fields)
+			: $class::list_items($count, $start)
 	);
 	$total = $class::count();
 
@@ -467,16 +471,20 @@ function get_areas($level) {
 	$params = defaults($app->request->get(), [
 		"count" => 100,
 		"start" => 0,
+		"q" => null,
 	]);
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
+	if(isset($params["q"])) $query = $params["q"];
 
 	$areas = array_map(
 		function ($item) {
 			return new Area((int) $item[Area::PRIMARY_KEY]);
 		},
-		Area::list_areas($count, $start, $level)
+		isset($query)
+			? Area::query_areas($count, $start, $level, $query)
+			: Area::list_areas($count, $start, $level)
 	);
 	$total = Area::count($level);
 

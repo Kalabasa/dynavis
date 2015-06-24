@@ -11,7 +11,7 @@ var components = components || {};
 		},
 
 		handle_delete: function() {
-			this.model().destroy();
+			this.model().destroy({wait: true});
 		},
 	});
 })();
