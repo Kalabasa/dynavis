@@ -486,7 +486,7 @@ function get_areas($level) {
 			? Area::query_areas($count, $start, $level, $query)
 			: Area::list_areas($count, $start, $level)
 	);
-	$total = Area::count($level);
+	$total = Area::count_areas($level);
 
 	$end = $start + $count;
 	if($end > $total) $end = $total;

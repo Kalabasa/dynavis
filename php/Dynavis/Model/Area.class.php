@@ -52,7 +52,7 @@ class Area extends \Dynavis\Core\RefEntity {
 		]);
 	}
 
-	public static function count($level) {
+	public static function count_areas($level) {
 		switch ($level) {
 			case "region": $type = 0; break;
 			case "province": $type = 1; break;
