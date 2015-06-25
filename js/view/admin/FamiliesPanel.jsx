@@ -9,11 +9,15 @@ var components = components || {};
 					<h1>Families</h1>
 					<ul>
 						{this.collection().map(function(official) {
-							return <components.FamilyBox key={official.id} model={official} official_hound={that.props.official_hound} />;
+							return <components.FamilyBox key={official.id} model={official} onDelete={that.handle_delete_official} official_hound={that.props.official_hound} />;
 						})}
 					</ul>
 				</div>
 			);
+		},
+
+		handle_delete_official: function() {
+			this.collection().fetch();
 		},
 	});
 })();

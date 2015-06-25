@@ -5,6 +5,7 @@ var components = components || {};
 		getInitialState: function() {
 			return {
 				input: "",
+				selected: null,
 			};
 		},
 
@@ -25,7 +26,11 @@ var components = components || {};
 				},
 			});
 			$input.bind("typeahead:select", function(e, s) {
+				that.setState({selected: s});
 				that.handle_select(s);
+			});
+			$input.bind("typeahead:autocomplete", function(e, s) {
+				that.setState({input: s, selected: s});
 			});
 		},
 
@@ -38,14 +43,18 @@ var components = components || {};
 
 		render: function() {
 			var that = this;
+			var value = this.state.input;
+			if(this.state.selected) {
+				value = this.state.selected.surname + ", " + this.state.selected.name;
+			}
 			return (
 				<div>
 					<h3>Officials:</h3>
 					{this.collection().map(function(official) {
-						return <components.FamilyMemberItem key={official.id} model={official} official_hound={that.props.official_hound} />;
+						return <components.FamilyMemberItem key={official.id} model={official} onDelete={that.props.onDelete} official_hound={that.props.official_hound} />;
 					})}
 					<form onSubmit={this.handle_submit}>
-						<input ref="input" type="text" value={this.state.input} onChange={this.handle_change} />
+						<input ref="input" type="text" value={value} onChange={this.handle_change} />
 						<button>Add</button>
 					</form>
 				</div>
@@ -53,12 +62,16 @@ var components = components || {};
 		},
 
 		handle_change: function(e) {
-			this.setState({input: e.target.value});
+			this.setState({input: e.target.value, seleced: null});
 		},
 
 		handle_submit: function(e) {
 			e.preventDefault();
-			$(".tt-suggestion:first-child", e.target).trigger("click");
+			if(this.state.selected) {
+				this.handle_select(this.state.selected);
+			}else{
+				$(".tt-suggestion:first-child", e.target).trigger("click");
+			}
 		},
 
 		handle_select: function(official) {
@@ -70,7 +83,7 @@ var components = components || {};
 		clear_input: function() {
 			var $input = $(React.findDOMNode(this.refs.input));
 			$input.typeahead("val", "");
-			this.setState({input: ""});
+			this.setState({input: "", selected: null});
 		},
 	});
 })();

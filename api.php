@@ -61,6 +61,7 @@ $app->get("/tokens/:id", $auth_token, function ($id) { generic_get_item("Token",
 
 $app->post("/officials", $auth_admin, function () { generic_post_item("Official", "officials"); } );
 $app->post("/officials/:id/families", $auth_admin, "post_official_family");
+$app->post("/families/:id/officials", $auth_admin, "post_family_official");
 $app->post("/parties", $auth_admin, function () { generic_post_item("Party", "parties"); } );
 $app->post("/areas", $auth_admin, "post_area");
 $app->post("/elections", $auth_admin, "post_election");
@@ -91,6 +92,7 @@ $app->put("/users/:username/datasets/:dataset_id/datapoints/:id", $auth_username
 $app->delete("/officials/:id", $auth_admin, function ($id) { generic_delete_item("Official", $id); } );
 $app->delete("/officials/:official_id/families/:id", $auth_admin, "delete_official_family");
 $app->delete("/families/:id", $auth_admin, function ($id) { generic_delete_item("Family", $id); } );
+$app->delete("/families/:official_id/officials/:id", $auth_admin, "delete_family_official");
 $app->delete("/parties/:id", $auth_admin, function ($id) { generic_delete_item("Party", $id); } );
 $app->delete("/areas/:code", $auth_admin, function ($code) { generic_delete_item("Area", $code); } );
 $app->delete("/elections/:id", $auth_admin, function ($id) { generic_delete_item("Elect", $id); } );
@@ -332,7 +334,7 @@ function post_official_family($id) {
 			$family = new Family((int) $data["id"]);
 		}catch(NotFoundException $e) {
 			Database::get()->pdo->rollback();
-			$app->halt(404, "Invalid family ID.");
+			$app->halt(400, "Invalid family ID.");
 		}
 	}else if(isset($data["name"])) {
 		$family = new Family();
@@ -421,6 +423,44 @@ function get_family_officials($id) {
 		"data" => $members,
 	]);
 }
+
+function post_family_official($id) {
+	global $app;
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
+
+	try {
+		$family = new Family((int) $id);
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+
+	if(!isset($data["id"])) {
+		$app->halt(400, "Incomplete data.");
+	}
+
+	try {
+		$official = new Official((int) $data["id"]);
+	}catch(NotFoundException $e) {
+		$app->halt(400, "Invalid official ID.");
+	}
+
+	try {
+		$family->add_member($official);
+	}catch(DataException $e) {
+		$app->halt(400, "Invalid data.");
+	}
+
+	$app->response->setStatus(201);
+	echo json_encode($official);
+}
+
+function delete_family_official($family_id, $official_id) {
+	return delete_official_family($official_id, $family_id);
+}
+
 
 // Parties
 

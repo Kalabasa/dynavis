@@ -11,7 +11,13 @@ var components = components || {};
 		},
 
 		handle_delete: function() {
-			this.model().destroy({wait: true});
+			var that = this;
+			this.model().destroy({
+				wait: true,
+				success: function() {
+					that.props.onDelete();
+				},
+			});
 			this.props.official_hound.clear();
 		},
 	});
