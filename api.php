@@ -41,7 +41,7 @@ $app->get("/families/:id/officials", "get_family_officials");
 $app->get("/parties", function () { generic_get_list("Party", ["name"]); } );
 $app->get("/parties/:id", function ($id) { generic_get_item("Party", $id); })->name("parties");
 $app->get("/parties/:id/elections", "get_party_elections");
-$app->get("/areas/:level", "get_areas");
+$app->get("/areas", "get_areas");
 $app->get("/areas/:code", function ($code) { generic_get_item("Area", $code); } )->name("areas");
 $app->get("/areas/:code/elections", "get_area_elections");
 $app->get("/elections", function () { generic_get_list("Elect"); } );
@@ -482,24 +482,27 @@ function get_party_elections($id) {
 
 // Areas
 
-function get_areas($level) {
+function get_areas() {
 	global $app;
 	$params = defaults($app->request->get(), [
 		"count" => 100,
 		"start" => 0,
 		"q" => null,
+		"level" => null,
 	]);
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
 	if(isset($params["q"])) $query = $params["q"];
+	if(isset($params["level"])) $level = $params["level"];
+	else $level = null;
 
 	$areas = array_map(
 		function ($item) {
 			return new Area((int) $item[Area::PRIMARY_KEY]);
 		},
 		isset($query)
-			? Area::query_areas($count, $start, $level, $query)
+			? Area::query_areas($count, $start, $query, $level)
 			: Area::list_areas($count, $start, $level)
 	);
 	$total = Area::count_areas($level);

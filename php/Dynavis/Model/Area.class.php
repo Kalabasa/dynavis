@@ -28,28 +28,36 @@ class Area extends \Dynavis\Core\RefEntity {
 			case "province": $type = 1; break;
 			case "municipality": $type = 2; break;
 			case "barangay": $type = 3; break;
+			case null: break;
 			default: return []; break;
 		}
-		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
-			"type" => $type,
+		$where = [
 			"LIMIT" => [(int) $start , (int) $count]
-		]);
+		];
+		if(!is_null($level)) {
+			$where["type"] = $type;
+		}
+		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where);
 	}
 
-	public static function query_areas($count, $start, $level, $query) {
+	public static function query_areas($count, $start, $query, $level) {
 		if($count < 0 || $start < -1) return [];
 		switch ($level) {
 			case "region": $type = 0; break;
 			case "province": $type = 1; break;
 			case "municipality": $type = 2; break;
 			case "barangay": $type = 3; break;
+			case null: break;
 			default: return []; break;
 		}
-		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
-			"type" => $type,
+		$where = [
 			"name[~]" => $query,
 			"LIMIT" => [(int) $start , (int) $count]
-		]);
+		];
+		if(!is_null($level)) {
+			$where["type"] = $type;
+		}
+		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where);
 	}
 
 	public static function count_areas($level) {
@@ -58,9 +66,14 @@ class Area extends \Dynavis\Core\RefEntity {
 			case "province": $type = 1; break;
 			case "municipality": $type = 2; break;
 			case "barangay": $type = 3; break;
+			case null: break;
 			default: return []; break;
 		}
-		return Database::get()->count(static::TABLE, ["type" => $type]);
+		$where = [];
+		if(!is_null($level)) {
+			$where["type"] = $type;
+		}
+		return Database::get()->count(static::TABLE, $where);
 	}
 
 	public function get_parent() {
