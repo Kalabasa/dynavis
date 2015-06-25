@@ -73,23 +73,21 @@ var components = components || {};
 		handle_select_official: function(e, s) {
 			s = s || null;
 			this.setState({official: e.target.value, selected_official: s});
-			console.log(e.target.value, s, this.state);
 		},
 
 		handle_select_area: function(e, s) {
 			s = s || null;
 			this.setState({area: e.target.value, selected_area: s});
-			console.log(this.state);
 		},
 
 		handle_select_party: function(e, s) {
 			s = s || null;
 			this.setState({party: e.target.value, selected_party: s});
-			console.log(this.state);
 		},
 
 		handle_submit: function(e) {
 			e.preventDefault();
+			// TODO: Error checking
 			this.collection().create({
 				official_id: this.state.selected_official.id,
 				year: this.state.year,
