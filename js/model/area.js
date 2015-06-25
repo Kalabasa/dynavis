@@ -4,7 +4,7 @@ var collections = collections || {};
 (function() {
 	models.Area = Backbone.Model.extend({
 		defaults: {
-			area_code: null,
+			code: null,
 			name: null,
 			level: null,
 			parent: null,
