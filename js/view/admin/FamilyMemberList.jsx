@@ -13,9 +13,7 @@ var components = components || {};
 			var that = this;
 			var $input = $(React.findDOMNode(this.refs.input));
 
-			$input.typeahead({
-				highlight: true,
-			},{
+			$input.typeahead({highlight: true}, {
 				source: function(q, sync, async) {
 					that.props.official_hound.search(q,
 						function(d) { sync(that.filterSearch(d)); },
@@ -26,12 +24,9 @@ var components = components || {};
 				},
 			});
 			$input.bind("typeahead:select", function(e, s) {
-				that.setState({selected: s});
 				that.handle_select(s);
 			});
-			$input.bind("typeahead:autocomplete", function(e, s) {
-				that.setState({input: s, selected: s});
-			});
+			$input.bind("typeahead:change typeahead:autocomplete", that.handle_change);
 		},
 
 		filterSearch: function(data) {
@@ -61,8 +56,15 @@ var components = components || {};
 			);
 		},
 
-		handle_change: function(e) {
-			this.setState({input: e.target.value, seleced: null});
+		handle_change: function(e, s) {
+			s = s || null;
+			this.setState({input: e.target.value, selected: s});
+		},
+
+		handle_select: function(official) {
+			this.collection().add_member(official);
+			this.props.official_hound.clear();
+			this.clear_input();
 		},
 
 		handle_submit: function(e) {
@@ -74,16 +76,10 @@ var components = components || {};
 			}
 		},
 
-		handle_select: function(official) {
-			this.collection().add_member(official);
-			this.props.official_hound.clear();
-			this.clear_input();
-		},
-
 		clear_input: function() {
 			var $input = $(React.findDOMNode(this.refs.input));
 			$input.typeahead("val", "");
-			this.setState({input: "", selected: null});
+			this.setState(this.getInitialState());
 		},
 	});
 })();

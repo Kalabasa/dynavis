@@ -5,6 +5,7 @@ var components = components || {};
 		getInitialState: function() {
 			return {
 				input: "",
+				selected: null,
 			};
 		},
 
@@ -12,9 +13,7 @@ var components = components || {};
 			var that = this;
 			var $input = $(React.findDOMNode(this.refs.input));
 
-			$input.typeahead({
-				highlight: true,
-			},{
+			$input.typeahead({highlight: true}, {
 				source: function(q, sync, async) {
 					that.props.family_hound.search(q,
 						function(d) { sync(that.filterSearch(d)); },
@@ -25,9 +24,7 @@ var components = components || {};
 			$input.bind("typeahead:select", function(e, s) {
 				that.handle_select(s);
 			});
-			$input.bind("typeahead:change typeahead:autocomplete", function(e) {
-				that.setState({input: e.target.value});
-			});
+			$input.bind("typeahead:change typeahead:autocomplete", this.handle_change);
 		},
 
 		filterSearch: function(data) {
@@ -53,31 +50,9 @@ var components = components || {};
 			);
 		},
 
-		handle_change: function(e) {
-			this.setState({input: e.target.value});
-		},
-
-		handle_submit: function(e) {
-			var that = this;
-			e.preventDefault();
-			var name = this.state.input;
-
-			var callback = function(data) {
-				var name_upp = name.toUpperCase();
-				var family = _.find(data, function(f) {
-					return name_upp === f.name.toUpperCase();
-				});
-
-				if(family) {
-					that.collection().add_family(family);
-				}else{
-					that.collection().create({name: name}, {wait: true});
-				}
-				that.props.family_hound.clear();
-			};
-
-			this.props.family_hound.search(name, function(){}, callback);
-			this.clear_input();
+		handle_change: function(e, s) {
+			s = s || null;
+			this.setState({input: e.target.value, selected: s});
 		},
 
 		handle_select: function(family) {
@@ -86,10 +61,37 @@ var components = components || {};
 			this.clear_input();
 		},
 
+		handle_submit: function(e) {
+			var that = this;
+			e.preventDefault();
+			if(this.state.selected) {
+				this.handle_select(this.state.selected);
+			}else{
+				var name = this.state.input;
+
+				var callback = function(data) {
+					var name_upp = name.toUpperCase();
+					var family = _.find(data, function(f) {
+						return name_upp === f.name.toUpperCase();
+					});
+
+					if(family) {
+						that.collection().add_family(family);
+					}else{
+						that.collection().create({name: name}, {wait: true});
+					}
+					that.props.family_hound.clear();
+				};
+
+				this.props.family_hound.search(name, function(){}, callback);
+				this.clear_input();
+			}
+		},
+
 		clear_input: function() {
 			var $input = $(React.findDOMNode(this.refs.input));
 			$input.typeahead("val", "");
-			this.setState({input: ""});
+			this.setState(this.getInitialState());
 		},
 	});
 })();
