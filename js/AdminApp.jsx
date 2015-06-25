@@ -26,6 +26,36 @@ var AdminApp = AdminApp || null;
 				transform: function(data) { return data.data; },
 			},
 		});
+		this.official_hound = new Bloodhound({
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			datumTokenizer: Bloodhound.tokenizers.whitespace,
+			remote: {
+				cache: false,
+				url: "api.php/officials?q=%QUERY",
+				wildcard: "%QUERY",
+				transform: function(data) { return data.data; },
+			},
+		});
+		this.area_hound = new Bloodhound({
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			datumTokenizer: Bloodhound.tokenizers.whitespace,
+			remote: {
+				cache: false,
+				url: "api.php/areas?q=%QUERY",
+				wildcard: "%QUERY",
+				transform: function(data) { return data.data; },
+			},
+		});
+		this.party_hound = new Bloodhound({
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			datumTokenizer: Bloodhound.tokenizers.whitespace,
+			remote: {
+				cache: false,
+				url: "api.php/parties?q=%QUERY",
+				wildcard: "%QUERY",
+				transform: function(data) { return data.data; },
+			},
+		});
 		
 		this.router = new (Backbone.Router.extend({
 			routes: {
@@ -37,17 +67,29 @@ var AdminApp = AdminApp || null;
 			},
 			officials: function() {
 				var official_collection = new collections.Official();
-				React.render(<components.OfficialsPanel collection={official_collection} family_hound={that.family_hound} />, document.getElementById("body"));
+				React.render(<components.OfficialsPanel
+					collection={official_collection}
+					family_hound={that.family_hound} />, 
+					document.getElementById("body"));
 				official_collection.fetch();
 			},
 			families: function() {
 				var family_collection = new collections.Family();
-				React.render(<components.FamiliesPanel collection={family_collection} official_hound={that.official_hound} />, document.getElementById("body"));
+				React.render(<components.FamiliesPanel
+					collection={family_collection}
+					official_hound={that.official_hound} />, 
+					document.getElementById("body"));
 				family_collection.fetch();
 			},
 			elections: function() {
 				var election_collection = new collections.Election();
-				React.render(<components.ElectionsPanel collection={election_collection} instance_cache={that.instance_cache} official_hound={that.official_hound} />, document.getElementById("body"));
+				React.render(<components.ElectionsPanel
+					collection={election_collection}
+					instance_cache={that.instance_cache}
+					official_hound={that.official_hound}
+					area_hound={that.area_hound}
+					party_hound={that.party_hound} />, 
+					document.getElementById("body"));
 				election_collection.fetch();
 			},
 			users: function() {
