@@ -12,18 +12,18 @@ body { margin: 0 }
 	height: $header-height;
 	top: 0;
 
-	background-color: #ffcc88;
+	background-color: #D20035;
 }
 .sidebar {
 	width: $sidebar-width;
 	top: $header-height;
 	left: 0;
 
-	background-color: #88ffcc;
+	background-color: #D1F498;
 }
 .body {
 	top: $header-height;
 	left: $sidebar-width;
 
-	background-color: #88ccff;
+	background-color: #F0D8E0;
 }
