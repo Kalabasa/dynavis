@@ -11,10 +11,12 @@ var collections = collections || {};
 		},
 	});
 
+	models.AreaSingle = models.Area.extend({urlRoot: "api.php/areas"});
+
 	// TODO: Pagination
 	collections.Area = Backbone.Collection.extend({
-		url: "api.php/areas",
 		model: models.Area,
+		url: "api.php/areas",
 		parse: function(data) {
 			return data.data;
 		},

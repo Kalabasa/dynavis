@@ -4,7 +4,6 @@ var collections = collections || {};
 (function() {
 	models.Official = Backbone.Model.extend({
 		defaults: {
-			id: null,
 			surname: null,
 			name: null,
 			nickname: null,
@@ -15,10 +14,12 @@ var collections = collections || {};
 		},
 	});
 
+	models.OfficialSingle = models.Official.extend({urlRoot: "api.php/officials"});
+
 	// TODO: paginat
 	collections.Official = Backbone.Collection.extend({
-		url: "api.php/officials",
 		model: models.Official,
+		url: "api.php/officials",
 		parse: function(data) {
 			return data.data;
 		},

@@ -10,6 +10,7 @@ var AdminApp = AdminApp || null;
 			queryTokenizer: Bloodhound.tokenizers.whitespace,
 			datumTokenizer: Bloodhound.tokenizers.whitespace,
 			remote: {
+				cache: false,
 				url: "api.php/officials?q=%QUERY",
 				wildcard: "%QUERY",
 				transform: function(data) { return data.data; },
@@ -19,6 +20,7 @@ var AdminApp = AdminApp || null;
 			queryTokenizer: Bloodhound.tokenizers.whitespace,
 			datumTokenizer: Bloodhound.tokenizers.whitespace,
 			remote: {
+				cache: false,
 				url: "api.php/families?q=%QUERY",
 				wildcard: "%QUERY",
 				transform: function(data) { return data.data; },

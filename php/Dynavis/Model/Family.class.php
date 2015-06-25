@@ -37,6 +37,19 @@ class Family extends \Dynavis\Core\Entity {
 		);
 	}
 
+	public function count_members() {
+		// TODO: add OPTIONAL year parameter to get_members and is_member
+		// * The set Members(f,t) is dependent of family f and time t.
+		return Database::get()->count(Official::TABLE, [
+			"[><]" . static::TABLE_FAMILY_MEMBERSHIP => [Official::PRIMARY_KEY => "official_id"],
+			"[><]" . static::TABLE => [static::TABLE_FAMILY_MEMBERSHIP . ".family_id" => static::PRIMARY_KEY],
+		], [
+			Official::TABLE . "." . Official::PRIMARY_KEY
+		], [
+			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+		]);
+	}
+
 	public function is_member($official) {
 		if(is_null($official->get_id()) or is_null($this->get_id())) {
 			throw new \RuntimeException("The official or the family is not yet stored in the database.");

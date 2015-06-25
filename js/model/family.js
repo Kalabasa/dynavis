@@ -4,7 +4,6 @@ var collections = collections || {};
 (function() {
 	models.Family = Backbone.Model.extend({
 		defaults: {
-			id: null,
 			name: null,
 		},
 
@@ -13,10 +12,12 @@ var collections = collections || {};
 		},
 	});
 
+	models.FamilySingle = models.Family.extend({urlRoot: "api.php/families"});
+
 	// TODO: Pagination
 	collections.Family = Backbone.Collection.extend({
-		url: "api.php/families",
 		model: models.Family,
+		url: "api.php/families",
 		parse: function(data) {
 			return data.data;
 		},

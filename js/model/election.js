@@ -4,7 +4,6 @@ var collections = collections || {};
 (function() {
 	models.Election = Backbone.Model.extend({
 		defaults: {
-			id: null,
 			official_id: null,
 			year: null,
 			year_end: null,
@@ -15,10 +14,12 @@ var collections = collections || {};
 		},
 	});
 
+	models.ElectionSingle = models.Election.extend({urlRoot: "api.php/elections"});
+
 	// TODO: Pagination
 	collections.Election = Backbone.Collection.extend({
-		url: "api.php/elections",
 		model: models.Election,
+		url: "api.php/elections",
 		parse: function(data) {
 			return data.data;
 		},

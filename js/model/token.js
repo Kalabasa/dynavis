@@ -4,7 +4,6 @@ var models = models || {};
 	models.Token = Backbone.Model.extend({
 		urlRoot: "api.php/tokens",
 		defaults: {
-			id: null,
 			username: null,
 			token: null,
 			expiry: null,
@@ -13,7 +12,7 @@ var models = models || {};
 		initialize: function() {
 			var that = this;
 
-			var cookie = docCookies.getItem("dynavis_token");
+			var cookie = localStorage.getItem("dynavis_token");
 			if(cookie) {
 				var data = JSON.parse(cookie);
 				this.set(data);
@@ -24,7 +23,7 @@ var models = models || {};
 					error: function() {
 						$.ajaxSetup();
 						that.clear();
-						docCookies.removeItem("dynavis_token");
+						localStorage.removeItem("dynavis_token");
 					},
 				});
 			}
@@ -50,7 +49,7 @@ var models = models || {};
 					});
 					that.set(data);
 					that.fetch();
-					docCookies.setItem("dynavis_token", JSON.stringify(data), data.expiry); // TODO: secure cookie (https)
+					localStorage.setItem("dynavis_token", JSON.stringify(data), data.expiry); // TODO: secure cookie (https)
 				},
 				error: function() {
 					console.error("Error login");
@@ -66,7 +65,7 @@ var models = models || {};
 				success: function() {
 					$.ajaxSetup();
 					that.clear();
-					docCookies.removeItem("dynavis_token");
+					localStorage.removeItem("dynavis_token");
 				},
 				error: function() {
 					console.error("Error logout");

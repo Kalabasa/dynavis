@@ -10,9 +10,11 @@ var collections = collections || {};
 		idAttribute: "username",
 	});
 
+	models.UserSingle = models.User.extend({urlRoot: "api.php/users"});
+
 	collections.User = Backbone.Collection.extend({
-		url: "api.php/users",
 		model: models.User,
+		url: "api.php/users",
 		parse: function(data) {
 			return data.data;
 		},

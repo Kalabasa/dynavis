@@ -11,11 +11,11 @@ var models = models || {};
 			"user": {},
 		};
 		this.models = {
-			"official": models.Official.extend({urlRoot: "api.php/officials"}),
-			"family": models.Family.extend({urlRoot: "api.php/families"}),
-			"area": models.Area.extend({urlRoot: "api.php/areas"}),
-			// "party": models.Party.extend({urlRoot: "api.php/parties"}),
-			"user": models.User.extend({urlRoot: "api.php/users"}),
+			"official": models.OfficialSingle,
+			"family": models.FamilySingle,
+			"area": models.AreaSingle,
+			// "party": models.PartySingle,
+			"user": models.UserSingle,
 		};
 	};
 

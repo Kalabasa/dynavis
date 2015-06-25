@@ -37,13 +37,13 @@ var components = components || {};
 		},
 
 		render: function() {
-			var tokens = this.collection().map(function(official) {
-				return <components.FamilyMemberItem key={official.id} model={official} />;
-			});
+			var that = this;
 			return (
 				<div>
 					<h3>Officials:</h3>
-					{tokens}
+					{this.collection().map(function(official) {
+						return <components.FamilyMemberItem key={official.id} model={official} official_hound={that.props.official_hound} />;
+					})}
 					<form onSubmit={this.handle_submit}>
 						<input ref="input" type="text" value={this.state.input} onChange={this.handle_change} />
 						<button>Add</button>
@@ -62,9 +62,13 @@ var components = components || {};
 		},
 
 		handle_select: function(official) {
-			var $input = $(React.findDOMNode(this.refs.input));
-
 			this.collection().add_member(official);
+			this.props.official_hound.clear();
+			this.clear_input();
+		},
+
+		clear_input: function() {
+			var $input = $(React.findDOMNode(this.refs.input));
 			$input.typeahead("val", "");
 			this.setState({input: ""});
 		},
