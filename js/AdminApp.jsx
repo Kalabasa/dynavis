@@ -63,7 +63,7 @@ var AdminApp = AdminApp || null;
 				"officials": "officials",
 				"families": "families",
 				"elections": "elections",
-				"datasets": "datasets",
+				"(users/:username/)datasets": "datasets",
 				"users": "users",
 			},
 			officials: function() {
@@ -93,8 +93,8 @@ var AdminApp = AdminApp || null;
 					document.getElementById("body"));
 				election_collection.fetch();
 			},
-			datasets: function() {
-				var dataset_collection = new collections.Dataset();
+			datasets: function(username) {
+				var dataset_collection = new collections.Dataset(username ? {username: username} : null);
 				React.render(<components.DatasetsPanel collection={dataset_collection} />, document.getElementById("body"));
 				dataset_collection.fetch();
 			},
