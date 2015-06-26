@@ -20,8 +20,13 @@ var components = components || {};
 					<div>{this.model().get("votes")}</div>
 					<components.AreaName model={area} />
 					<div>{party_id}</div>
+					<button onClick={this.handle_delete}>Delete</button>
 				</li>
 			);
+		},
+
+		handle_delete: function(e) {
+			this.model().destroy({wait: true});
 		},
 	});
 })();

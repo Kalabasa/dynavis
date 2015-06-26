@@ -48,14 +48,14 @@ var components = components || {};
 				<div>
 					<h1>Elections</h1>
 					<form onSubmit={this.handle_submit}>
-						Official <input ref="official" type="text" valueLink={this.linkState("official")} />
+						Official <input ref="official" type="text" valueLink={this.linkState("official")} required />
 						Position <input ref="position" type="text" valueLink={this.linkState("position")} />
-						Year <input ref="year" type="number" valueLink={this.linkState("year")} />
-						Year End <input ref="year_end" type="number" valueLink={this.linkState("year_end")} />
+						Year <input ref="year" type="number" valueLink={this.linkState("year")} required />
+						Year End <input ref="year_end" type="number" valueLink={this.linkState("year_end")} required />
 						Votes <input ref="votes" type="number" valueLink={this.linkState("votes")} />
-						Area <input ref="area" type="text" valueLink={this.linkState("area")} />
+						Area <input ref="area" type="text" valueLink={this.linkState("area")} required />
 						Party <input ref="party" type="text" valueLink={this.linkState("party")} />
-						<button>Add</button>
+						<input type="submit" value="Add" />
 					</form>
 					<ul>
 						{this.collection().map(function(election) {
@@ -86,20 +86,65 @@ var components = components || {};
 		},
 
 		handle_submit: function(e) {
+			var that = this;
 			e.preventDefault();
 			// TODO: Error checking
-			this.collection().create({
-				official_id: this.state.selected_official.id,
-				year: this.state.year,
-				year_end: this.state.year_end,
-				position: this.state.position,
-				votes: this.state.votes,
-				area_code: this.state.selected_area.code,
-				party_id: this.state.selected_party
-					? this.state.selected_party.id
-					: null
-			}, {wait: true});
+			var year = parseInt(this.state.year);
+			var year_end = parseInt(this.state.year_end);
+			if(year > year_end) {
+				console.error("Invalid year range. " + year + "-" + year_end);
+				return;
+			}
+
+			if(this.state.selected_area == null) {
+				console.error("No selected area.");
+				return;
+			}
+			var area_code = this.state.selected_area.code;
+
+			var position = this.state.position;
+			var votes = parseInt(this.state.votes);
+			var party_id = this.state.selected_party ? this.state.selected_party.id : null;
+
+			var official = null;
+			if(this.state.selected_official) {
+				official = this.state.selected_official;
+				this.create(official.id, year, year_end, position, votes, area_code, party_id);
+			}else{
+				if(this.state.official) {
+					var tokens = this.state.official.match(/^\s*(.+?)\s*,\s*(.+?)\s*(".+?")?\s*$/);
+					var surname = tokens[1];
+					var name = tokens[2];
+					var nickname = tokens.length > 3 ? tokens[3] : null;
+					official = new models.OfficialSingle({surname: surname, name: name, nickname: nickname});
+					official.save(null, {
+						wait: true,
+						success: function(model) {
+							that.create(model.id, year, year_end, position, votes, area_code, party_id);
+						},
+						error: function() {
+							console.error("Error official.save");
+						},
+					});
+				}else{
+					console.log("No official.");
+					return;
+				}
+			}
+
 			this.clear_inputs();
+		},
+
+		create: function(official_id, year, year_end, position, votes, area_code, party_id) {
+			this.collection().create({
+				official_id: official_id,
+				year: year,
+				year_end: year_end,
+				position: position,
+				votes: votes,
+				area_code: area_code,
+				party_id: party_id,
+			}, {wait: true});
 		},
 
 		clear_inputs: function(e) {
