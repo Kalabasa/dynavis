@@ -3,6 +3,7 @@ var components = components || {};
 (function(){
 	components.ElectionsPanel = React.createBackboneClass({
  		mixins: [React.addons.LinkedStateMixin],
+ 		
 		getInitialState: function() {
 			return {
 				official: "", position: "", years: "", votes: "", area: "", party: "",
