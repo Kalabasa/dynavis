@@ -3,15 +3,7 @@ var components = components || {};
 (function(){
 	components.HeaderLogin = React.createBackboneClass({
 		render: function() {
-			var user = this.model().get_user();
-			if(user) {
-				return (
-					<div>
-						{user.get("username")}
-						<button onClick={this.handle_logout}>Logout</button>
-					</div>
-				);
-			}else{
+			if(this.model().isNew()) {
 				return (
 					<div>
 						<form onSubmit={this.handle_login}>
@@ -19,6 +11,13 @@ var components = components || {};
 							<input id="password" type="password" required />
 							<input type="submit" value="Login" />
 						</form>
+					</div>
+				);
+			}else{
+				return (
+					<div>
+						{this.model().get("username")}
+						<button onClick={this.handle_logout}>Logout</button>
 					</div>
 				);
 			}

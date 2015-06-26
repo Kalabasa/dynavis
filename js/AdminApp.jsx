@@ -63,6 +63,7 @@ var AdminApp = AdminApp || null;
 				"officials": "officials",
 				"families": "families",
 				"elections": "elections",
+				"datasets": "datasets",
 				"users": "users",
 			},
 			officials: function() {
@@ -91,6 +92,11 @@ var AdminApp = AdminApp || null;
 					party_hound={that.party_hound} />, 
 					document.getElementById("body"));
 				election_collection.fetch();
+			},
+			datasets: function() {
+				var dataset_collection = new collections.Dataset();
+				React.render(<components.DatasetsPanel collection={dataset_collection} />, document.getElementById("body"));
+				dataset_collection.fetch();
 			},
 			users: function() {
 				var user_collection = new collections.User();
