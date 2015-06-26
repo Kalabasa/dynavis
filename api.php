@@ -59,7 +59,7 @@ $app->get("/tokens/:id", $auth_token, function ($id) { generic_get_item("Token",
 // POST requests
 //-----------------------------------------------------------------------------
 
-$app->post("/officials", $auth_admin, function () { generic_post_item("Official", "officials"); } );
+$app->post("/officials", $auth_admin, "post_official" );
 $app->post("/officials/:id/families", $auth_admin, "post_official_family");
 $app->post("/families/:id/officials", $auth_admin, "post_family_official");
 $app->post("/parties", $auth_admin, function () { generic_post_item("Party", "parties"); } );
@@ -312,6 +312,31 @@ function get_official_families($id) {
 		"total" => count($families),
 		"data" => $families,
 	]);
+}
+
+function post_official() {
+	global $app;
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
+
+	if(!isset($data["surname"], $data["name"])) {
+		$app->halt(400, "Incomplete data.");
+	}
+
+	$official = new Official();
+	$official->surname = $data["surname"];
+	$official->name = $data["name"];
+	$official->nickname = isset($data["nickname"]) ? $data["nickname"] : null;
+	try {
+		$official->save();
+	}catch(DataException $e) {
+		$app->halt(400, "Invalid data.");
+	}
+
+	$app->response->setStatus(201);
+	echo json_encode($official);
 }
 
 function post_official_family($id) {
@@ -617,7 +642,7 @@ function post_election() {
 		return post_elections_file($_FILES["file"]);
 	}
 
-	if(!isset($data["official_id"], $data["year"], $data["year_end"], $data["position"], $data["votes"], $data["area_code"])) {
+	if(!isset($data["official_id"], $data["year"], $data["year_end"], $data["area_code"])) {
 		$app->halt(400, "Incomplete data.");
 	}
 
@@ -644,8 +669,8 @@ function post_election() {
 	]);
 	$elect->year = (int) $data["year"];
 	$elect->year_end = (int) $data["year_end"];
-	$elect->position = $data["position"];
-	$elect->votes = (int) $data["votes"];
+	$elect->position = isset($data["position"]) ? $data["position"] : null;
+	$elect->votes = isset($data["votes"]) ? (int) $data["votes"] : null;
 	try {
 		$elect->save();
 	}catch(DataException $e) {
