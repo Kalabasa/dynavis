@@ -8,13 +8,17 @@ var models = models || {};
 			"family": {},
 			"area": {},
 			"party": {},
+			"election": {},
+			"dataset": {},
 			"user": {},
 		};
 		this.models = {
 			"official": models.OfficialSingle,
 			"family": models.FamilySingle,
 			"area": models.AreaSingle,
-			// "party": models.PartySingle,
+			"party": models.PartySingle,
+			"election": models.ElectionSingle,
+			"dataset": models.DatasetSingle,
 			"user": models.UserSingle,
 		};
 	};
