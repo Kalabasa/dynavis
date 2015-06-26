@@ -10,7 +10,7 @@ var components = components || {};
 			var cache = this.props.instance_cache;
 			var official = cache.get("official", official_id);
 			var area = cache.get("area", area_code);
-			// var party = cache.get("party", party_id);
+			var party = cache.get("party", party_id);
 
 			return (
 				<li>
@@ -18,8 +18,8 @@ var components = components || {};
 					<div>{this.model().get("position")}</div>
 					<div>{this.model().get("year")} - {this.model().get("year_end")}</div>
 					<div>{this.model().get("votes")}</div>
-					<components.AreaName model={area} />
-					<div>{party_id}</div>
+					<components.Name model={area} />
+					<components.Name model={party} />
 					<button onClick={this.handle_delete}>Delete</button>
 				</li>
 			);
