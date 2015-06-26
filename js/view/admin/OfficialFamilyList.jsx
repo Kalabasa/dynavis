@@ -43,8 +43,8 @@ var components = components || {};
 						return <components.OfficialFamilyToken key={family.id} model={family} family_hound={that.props.family_hound} />;
 					})}
 					<form onSubmit={this.handle_submit}>
-						<input ref="input" type="text" value={this.state.input} onChange={this.handle_change} />
-						<button>Add</button>
+						<input ref="input" type="text" value={this.state.input} onChange={this.handle_change} required />
+						<input type="submit" value="Add" />
 					</form>
 				</div>
 			);

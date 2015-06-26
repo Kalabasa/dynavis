@@ -8,9 +8,14 @@ var components = components || {};
 			return (
 				<li>
 					<components.OfficialName model={this.model()} />
+					<button onClick={this.handle_delete}>Delete</button>
 					<components.OfficialFamilyList collection={official_families} family_hound={this.props.family_hound} />
 				</li>
 			);
+		},
+
+		handle_delete: function(e) {
+			this.model().destroy({wait: true});
 		},
 	});
 })();

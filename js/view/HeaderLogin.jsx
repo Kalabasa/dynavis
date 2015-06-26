@@ -14,10 +14,10 @@ var components = components || {};
 			}else{
 				return (
 					<div>
-						<form>
-							<input id="username" type="text" />
-							<input id="password" type="password" />
-							<button onClick={this.handle_login}>Login</button>
+						<form onSubmit={this.handle_login}>
+							<input id="username" type="text" required />
+							<input id="password" type="password" required />
+							<input type="submit" value="Login" />
 						</form>
 					</div>
 				);

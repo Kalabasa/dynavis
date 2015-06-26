@@ -49,8 +49,8 @@ var components = components || {};
 						return <components.FamilyMemberItem key={official.id} model={official} onDelete={that.props.onDelete} official_hound={that.props.official_hound} />;
 					})}
 					<form onSubmit={this.handle_submit}>
-						<input ref="input" type="text" value={value} onChange={this.handle_change} />
-						<button>Add</button>
+						<input ref="input" type="text" value={value} onChange={this.handle_change} required />
+						<input type="submit" value="Add" />
 					</form>
 				</div>
 			);
