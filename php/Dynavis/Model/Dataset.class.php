@@ -107,7 +107,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 
 	public function jsonSerialize() {
 		$data = parent::jsonSerialize();
-		$data["username"] = (new User((int) $data["user_id"]))->username;
+		$data["username"] = (new User((int) $data["user_id"], false))->username;
 		unset($data["user_id"]);
 		return $data;
 	}

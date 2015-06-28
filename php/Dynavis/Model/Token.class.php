@@ -25,12 +25,12 @@ class Token extends \Dynavis\Core\RefEntity {
 	public static function get_by_token($token) {
 		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], ["token" => $token]);
 		if(!$ret) return null;
-		return new Token((int) $ret[static::PRIMARY_KEY]);
+		return new Token((int) $ret[static::PRIMARY_KEY], false);
 	}
 
 	public function get_user() {
 		$this->load();
-		return new User($this->user_id);
+		return new User($this->user_id, false);
 	}
 
 	public function valid() {
@@ -47,7 +47,7 @@ class Token extends \Dynavis\Core\RefEntity {
 
 	public function jsonSerialize() {
 		$data = parent::jsonSerialize();
-		$data["username"] = (new User((int) $data["user_id"]))->username;
+		$data["username"] = (new User((int) $data["user_id"], false))->username;
 		unset($data["user_id"]);
 		return $data;
 	}

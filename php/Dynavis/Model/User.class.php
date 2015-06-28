@@ -14,7 +14,7 @@ class User extends \Dynavis\Core\Entity {
 	public static function get_by_username($username) {
 		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], ["username" => $username]);
 		if(!$ret) return null;
-		return new User((int) $ret[static::PRIMARY_KEY]);
+		return new User((int) $ret[static::PRIMARY_KEY], false);
 	}
 
 	public function get_datasets() {

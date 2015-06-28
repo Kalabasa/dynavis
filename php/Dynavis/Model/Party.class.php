@@ -9,7 +9,7 @@ class Party extends \Dynavis\Core\Entity {
 	public function get_elections() {
 		return array_map(
 			function ($item) {
-				return new Elect((int) $item[Elect::PRIMARY_KEY]);
+				return new Elect((int) $item[Elect::PRIMARY_KEY], false);
 			},
 			Database::get()->select(Elect::TABLE, [
 				"[><]" . static::TABLE => ["party_id" => static::PRIMARY_KEY]
@@ -26,7 +26,7 @@ class Party extends \Dynavis\Core\Entity {
 			"name" => trim(preg_replace("/[[:space:]]+/", " ", $name)),
 		]);
 		if(!$ret) return null;
-		return new Party((int) $ret[static::PRIMARY_KEY]);
+		return new Party((int) $ret[static::PRIMARY_KEY], false);
 	}
 
 	public function save() {

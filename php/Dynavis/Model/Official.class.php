@@ -38,7 +38,8 @@ class Official extends \Dynavis\Core\Entity {
 			"surname" => trim(preg_replace("/[[:space:]]+/", " ", $surname)),
 			"name" => trim(preg_replace("/[[:space:]]+/", " ", $name)),
 		]);
+		var_dump(Database::get()->log());
 		if(!$ret) return null;
-		return new Official((int) $ret[static::PRIMARY_KEY]);
+		return new Official((int) $ret[static::PRIMARY_KEY], false);
 	}
 }

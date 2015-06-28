@@ -26,7 +26,7 @@ class Area extends \Dynavis\Core\RefEntity {
 			"name" => trim(preg_replace("/[[:space:]]+/", " ", $name)),
 		]);
 		if(!$ret) return null;
-		return new Area((int) $ret[static::PRIMARY_KEY]);
+		return new Area((int) $ret[static::PRIMARY_KEY], false);
 	}
 
 	public static function list_areas($count, $start, $level = null) {
@@ -86,13 +86,14 @@ class Area extends \Dynavis\Core\RefEntity {
 
 	public function get_parent() {
 		if($type == 0) return null;
-		return new Area($this->parent_code);
+		$this->load();
+		return new Area($this->parent_code, false);
 	}
 
 	public function get_elections() {
 		return array_map(
 			function ($item) {
-				return new Elect((int) $item[Elect::PRIMARY_KEY]);
+				return new Elect((int) $item[Elect::PRIMARY_KEY], false);
 			},
 			Database::get()->select(Elect::TABLE, [
 				"[><]" . static::TABLE => ["area_code" => static::PRIMARY_KEY]
