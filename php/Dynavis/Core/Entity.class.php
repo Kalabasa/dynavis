@@ -42,9 +42,10 @@ abstract class Entity implements \JsonSerializable{
 
 	public static function query_items($count, $start, $query, $fields) {
 		if($count < 0 || $start < -1) return [];
+		$uquery = array_unique($query);
 		$search = [];
 		foreach ($fields as $f) {
-			$search[$f . "[~]"] = $query;
+			$search[$f . "[~]"] = $uquery;
 		}
 		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
 			"OR" => $search,

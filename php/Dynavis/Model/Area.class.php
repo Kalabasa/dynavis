@@ -30,6 +30,7 @@ class Area extends \Dynavis\Core\RefEntity {
 	}
 
 	public static function list_areas($count, $start, $level = null) {
+		// TODO: merge with query_areas (DRY principle)
 		if($count < 0 || $start < -1) return [];
 		switch ($level) {
 			case "region": $type = 0; break;
@@ -58,12 +59,21 @@ class Area extends \Dynavis\Core\RefEntity {
 			case null: break;
 			default: return []; break;
 		}
-		$where = [
-			"name[~]" => $query,
-			"LIMIT" => [(int) $start , (int) $count]
-		];
-		if(!is_null($level)) {
-			$where["type"] = $type;
+		$query_value = "%" . join("%", $query) . "%";
+		$limit = [(int) $start , (int) $count];
+		if(is_null($level)) {
+			$where = [
+				"name[~]" => $query_value,
+				"LIMIT" => $limit
+			];
+		}else{
+			$where = [
+				"AND" => [
+					"name[~]" => $query_value,
+					"type" => $type
+				],
+				"LIMIT" => $limit
+			];
 		}
 		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where);
 	}
@@ -77,9 +87,9 @@ class Area extends \Dynavis\Core\RefEntity {
 			case null: break;
 			default: return []; break;
 		}
-		$where = [];
+		$where = null;
 		if(!is_null($level)) {
-			$where["type"] = $type;
+			$where = ["type" => $type];
 		}
 		return Database::get()->count(static::TABLE, $where);
 	}

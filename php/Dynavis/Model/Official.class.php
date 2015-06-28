@@ -33,11 +33,31 @@ class Official extends \Dynavis\Core\Entity {
 		parent::save();
 	}
 
+	public function delete() {
+		Database::get()->pdo->beginTransaction();
+
+		try{
+			// Remove membership before deletion
+			foreach ($this->get_families() as $f) {
+				$f->remove_member($this);
+			}
+
+			parent::delete();
+		}catch(Exception $e) {
+			Database::get()->pdo->rollback();
+			throw e;
+		}
+
+		Database::get()->pdo->commit();
+	}
+
 	public static function get_by_name($surname, $name) {
-		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
+		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], ["AND" => [
 			"surname" => trim(preg_replace("/[[:space:]]+/", " ", $surname)),
 			"name" => trim(preg_replace("/[[:space:]]+/", " ", $name)),
-		]);
+		]]);
+		var_dump($surname, $name);
+		var_dump($ret);
 		var_dump(Database::get()->log());
 		if(!$ret) return null;
 		return new Official((int) $ret[static::PRIMARY_KEY], false);

@@ -74,6 +74,10 @@ class Family extends \Dynavis\Core\Entity {
 		if(!$ret) { 
 			throw new \Dynavis\Core\DataException("Error removing family membership from the database.");
 		}
+
+		if($this->count_members() == 0) {
+			$this->delete();
+		}
 	}
 
 	public function save() {

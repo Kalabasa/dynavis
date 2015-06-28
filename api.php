@@ -158,6 +158,10 @@ function authenticator($options) {
 	};
 }
 
+function normalize_query($query_string) {
+	return preg_split("/\W+/", $query_string, null, PREG_SPLIT_NO_EMPTY);
+}
+
 
 // Generic
 
@@ -173,7 +177,7 @@ function generic_get_list($class, $search_fields = null) {
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
-	if(!is_null($search_fields) && isset($params["q"])) $query = $params["q"];
+	if(!is_null($search_fields) && isset($params["q"])) $query = normalize_query($params["q"]);
 
 	$list = array_map(
 		function ($item) use ($class) {
@@ -398,9 +402,6 @@ function delete_official_family($official_id, $family_id) {
 		$official = new Official((int) $official_id);
 		$family = new Family((int) $family_id);
 		$family->remove_member($official);
-		if($family->count_members() == 0) {
-			$family->delete();
-		}
 	}catch(NotFoundException $e) {
 		Database::get()->pdo->rollback();
 		$app->halt(404);
@@ -519,7 +520,7 @@ function get_areas() {
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
-	if(isset($params["q"])) $query = $params["q"];
+	if(isset($params["q"])) $query = normalize_query($params["q"]);
 	if(isset($params["level"])) $level = $params["level"];
 	else $level = null;
 
