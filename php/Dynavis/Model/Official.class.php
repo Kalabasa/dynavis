@@ -28,7 +28,7 @@ class Official extends \Dynavis\Core\Entity {
 		// normalize
 		$this->surname = trim(preg_replace("/[[:space:]]+/", " ", $this->surname));
 		$this->name = trim(preg_replace("/[[:space:]]+/", " ", $this->name));
-		$this->nickname = trim(preg_replace("/[[:space:]]+/", " ", $this->nickname));
+		$this->nickname = $this->nickname ? trim(preg_replace("/[[:space:]]+/", " ", $this->nickname)) : null;
 
 		parent::save();
 	}

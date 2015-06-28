@@ -23,10 +23,9 @@ var components = components || {};
 					return item.surname + ", " + item.name;
 				},
 			});
-			$input.bind("typeahead:select", function(e, s) {
+			$input.bind("typeahead:select typeahead:autocomplete", function(e, s) {
 				that.handle_select(s);
 			});
-			$input.bind("typeahead:change typeahead:autocomplete", that.handle_change);
 		},
 
 		filterSearch: function(data) {
@@ -56,9 +55,8 @@ var components = components || {};
 			);
 		},
 
-		handle_change: function(e, s) {
-			s = s || null;
-			this.setState({input: e.target.value, selected: s});
+		handle_change: function(e) {
+			this.setState({input: e.target.value});
 		},
 
 		handle_select: function(official) {

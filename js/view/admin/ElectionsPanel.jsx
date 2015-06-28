@@ -107,7 +107,7 @@ var components = components || {};
 			}
 			var area_code = this.state.selected_area.code;
 
-			var position = this.state.position;
+			var position = this.state.position || null;
 			var votes = parseInt(this.state.votes);
 			if(this.state.votes && isNaN(votes)) {
 				console.error("Invalid votes format.");
@@ -132,9 +132,7 @@ var components = components || {};
 					var surname_upp = surname.toUpperCase();
 					var name_upp = name.toUpperCase();
 					var official = _.find(data, function(o) {
-						return
-							surname_upp == o.surname.toUpperCase()
-							&& name_upp == o.name.toUpperCase();
+						return surname_upp == o.surname.toUpperCase() && name_upp == o.name.toUpperCase();
 					});
 
 					if(official) {
