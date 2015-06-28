@@ -89,9 +89,13 @@ var components = components || {};
 		handle_submit: function(e) {
 			var that = this;
 			e.preventDefault();
-			// TODO: Error checking
+
 			var year = parseInt(this.state.year);
 			var year_end = parseInt(this.state.year_end);
+			if(isNaN(year) || isNaN(year_end)) {
+				console.error("Invalid year format.")
+				return;
+			}
 			if(year > year_end) {
 				console.error("Invalid year range. " + year + "-" + year_end);
 				return;
@@ -105,6 +109,10 @@ var components = components || {};
 
 			var position = this.state.position;
 			var votes = parseInt(this.state.votes);
+			if(this.state.votes && isNaN(votes)) {
+				console.error("Invalid votes format.");
+				return
+			}
 			var party_id = this.state.selected_party ? this.state.selected_party.id : null;
 
 			var official = null;
@@ -114,6 +122,10 @@ var components = components || {};
 			}else{
 				if(this.state.official) {
 					var tokens = this.state.official.match(/^\s*(.+?)\s*,\s*(.+?)\s*(".+?")?\s*$/);
+					if(!tokens || tokens.length <= 2) {
+						console.error("Invalid official name format.");
+						return;
+					}
 					var surname = tokens[1];
 					var name = tokens[2];
 					var nickname = tokens.length > 3 ? tokens[3] : null;
@@ -128,7 +140,7 @@ var components = components || {};
 						},
 					});
 				}else{
-					console.log("No official.");
+					console.error("No official.");
 					return;
 				}
 			}

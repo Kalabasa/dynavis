@@ -75,4 +75,11 @@ class Family extends \Dynavis\Core\Entity {
 			throw new \Dynavis\Core\DataException("Error removing family membership from the database.");
 		}
 	}
+
+	public function save() {
+		// normalize
+		$this->name = trim(preg_replace("/[[:space:]]+/", " ", $this->name));
+
+		parent::save();
+	}
 }

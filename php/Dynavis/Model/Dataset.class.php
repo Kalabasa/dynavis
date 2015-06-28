@@ -38,26 +38,35 @@ class Dataset extends \Dynavis\Core\RefEntity {
 		}
 		fclose($handle);
 
-		// TODO: Error checking
-		// * Throw exceptions
-		$insert_data = [];
-
 		$header = $data[0];
-		foreach ($header as $key => $value) {
-			$header[$key] = (int) $value;
+		foreach ($header as $i => $value) {
+			$year = (int) $value;
+			if($year === 0) {
+				throw new \Dynavis\Core\DataException("Invalid year format in header row. " . $value);
+			}
+			$header[$i] = $year;
 		}
 		$c = count($header);
+
+		$insert_data = [];
 
 		$r = count($data);
 		for ($i = 1; $i < $r; $i++) {
 			$row = $data[$i];
-			$area_code = (int) $row[0];
+			if(count($row) !== c) {
+				throw new \Dynavis\Core\DataException("Incorrect number of columns in row. Expected " . $c . ". Got " . count($row) . " at row " . ($i + 1) . ": " . join(",", $row));
+			}
+			$area_code = Area::parse_area_name($row[0]);
+			if(!$area_code) {
+				throw new \Dynavis\Core\DataException("Invalid area format. " . $row[0]);
+			}
+			// TODO: check decimal format of values (but don't cast (datapoint value may not fit in a float))
 			for ($j = 1; $j < $c; $j++) { 
 				$insert_data[] = [
 					"dataset_id" => $this->get_id(),
 					"year"  => $header[$j],
 					"area_code" => $area_code,
-					"value" => empty($row[$j]) ? null : (int) $row[$j],
+					"value" => empty($row[$j]) ? null : $row[$j],
 				];
 			}
 		}
@@ -66,7 +75,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			function ($row) {
 				return join(",", array_map(
 					function ($x) {
-						return Database::get()->quote($x);
+						return is_null($x) ? "NULL" : Database::get()->quote($x);
 					},
 					$row
 				));

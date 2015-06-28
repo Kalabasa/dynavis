@@ -49,7 +49,7 @@ var models = models || {};
 					});
 					that.set(data);
 					that.fetch();
-					localStorage.setItem("dynavis_token", JSON.stringify(data), data.expiry); // TODO: secure cookie (https)
+					localStorage.setItem("dynavis_token", JSON.stringify(data), data.expiry);
 				},
 				error: function() {
 					console.error("Error login");

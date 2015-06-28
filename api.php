@@ -116,6 +116,7 @@ function defaults($params, $defaults){
 }
 
 function authenticator($options) {
+	return function() {};
 	global $app;
 	return function($route) use ($options, $app) {
 		$auth = $app->request->headers->get("Authorization");
@@ -165,7 +166,7 @@ function generic_get_list($class, $search_fields = null) {
 	$class = "\\Dynavis\\Model\\" . $class;
 
 	$params = defaults($app->request->get(), [
-		"count" => 100,
+		"count" => 20,
 		"start" => 0,
 		"q" => null,
 	]);
@@ -510,7 +511,7 @@ function get_party_elections($id) {
 function get_areas() {
 	global $app;
 	$params = defaults($app->request->get(), [
-		"count" => 100,
+		"count" => 20,
 		"start" => 0,
 		"q" => null,
 		"level" => null,
@@ -633,14 +634,16 @@ function post_area() {
 
 function post_election() {
 	global $app;
+
+	if(isset($_FILES["file"])) {
+		return post_elections_file($_FILES["file"]);
+	}
+
 	$data = json_decode($app->request->getBody(), TRUE);
 	if(is_null($data)) {
 		$app->halt(400, "Malformed data.");
 	}
 
-	if(isset($_FILES["file"])) {
-		return post_elections_file($_FILES["file"]);
-	}
 
 	if(!isset($data["official_id"], $data["year"], $data["year_end"], $data["area_code"])) {
 		$app->halt(400, "Incomplete data.");
@@ -682,9 +685,17 @@ function post_election() {
 }
 
 function post_elections_file($file) {
-	// TODO: file upload
 	global $app;
-	$app->halt(501);
+	Database::get()->pdo->beginTransaction();
+	try {
+		Elect::file($file);
+	}catch(DataException $e) {
+		Database::get()->pdo->rollBack();
+		$app->halt(400, "Invalid file. " . $e->getMessage());
+	}
+	Database::get()->pdo->commit();
+	$app->response->setStatus(201);
+	$app->response->headers->set("Location", $app->urlFor("officials"));
 }
 
 
@@ -866,7 +877,7 @@ function post_user_dataset($username) {
 			$dataset->file($_FILES["file"]);
 		}catch(DataException $e) {
 			Database::get()->pdo->rollBack();
-			$app->halt(400, "Invalid file.");
+			$app->halt(400, "Invalid file. " . $e->getMessage());
 		}
 		Database::get()->pdo->commit();
 	}

@@ -21,7 +21,15 @@ class Area extends \Dynavis\Core\RefEntity {
 		}
 	}
 
-	public static function list_areas($count, $start, $level) {
+	public static function get_by_name($name) {
+		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
+			"name" => trim(preg_replace("/[[:space:]]+/", " ", $name)),
+		]);
+		if(!$ret) return null;
+		return new Area((int) $ret[static::PRIMARY_KEY]);
+	}
+
+	public static function list_areas($count, $start, $level = null) {
 		if($count < 0 || $start < -1) return [];
 		switch ($level) {
 			case "region": $type = 0; break;
@@ -40,7 +48,7 @@ class Area extends \Dynavis\Core\RefEntity {
 		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where);
 	}
 
-	public static function query_areas($count, $start, $query, $level) {
+	public static function query_areas($count, $start, $query, $level = null) {
 		if($count < 0 || $start < -1) return [];
 		switch ($level) {
 			case "region": $type = 0; break;
@@ -60,7 +68,7 @@ class Area extends \Dynavis\Core\RefEntity {
 		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where);
 	}
 
-	public static function count_areas($level) {
+	public static function count_areas($level = null) {
 		switch ($level) {
 			case "region": $type = 0; break;
 			case "province": $type = 1; break;
@@ -117,5 +125,23 @@ class Area extends \Dynavis\Core\RefEntity {
 		$data["level"] = ["region", "province", "municipality", "barangay"][$data["type"]];
 		unset($data["type"]);
 		return $data;
+	}
+
+	public function save() {
+		// normalize
+		$this->name = trim(preg_replace("/[[:space:]]+/", " ", $this->name));
+
+		parent::save();
+	}
+
+	public static function parse_area_name($name) {
+		$code = (int) $name;
+		if($code) {
+			return $code;
+		}
+
+		// TODO: Need mapping of names to code
+
+		return null;
 	}
 }
