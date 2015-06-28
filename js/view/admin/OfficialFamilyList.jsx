@@ -72,7 +72,7 @@ var components = components || {};
 				var callback = function(data) {
 					var name_upp = name.toUpperCase();
 					var family = _.find(data, function(f) {
-						return name_upp === f.name.toUpperCase();
+						return name_upp == f.name.toUpperCase();
 					});
 
 					if(family) {

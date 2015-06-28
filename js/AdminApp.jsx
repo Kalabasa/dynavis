@@ -7,8 +7,8 @@ var AdminApp = AdminApp || null;
 		this.instance_cache = new InstanceCache();
 		
 		this.official_hound = new Bloodhound({
-			queryTokenizer: Bloodhound.tokenizers.whitespace,
-			datumTokenizer: Bloodhound.tokenizers.whitespace,
+			queryTokenizer: Bloodhound.tokenizers.nonword,
+			datumTokenizer: Bloodhound.tokenizers.nonword,
 			remote: {
 				cache: false,
 				url: "api.php/officials?q=%QUERY",
@@ -17,8 +17,8 @@ var AdminApp = AdminApp || null;
 			},
 		});
 		this.family_hound = new Bloodhound({
-			queryTokenizer: Bloodhound.tokenizers.whitespace,
-			datumTokenizer: Bloodhound.tokenizers.whitespace,
+			queryTokenizer: Bloodhound.tokenizers.nonword,
+			datumTokenizer: Bloodhound.tokenizers.nonword,
 			remote: {
 				cache: false,
 				url: "api.php/families?q=%QUERY",
@@ -26,19 +26,9 @@ var AdminApp = AdminApp || null;
 				transform: function(data) { return data.data; },
 			},
 		});
-		this.official_hound = new Bloodhound({
-			queryTokenizer: Bloodhound.tokenizers.whitespace,
-			datumTokenizer: Bloodhound.tokenizers.whitespace,
-			remote: {
-				cache: false,
-				url: "api.php/officials?q=%QUERY",
-				wildcard: "%QUERY",
-				transform: function(data) { return data.data; },
-			},
-		});
 		this.area_hound = new Bloodhound({
-			queryTokenizer: Bloodhound.tokenizers.whitespace,
-			datumTokenizer: Bloodhound.tokenizers.whitespace,
+			queryTokenizer: Bloodhound.tokenizers.nonword,
+			datumTokenizer: Bloodhound.tokenizers.nonword,
 			remote: {
 				cache: false,
 				url: "api.php/areas?q=%QUERY",
@@ -47,8 +37,8 @@ var AdminApp = AdminApp || null;
 			},
 		});
 		this.party_hound = new Bloodhound({
-			queryTokenizer: Bloodhound.tokenizers.whitespace,
-			datumTokenizer: Bloodhound.tokenizers.whitespace,
+			queryTokenizer: Bloodhound.tokenizers.nonword,
+			datumTokenizer: Bloodhound.tokenizers.nonword,
 			remote: {
 				cache: false,
 				url: "api.php/parties?q=%QUERY",

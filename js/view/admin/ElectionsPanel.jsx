@@ -115,34 +115,48 @@ var components = components || {};
 			}
 			var party_id = this.state.selected_party ? this.state.selected_party.id : null;
 
-			var official = null;
 			if(this.state.selected_official) {
-				official = this.state.selected_official;
+				var official = this.state.selected_official;
 				this.create(official.id, year, year_end, position, votes, area_code, party_id);
-			}else{
-				if(this.state.official) {
-					var tokens = this.state.official.match(/^\s*(.+?)\s*,\s*(.+?)\s*(".+?")?\s*$/);
-					if(!tokens || tokens.length <= 2) {
-						console.error("Invalid official name format.");
-						return;
-					}
-					var surname = tokens[1];
-					var name = tokens[2];
-					var nickname = tokens.length > 3 ? tokens[3] : null;
-					official = new models.OfficialSingle({surname: surname, name: name, nickname: nickname});
-					official.save(null, {
-						wait: true,
-						success: function(model) {
-							that.create(model.id, year, year_end, position, votes, area_code, party_id);
-						},
-						error: function() {
-							console.error("Error official.save");
-						},
-					});
-				}else{
-					console.error("No official.");
+			}else if(this.state.official) {
+				var tokens = this.state.official.match(/^\s*(.+?)\s*,\s*(.+?)\s*(?:"(.+?)")?\s*$/);
+				if(!tokens || tokens.length <= 2) {
+					console.error("Invalid official name format.");
 					return;
 				}
+				var surname = tokens[1];
+				var name = tokens[2];
+				var nickname = tokens.length > 3 ? tokens[3] : null;
+
+				var callback = function(data) {
+					var surname_upp = surname.toUpperCase();
+					var name_upp = name.toUpperCase();
+					var official = _.find(data, function(o) {
+						return
+							surname_upp == o.surname.toUpperCase()
+							&& name_upp == o.name.toUpperCase();
+					});
+
+					if(official) {
+						that.create(official.id, year, year_end, position, votes, area_code, party_id);
+					}else{
+						official = new models.OfficialSingle({surname: surname, name: name, nickname: nickname});
+						official.save(null, {
+							wait: true,
+							success: function(model) {
+								that.create(model.id, year, year_end, position, votes, area_code, party_id);
+							},
+							error: function() {
+								console.error("Error official.save");
+							},
+						});
+					}
+				};
+
+				this.props.official_hound.search(surname + " " + name, function(){}, callback);
+			}else{
+				console.error("No official.");
+				return;
 			}
 
 			this.clear_inputs();
@@ -158,6 +172,9 @@ var components = components || {};
 				area_code: area_code,
 				party_id: party_id,
 			}, {wait: true});
+			this.props.official_hound.clear();
+			this.props.area_hound.clear();
+			this.props.party_hound.clear();
 		},
 
 		clear_inputs: function(e) {
