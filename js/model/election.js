@@ -16,8 +16,7 @@ var collections = collections || {};
 
 	models.ElectionSingle = models.Election.extend({urlRoot: "api.php/elections"});
 
-	// TODO: Pagination
-	collections.Election = Backbone.Collection.extend({
+	collections.Election = Backbone.PageableCollection.extend({
 		model: models.Election,
 		url: "api.php/elections",
 		parse: function(data) {

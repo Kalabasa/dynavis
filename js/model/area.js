@@ -13,8 +13,7 @@ var collections = collections || {};
 
 	models.AreaSingle = models.Area.extend({urlRoot: "api.php/areas"});
 
-	// TODO: Pagination
-	collections.Area = Backbone.Collection.extend({
+	collections.Area = Backbone.PageableCollection.extend({
 		model: models.Area,
 		url: "api.php/areas",
 		parse: function(data) {

@@ -12,7 +12,7 @@ var collections = collections || {};
 
 	models.UserSingle = models.User.extend({urlRoot: "api.php/users"});
 
-	collections.User = Backbone.Collection.extend({
+	collections.User = Backbone.PageableCollection.extend({
 		model: models.User,
 		url: "api.php/users",
 		parse: function(data) {

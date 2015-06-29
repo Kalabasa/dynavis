@@ -10,8 +10,7 @@ var collections = collections || {};
 
 	models.PartySingle = models.Party.extend({urlRoot: "api.php/parties"});
 
-	// TODO: Pagination
-	collections.Party = Backbone.Collection.extend({
+	collections.Party = Backbone.PageableCollection.extend({
 		model: models.Party,
 		url: "api.php/parties",
 		parse: function(data) {
