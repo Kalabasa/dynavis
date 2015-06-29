@@ -15,7 +15,7 @@ var collections = collections || {};
 
 	models.DatasetSingle = models.Dataset;
 
-	collections.Dataset = Backbone.Collection.extend({
+	collections.Dataset = Backbone.PageableCollection.extend({
 		model: models.Dataset,
 		initialize: function(models, options) {
 			if(options && options.username) {
