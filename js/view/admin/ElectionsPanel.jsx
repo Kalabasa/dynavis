@@ -8,6 +8,7 @@ var components = components || {};
 				<div>
 					<h1>Elections</h1>
 					<form onSubmit={this.handle_upload}>
+						Upload election records (csv) <input ref="file" type="file" />
 						<input type="submit" value="Upload" />
 					</form>
 					<components.ElectionForm
@@ -31,6 +32,21 @@ var components = components || {};
 
 		handle_upload: function(e) {
 			e.preventDefault();
+
+			var fd = new FormData();
+			var file = this.refs.file.getDOMNode().files[0];
+			fd.append("file", file );
+
+			$.ajax({
+				url: "api.php/elections",
+				data: fd,
+				processData: false,
+				contentType: false,
+				type: "POST",
+				success: function(data){
+					this.collection().fetch();
+				},
+			});
 		},
 	});
 })();
