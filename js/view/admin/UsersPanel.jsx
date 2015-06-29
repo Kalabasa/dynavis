@@ -6,7 +6,7 @@ var components = components || {};
 			return (
 				<div>
 					<h1>Users</h1>
-					<components.IndexedPageControls collection={this.collection()} />
+					<components.PageControls collection={this.collection()} />
 					<ul>
 						{this.collection().map(function(user) {
 							return <components.UserRow key={user.id} model={user} />;
