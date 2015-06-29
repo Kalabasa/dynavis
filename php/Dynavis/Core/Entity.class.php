@@ -32,25 +32,39 @@ abstract class Entity implements \JsonSerializable{
 	}
 
 	public static function count() {
-		return (int) Database::get()->count(static::TABLE);
+		return Database::get()->count(static::TABLE);
 	}
 
 	public static function list_items($count, $start) {
-		if($count < 0 || $start < -1) return [];
-		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], ["LIMIT" => [(int) $start , (int) $count]]);
+		if($count < 0 || $start < -1) return false;
+		$limit = $count == 0 ? null : ["LIMIT" => [(int) $start , (int) $count]];
+		return [
+			"total" => static::count(),
+			"data" => Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $limit),
+		];
 	}
 
 	public static function query_items($count, $start, $query, $fields) {
-		if($count < 0 || $start < -1) return [];
+		if($count < 0 || $start < -1) return false;
+		
 		$uquery = array_unique($query);
 		$search = [];
 		foreach ($fields as $f) {
 			$search[$f . "[~]"] = $uquery;
 		}
-		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
-			"OR" => $search,
-			"LIMIT" => [(int) $start , (int) $count]
-		]);
+		$where = [
+			"OR" => $search
+		];
+
+		$total = Database::get()->count(static::TABLE, $where);
+		if($count != 0) {
+			$where["LIMIT"] = [(int) $start , (int) $count];
+		}
+
+		return [
+			"total" => $total,
+			"data" => Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where),
+		];
 	}
 
 	public function save() {

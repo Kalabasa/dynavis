@@ -170,24 +170,33 @@ function generic_get_list($class, $search_fields = null) {
 	$class = "\\Dynavis\\Model\\" . $class;
 
 	$params = defaults($app->request->get(), [
-		"count" => 20,
+		"count" => 0,
 		"start" => 0,
 		"q" => null,
+		"norm" => true
 	]);
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
-	if(!is_null($search_fields) && isset($params["q"])) $query = normalize_query($params["q"]);
+	if(!is_null($search_fields) && !is_null($params["q"])) {
+		$query = $params["norm"]
+			? normalize_query($params["q"])
+			: [$params["q"]];
+	}
 
+	$result = isset($query)
+		? $class::query_items($count, $start, $query, $search_fields)
+		: $class::list_items($count, $start);
+	if(!$result) {
+		$app->halt(400, "Invalid request parameters.");
+	}
 	$list = array_map(
 		function ($item) use ($class) {
 			return new $class((int) $item[$class::PRIMARY_KEY]);
 		},
-		isset($query)
-			? $class::query_items($count, $start, $query, $search_fields)
-			: $class::list_items($count, $start)
+		$result["data"]
 	);
-	$total = $class::count();
+	$total = $result["total"];
 
 	$end = $start + $count;
 	if($end > $total) $end = $total;
@@ -512,27 +521,36 @@ function get_party_elections($id) {
 function get_areas() {
 	global $app;
 	$params = defaults($app->request->get(), [
-		"count" => 20,
+		"count" => 0,
 		"start" => 0,
 		"q" => null,
+		"norm" => true,
 		"level" => null,
 	]);
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
-	if(isset($params["q"])) $query = normalize_query($params["q"]);
+	if(!is_null($params["q"])) {
+		$query = $params["norm"]
+			? normalize_query($params["q"])
+			: [$params["q"]];
+	}
 	if(isset($params["level"])) $level = $params["level"];
 	else $level = null;
 
+	$result = isset($query)
+		? Area::query_areas($count, $start, $query, $level)
+		: Area::list_areas($count, $start, $level);
+	if(!$result) {
+		$app->halt(400, "Invalid request parameters.");
+	}
 	$areas = array_map(
 		function ($item) {
 			return new Area((int) $item[Area::PRIMARY_KEY]);
 		},
-		isset($query)
-			? Area::query_areas($count, $start, $query, $level)
-			: Area::list_areas($count, $start, $level)
+		$result["data"]
 	);
-	$total = Area::count_areas($level);
+	$total = $result["total"];
 
 	$end = $start + $count;
 	if($end > $total) $end = $total;

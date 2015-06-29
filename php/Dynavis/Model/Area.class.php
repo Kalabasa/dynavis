@@ -31,51 +31,64 @@ class Area extends \Dynavis\Core\RefEntity {
 
 	public static function list_areas($count, $start, $level = null) {
 		// TODO: merge with query_areas (DRY principle)
-		if($count < 0 || $start < -1) return [];
+		if($count < 0 || $start < -1) return false;
 		switch ($level) {
 			case "region": $type = 0; break;
 			case "province": $type = 1; break;
 			case "municipality": $type = 2; break;
 			case "barangay": $type = 3; break;
 			case null: break;
-			default: return []; break;
+			default: return false; break;
 		}
-		$where = [
-			"LIMIT" => [(int) $start , (int) $count]
-		];
+
+		$where = [];
 		if(!is_null($level)) {
 			$where["type"] = $type;
 		}
-		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where);
+
+		$total = Database::get()->count(static::TABLE, $where);
+		if($count != 0) {
+			$where["LIMIT"] = [(int) $start , (int) $count];
+		}
+
+		return [
+			"total" => $total,
+			"data" => Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where)
+		];
 	}
 
 	public static function query_areas($count, $start, $query, $level = null) {
-		if($count < 0 || $start < -1) return [];
+		if($count < 0 || $start < -1) return false;
 		switch ($level) {
 			case "region": $type = 0; break;
 			case "province": $type = 1; break;
 			case "municipality": $type = 2; break;
 			case "barangay": $type = 3; break;
 			case null: break;
-			default: return []; break;
+			default: return false; break;
 		}
+
 		$query_value = "%" . join("%", $query) . "%";
-		$limit = [(int) $start , (int) $count];
 		if(is_null($level)) {
-			$where = [
-				"name[~]" => $query_value,
-				"LIMIT" => $limit
-			];
+			$where = ["name[~]" => $query_value];
 		}else{
 			$where = [
 				"AND" => [
 					"name[~]" => $query_value,
-					"type" => $type
+					"type" => $type,
 				],
-				"LIMIT" => $limit
 			];
 		}
-		return Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where);
+
+		$total = Database::get()->count(static::TABLE, $where);
+		if($count != 0) {
+			$where["LIMIT"] = [(int) $start , (int) $count];
+		}
+
+		return [
+			"total" => $total,
+			"data" => Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where),
+		];
 	}
 
 	public static function count_areas($level = null) {
@@ -85,12 +98,14 @@ class Area extends \Dynavis\Core\RefEntity {
 			case "municipality": $type = 2; break;
 			case "barangay": $type = 3; break;
 			case null: break;
-			default: return []; break;
+			default: return false; break;
 		}
+
 		$where = null;
 		if(!is_null($level)) {
 			$where = ["type" => $type];
 		}
+		
 		return Database::get()->count(static::TABLE, $where);
 	}
 
