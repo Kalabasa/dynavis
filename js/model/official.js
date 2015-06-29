@@ -16,8 +16,7 @@ var collections = collections || {};
 
 	models.OfficialSingle = models.Official.extend({urlRoot: "api.php/officials"});
 
-	// TODO: paginat
-	collections.Official = Backbone.Collection.extend({
+	collections.Official = Backbone.PageableCollection.extend({
 		model: models.Official,
 		url: "api.php/officials",
 		parse: function(data) {
