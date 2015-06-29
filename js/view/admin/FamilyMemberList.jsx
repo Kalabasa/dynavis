@@ -11,7 +11,7 @@ var components = components || {};
 
 		componentDidMount: function() {
 			var that = this;
-			var $input = $(React.findDOMNode(this.refs.input));
+			var $input = $(this.refs.input.getDOMNode());
 
 			$input.typeahead({highlight: true}, {
 				source: function(q, sync, async) {
@@ -75,7 +75,7 @@ var components = components || {};
 		},
 
 		clear_input: function() {
-			var $input = $(React.findDOMNode(this.refs.input));
+			var $input = $(this.refs.input.getDOMNode());
 			$input.typeahead("val", "");
 			this.setState(this.getInitialState());
 		},

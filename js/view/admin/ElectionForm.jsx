@@ -13,9 +13,9 @@ var components = components || {};
 
 		componentDidMount: function() {
 			var that = this;
-			var $official = $(React.findDOMNode(this.refs.official));
-			var $area = $(React.findDOMNode(this.refs.area));
-			var $party = $(React.findDOMNode(this.refs.party));
+			var $official = $(this.refs.official.getDOMNode());
+			var $area = $(this.refs.area.getDOMNode());
+			var $party = $(this.refs.party.getDOMNode());
 
 			$official.typeahead({highlight: true}, {
 				source: that.props.official_hound,
@@ -162,9 +162,9 @@ var components = components || {};
 			this.props.party_hound.clear();
 		},
 		clear_inputs: function(e) {
-			var $official = $(React.findDOMNode(this.refs.official));
-			var $area = $(React.findDOMNode(this.refs.area));
-			var $party = $(React.findDOMNode(this.refs.party));
+			var $official = $(this.refs.official.getDOMNode());
+			var $area = $(this.refs.area.getDOMNode());
+			var $party = $(this.refs.party.getDOMNode());
 			$official.typeahead("val", "");
 			$area.typeahead("val", "");
 			$party.typeahead("val", "");
