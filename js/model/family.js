@@ -15,7 +15,7 @@ var collections = collections || {};
 	models.FamilySingle = models.Family.extend({urlRoot: "api.php/families"});
 
 	// TODO: Pagination
-	collections.Family = Backbone.Collection.extend({
+	collections.Family = Backbone.PageableCollection.extend({
 		model: models.Family,
 		url: "api.php/families",
 		parse: function(data) {

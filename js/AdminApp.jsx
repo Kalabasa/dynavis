@@ -65,7 +65,7 @@ var AdminApp = AdminApp || null;
 				official_collection.fetch();
 			},
 			families: function() {
-				var family_collection = new collections.Family();
+				var family_collection = new collections.Family(null, {per_page: 10});
 				React.render(<components.FamiliesPanel
 					collection={family_collection}
 					official_hound={that.official_hound} />, 
