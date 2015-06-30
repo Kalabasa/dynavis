@@ -9,8 +9,21 @@ var collections = collections || {};
 			nickname: null,
 		},
 
-		families: function() {
-			return new collections.OfficialFamily(null, {official_id: this.get("id")});
+		initialize: function() {
+			var that = this;
+
+			this.families = null;
+			this.on("change:id", function(model, value, options) {
+				that.families = new collections.OfficialFamily(null, {official_id: value});
+			}, this);
+			
+			if(!this.isNew()) {
+				this.families = new collections.OfficialFamily(null, {official_id: this.get("id")});
+			}
+		},
+
+		get_families: function() {
+			return this.families;
 		},
 	});
 

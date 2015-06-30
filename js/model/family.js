@@ -7,8 +7,21 @@ var collections = collections || {};
 			name: null,
 		},
 
-		members: function() {
-			return new collections.FamilyMember(null, {family_id: this.get("id")});
+		initialize: function() {
+			var that = this;
+
+			this.members = null;
+			this.on("change:id", function(model, value, options) {
+				that.members = new collections.FamilyMember(null, {family_id: value});
+			}, this);
+			
+			if(!this.isNew()) {
+				that.members = new collections.FamilyMember(null, {family_id: this.get("id")});
+			}
+		},
+
+		get_members: function() {
+			return this.members;
 		},
 	});
 
