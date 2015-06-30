@@ -75,14 +75,14 @@ $app->post("/tokens", "post_token");
 // PUT requests
 //-----------------------------------------------------------------------------
 
-$app->put("/officials/:id", $auth_admin, function ($id) { generic_put_item("Official", $id); } );
-$app->put("/families/:id", $auth_admin, function ($id) { generic_put_item("Family", $id); } );
-$app->put("/parties/:id", $auth_admin, function ($id) { generic_put_item("Party", $id); } );
-$app->put("/areas/:code", $auth_admin, "put_area" );
-$app->put("/elections/:id", $auth_admin, function ($id) { generic_put_item("Elect", $id); } );
-$app->put("/users/:username", $auth_username_or_admin, "put_user" );
-$app->put("/users/:username/datasets/:id", $auth_username, "put_user_dataset" );
-$app->put("/users/:username/datasets/:dataset_id/datapoints/:id", $auth_username, "put_user_dataset_datapoint" );
+$app->map("/officials/:id", $auth_admin, function ($id) { generic_put_item("Official", $id); } )->via("PUT", "PATCH");
+$app->map("/families/:id", $auth_admin, function ($id) { generic_put_item("Family", $id); } )->via("PUT", "PATCH");
+$app->map("/parties/:id", $auth_admin, function ($id) { generic_put_item("Party", $id); } )->via("PUT", "PATCH");
+$app->map("/areas/:code", $auth_admin, "put_area" )->via("PUT", "PATCH");
+$app->map("/elections/:id", $auth_admin, function ($id) { generic_put_item("Elect", $id); } )->via("PUT", "PATCH");
+$app->map("/users/:username", $auth_username_or_admin, "put_user" )->via("PUT", "PATCH");
+$app->map("/users/:username/datasets/:id", $auth_username, "put_user_dataset" )->via("PUT", "PATCH");
+$app->map("/users/:username/datasets/:dataset_id/datapoints/:id", $auth_username, "put_user_dataset_datapoint" )->via("PUT", "PATCH");
 
 
 //-----------------------------------------------------------------------------
