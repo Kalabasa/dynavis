@@ -4,9 +4,9 @@ var components = components || {};
 	components.OfficialFamilyToken = React.createBackboneClass({
 		render: function() {
 			return (
-				<div>
+				<span>
 					{this.model().get("name")} <button onClick={this.handle_delete}>x</button>
-				</div>
+				</span>
 			);
 		},
 

@@ -4,9 +4,9 @@ var components = components || {};
 	components.FamilyMemberItem = React.createBackboneClass({
 		render: function() {
 			return (
-				<div>
+				<li>
 					{this.model().get("surname")}, {this.model().get("name")} <button onClick={this.handle_delete}>x</button>
-				</div>
+				</li>
 			);
 		},
 

@@ -44,9 +44,11 @@ var components = components || {};
 			return (
 				<div>
 					<h3>Officials:</h3>
-					{this.collection().map(function(official) {
-						return <components.FamilyMemberItem key={official.id} model={official} onDelete={that.props.onDelete} official_hound={that.props.official_hound} />;
-					})}
+					<ul>
+						{this.collection().map(function(official) {
+							return <components.FamilyMemberItem key={official.id} model={official} onDelete={that.props.onDelete} official_hound={that.props.official_hound} />;
+						})}
+					</ul>
 					<form onSubmit={this.handle_submit}>
 						<input ref="input" type="text" value={value} onChange={this.handle_change} required />
 						<input type="submit" value="Add" />
