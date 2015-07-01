@@ -11,7 +11,7 @@ var components = components || {};
 						Upload election records (csv) <input ref="file" type="file" />
 						<input type="submit" value="Upload" />
 					</form>
-					<components.IndexedPageControls collection={this.collection()} />
+					<components.PageControls collection={this.collection()} />
 					<button onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(election) {
