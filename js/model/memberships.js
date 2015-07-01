@@ -13,7 +13,7 @@ var collections = collections || {};
 		parse: function(data) {
 			return data.data;
 		},
-		add_member: function(official) {
+		post_member: function(official) {
 			var that = this;
 			$.ajax({
 				method: "POST",
@@ -25,7 +25,7 @@ var collections = collections || {};
 					that.add(official);
 				},
 				error: function() {
-					console.error("Error add_member");
+					console.error("Error post_member");
 				},
 			});
 		},
@@ -42,7 +42,7 @@ var collections = collections || {};
 		parse: function(data) {
 			return data.data;
 		},
-		add_family: function(family) {
+		post_family: function(family) {
 			var that = this;
 			$.ajax({
 				method: "POST",
@@ -54,7 +54,7 @@ var collections = collections || {};
 					that.add(family);
 				},
 				error: function() {
-					console.error("Error add_family");
+					console.error("Error post_family");
 				},
 			});
 		},

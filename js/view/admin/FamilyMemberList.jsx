@@ -34,7 +34,7 @@ var components = components || {};
 		handle_submit: function(e) {
 			e.preventDefault();
 			if(this.refs.input.state.selected) {
-				this.collection().add_member(this.refs.input.state.selected);
+				this.collection().post_member(this.refs.input.state.selected);
 				this.refs.input.clear();
 			}else{
 				console.error("None selected.");

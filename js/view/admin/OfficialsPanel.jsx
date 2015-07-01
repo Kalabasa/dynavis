@@ -8,6 +8,7 @@ var components = components || {};
 				<div>
 					<h1>Officials</h1>
 					<components.IndexedPageControls collection={this.collection()} />
+					<button onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(official) {
 							return <components.OfficialRow key={official.id} model={official} instance_cache={that.props.instance_cache} />;
@@ -15,6 +16,10 @@ var components = components || {};
 					</ul>
 				</div>
 			);
+		},
+
+		handle_add: function() {
+			this.collection().add(new models.Official(), {at: 0});
 		},
 	});
 })();

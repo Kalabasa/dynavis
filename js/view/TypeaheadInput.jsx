@@ -65,25 +65,25 @@ var components = components || {};
 		get_or_create: function(options) {
 			var that = this;
 			if(this.state.selected) {
-				options.callback(this.state.selected);
+				options.callback(this.state.selected, false);
 			}else if(this.state.value) {
 				var attributes = options.attributes(this.state.value);
 				if(!attributes) return;
 
+				var normalizer = function(val) {
+					return (typeof val === "string") ? val.toUpperCase() : val;
+				};
+
 				if(!options.search) {
 					options.search = _.keys(attributes);
 				}
-				var match = _.mapObject(_.pick(attributes, options.search), function(val, key) {
-					return val.toUpperCase();
-				});
+				var match = _.mapObject(_.pick(attributes, options.search), normalizer);
 
 				// Callback party!! Woo!
 
 				var callback = function(data) {
 					var found = _.find(data, function(o) {
-						return _.isEqual(match, _.mapObject(o, function(val, key) {
-							return val.toUpperCase();
-						}));
+						return _.isMatch(_.mapObject(o, normalizer), match);
 					});
 
 					if(found) {
@@ -94,7 +94,7 @@ var components = components || {};
 							patch: true,
 							wait: true,
 							success: function(model) {
-								options.callback(model.toJSON());
+								options.callback(model.toJSON(), true);
 							},
 							error: function() {
 								console.error("Error model.save");
@@ -106,7 +106,7 @@ var components = components || {};
 				var query = _.values(match).join(" ");
 				this.props.instance_cache.search(options.name, query, function(){}, callback);
 			}else{
-				options.callback(null);
+				options.callback(null, false);
 			}
 		},
 

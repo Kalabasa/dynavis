@@ -45,7 +45,12 @@ var components = components || {};
 				attributes: function(str) {
 					return {name: that.refs.input.state.value};
 				},
-				callback: function(item) {
+				callback: function(item, created) {
+					if(created) {
+						that.collection().add(item);
+					}else{
+						that.collection().post_family(item);
+					}
 					that.refs.input.clear();
 				},
 			});

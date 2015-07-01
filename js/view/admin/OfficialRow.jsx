@@ -4,22 +4,28 @@ var components = components || {};
 	components.OfficialRow = React.createBackboneClass({
 		getInitialState: function() {
 			return {
-				edit: false,
+				edit: this.model().isNew(),
 			};
 		},
 
 		componentWillMount: function() {
-			this.model().get_families().fetch();
+			if(!this.model().isNew()) this.model().get_families().fetch();
+		},
+		componentOnModelChange: function() {
+			if(!this.model().isNew()) this.model().get_families().fetch();
 		},
 
 		render: function() {
 			var info = null;
 			if(this.state.edit) {
+				if(!this.model().isNew()){
+					var cancel_button = <button onClick={this.handle_cancel}>Cancel</button>;
+				}
 				info = (
 					<div>
 						<components.EditableOfficialName ref="name" model={this.model()} />
 						<button onClick={this.handle_save}>Save</button>
-						<button onClick={this.handle_cancel}>Cancel</button>
+						{cancel_button}
 						<button onClick={this.handle_delete}>Delete</button>
 					</div>
 				);
@@ -31,10 +37,13 @@ var components = components || {};
 					</div>
 				);
 			}
+			if(!this.model().isNew()) {
+				var families = <components.OfficialFamilyList collection={this.model().get_families()} instance_cache={this.props.instance_cache} />;
+			}
 			return (
 				<li>
 					{info}
-					<components.OfficialFamilyList collection={this.model().get_families()} instance_cache={this.props.instance_cache} />
+					{families}
 				</li>
 			);
 		},
