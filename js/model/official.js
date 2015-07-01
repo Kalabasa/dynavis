@@ -25,6 +25,16 @@ var collections = collections || {};
 		get_families: function() {
 			return this.families;
 		},
+
+		get_full_name: function() {
+			var nickname = null;
+			if(this.get("nickname")) {
+				nickname = ' "' + this.get("nickname") + '"';
+			}else{
+				nickname = "";
+			}
+			return this.get("surname") + ", " + this.get("name") + nickname;
+		},
 	});
 
 	models.OfficialSingle = models.Official.extend({urlRoot: "api.php/officials"});

@@ -6,47 +6,6 @@ var AdminApp = AdminApp || null;
 
 		this.instance_cache = new InstanceCache();
 		
-		this.official_hound = new Bloodhound({
-			queryTokenizer: Bloodhound.tokenizers.nonword,
-			datumTokenizer: Bloodhound.tokenizers.nonword,
-			remote: {
-				cache: false,
-				url: "api.php/officials?q=%QUERY",
-				wildcard: "%QUERY",
-				transform: function(data) { return data.data; },
-			},
-		});
-		this.family_hound = new Bloodhound({
-			queryTokenizer: Bloodhound.tokenizers.nonword,
-			datumTokenizer: Bloodhound.tokenizers.nonword,
-			remote: {
-				cache: false,
-				url: "api.php/families?q=%QUERY",
-				wildcard: "%QUERY",
-				transform: function(data) { return data.data; },
-			},
-		});
-		this.area_hound = new Bloodhound({
-			queryTokenizer: Bloodhound.tokenizers.nonword,
-			datumTokenizer: Bloodhound.tokenizers.nonword,
-			remote: {
-				cache: false,
-				url: "api.php/areas?q=%QUERY",
-				wildcard: "%QUERY",
-				transform: function(data) { return data.data; },
-			},
-		});
-		this.party_hound = new Bloodhound({
-			queryTokenizer: Bloodhound.tokenizers.nonword,
-			datumTokenizer: Bloodhound.tokenizers.nonword,
-			remote: {
-				cache: false,
-				url: "api.php/parties?q=%QUERY",
-				wildcard: "%QUERY",
-				transform: function(data) { return data.data; },
-			},
-		});
-		
 		this.router = new (Backbone.Router.extend({
 			routes: {
 				"": "users", // FIXME: add home page?
@@ -60,7 +19,7 @@ var AdminApp = AdminApp || null;
 				var official_collection = new collections.Official();
 				React.render(<components.OfficialsPanel
 					collection={official_collection}
-					family_hound={that.family_hound} />, 
+					instance_cache={that.instance_cache} />, 
 					document.getElementById("body"));
 				official_collection.fetch();
 			},
@@ -68,7 +27,7 @@ var AdminApp = AdminApp || null;
 				var family_collection = new collections.Family(null, {per_page: 10});
 				React.render(<components.FamiliesPanel
 					collection={family_collection}
-					official_hound={that.official_hound} />, 
+					instance_cache={that.instance_cache} />, 
 					document.getElementById("body"));
 				family_collection.fetch();
 			},
@@ -76,10 +35,7 @@ var AdminApp = AdminApp || null;
 				var election_collection = new collections.Election();
 				React.render(<components.ElectionsPanel
 					collection={election_collection}
-					instance_cache={that.instance_cache}
-					official_hound={that.official_hound}
-					area_hound={that.area_hound}
-					party_hound={that.party_hound} />, 
+					instance_cache={that.instance_cache} />, 
 					document.getElementById("body"));
 				election_collection.fetch();
 			},

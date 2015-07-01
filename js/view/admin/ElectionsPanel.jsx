@@ -11,23 +11,25 @@ var components = components || {};
 						Upload election records (csv) <input ref="file" type="file" />
 						<input type="submit" value="Upload" />
 					</form>
-					<components.ElectionForm
-						collection={this.collection()}
-						official_hound={this.props.official_hound}
-						area_hound={this.props.area_hound}
-						party_hound={this.props.party_hound} />
 					<components.IndexedPageControls collection={this.collection()} />
+					<button onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(election) {
 							return <components.ElectionRow
 								key={election.id}
 								model={election}
 								instance_cache={that.props.instance_cache}
-								official_hound={that.props.official_hound} />;
+								official_hound={that.props.official_hound}
+								area_hound={that.props.area_hound}
+								party_hound={that.props.party_hound} />;
 						})}
 					</ul>
 				</div>
 			);
+		},
+
+		handle_add: function() {
+			this.collection().add(new models.Election(), {at: 0});
 		},
 
 		handle_upload: function(e) {

@@ -9,6 +9,7 @@ var collections = collections || {};
 			level: null,
 			parent: null,
 		},
+		idAttribute: "code",
 	});
 
 	models.AreaSingle = models.Area.extend({urlRoot: "api.php/areas"});

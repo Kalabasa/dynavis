@@ -34,7 +34,7 @@ var components = components || {};
 			return (
 				<li>
 					{info}
-					<components.OfficialFamilyList collection={this.model().get_families()} family_hound={this.props.family_hound} />
+					<components.OfficialFamilyList collection={this.model().get_families()} instance_cache={this.props.instance_cache} />
 				</li>
 			);
 		},
@@ -58,7 +58,7 @@ var components = components || {};
 				this.setState({edit: false});
 			}else{
 				this.model().save(patch, {
-					patch: true,
+					patch: !this.model().isNew(),
 					wait: true,
 					success: function() {
 						that.setState({edit: false});

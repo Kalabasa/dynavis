@@ -5,7 +5,7 @@ var components = components || {};
 		render: function() {
 			return (
 				<li>
-					{this.model().get("surname")}, {this.model().get("name")} <button onClick={this.handle_delete}>x</button>
+					<components.OfficialName model={this.model()} /> <button onClick={this.handle_delete}>x</button>
 				</li>
 			);
 		},
@@ -18,7 +18,6 @@ var components = components || {};
 					that.props.onDelete();
 				},
 			});
-			this.props.official_hound.clear();
 		},
 	});
 })();

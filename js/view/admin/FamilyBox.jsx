@@ -34,7 +34,7 @@ var components = components || {};
 			return (
 				<li>
 					{info}
-					<components.FamilyMemberList collection={this.model().get_members()} onDelete={this.props.onDelete} official_hound={this.props.official_hound} />
+					<components.FamilyMemberList collection={this.model().get_members()} onDelete={this.props.onDelete} instance_cache={this.props.instance_cache} />
 				</li>
 			);
 		},
@@ -55,13 +55,17 @@ var components = components || {};
 				this.setState({edit: false});
 			}else{
 				this.model().save({name: new_name}, {
-					patch: true,
+					patch: !this.model().isNew(),
 					wait: true,
 					success: function() {
 						that.setState({edit: false});
 					}
 				});
 			}
+		},
+
+		handle_delete: function(e) {
+			this.model().destroy({wait: true});
 		},
 	});
 })();

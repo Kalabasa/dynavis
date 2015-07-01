@@ -10,7 +10,7 @@ var components = components || {};
 					<components.IndexedPageControls collection={this.collection()} />
 					<ul>
 						{this.collection().map(function(official) {
-							return <components.OfficialRow key={official.id} model={official} family_hound={that.props.family_hound} />;
+							return <components.OfficialRow key={official.id} model={official} instance_cache={that.props.instance_cache} />;
 						})}
 					</ul>
 				</div>

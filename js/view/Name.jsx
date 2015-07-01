@@ -4,7 +4,7 @@ var components = components || {};
 	components.Name = React.createBackboneClass({
 		render: function() {
 			return (
-				<span>{this.model().get("name")}</span>
+				<span>{this.model() ? this.model().get("name") : ""}</span>
 			);
 		},
 	});

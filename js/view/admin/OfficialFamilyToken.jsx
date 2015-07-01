@@ -12,7 +12,6 @@ var components = components || {};
 
 		handle_delete: function() {
 			this.model().destroy({wait: true});
-			this.props.family_hound.clear();
 		},
 	});
 })();

@@ -19,7 +19,6 @@ use \Dynavis\Model\Token;
 \Slim\Route::setDefaultConditions([
 	"id" => "\d+",
 	"code" => "\d{9}",
-	"level" => "region|province|municipality|barangay",
 ]);
 
 $app = new \Slim\Slim(["debug" => true]);
@@ -302,15 +301,7 @@ function get_official($id) {
 	}catch(NotFoundException $e) {
 		$app->halt(404);
 	}
-	$families = $official->get_families();
-
-	$obj = $official->jsonSerialize();
-	$obj["families"] = [
-		"total" => count($families),
-		"data" => $families,
-	];
-
-	echo json_encode($obj);
+	echo json_encode($official);
 }
 
 function get_official_families($id) {
@@ -393,7 +384,7 @@ function post_official_family($id) {
 		$family->add_member($official);
 	}catch(DataException $e) {
 		Database::get()->pdo->rollback();
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, $e->getMessage());
 	}
 
 	Database::get()->pdo->commit();
@@ -434,15 +425,7 @@ function get_family($id) {
 	}catch(NotFoundException $e) {
 		$app->halt(404);
 	}
-	$members = $family->get_members();
-
-	$obj = $family->jsonSerialize();
-	$obj["members"] = [
-		"total" => count($members),
-		"data" => $members,
-	];
-
-	echo json_encode($obj);
+	echo json_encode($family);
 }
 
 function get_family_officials($id) {
