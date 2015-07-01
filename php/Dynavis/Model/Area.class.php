@@ -23,7 +23,7 @@ class Area extends \Dynavis\Core\RefEntity {
 
 	public static function get_by_name($name) {
 		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
-			"name" => trim(preg_replace("/[[:space:]]+/", " ", $name)),
+			"name" => Database::normalize_string($name),
 		]);
 		if(!$ret) return null;
 		return new Area((int) $ret[static::PRIMARY_KEY], false);
@@ -154,8 +154,12 @@ class Area extends \Dynavis\Core\RefEntity {
 	}
 
 	public function save() {
-		// normalize
-		$this->name = trim(preg_replace("/[[:space:]]+/", " ", $this->name));
+		// normalize strings
+		$this->name = Database::normalize_string($this->name);
+
+		if(!strlen($this->name)) {
+			throw new DataException("Empty name.");
+		}
 
 		parent::save();
 	}

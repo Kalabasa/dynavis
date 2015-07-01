@@ -25,10 +25,14 @@ class Official extends \Dynavis\Core\Entity {
 	}
 
 	public function save() {
-		// normalize
-		$this->surname = trim(preg_replace("/[[:space:]]+/", " ", $this->surname));
-		$this->name = trim(preg_replace("/[[:space:]]+/", " ", $this->name));
-		$this->nickname = $this->nickname ? trim(preg_replace("/[[:space:]]+/", " ", $this->nickname)) : null;
+		// normalize strings
+		$this->surname = Database::normalize_string($this->surname);
+		$this->name = Database::normalize_string($this->name);
+		$this->nickname = trim($this->nickname) ? Database::normalize_string($this->nickname) : null;
+
+		if(!strlen($this->surname) || !strlen($this->name)) {
+			throw new DataException("Required fields empty. (surname, name)");
+		}
 
 		parent::save();
 	}
@@ -53,8 +57,8 @@ class Official extends \Dynavis\Core\Entity {
 
 	public static function get_by_name($surname, $name) {
 		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], ["AND" => [
-			"surname" => trim(preg_replace("/[[:space:]]+/", " ", $surname)),
-			"name" => trim(preg_replace("/[[:space:]]+/", " ", $name)),
+			"surname" => Database::normalize_string($surname),
+			"name" => Database::normalize_string($name),
 		]]);
 		if(!$ret) return null;
 		return new Official((int) $ret[static::PRIMARY_KEY], false);

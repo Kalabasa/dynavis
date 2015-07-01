@@ -30,11 +30,34 @@ class Elect extends \Dynavis\Core\RefEntity {
 
 	public function save() {
 		if($this->year >= $this->year_end) {
-			throw new \RuntimeException("'year' must be less than 'year_end'.");
+			throw new \Dynavis\Core\DataException("'year' must be less than 'year_end'.");
 		}
 
-		// TODO: check year-area-position overlap
-		// + official cannot be in two positions simultaneously
+		// normalize strings
+		$this->position = $this->position && trim($this->position) ? Database::normalize_string($this->position) : null;
+
+		// Check for year-area-position overlaps
+		var $conflicts = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
+			"year[<]" => $this->year_end,
+			"year_end[>=]" => $this->year,
+			"position" => $this->position,
+			"area_code" => $this->area_code,
+		]);
+
+		if(count($conflicts)) {
+			throw new \Dynavis\Core\DataException("Conflict with other election records: " . join(",", $conflicts));
+		}
+
+		// Official cannot be in two posts simultaneously
+		var $official_overlaps = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
+			"year[<]" => $this->year_end,
+			"year_end[>=]" => $this->year,
+			"official_id" => $this->official_id,
+		]);
+
+		if(count($official_overlaps)) {
+			throw new \Dynavis\Core\DataException("No official can be in two posts simultaneously. Official ID: " . $this->official_id . " Conflicts: " . join(",", $official_overlaps));
+		}
 
 		parent::save();
 	}
@@ -115,12 +138,13 @@ class Elect extends \Dynavis\Core\RefEntity {
 			throw new \Dynavis\Core\DataException("Invalid year format. " . $entry["year"] . " at row " . ($i + 1));
 		}
 		// The length of term for LGU positions is three (3) years.
-		$year_end = $year + 3; // TODO: how special elections or rescheduled elections
+		$year_end = $year + 3; // TODO: how about special elections or rescheduled elections
 
 		$position = $entry["position"];
+		$position = $position && trim($position) ? $position) : nul;
 
 		$votes = (int) $entry["votes"];
-		if(!$votes) {
+		if(!is_numeric($votes)) {
 			// TODO: what if really zero votes?
 			throw new \Dynavis\Core\DataException("Invalid votes format. " . $entry["votes"] . " at row " . ($i + 1));
 		}

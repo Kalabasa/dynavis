@@ -81,8 +81,12 @@ class Family extends \Dynavis\Core\Entity {
 	}
 
 	public function save() {
-		// normalize
-		$this->name = trim(preg_replace("/[[:space:]]+/", " ", $this->name));
+		// normalize strings
+		$this->name = Database::normalize_string($this->name);
+
+		if(!strlen($this->name)) {
+			throw new DataException("Empty name.");
+		}
 
 		parent::save();
 	}

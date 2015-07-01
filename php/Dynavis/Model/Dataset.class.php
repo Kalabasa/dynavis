@@ -56,17 +56,21 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			if(count($row) !== c) {
 				throw new \Dynavis\Core\DataException("Incorrect number of columns in row. Expected " . $c . ". Got " . count($row) . " at row " . ($i + 1) . ": " . join(",", $row));
 			}
+			
 			$area_code = Area::parse_area_name($row[0]);
 			if(!$area_code) {
-				throw new \Dynavis\Core\DataException("Invalid area format. " . $row[0]);
+				throw new \Dynavis\Core\DataException("Invalid area format. " . $row[0] . " at row " . ($i + 1));
 			}
-			// TODO: check decimal format of values (but don't cast (datapoint value may not fit in a float))
+			if(!preg_match("/^(\+|-)?((\d{0,65}\.\d{0,30})|\d{1,65})$/", $row[$j]) {
+				throw new \Dynavis\Core\DataException("Invalid value format. " . $row[$j] . " at row " . ($i + 1));
+			}
+
 			for ($j = 1; $j < $c; $j++) { 
 				$insert_data[] = [
 					"dataset_id" => $this->get_id(),
 					"year"  => $header[$j],
 					"area_code" => $area_code,
-					"value" => empty($row[$j]) ? null : $row[$j],
+					"value" => strlen($row[$j]) ? $row[$j] : null,
 				];
 			}
 		}
