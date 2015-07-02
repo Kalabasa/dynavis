@@ -37,7 +37,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$this->position = $this->position && trim($this->position) ? Database::normalize_string($this->position) : null;
 
 		// Check for year-area-position overlaps
-		var $conflicts = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
+		$conflicts = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
 			"year[<]" => $this->year_end,
 			"year_end[>=]" => $this->year,
 			"position" => $this->position,
@@ -49,7 +49,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		}
 
 		// Official cannot be in two posts simultaneously
-		var $official_overlaps = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
+		$official_overlaps = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
 			"year[<]" => $this->year_end,
 			"year_end[>=]" => $this->year,
 			"official_id" => $this->official_id,
@@ -141,7 +141,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$year_end = $year + 3; // TODO: how about special elections or rescheduled elections
 
 		$position = $entry["position"];
-		$position = $position && trim($position) ? $position) : nul;
+		$position = $position && trim($position) ? $position : null;
 
 		$votes = (int) $entry["votes"];
 		if(!is_numeric($votes)) {

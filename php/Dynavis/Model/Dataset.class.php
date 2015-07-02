@@ -61,7 +61,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			if(!$area_code) {
 				throw new \Dynavis\Core\DataException("Invalid area format. " . $row[0] . " at row " . ($i + 1));
 			}
-			if(!preg_match("/^(\+|-)?((\d{0,65}\.\d{0,30})|\d{1,65})$/", $row[$j]) {
+			if(!preg_match("/^(\+|-)?((\d{0,65}\.\d{0,30})|\d{1,65})$/", $row[$j])) {
 				throw new \Dynavis\Core\DataException("Invalid value format. " . $row[$j] . " at row " . ($i + 1));
 			}
 
