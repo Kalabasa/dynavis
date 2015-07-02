@@ -1,11 +1,10 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.FamilyMemberItem = React.createBackboneClass({
+define(["react", "jsx!view/OfficialName", "react.backbone"], function(React, OfficialName) {
+	return React.createBackboneClass({
 		render: function() {
 			return (
 				<li>
-					<components.OfficialName model={this.model()} /> <button onClick={this.handle_delete}>x</button>
+					<OfficialName model={this.model()} /> <button onClick={this.handle_delete}>x</button>
 				</li>
 			);
 		},
@@ -20,4 +19,4 @@ var components = components || {};
 			});
 		},
 	});
-})();
+});

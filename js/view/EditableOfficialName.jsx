@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.EditableOfficialName = React.createBackboneClass({
+define(["react", "react.backbone"], function(React) {
+	return React.createBackboneClass({
  		mixins: [React.addons.LinkedStateMixin],
 
  		getInitialState: function() {
@@ -24,4 +23,4 @@ var components = components || {};
 			);
 		},
 	});
-})();
+});

@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.AlphabetIndex = React.createBackboneClass({
+define(["react", "react.backbone"], function(React) {
+	return React.createBackboneClass({
 		render: function() {
 			var that = this;
 			return (
@@ -14,4 +13,4 @@ var components = components || {};
 			);
 		},
 	});
-})();
+});

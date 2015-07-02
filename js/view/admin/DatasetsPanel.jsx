@@ -1,19 +1,18 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.DatasetsPanel = React.createBackboneClass({
+define(["react", "jsx!view/PageControls", "jsx!view/admin/DatasetBox", "react.backbone"], function(React, PageControls, DatasetBox) {
+	return React.createBackboneClass({
 		render: function() {
 			return (
 				<div>
 					<h1>Datasets</h1>
-					<components.PageControls collection={this.collection()} />
+					<PageControls collection={this.collection()} />
 					<ul>
 						{this.collection().map(function(dataset) {
-							return <components.DatasetBox key={dataset.id} model={dataset} />;
+							return <DatasetBox key={dataset.id} model={dataset} />;
 						})}
 					</ul>
 				</div>
 			);
 		},
 	});
-})();
+});

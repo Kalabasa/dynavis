@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.FamilyMemberList = React.createBackboneClass({
+define(["react", "jsx!view/TypeaheadInput", "jsx!view/admin/FamilyMemberItem", "react.backbone"], function(React, TypeaheadInput, FamilyMemberItem) {
+	return React.createBackboneClass({
 		render: function() {
 			var that = this;
 
@@ -14,16 +13,15 @@ var components = components || {};
 					<h3>Officials:</h3>
 					<ul>
 						{this.collection().map(function(official) {
-							return <components.FamilyMemberItem key={official.id} model={official} onDelete={that.props.onDelete} />;
+							return <FamilyMemberItem key={official.id} model={official} onDelete={that.props.onDelete} />;
 						})}
 					</ul>
 					<form onSubmit={this.handle_submit}>
-						<components.TypeaheadInput
+						<TypeaheadInput
 							for="official"
 							ref="input"
 							display={display}
 							collection={this.collection()}
-							instance_cache={this.props.instance_cache}
 							required />
 						<input type="submit" value="Add" />
 					</form>
@@ -41,4 +39,4 @@ var components = components || {};
 			}
 		},
 	});
-})();
+});

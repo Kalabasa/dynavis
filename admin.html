@@ -5,18 +5,9 @@
 
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 
-	<script src="js/lib/localStorage.js"></script>
-	<script src="js/lib/underscore-min.js"></script>
-
-	<script src="js/lib/jquery-2.1.4.min.js"></script>
-	<script src="js/lib/typeahead.bundle.min.js"></script>
-
-	<script src="js/lib/backbone.js"></script>
-	<script src="js/lib/JSXTransformer.js"></script>
-	<script src="js/lib/react.js"></script>
-	<script src="js/lib/react.backbone.js"></script>
-
-	<script src="js/lib/backbone-pagec.js"></script>
+	<script src="js/lib/require.js"></script>
+	<script src="js/config.js"></script>
+	<script src="js/admin.js"></script>
 </head>
 <body>
 	<div id="main">
@@ -24,54 +15,5 @@
 		<div id="sidebar" class="sidebar col"></div>
 		<div id="body" class="body row col scroll-y"></div>
 	</div>
-
-	<script src="js/model/official.js"></script>
-	<script src="js/model/family.js"></script>
-	<script src="js/model/memberships.js"></script>
-	<script src="js/model/area.js"></script>
-	<script src="js/model/party.js"></script>
-	<script src="js/model/election.js"></script>
-	<script src="js/model/dataset.js"></script>
-	<script src="js/model/user.js"></script>
-	<script src="js/model/token.js"></script>
-
-	<script src="js/InstanceCache.js"></script>
-
-	<script type="text/jsx" src="js/view/AlphabetIndex.jsx"></script>
-	<script type="text/jsx" src="js/view/PageControls.jsx"></script>
-	<script type="text/jsx" src="js/view/IndexedPageControls.jsx"></script>
-
-	<script type="text/jsx" src="js/view/Name.jsx"></script>
-	<script type="text/jsx" src="js/view/OfficialName.jsx"></script>
-	<script type="text/jsx" src="js/view/Username.jsx"></script>
-
-	<script type="text/jsx" src="js/view/TypeaheadInput.jsx"></script>
-	<script type="text/jsx" src="js/view/EditableName.jsx"></script>
-	<script type="text/jsx" src="js/view/EditableOfficialName.jsx"></script>
-
-	<script type="text/jsx" src="js/view/Header.jsx"></script>
-	<script type="text/jsx" src="js/view/HeaderLogin.jsx"></script>
-
-	<script type="text/jsx" src="js/view/admin/Sidebar.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/OfficialsPanel.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/OfficialRow.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/OfficialFamilyList.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/OfficialFamilyToken.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/FamiliesPanel.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/FamilyBox.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/FamilyMemberList.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/FamilyMemberItem.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/ElectionsPanel.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/ElectionRow.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/DatasetsPanel.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/DatasetBox.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/UsersPanel.jsx"></script>
-	<script type="text/jsx" src="js/view/admin/UserRow.jsx"></script>
-	
-	<script type="text/jsx" src="js/AdminApp.jsx"></script>
-	<script type="text/jsx">
-		var app = new AdminApp();
-		app.start();
-	</script>
 </body>
 </html>

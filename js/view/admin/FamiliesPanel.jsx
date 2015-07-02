@@ -1,16 +1,15 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.FamiliesPanel = React.createBackboneClass({
+define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/FamilyBox", "react.backbone"], function(React, IndexedPageControls, FamilyBox) {
+	return React.createBackboneClass({
 		render: function() {
 			var that = this;
 			return (
 				<div>
 					<h1>Families</h1>
-					<components.IndexedPageControls collection={this.collection()} />
+					<IndexedPageControls collection={this.collection()} />
 					<ul>
 						{this.collection().map(function(official) {
-							return <components.FamilyBox key={official.id} model={official} onDelete={that.handle_delete_official} instance_cache={that.props.instance_cache} />;
+							return <FamilyBox key={official.id} model={official} onDelete={that.handle_delete_official} />;
 						})}
 					</ul>
 				</div>
@@ -21,4 +20,4 @@ var components = components || {};
 			this.collection().fetch();
 		},
 	});
-})();
+});

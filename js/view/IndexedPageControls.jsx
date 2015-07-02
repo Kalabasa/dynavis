@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.IndexedPageControls = React.createBackboneClass({
+define(["react", "jsx!view/AlphabetIndex", "jsx!view/PageControls", "react.backbone"], function(React, AlphabetIndex, PageControls) {
+	return React.createBackboneClass({
 		getInitialState: function() {
 			return {letter: null};
 		},
@@ -9,9 +8,9 @@ var components = components || {};
 		render: function() {
 			return(
 				<div>
-					<components.AlphabetIndex
+					<AlphabetIndex
 						getCallback={this.index_handler} />
-					<components.PageControls
+					<PageControls
 						collection={this.collection()}
 						onPrev={this.handle_prev}
 						onNext={this.handle_next} />
@@ -39,4 +38,4 @@ var components = components || {};
 			return letter ? {data: {q: letter + "%", norm: 0}} : null;
 		},
 	});
-})();
+});

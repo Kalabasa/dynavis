@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.DatasetBox = React.createBackboneClass({
+define(["react", "react.backbone"], function(React) {
+	return React.createBackboneClass({
 		render: function() {
 			return (
 				<li>
@@ -17,4 +16,4 @@ var components = components || {};
 			this.model().destroy({wait: true});
 		},
 	});
-})();
+});

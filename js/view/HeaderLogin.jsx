@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.HeaderLogin = React.createBackboneClass({
+define(["jquery", "react", "react.backbone"], function($, React) {
+	return React.createBackboneClass({
 		render: function() {
 			if(this.model().isNew()) {
 				return (
@@ -35,4 +34,4 @@ var components = components || {};
 			this.model().logout();
 		},
 	});
-})();
+});

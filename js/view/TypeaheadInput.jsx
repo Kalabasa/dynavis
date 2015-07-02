@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.TypeaheadInput = React.createBackboneClass({
+define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], function($, React, InstanceCache) {
+	return React.createBackboneClass({
 		getInitialState: function() {
 			return {
 				value: "",
@@ -26,7 +25,7 @@ var components = components || {};
 			var $input = $(React.findDOMNode(this.refs.input));
 			$input.typeahead({highlight: true}, {
 				source: function(q, sync, async) {
-					that.props.instance_cache.search(that.props.for, q,
+					InstanceCache.search(that.props.for, q,
 						function(d) { sync(that.filter_search(d)); },
 						function(d) { async(that.filter_search(d)); });
 				},
@@ -104,7 +103,7 @@ var components = components || {};
 				};
 
 				var query = _.values(match).join(" ");
-				this.props.instance_cache.search(options.name, query, function(){}, callback);
+				InstanceCache.search(options.name, query, function(){}, callback);
 			}else{
 				options.callback(null, false);
 			}
@@ -116,4 +115,4 @@ var components = components || {};
 			this.setState(this.getInitialState());
 		},
 	});
-})();
+});

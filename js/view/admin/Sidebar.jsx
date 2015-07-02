@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.Sidebar = React.createBackboneClass({
+define(["react"], function(React) {
+	return React.createClass({
 		render: function() {
 			return (
 				<div>
@@ -17,4 +16,4 @@ var components = components || {};
 			);
 		},
 	});
-})();
+});

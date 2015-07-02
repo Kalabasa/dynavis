@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.OfficialRow = React.createBackboneClass({
+define(["react", "jsx!view/EditableOfficialName", "jsx!view/OfficialName", "jsx!view/admin/OfficialFamilyList", "react.backbone"], function(React, EditableOfficialName, OfficialName, OfficialFamilyList) {
+	return React.createBackboneClass({
 		getInitialState: function() {
 			return {
 				edit: this.model().isNew(),
@@ -23,7 +22,7 @@ var components = components || {};
 				}
 				info = (
 					<div>
-						<components.EditableOfficialName ref="name" model={this.model()} />
+						<EditableOfficialName ref="name" model={this.model()} />
 						<button onClick={this.handle_save}>Save</button>
 						{cancel_button}
 						<button onClick={this.handle_delete}>Delete</button>
@@ -32,13 +31,13 @@ var components = components || {};
 			}else{
 				info = (
 					<div>
-						<components.OfficialName model={this.model()} />
+						<OfficialName model={this.model()} />
 						<button onClick={this.handle_edit}>Edit</button>
 					</div>
 				);
 			}
 			if(!this.model().isNew()) {
-				var families = <components.OfficialFamilyList collection={this.model().get_families()} instance_cache={this.props.instance_cache} />;
+				var families = <OfficialFamilyList collection={this.model().get_families()} />;
 			}
 			return (
 				<li>
@@ -80,4 +79,4 @@ var components = components || {};
 			this.model().destroy({wait: true});
 		},
 	});
-})();
+});

@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.FamilyBox = React.createBackboneClass({
+define(["react", "jsx!view/EditableName", "jsx!view/Name", "jsx!view/admin/FamilyMemberList", "react.backbone"], function(React, EditableName, Name, FamilyMemberList) {
+	return React.createBackboneClass({
 		getInitialState: function() {
 			return {
 				edit: false,
@@ -17,7 +16,7 @@ var components = components || {};
 			if(this.state.edit) {
 				info = (
 					<div>
-						<components.EditableName ref="name" model={this.model()} />
+						<EditableName ref="name" model={this.model()} />
 						<button onClick={this.handle_save}>Save</button>
 						<button onClick={this.handle_cancel}>Cancel</button>
 						<button onClick={this.handle_delete}>Delete</button>
@@ -26,7 +25,7 @@ var components = components || {};
 			}else{
 				info = (
 					<div>
-						<components.Name model={this.model()} />
+						<Name model={this.model()} />
 						<button onClick={this.handle_edit}>Edit</button>
 					</div>
 				);
@@ -34,7 +33,7 @@ var components = components || {};
 			return (
 				<li>
 					{info}
-					<components.FamilyMemberList collection={this.model().get_members()} onDelete={this.props.onDelete} instance_cache={this.props.instance_cache} />
+					<FamilyMemberList collection={this.model().get_members()} onDelete={this.props.onDelete} />
 				</li>
 			);
 		},
@@ -68,4 +67,4 @@ var components = components || {};
 			this.model().destroy({wait: true});
 		},
 	});
-})();
+});

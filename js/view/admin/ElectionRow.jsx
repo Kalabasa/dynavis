@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.ElectionRow = React.createBackboneClass({
+define(["react", "InstanceCache", "model/Official", "model/Party", "jsx!view/TypeaheadInput", "jsx!view/OfficialName", "jsx!view/Name", "react.backbone"], function(React, InstanceCache, Official, Party, TypeaheadInput, OfficialName, Name) {
+	return React.createBackboneClass({
  		mixins: [React.addons.LinkedStateMixin],
  		
 		getInitialState: function() {
@@ -30,10 +29,9 @@ var components = components || {};
 			var area_code = parseInt(this.model().get("area_code"));
 			var party_id = parseInt(this.model().get("party_id"));
 
-			var cache = this.props.instance_cache;
-			var official = cache.get("official", official_id);
-			var area = cache.get("area", area_code);
-			var party = cache.get("party", party_id);
+			var official = InstanceCache.get("Official", official_id);
+			var area = InstanceCache.get("Area", area_code);
+			var party = InstanceCache.get("Party", party_id);
 
 			if(this.state.edit) {
 				if(!this.model().isNew()){
@@ -41,30 +39,27 @@ var components = components || {};
 				}
 				return (
 					<li>
-						Official <components.TypeaheadInput
+						Official <TypeaheadInput
 							for="official"
 							ref="official"
 							display={display_official}
 							model={official}
-							instance_cache={this.props.instance_cache}
 							required />
 						Position <input ref="position" type="text" valueLink={this.linkState("position")} />
 						Year <input ref="year" type="number" valueLink={this.linkState("year")} required />
 						Year end <input ref="year_end" type="number" valueLink={this.linkState("year_end")} required />
 						Votes <input ref="votes" type="number" valueLink={this.linkState("votes")} />
-						Area <components.TypeaheadInput
+						Area <TypeaheadInput
 							for="area"
 							ref="area"
 							display={display}
 							model={area}
-							instance_cache={this.props.instance_cache}
 							required />
-						Party <components.TypeaheadInput
+						Party <TypeaheadInput
 							for="party"
 							ref="party"
 							display={display}
-							model={party}
-							instance_cache={this.props.instance_cache} />
+							model={party} />
 						<button onClick={this.handle_save}>Save</button>
 						{cancel_button}
 						<button onClick={this.handle_delete}>Delete</button>
@@ -73,12 +68,12 @@ var components = components || {};
 			}else{
 				return (
 					<li>
-						<components.OfficialName model={official} />
+						<OfficialName model={official} />
 						<div>{this.model().get("position")}</div>
 						<div>{this.model().get("year")} - {this.model().get("year_end")}</div>
 						<div>{this.model().get("votes")}</div>
-						<components.Name model={area} />
-						<components.Name model={party} />
+						<Name model={area} />
+						<Name model={party} />
 						<button onClick={this.handle_edit}>Edit</button>
 					</li>
 				);
@@ -138,8 +133,8 @@ var components = components || {};
 			};
 
 			this.refs.party.get_or_create({
-				model: models.PartySingle,
-				name: "party",
+				model: Party,
+				name: "Party",
 				attributes: function(str) {
 					return {name: that.refs.party.state.value};
 				},
@@ -150,8 +145,8 @@ var components = components || {};
 			});
 
 			this.refs.official.get_or_create({
-				model: models.PartySingle,
-				name: "official",
+				model: OfficialSingle,
+				name: "Official",
 				attributes: function(str) {
 					var tokens = that.refs.official.state.value.match(/^\s*(.+?)\s*,\s*(.+?)\s*(?:"(.+?)")?\s*$/);
 					if(!tokens || tokens.length <= 2) {
@@ -206,4 +201,4 @@ var components = components || {};
 			}
 		},
 	});
-})();
+});

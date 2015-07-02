@@ -1,5 +1,5 @@
 "use strict";
-(function(){
+require(["jsx!AdminApp"], function(AdminApp){
 	var app = new AdminApp();
 	app.start();
-})();
+});

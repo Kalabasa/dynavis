@@ -1,17 +1,16 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.OfficialsPanel = React.createBackboneClass({
+define(["react", "model/Official", "jsx!view/IndexedPageControls", "jsx!view/admin/OfficialRow", "react.backbone"], function(React, Official, IndexedPageControls, OfficialRow) {
+	return React.createBackboneClass({
 		render: function() {
 			var that = this;
 			return (
 				<div>
 					<h1>Officials</h1>
-					<components.IndexedPageControls collection={this.collection()} />
+					<IndexedPageControls collection={this.collection()} />
 					<button onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(official) {
-							return <components.OfficialRow key={official.id} model={official} instance_cache={that.props.instance_cache} />;
+							return <OfficialRow key={official.id} model={official} />;
 						})}
 					</ul>
 				</div>
@@ -19,7 +18,7 @@ var components = components || {};
 		},
 
 		handle_add: function() {
-			this.collection().add(new models.Official(), {at: 0});
+			this.collection().add(new Official(), {at: 0});
 		},
 	});
-})();
+});

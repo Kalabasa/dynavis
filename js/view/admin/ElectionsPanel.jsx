@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.ElectionsPanel = React.createBackboneClass({
+define(["jquery", "react", "model/Election", "jsx!view/PageControls", "jsx!view/admin/ElectionRow", "react.backbone"], function($, React, Election, PageControls, ElectionRow) {
+	return React.createBackboneClass({
 		render: function() {
 			var that = this;
 			return (
@@ -11,17 +10,13 @@ var components = components || {};
 						Upload election records (csv) <input ref="file" type="file" />
 						<input type="submit" value="Upload" />
 					</form>
-					<components.PageControls collection={this.collection()} />
+					<PageControls collection={this.collection()} />
 					<button onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(election) {
-							return <components.ElectionRow
+							return <ElectionRow
 								key={election.id}
-								model={election}
-								instance_cache={that.props.instance_cache}
-								official_hound={that.props.official_hound}
-								area_hound={that.props.area_hound}
-								party_hound={that.props.party_hound} />;
+								model={election} />;
 						})}
 					</ul>
 				</div>
@@ -29,7 +24,7 @@ var components = components || {};
 		},
 
 		handle_add: function() {
-			this.collection().add(new models.Election(), {at: 0});
+			this.collection().add(new Election(), {at: 0});
 		},
 
 		handle_upload: function(e) {
@@ -51,4 +46,4 @@ var components = components || {};
 			});
 		},
 	});
-})();
+});

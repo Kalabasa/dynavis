@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.OfficialFamilyList = React.createBackboneClass({
+define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/OfficialFamilyToken", "react.backbone"], function(React, Family, TypeaheadInput, OfficialFamilyToken) {
+	return React.createBackboneClass({
 		filterSearch: function(data) {
 			var that = this;
 			return _.filter(data, function(item) {
@@ -20,15 +19,14 @@ var components = components || {};
 				<div>
 					<h3>Families:</h3>
 					{this.collection().map(function(family) {
-						return <components.OfficialFamilyToken key={family.id} model={family} />;
+						return <OfficialFamilyToken key={family.id} model={family} />;
 					})}
 					<form onSubmit={this.handle_submit}>
-						<components.TypeaheadInput
+						<TypeaheadInput
 							for="family"
 							ref="input"
 							display={display}
 							collection={this.collection()}
-							instance_cache={this.props.instance_cache}
 							required />
 						<input type="submit" value="Add" />
 					</form>
@@ -40,7 +38,7 @@ var components = components || {};
 			e.preventDefault();
 			var that = this;
 			this.refs.input.get_or_create({
-				model: models.Family.extend({urlRoot: this.collection().url()}),
+				model: Family.extend({urlRoot: this.collection().url()}),
 				name: "family",
 				attributes: function(str) {
 					return {name: that.refs.input.state.value};
@@ -56,4 +54,4 @@ var components = components || {};
 			});
 		},
 	});
-})();
+});

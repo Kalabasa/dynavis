@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.UserRow = React.createBackboneClass({
+define(["react", "react.backbone"], function(React) {
+	return React.createBackboneClass({
 		render: function() {
 			var url_datasets = "#users/" + this.model().get("username") + "/datasets";
 			return (
@@ -28,4 +27,4 @@ var components = components || {};
 			this.model().destroy({wait: true});
 		},
 	});
-})();
+});

@@ -1,8 +1,15 @@
 "use strict";
-var InstanceCache = InstanceCache || null;
-var models = models || {};
-(function() {
-	InstanceCache = function() {
+define(function(require) {
+	var Bloodhound = require("bloodhound"),
+		OfficialSingle = require("model/OfficialSingle"),
+		FamilySingle = require("model/FamilySingle"),
+		Area = require("model/Area"),
+		Party = require("model/Party"),
+		Election = require("model/Election"),
+		Dataset = require("model/Dataset"),
+		User = require("model/User");
+
+	var InstanceCache = function() {
 		var create_hound = function(path) {
 			return new Bloodhound({
 				queryTokenizer: Bloodhound.tokenizers.nonword,
@@ -17,28 +24,28 @@ var models = models || {};
 		};
 
 		this.hash = {
-			"official": {},
-			"family": {},
-			"area": {},
-			"party": {},
-			"election": {},
-			"dataset": {},
-			"user": {},
+			"Official": {},
+			"Family": {},
+			"Area": {},
+			"Party": {},
+			"Election": {},
+			"Dataset": {},
+			"User": {},
 		};
 		this.models = {
-			"official": models.OfficialSingle,
-			"family": models.FamilySingle,
-			"area": models.AreaSingle,
-			"party": models.PartySingle,
-			"election": models.ElectionSingle,
-			"dataset": models.DatasetSingle,
-			"user": models.UserSingle,
+			"Official": OfficialSingle,
+			"Family": FamilySingle,
+			"Area": Area,
+			"Party": Party,
+			"Election": Election,
+			"Dataset": Dataset,
+			"User": User,
 		};
 		this.hounds = {
-			"official": create_hound("officials"),
-			"family": create_hound("families"),
-			"area": create_hound("areas"),
-			"party": create_hound("parties"),
+			"Official": create_hound("officials"),
+			"Family": create_hound("families"),
+			"Area": create_hound("areas"),
+			"Party": create_hound("parties"),
 		};
 	};
 
@@ -61,4 +68,6 @@ var models = models || {};
 	InstanceCache.prototype.search = function(name, query, sync, async) {
 		this.hounds[name].search(query, sync, async);
 	};
-})();
+
+	return new InstanceCache();
+});

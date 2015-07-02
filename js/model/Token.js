@@ -1,7 +1,6 @@
 "use strict";
-var models = models || {};
-(function() {
-	models.Token = Backbone.Model.extend({
+define(["jquery", "localStorage", "backbone", "model/User"], function($, localStorage, Backbone, User) {
+	return Backbone.Model.extend({
 		urlRoot: "api.php/tokens",
 		defaults: {
 			username: null,
@@ -31,8 +30,7 @@ var models = models || {};
 
 		get_user: function() {
 			if(this.isNew()) return null;
-			var username = this.get("username");
-			return new models.User({username: username});
+			return InstanceCache.get("User", this.get("username"));
 		},
 
 		login: function(username, password) {
@@ -74,4 +72,4 @@ var models = models || {};
 			});
 		},
 	});
-})();
+});

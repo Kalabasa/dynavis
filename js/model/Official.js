@@ -1,8 +1,6 @@
 "use strict";
-var models = models || {};
-var collections = collections || {};
-(function() {
-	models.Official = Backbone.Model.extend({
+define(["backbone", "model/OfficialFamilyCollection"], function(Backbone, OfficialFamilyCollection) {
+	return Backbone.Model.extend({
 		defaults: {
 			surname: null,
 			name: null,
@@ -14,11 +12,11 @@ var collections = collections || {};
 
 			this.families = null;
 			this.on("change:id", function(model, value, options) {
-				that.families = new collections.OfficialFamily(null, {official_id: value});
+				that.families = new OfficialFamilyCollection(null, {official_id: value});
 			}, this);
 			
 			if(!this.isNew()) {
-				this.families = new collections.OfficialFamily(null, {official_id: this.get("id")});
+				this.families = new OfficialFamilyCollection(null, {official_id: this.get("id")});
 			}
 		},
 
@@ -36,14 +34,4 @@ var collections = collections || {};
 			return this.get("surname") + ", " + this.get("name") + nickname;
 		},
 	});
-
-	models.OfficialSingle = models.Official.extend({urlRoot: "api.php/officials"});
-
-	collections.Official = Backbone.PageableCollection.extend({
-		model: models.Official,
-		url: "api.php/officials",
-		parse: function(data) {
-			return data.data;
-		},
-	});
-})();
+});

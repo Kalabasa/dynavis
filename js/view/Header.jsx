@@ -1,13 +1,12 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.Header = React.createBackboneClass({
+define(["react", "jsx!view/HeaderLogin", "react.backbone"], function(React, HeaderLogin) {
+	return React.createBackboneClass({
 		render: function() {
 			return (
 				<div>
-					<components.HeaderLogin model={this.model()} />
+					<HeaderLogin model={this.model()} />
 				</div>
 			);
 		},
 	});
-})();
+});

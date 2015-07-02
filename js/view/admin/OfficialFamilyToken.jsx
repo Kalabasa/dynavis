@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.OfficialFamilyToken = React.createBackboneClass({
+define(["react", "react.backbone"], function(React) {
+	return React.createBackboneClass({
 		render: function() {
 			return (
 				<span>
@@ -14,4 +13,4 @@ var components = components || {};
 			this.model().destroy({wait: true});
 		},
 	});
-})();
+});

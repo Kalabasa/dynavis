@@ -1,7 +1,6 @@
 "use strict";
-var components = components || {};
-(function(){
-	components.PageControls = React.createBackboneClass({
+define(["react", "react.backbone"], function(React) {
+	return React.createBackboneClass({
 		render: function() {
 			return (
 				<div>
@@ -12,4 +11,4 @@ var components = components || {};
 			);
 		},
 	});
-})();
+});
