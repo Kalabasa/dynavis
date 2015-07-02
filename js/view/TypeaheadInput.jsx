@@ -103,7 +103,7 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 				};
 
 				var query = _.values(match).join(" ");
-				InstanceCache.search(options.name, query, function(){}, callback);
+				InstanceCache.search(this.props.for, query, function(){}, callback);
 			}else{
 				options.callback(null, false);
 			}

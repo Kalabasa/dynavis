@@ -39,7 +39,6 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 			var that = this;
 			this.refs.input.get_or_create({
 				model: Family.extend({urlRoot: this.collection().url()}),
-				name: "family",
 				attributes: function(str) {
 					return {name: that.refs.input.state.value};
 				},

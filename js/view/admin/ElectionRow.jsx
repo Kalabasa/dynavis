@@ -134,7 +134,6 @@ define(["react", "InstanceCache", "model/Official", "model/Party", "jsx!view/Typ
 
 			this.refs.party.get_or_create({
 				model: Party,
-				name: "Party",
 				attributes: function(str) {
 					return {name: that.refs.party.state.value};
 				},
@@ -146,7 +145,6 @@ define(["react", "InstanceCache", "model/Official", "model/Party", "jsx!view/Typ
 
 			this.refs.official.get_or_create({
 				model: Official,
-				name: "Official",
 				attributes: function(str) {
 					var tokens = that.refs.official.state.value.match(/^\s*(.+?)\s*,\s*(.+?)\s*(?:"(.+?)")?\s*$/);
 					if(!tokens || tokens.length <= 2) {
