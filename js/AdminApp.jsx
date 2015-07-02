@@ -58,8 +58,7 @@ define(function(require){
 	};
 
 	AdminApp.prototype.start = function() {
-		var token = new Token();
-		React.render(<Header model={token} />, document.getElementById("header"));
+		React.render(<Header model={new Token()} />, document.getElementById("header"));
 		React.render(<Sidebar />, document.getElementById("sidebar"));
 
 		Backbone.history.start();
