@@ -238,7 +238,7 @@ function generic_post_item($class, $name) {
 	try {
 		$item->save();
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 
 	$app->response->setStatus(201);
@@ -268,7 +268,7 @@ function generic_put_item($class, $id) {
 	try {
 		$item->save();
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 
 	echo json_encode($item);
@@ -337,7 +337,7 @@ function post_official() {
 	try {
 		$official->save();
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 
 	$app->response->setStatus(201);
@@ -373,7 +373,7 @@ function post_official_family($id) {
 			$family->save();
 		}catch(DataException $e) {
 			Database::get()->pdo->rollback();
-			$app->halt(400, "Invalid data.");
+			$app->halt(400, "Invalid family data. " . $e->getMessage());
 		}
 	}else{
 		Database::get()->pdo->rollback();
@@ -469,7 +469,7 @@ function post_family_official($id) {
 	try {
 		$family->add_member($official);
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, $e->getMessage());
 	}
 
 	$app->response->setStatus(201);
@@ -590,7 +590,7 @@ function put_area($code) {
 	try {
 		$area->save();
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 
 	echo json_encode($area);
@@ -624,7 +624,7 @@ function post_area() {
 	try {
 		$area->save();
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 
 	$app->response->setStatus(201);
@@ -679,7 +679,7 @@ function post_election() {
 	try {
 		$elect->save();
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 
 	$app->response->setStatus(201);
@@ -730,7 +730,7 @@ function post_user() {
 	try {
 		$user->save();
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 
 	$app->response->setStatus(201);
@@ -764,7 +764,7 @@ function put_user($username) {
 	try {
 		$user->save();
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 
 	echo json_encode($user);
@@ -870,7 +870,7 @@ function post_user_dataset($username) {
 	try {
 		$dataset->save();
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 
 	if(isset($_FILES["file"])) {
@@ -929,7 +929,7 @@ function post_user_dataset_datapoint($username, $dataset_id) {
 	try {
 		$datapoint->save();
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 
 	$app->response->setStatus(201);
@@ -967,7 +967,7 @@ function put_user_dataset($username, $dataset_id) {
 	try {
 		$dataset->save();
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 }
 
@@ -1005,7 +1005,7 @@ function put_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
 	try {
 		$datapoint->save();
 	}catch(DataException $e) {
-		$app->halt(400, "Invalid data.");
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 }
 
@@ -1029,7 +1029,7 @@ function delete_user_dataset($username, $dataset_id) {
 	try {
 		$dataset->delete();
 	}catch(DataException $e) {
-		$app->halt(400, $e->getMessage());
+		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 
 	$app->response->setStatus(204);

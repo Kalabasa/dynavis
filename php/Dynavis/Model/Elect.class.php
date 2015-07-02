@@ -37,26 +37,35 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$this->position = $this->position && trim($this->position) ? Database::normalize_string($this->position) : null;
 
 		// Check for year-area-position overlaps
-		$conflicts = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
+		$conflicts = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], ["AND" => [
+			static::PRIMARY_KEY . "[!]" => $this->get_id(),
 			"year[<]" => $this->year_end,
 			"year_end[>=]" => $this->year,
 			"position" => $this->position,
 			"area_code" => $this->area_code,
-		]);
+		]]);
 
 		if(count($conflicts)) {
-			throw new \Dynavis\Core\DataException("Conflict with other election records: " . join(",", $conflicts));
+			throw new \Dynavis\Core\DataException("Conflict with other election records: "
+				. join(", ", array_map(function($item) {
+					return $item[static::PRIMARY_KEY];
+				}, $conflicts)));
 		}
 
 		// Official cannot be in two posts simultaneously
-		$official_overlaps = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], [
+		$official_overlaps = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], ["AND" => [
+			static::PRIMARY_KEY . "[!]" => $this->get_id(),
 			"year[<]" => $this->year_end,
 			"year_end[>=]" => $this->year,
 			"official_id" => $this->official_id,
-		]);
+		]]);
 
 		if(count($official_overlaps)) {
-			throw new \Dynavis\Core\DataException("No official can be in two posts simultaneously. Official ID: " . $this->official_id . " Conflicts: " . join(",", $official_overlaps));
+			throw new \Dynavis\Core\DataException("No official can be in two posts simultaneously."
+				. " Official ID: " . $this->official_id
+				. " Conflicts: " . join(", ", array_map(function($item) {
+					return $item[static::PRIMARY_KEY];
+				}, $official_overlaps)));
 		}
 
 		parent::save();
