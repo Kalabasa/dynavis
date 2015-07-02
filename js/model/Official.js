@@ -1,27 +1,10 @@
 "use strict";
-define(["backbone", "model/OfficialFamilyCollection"], function(Backbone, OfficialFamilyCollection) {
+define(["backbone"], function(Backbone) {
 	return Backbone.Model.extend({
 		defaults: {
 			surname: null,
 			name: null,
 			nickname: null,
-		},
-
-		get_families: function() {
-			if(this.families === undefined) {
-				var that = this;
-				
-				this.families = null;
-				this.on("change:id", function(model, value, options) {
-					that.families = new OfficialFamilyCollection(null, {official_id: value});
-				}, this);
-				
-				if(!this.isNew()) {
-					this.families = new OfficialFamilyCollection(null, {official_id: this.get("id")});
-				}
-			}
-
-			return this.families;
 		},
 
 		get_full_name: function() {

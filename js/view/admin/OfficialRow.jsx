@@ -1,17 +1,28 @@
 "use strict";
-define(["react", "jsx!view/EditableOfficialName", "jsx!view/OfficialName", "jsx!view/admin/OfficialFamilyList", "react.backbone"], function(React, EditableOfficialName, OfficialName, OfficialFamilyList) {
+define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialName", "jsx!view/OfficialName", "jsx!view/admin/OfficialFamilyList", "react.backbone"], function(React, OfficialFamilyCollection, EditableOfficialName, OfficialName, OfficialFamilyList) {
 	return React.createBackboneClass({
 		getInitialState: function() {
 			return {
 				edit: this.model().isNew(),
+				families: null,
 			};
 		},
 
 		componentWillMount: function() {
-			if(!this.model().isNew()) this.model().get_families().fetch();
+			this.refresh_families();
 		},
 		componentOnModelChange: function() {
-			if(!this.model().isNew()) this.model().get_families().fetch();
+			this.refresh_families();
+		},
+		refresh_families: function() {
+			if(!this.model().isNew()) {
+				var families = this.state.families;
+				if(!families) {
+					families = new OfficialFamilyCollection(null, {official_id: this.model().id});
+					this.setState({families: families});
+				}
+				families.fetch();
+			}
 		},
 
 		render: function() {
@@ -37,7 +48,7 @@ define(["react", "jsx!view/EditableOfficialName", "jsx!view/OfficialName", "jsx!
 				);
 			}
 			if(!this.model().isNew()) {
-				var families = <OfficialFamilyList collection={this.model().get_families()} />;
+				var families = <OfficialFamilyList collection={this.state.families} />;
 			}
 			return (
 				<li>

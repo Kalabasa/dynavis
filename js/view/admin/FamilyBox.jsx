@@ -1,14 +1,15 @@
 "use strict";
-define(["react", "jsx!view/EditableName", "jsx!view/Name", "jsx!view/admin/FamilyMemberList", "react.backbone"], function(React, EditableName, Name, FamilyMemberList) {
+define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!view/Name", "jsx!view/admin/FamilyMemberList", "react.backbone"], function(React, FamilyMemberCollection, EditableName, Name, FamilyMemberList) {
 	return React.createBackboneClass({
 		getInitialState: function() {
 			return {
 				edit: false,
+				members: new FamilyMemberCollection(null, {family_id: this.model().id}),
 			};
 		},
 
 		componentWillMount: function() {
-			this.model().get_members().fetch();
+			this.state.members.fetch();
 		},
 		
 		render: function() {
@@ -33,7 +34,7 @@ define(["react", "jsx!view/EditableName", "jsx!view/Name", "jsx!view/admin/Famil
 			return (
 				<li>
 					{info}
-					<FamilyMemberList collection={this.model().get_members()} onDelete={this.props.onDelete} />
+					<FamilyMemberList collection={this.state.members} onDelete={this.props.onDelete} />
 				</li>
 			);
 		},
