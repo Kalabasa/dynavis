@@ -749,10 +749,12 @@ function put_user($username) {
 		$app->halt(404);
 	}
 
-	$data["type"] = [
-		"user" => 0,
-		"admin" => 1,
-	][$data["role"]];
+	if($user->type == 1) {
+		$data["type"] = [
+			"user" => 0,
+			"admin" => 1,
+		][$data["role"]];
+	}
 	unset($data["role"]);
 
 	foreach ($data as $key => $value) {
