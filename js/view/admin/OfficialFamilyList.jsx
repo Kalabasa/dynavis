@@ -23,7 +23,7 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 					})}
 					<form onSubmit={this.handle_submit}>
 						<TypeaheadInput
-							for="family"
+							for="Family"
 							ref="input"
 							display={display}
 							collection={this.collection()}

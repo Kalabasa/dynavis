@@ -40,7 +40,7 @@ define(["react", "InstanceCache", "model/Official", "model/Party", "jsx!view/Typ
 				return (
 					<li>
 						Official <TypeaheadInput
-							for="official"
+							for="Official"
 							ref="official"
 							display={display_official}
 							model={official}
@@ -50,13 +50,13 @@ define(["react", "InstanceCache", "model/Official", "model/Party", "jsx!view/Typ
 						Year end <input ref="year_end" type="number" valueLink={this.linkState("year_end")} required />
 						Votes <input ref="votes" type="number" valueLink={this.linkState("votes")} />
 						Area <TypeaheadInput
-							for="area"
+							for="Area"
 							ref="area"
 							display={display}
 							model={area}
 							required />
 						Party <TypeaheadInput
-							for="party"
+							for="Party"
 							ref="party"
 							display={display}
 							model={party} />
@@ -145,7 +145,7 @@ define(["react", "InstanceCache", "model/Official", "model/Party", "jsx!view/Typ
 			});
 
 			this.refs.official.get_or_create({
-				model: OfficialSingle,
+				model: Official,
 				name: "Official",
 				attributes: function(str) {
 					var tokens = that.refs.official.state.value.match(/^\s*(.+?)\s*,\s*(.+?)\s*(?:"(.+?)")?\s*$/);
