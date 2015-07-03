@@ -2,12 +2,6 @@
 define(function(require){
 	var Backbone = require("backbone"),
 		React = require("react"),
-		InstanceCache = require("InstanceCache"),
-		OfficialCollection = require("model/OfficialCollection"),
-		FamilyCollection = require("model/FamilyCollection"),
-		ElectionCollection = require("model/ElectionCollection"),
-		DatasetCollection = require("model/DatasetCollection"),
-		UserCollection = require("model/UserCollection"),
 		Token = require("model/Token"),
 		Header = require("jsx!view/Header");
 

@@ -30,7 +30,7 @@ define(function(require){
 				"users": "users",
 			},
 			officials: function() {
-				var official_collection = new OfficialCollection();
+				var official_collection = new OfficialCollection(null, {per_page: 10});
 				React.render(<OfficialsPanel collection={official_collection} />, document.getElementById("body"));
 				official_collection.fetch();
 			},
@@ -40,7 +40,7 @@ define(function(require){
 				family_collection.fetch();
 			},
 			elections: function() {
-				var election_collection = new ElectionCollection();
+				var election_collection = new ElectionCollection(null, {per_page: 10});
 				React.render(<ElectionsPanel collection={election_collection} />,  document.getElementById("body"));
 				election_collection.fetch();
 			},
