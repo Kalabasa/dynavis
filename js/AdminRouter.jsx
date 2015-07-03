@@ -1,0 +1,58 @@
+"use strict";
+define(["backbone", "react"], function(Backbone, React) {
+	return Backbone.Router.extend({
+		routes: {
+			"": "users", // TODO: add home page?
+			"officials": "officials",
+			"families": "families",
+			"elections": "elections",
+			"(users/:username/)datasets": "datasets",
+			"users": "users",
+		},
+		officials: function() {
+			require([
+				"model/OfficialCollection", "jsx!view/admin/OfficialsPanel"
+			], function(OfficialCollection, OfficialsPanel) {
+				var official_collection = new OfficialCollection(null, {per_page: 10});
+				React.render(<OfficialsPanel collection={official_collection} />, document.getElementById("body"));
+				official_collection.fetch();
+			});
+		},
+		families: function() {
+			require([
+				"model/FamilyCollection", "jsx!view/admin/FamiliesPanel"
+			], function(FamilyCollection, FamiliesPanel) {
+				var family_collection = new FamilyCollection(null, {per_page: 10});
+				React.render(<FamiliesPanel collection={family_collection} />,  document.getElementById("body"));
+				family_collection.fetch();
+			});
+		},
+		elections: function() {
+			require([
+				"model/ElectionCollection", "jsx!view/admin/ElectionsPanel"
+			], function(ElectionCollection, ElectionsPanel) {
+				var election_collection = new ElectionCollection(null, {per_page: 10});
+				React.render(<ElectionsPanel collection={election_collection} />,  document.getElementById("body"));
+				election_collection.fetch();
+			});
+		},
+		datasets: function(username) {
+			require([
+				"model/DatasetCollection", "jsx!view/admin/DatasetsPanel"
+			], function(DatasetCollection, DatasetsPanel) {
+				var dataset_collection = new DatasetCollection(username ? {username: username} : null);
+				React.render(<DatasetsPanel collection={dataset_collection} />, document.getElementById("body"));
+				dataset_collection.fetch();
+			});
+		},
+		users: function() {
+			require([
+				"model/UserCollection", "jsx!view/admin/UsersPanel"
+			], function(UserCollection, UsersPanel) {
+				var user_collection = new UserCollection();
+				React.render(<UsersPanel collection={user_collection} />, document.getElementById("body"));
+				user_collection.fetch();
+			});
+		},
+	});
+});

@@ -3,19 +3,13 @@ define(function(require){
 	var Backbone = require("backbone"),
 		React = require("react"),
 		Token = require("model/Token"),
+		MainRouter = require("jsx!MainRouter"),
 		Header = require("jsx!view/Header");
 
 	var MainApp = function() {
 		var that = this;
 
-		this.router = new (Backbone.Router.extend({
-			routes: {
-				"": "main"
-			},
-			main: function() {
-				React.render(<img />, document.getElementById("body"));
-			},
-		}))();
+		this.router = new MainRouter();
 	};
 
 	MainApp.prototype.start = function() {
