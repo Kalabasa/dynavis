@@ -8,7 +8,7 @@ define(["react", "jsx!view/PageControls", "jsx!view/admin/DatasetBox", "react.ba
 					<PageControls collection={this.collection()} />
 					<ul>
 						{this.collection().map(function(dataset) {
-							return <DatasetBox key={dataset.id} model={dataset} />;
+							return <DatasetBox key={dataset.cid} model={dataset} />;
 						})}
 					</ul>
 				</div>

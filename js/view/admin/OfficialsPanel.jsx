@@ -10,7 +10,7 @@ define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/OfficialRow", "
 					<button onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(official) {
-							return <OfficialRow key={official.id} model={official} />;
+							return <OfficialRow key={official.cid} model={official} />;
 						})}
 					</ul>
 				</div>

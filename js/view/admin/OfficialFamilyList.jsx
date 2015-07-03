@@ -19,7 +19,7 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 				<div>
 					<h3>Families:</h3>
 					{this.collection().map(function(family) {
-						return <OfficialFamilyToken key={family.id} model={family} />;
+						return <OfficialFamilyToken key={family.cid} model={family} />;
 					})}
 					<form onSubmit={this.handle_submit}>
 						<TypeaheadInput

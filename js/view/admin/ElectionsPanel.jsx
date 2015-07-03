@@ -15,7 +15,7 @@ define(["jquery", "react", "jsx!view/PageControls", "jsx!view/admin/ElectionRow"
 					<ul>
 						{this.collection().map(function(election) {
 							return <ElectionRow
-								key={election.id}
+								key={election.cid}
 								model={election} />;
 						})}
 					</ul>

@@ -9,7 +9,7 @@ define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/FamilyBox", "re
 					<IndexedPageControls ref="index" collection={this.collection()} />
 					<ul>
 						{this.collection().map(function(family) {
-							return <FamilyBox key={family.id} model={family} onDelete={that.handle_delete_official} />;
+							return <FamilyBox key={family.cid} model={family} onDelete={that.handle_delete_official} />;
 						})}
 					</ul>
 				</div>
