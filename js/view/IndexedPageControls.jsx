@@ -35,7 +35,7 @@ define(["react", "jsx!view/AlphabetIndex", "jsx!view/PageControls", "react.backb
 
 		get_data: function(letter) {
 			if(letter === undefined) letter = this.state.letter;
-			return letter ? {data: {q: letter + "%", norm: 0}} : null;
+			return letter ? {data: {q: letter, qindex: 1}} : null;
 		},
 	});
 });

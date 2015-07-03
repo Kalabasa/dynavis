@@ -172,15 +172,20 @@ function generic_get_list($class, $search_fields = null) {
 		"count" => 0,
 		"start" => 0,
 		"q" => null,
-		"norm" => true
+		"qnorm" => true,
+		"qindex" => false,
 	]);
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
 	if(!is_null($search_fields) && !is_null($params["q"])) {
-		$query = $params["norm"]
+		$query = $params["qnorm"]
 			? normalize_query($params["q"])
 			: [$params["q"]];
+		if($params["qindex"]) {
+			$search_fields = [$search_fields[0]];
+			$query = [$query[0] . "%"];
+		}
 	}
 
 	$result = isset($query)
@@ -506,20 +511,26 @@ function get_areas() {
 	$params = defaults($app->request->get(), [
 		"count" => 0,
 		"start" => 0,
-		"q" => null,
-		"norm" => true,
 		"level" => null,
+		"q" => null,
+		"qnorm" => true,
+		"qindex" => false,
 	]);
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
-	if(!is_null($params["q"])) {
-		$query = $params["norm"]
-			? normalize_query($params["q"])
-			: [$params["q"]];
-	}
+
 	if(isset($params["level"])) $level = $params["level"];
 	else $level = null;
+
+	if(!is_null($params["q"])) {
+		$query = $params["qnorm"]
+			? normalize_query($params["q"])
+			: [$params["q"]];
+		if($params["qindex"]) {
+			$query = [$query[0] . "%"];
+		}
+	}
 
 	$result = isset($query)
 		? Area::query_areas($count, $start, $query, $level)
