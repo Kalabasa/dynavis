@@ -1,5 +1,5 @@
 "use strict";
-define(["jquery", "localStorage", "backbone", "model/User"], function($, localStorage, Backbone, User) {
+define(["jquery", "localStorage", "backbone", "InstanceCache", "model/User"], function($, localStorage, Backbone, InstanceCache, User) {
 	return Backbone.Model.extend({
 		urlRoot: "api.php/tokens",
 		defaults: {
