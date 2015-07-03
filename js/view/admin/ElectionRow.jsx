@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "InstanceCache", "model/Official", "model/Party", "jsx!view/TypeaheadInput", "jsx!view/OfficialName", "jsx!view/Name", "react.backbone"], function(React, InstanceCache, Official, Party, TypeaheadInput, OfficialName, Name) {
+define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!view/TypeaheadInput", "jsx!view/OfficialName", "jsx!view/Name", "react.backbone"], function(React, InstanceCache, OfficialSingle, Party, TypeaheadInput, OfficialName, Name) {
 	return React.createBackboneClass({
  		mixins: [React.addons.LinkedStateMixin],
  		
@@ -33,7 +33,7 @@ define(["react", "InstanceCache", "model/Official", "model/Party", "jsx!view/Typ
 			var area = InstanceCache.get("Area", area_code);
 			var party = InstanceCache.get("Party", party_id);
 
-			if(this.state.edit) {
+			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){
 					var cancel_button = <button onClick={this.handle_cancel}>Cancel</button>;
 				}
@@ -144,7 +144,7 @@ define(["react", "InstanceCache", "model/Official", "model/Party", "jsx!view/Typ
 			});
 
 			this.refs.official.get_or_create({
-				model: Official,
+				model: OfficialSingle,
 				attributes: function(str) {
 					var tokens = that.refs.official.state.value.match(/^\s*(.+?)\s*,\s*(.+?)\s*(?:"(.+?)")?\s*$/);
 					if(!tokens || tokens.length <= 2) {
@@ -182,7 +182,9 @@ define(["react", "InstanceCache", "model/Official", "model/Party", "jsx!view/Typ
 				party_id: party_id,
 			};
 
-			var patch = _.omit(new_attributes, function(value, key, object) {
+			var patch = this.model().isNew()
+				? this.refs.name.state
+				: _.omit(new_attributes, function(value, key, object) {
 				return that.model().get(key) === value;
 			});
 			

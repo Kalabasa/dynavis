@@ -6,7 +6,7 @@ define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/FamilyBox", "re
 			return (
 				<div>
 					<h1>Families</h1>
-					<IndexedPageControls collection={this.collection()} />
+					<IndexedPageControls ref="index" collection={this.collection()} />
 					<ul>
 						{this.collection().map(function(family) {
 							return <FamilyBox key={family.id} model={family} onDelete={that.handle_delete_official} />;

@@ -11,7 +11,7 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 		componentWillMount: function() {
 			this.refresh_families();
 		},
-		componentOnModelChange: function() {
+		onModelChange: function() {
 			this.refresh_families();
 		},
 		refresh_families: function() {
@@ -26,12 +26,12 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 		},
 
 		render: function() {
-			var info = null;
-			if(this.state.edit) {
+			var fields = null;
+			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){
 					var cancel_button = <button onClick={this.handle_cancel}>Cancel</button>;
 				}
-				info = (
+				fields = (
 					<div>
 						<EditableOfficialName ref="name" model={this.model()} />
 						<button onClick={this.handle_save}>Save</button>
@@ -40,7 +40,7 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 					</div>
 				);
 			}else{
-				info = (
+				fields = (
 					<div>
 						<OfficialName model={this.model()} />
 						<button onClick={this.handle_edit}>Edit</button>
@@ -48,12 +48,12 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 				);
 			}
 			if(!this.model().isNew()) {
-				var families = <OfficialFamilyList collection={this.state.families} />;
+				var family_list = <OfficialFamilyList collection={this.state.families} />;
 			}
 			return (
 				<li>
-					{info}
-					{families}
+					{fields}
+					{family_list}
 				</li>
 			);
 		},
@@ -69,9 +69,11 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 		handle_save: function() {
 			var that = this;
 
-			var patch = _.omit(this.refs.name.state, function(value, key, object) {
-				return that.model().get(key) === value;
-			});
+			var patch = this.model().isNew()
+				? this.refs.name.state
+				: _.omit(this.refs.name.state, function(value, key, object) {
+					return that.model().get(key) === value;
+				});
 			
 			if(_.isEmpty(patch)) {
 				this.setState({edit: false});

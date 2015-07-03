@@ -1,5 +1,5 @@
 "use strict";
-define(["jquery", "react", "model/Election", "jsx!view/PageControls", "jsx!view/admin/ElectionRow", "react.backbone"], function($, React, Election, PageControls, ElectionRow) {
+define(["jquery", "react", "jsx!view/PageControls", "jsx!view/admin/ElectionRow", "react.backbone"], function($, React, PageControls, ElectionRow) {
 	return React.createBackboneClass({
 		render: function() {
 			var that = this;
@@ -10,7 +10,7 @@ define(["jquery", "react", "model/Election", "jsx!view/PageControls", "jsx!view/
 						Upload election records (csv) <input ref="file" type="file" />
 						<input type="submit" value="Upload" />
 					</form>
-					<PageControls collection={this.collection()} />
+					<PageControls ref="pager" collection={this.collection()} />
 					<button onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(election) {
@@ -24,7 +24,16 @@ define(["jquery", "react", "model/Election", "jsx!view/PageControls", "jsx!view/
 		},
 
 		handle_add: function() {
-			this.collection().add(new Election(), {at: 0});
+			var that = this;
+			if(this.collection().getPage() === 0) {
+				that.collection().add({}, {at: 0});
+			}else{
+				this.collection().page(0, {
+					complete: function() {
+						that.collection().add({}, {at: 0});
+					},
+				});
+			}
 		},
 
 		handle_upload: function(e) {
@@ -46,4 +55,4 @@ define(["jquery", "react", "model/Election", "jsx!view/PageControls", "jsx!view/
 			});
 		},
 	});
-});
+});	

@@ -18,11 +18,17 @@ define(["react", "jsx!view/AlphabetIndex", "jsx!view/PageControls", "react.backb
 			);
 		},
 
+		set_letter: function(letter, options) {
+			options = options || {};
+			var data = this.get_data(letter) || {};
+			this.collection().page(0, _.extend(data, options));
+			this.setState({letter: letter});
+		},
+
 		index_handler: function(letter) {
 			var that = this;
 			return function() {
-				that.setState({letter: letter});
-				that.collection().page(0, that.get_data(letter));
+				that.set_letter(letter);
 			};
 		},
 

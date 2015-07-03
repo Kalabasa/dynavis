@@ -3,7 +3,7 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 	return React.createBackboneClass({
 		getInitialState: function() {
 			return {
-				edit: false,
+				edit: this.model().isNew(),
 				members: new FamilyMemberCollection(null, {family_id: this.model().id}),
 			};
 		},
@@ -14,7 +14,7 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 		
 		render: function() {
 			var info = null;
-			if(this.state.edit) {
+			if(this.model().isNew() || this.state.edit) {
 				info = (
 					<div>
 						<EditableName ref="name" model={this.model()} />
@@ -51,7 +51,7 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 			var that = this;
 
 			var new_name = this.refs.name.state.name;
-			if(this.model().get("name") === new_name) {
+			if(!this.model().isNew() && this.model().get("name") === new_name) {
 				this.setState({edit: false});
 			}else{
 				this.model().save({name: new_name}, {

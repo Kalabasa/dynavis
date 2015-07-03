@@ -1,12 +1,12 @@
 "use strict";
-define(["react", "model/Official", "jsx!view/IndexedPageControls", "jsx!view/admin/OfficialRow", "react.backbone"], function(React, Official, IndexedPageControls, OfficialRow) {
+define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/OfficialRow", "react.backbone"], function(React, IndexedPageControls, OfficialRow) {
 	return React.createBackboneClass({
 		render: function() {
 			var that = this;
 			return (
 				<div>
 					<h1>Officials</h1>
-					<IndexedPageControls collection={this.collection()} />
+					<IndexedPageControls ref="index" collection={this.collection()} />
 					<button onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(official) {
@@ -18,7 +18,16 @@ define(["react", "model/Official", "jsx!view/IndexedPageControls", "jsx!view/adm
 		},
 
 		handle_add: function() {
-			this.collection().add(new Official(), {at: 0});
+			var that = this;
+			if(this.refs.index.state.letter === null && this.collection().getPage() === 0) {
+				that.collection().add({}, {at: 0});
+			}else{
+				this.refs.index.set_letter(null, {
+					complete: function() {
+						that.collection().add({}, {at: 0});
+					},
+				});
+			}
 		},
 	});
 });
