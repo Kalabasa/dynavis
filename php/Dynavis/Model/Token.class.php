@@ -19,7 +19,7 @@ class Token extends \Dynavis\Core\RefEntity {
 
 		$this->user_id = $user->get_id();
 		$this->token = base64_encode(openssl_random_pseudo_bytes(96));
-		$this->expiry = (new \DateTime("+10 days"))->format("Y-m-d H:i:s");
+		$this->refresh();
 	}
 
 	public static function get_by_token($token) {
@@ -43,6 +43,10 @@ class Token extends \Dynavis\Core\RefEntity {
 	public function set_expiry($datetime) {
 		$this->load();
 		$this->expiry = $datetime->format("Y-m-d H:i:s");
+	}
+
+	public function refresh() {
+		$this->set_expiry(new \DateTime("+10 days"));
 	}
 
 	public function jsonSerialize() {

@@ -51,7 +51,7 @@ $app->get("/users/:username/datasets", "get_user_datasets");
 $app->get("/users/:username/datasets/:id", "get_user_dataset");
 $app->get("/users/:username/datasets/:id/datapoints", "get_user_dataset_datapoints");
 $app->get("/datasets", function () { generic_get_list("Dataset", ["name"]); } );
-$app->get("/tokens/:id", $auth_token, function ($id) { generic_get_item("Token", $id); } )->name("tokens");
+$app->get("/tokens/:id", $auth_token, "get_token")->name("tokens");
 
 
 //-----------------------------------------------------------------------------
@@ -1079,6 +1079,20 @@ function delete_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
 
 
 // Tokens
+
+function get_token($id) {
+	global $app;
+	try {
+		$token = new Token((int) $id);
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+	$token->refresh();
+	
+	Token::cleanup();
+
+	echo json_encode($token);
+}
 
 function post_token() {
 	global $app;
