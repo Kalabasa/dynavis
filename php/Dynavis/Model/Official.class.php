@@ -31,7 +31,7 @@ class Official extends \Dynavis\Core\Entity {
 		$this->nickname = trim($this->nickname) ? Database::normalize_string($this->nickname) : null;
 
 		if(!strlen($this->surname) || !strlen($this->name)) {
-			throw new DataException("Required fields empty. (surname, name)");
+			throw new \Dynavis\Core\DataException("Required fields empty. (surname, name)");
 		}
 
 		parent::save();

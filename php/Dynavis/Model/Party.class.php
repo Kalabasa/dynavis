@@ -34,7 +34,7 @@ class Party extends \Dynavis\Core\Entity {
 		$this->name = Database::normalize_string($this->name);
 
 		if(!strlen($this->name)) {
-			throw new DataException("Empty name.");
+			throw new \Dynavis\Core\DataException("Empty name.");
 		}
 
 		parent::save();

@@ -158,7 +158,7 @@ class Area extends \Dynavis\Core\RefEntity {
 		$this->name = Database::normalize_string($this->name);
 
 		if(!strlen($this->name)) {
-			throw new DataException("Empty name.");
+			throw new \Dynavis\Core\DataException("Empty name.");
 		}
 
 		parent::save();
