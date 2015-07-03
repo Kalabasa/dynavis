@@ -183,7 +183,7 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 			};
 
 			var patch = this.model().isNew()
-				? this.refs.name.state
+				? new_attributes
 				: _.omit(new_attributes, function(value, key, object) {
 				return that.model().get(key) === value;
 			});
