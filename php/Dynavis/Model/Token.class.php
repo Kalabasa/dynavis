@@ -58,6 +58,6 @@ class Token extends \Dynavis\Core\RefEntity {
 
 	public static function cleanup() {
 		$dt = new \DateTime("-10 hours");
-		Database::get()->delete(static::TABLE, "*", ["expiry[<]" => $dt->format("Y-m-d H:i:s")]);
+		Database::get()->delete(static::TABLE, ["expiry[<]" => $dt->format("Y-m-d H:i:s")]);
 	}
 }
