@@ -31,7 +31,11 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 
 			var official = InstanceCache.get("Official", official_id);
 			var area = InstanceCache.get("Area", area_code);
-			var party = InstanceCache.get("Party", party_id);
+			var party = isNaN(party_id) ? null : InstanceCache.get("Party", party_id);
+
+			official.fetch();
+			area.fetch();
+			if(party) party.fetch();
 
 			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){
