@@ -8,6 +8,12 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 			};
 		},
 
+		onModelChange: function() {
+			if(this.model() && this.state.selected === this.model()) {
+				this.setState({value: this.props.display(this.model().toJSON())});
+			}
+		},
+
 		componentWillMount: function() {
 			if(this.model()) {
 				this.setState({
