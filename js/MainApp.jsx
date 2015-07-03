@@ -1,15 +1,12 @@
 "use strict";
 define(function(require){
-	var Backbone = require("backbone"),
-		React = require("react"),
+	var React = require("react"),
 		Token = require("model/Token"),
 		MainRouter = require("jsx!MainRouter"),
 		Header = require("jsx!view/Header"),
 		Sidebar = require("jsx!view/main/Sidebar");
 
 	var MainApp = function() {
-		var that = this;
-
 		this.router = new MainRouter();
 	};
 

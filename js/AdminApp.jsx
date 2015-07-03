@@ -1,7 +1,6 @@
 "use strict";
 define(function(require){
-	var Backbone = require("backbone"),
-		React = require("react"),
+	var React = require("react"),
 		Token = require("model/Token"),
 		AdminRouter = require("jsx!AdminRouter"),
 		Header = require("jsx!view/Header"),
