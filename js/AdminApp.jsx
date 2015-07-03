@@ -20,6 +20,8 @@ define(function(require){
 	var AdminApp = function() {
 		var that = this;
 
+		this.token = new Token();
+
 		this.router = new (Backbone.Router.extend({
 			routes: {
 				"": "users", // FIXME: add home page?
@@ -58,7 +60,7 @@ define(function(require){
 	};
 
 	AdminApp.prototype.start = function() {
-		React.render(<Header model={new Token()} />, document.getElementById("header"));
+		React.render(<Header model={this.token} />, document.getElementById("header"));
 		React.render(<Sidebar />, document.getElementById("sidebar"));
 
 		Backbone.history.start();
