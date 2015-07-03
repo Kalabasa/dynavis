@@ -40,7 +40,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$conflicts = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], ["AND" => [
 			static::PRIMARY_KEY . "[!]" => $this->get_id(),
 			"year[<]" => $this->year_end,
-			"year_end[>=]" => $this->year,
+			"year_end[>]" => $this->year,
 			"position" => $this->position,
 			"area_code" => $this->area_code,
 		]]);
@@ -56,7 +56,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$official_overlaps = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], ["AND" => [
 			static::PRIMARY_KEY . "[!]" => $this->get_id(),
 			"year[<]" => $this->year_end,
-			"year_end[>=]" => $this->year,
+			"year_end[>]" => $this->year,
 			"official_id" => $this->official_id,
 		]]);
 
