@@ -39,21 +39,21 @@ class Dataset extends \Dynavis\Core\RefEntity {
 		fclose($handle);
 
 		$header = $data[0];
-		foreach ($header as $i => $value) {
-			$year = (int) $value;
+		$c = count($header);
+		for ($i = 1; $i < $c; $i++) {
+			$year = (int) $header[$i];
 			if($year === 0) {
-				throw new \Dynavis\Core\DataException("Invalid year format in header row. " . $value);
+				throw new \Dynavis\Core\DataException("Invalid year format in header row. " . $header[i]);
 			}
 			$header[$i] = $year;
 		}
-		$c = count($header);
 
 		$insert_data = [];
 
 		$r = count($data);
 		for ($i = 1; $i < $r; $i++) {
 			$row = $data[$i];
-			if(count($row) !== c) {
+			if(count($row) !== $c) {
 				throw new \Dynavis\Core\DataException("Incorrect number of columns in row. Expected " . $c . ". Got " . count($row) . " at row " . ($i + 1) . ": " . join(",", $row));
 			}
 			
@@ -66,11 +66,11 @@ class Dataset extends \Dynavis\Core\RefEntity {
 					throw new \Dynavis\Core\DataException("Invalid area format. " . $row[0] . " at row " . ($i + 1));
 				}
 			}
-			if(!preg_match("/^(\+|-)?((\d{0,65}\.\d{0,30})|\d{1,65})$/", $row[$j])) {
-				throw new \Dynavis\Core\DataException("Invalid value format. " . $row[$j] . " at row " . ($i + 1));
-			}
 
 			for ($j = 1; $j < $c; $j++) { 
+				if(!preg_match("/^(\+|-)?((\d{0,65}\.\d{0,30})|\d{1,65})$/", $row[$j])) {
+					throw new \Dynavis\Core\DataException("Invalid value format. " . $row[$j] . " at row " . ($i + 1));
+				}
 				$insert_data[] = [
 					"dataset_id" => $this->get_id(),
 					"year"  => $header[$j],

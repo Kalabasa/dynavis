@@ -957,7 +957,9 @@ function post_user_dataset_datapoint($username, $dataset_id) {
 	echo json_encode($datapoint);
 }
 
-function post_dataset_file($username, $id, $file) {
+function post_dataset_file($username, $dataset_id, $file) {
+	global $app;
+	
 	$user = User::get_by_username($username);
 	if(!$user) {
 		$app->halt(404);
@@ -979,7 +981,7 @@ function post_dataset_file($username, $id, $file) {
 	Database::get()->pdo->commit();
 
 	$datapoints = $dataset->get_points();
-	
+
 	$app->response->setStatus(201);
 	echo json_encode([
 		"total" => count($datapoints),
