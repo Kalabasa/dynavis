@@ -5,7 +5,11 @@ define(["backbone", "react"], function(Backbone, React) {
 			"": "main"
 		},
 		main: function() {
-			React.render(<img />, document.getElementById("body"));
+			require([
+				"jsx!view/main/MapPanel"
+			], function(MapPanel) {
+				React.render(<MapPanel />, document.getElementById("body"));
+			});
 		},
 	});
 });

@@ -9,6 +9,7 @@ require.config({
 		"jquery": "lib/jquery-2.1.4.min",
 		"jsx": "lib/jsx",
 		"JSXTransformer": "lib/JSXTransformer",
+		"leaflet": "lib/leaflet",
 		"localStorage": "lib/localStorage",
 		"react": "lib/react",
 		"react.backbone": "lib/react.backbone",
