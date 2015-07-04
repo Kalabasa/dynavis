@@ -900,23 +900,17 @@ function post_user_dataset($username) {
 		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
 
-	if(isset($_FILES["file"])) {
-		Database::get()->pdo->beginTransaction();
-		try {
-			$dataset->file($_FILES["file"]);
-		}catch(DataException $e) {
-			Database::get()->pdo->rollBack();
-			$app->halt(400, "Invalid file. " . $e->getMessage());
-		}
-		Database::get()->pdo->commit();
-	}
-
 	$app->response->setStatus(201);
 	echo json_encode($dataset);
 }
 
 function post_user_dataset_datapoint($username, $dataset_id) {
 	global $app;
+
+	if(isset($_FILES["file"])) {
+		return post_dataset_file($username, $dataset_id, $_FILES["file"]);
+	}
+
 	$data = json_decode($app->request->getBody(), TRUE);
 	if(is_null($data)) {
 		$app->halt(400, "Malformed data.");
@@ -961,6 +955,36 @@ function post_user_dataset_datapoint($username, $dataset_id) {
 
 	$app->response->setStatus(201);
 	echo json_encode($datapoint);
+}
+
+function post_dataset_file($username, $id, $file) {
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
+	}
+
+	try {
+		$dataset = new Dataset((int) $dataset_id);
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+
+	Database::get()->pdo->beginTransaction();
+	try {
+		$dataset->file($_FILES["file"]);
+	}catch(DataException $e) {
+		Database::get()->pdo->rollBack();
+		$app->halt(400, "Invalid file. " . $e->getMessage());
+	}
+	Database::get()->pdo->commit();
+
+	$datapoints = $dataset->get_points();
+	
+	$app->response->setStatus(201);
+	echo json_encode([
+		"total" => count($datapoints),
+		"data" => $datapoints,
+	]);
 }
 
 function put_user_dataset($username, $dataset_id) {
