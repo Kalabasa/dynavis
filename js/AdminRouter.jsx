@@ -40,7 +40,7 @@ define(["backbone", "react"], function(Backbone, React) {
 			require([
 				"model/DatasetCollection", "jsx!view/admin/DatasetsPanel"
 			], function(DatasetCollection, DatasetsPanel) {
-				var dataset_collection = new DatasetCollection(username ? {username: username} : null);
+				var dataset_collection = new DatasetCollection(null, username ? {username: username} : null);
 				React.render(<DatasetsPanel collection={dataset_collection} />, document.getElementById("body"));
 				dataset_collection.fetch();
 			});
