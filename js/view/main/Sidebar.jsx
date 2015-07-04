@@ -6,7 +6,7 @@ define(["react"], function(React) {
 				<div>
 					<h1>Siedbar</h1>
 					<ul>
-						<li>Manage my datasets</li>
+						<li><a href="#datasets">Manage datasets</a></li>
 						<li>Choropleth pane</li>
 						<li>Tag cloud pane</li>
 					</ul>

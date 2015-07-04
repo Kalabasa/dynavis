@@ -7,11 +7,12 @@ define(function(require){
 		Sidebar = require("jsx!view/main/Sidebar");
 
 	var MainApp = function() {
-		this.router = new MainRouter();
+		this.token = new Token();
+		this.router = new MainRouter({token: this.token});
 	};
 
 	MainApp.prototype.start = function() {
-		React.render(<Header model={new Token()} />, document.getElementById("header"));
+		React.render(<Header model={this.token} />, document.getElementById("header"));
 		React.render(<Sidebar />, document.getElementById("sidebar"));
 
 		Backbone.history.start();
