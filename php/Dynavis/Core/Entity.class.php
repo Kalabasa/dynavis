@@ -21,14 +21,18 @@ abstract class Entity implements \JsonSerializable{
 	public function __construct($id = null, $check = true) {
 		// Get the item data if id is given
 		if(isset($id)) {
-			if(!$check || Database::get()->has(static::TABLE, [static::PRIMARY_KEY => $id])) {
-				$this->_id = (int) $id;
+			if(!$check || static::has($id)) {
+				$this->_id = $id;
 			}else{
 				throw new NotFoundException("Entity ID is not in the database. " . get_class($this), 1);
 			}
 		}else{
 			$this->_data = [];
 		}
+	}
+
+	public static function has($id) {
+		return Database::get()->has(static::TABLE, [static::PRIMARY_KEY => $id])
 	}
 
 	public static function count() {

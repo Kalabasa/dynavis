@@ -57,9 +57,14 @@ class Dataset extends \Dynavis\Core\RefEntity {
 				throw new \Dynavis\Core\DataException("Incorrect number of columns in row. Expected " . $c . ". Got " . count($row) . " at row " . ($i + 1) . ": " . join(",", $row));
 			}
 			
-			$area_code = Area::parse_area_name($row[0]);
+			$area_code = (int) $row[0];
 			if(!$area_code) {
-				throw new \Dynavis\Core\DataException("Invalid area format. " . $row[0] . " at row " . ($i + 1));
+				try {
+					$area = Area::get_by_name($row[0]);
+					$area_code = $area->code;
+				}catch(\Dynavis\Core\NotFoundException $e) {
+					throw new \Dynavis\Core\DataException("Invalid area format. " . $row[0] . " at row " . ($i + 1));
+				}
 			}
 			if(!preg_match("/^(\+|-)?((\d{0,65}\.\d{0,30})|\d{1,65})$/", $row[$j])) {
 				throw new \Dynavis\Core\DataException("Invalid value format. " . $row[$j] . " at row " . ($i + 1));

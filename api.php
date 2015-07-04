@@ -609,6 +609,11 @@ function put_area($code) {
 
 function post_area() {
 	global $app;
+
+	if(isset($_FILES["file"])) {
+		return post_areas_file($_FILES["file"]);
+	}
+
 	$data = json_decode($app->request->getBody(), TRUE);
 	if(is_null($data)) {
 		$app->halt(400, "Malformed data.");
@@ -618,13 +623,8 @@ function post_area() {
 		$app->halt(400, "Incomplete data.");
 	}
 
-	try {
-		$parent = isset($data["parent_code"]) ? new Area((int) $data["parent_code"]) : null;
-	}catch(NotFoundException $e) {
-		$app->halt(400, "Invalid parent code.");
-	}
-	$area = new Area(["parent" => $parent]);
-	$area->code = $data["code"];
+	$area = new Area();
+	$area->code = (int) $data["code"];
 	$area->name = $data["name"];
 	$area->type = [
 		"region" => 0,
@@ -640,6 +640,20 @@ function post_area() {
 
 	$app->response->setStatus(201);
 	echo json_encode($area);
+}
+
+function post_areas_file($file) {
+	global $app;
+	Database::get()->pdo->beginTransaction();
+	try {
+		Area::file($file);
+	}catch(DataException $e) {
+		Database::get()->pdo->rollBack();
+		$app->halt(400, "Invalid file. " . $e->getMessage());
+	}
+	Database::get()->pdo->commit();
+	$app->response->setStatus(201);
+	$app->response->headers->set("Location", $app->urlFor("areas"));
 }
 
 

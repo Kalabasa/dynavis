@@ -2,28 +2,30 @@
 namespace Dynavis\Model;
 use \Dynavis\Database;
 
-class Area extends \Dynavis\Core\RefEntity {
+class Area extends \Dynavis\Core\Entity {
 	const TABLE = "area";
-	const FIELDS = ["code", "name", "type", "parent_code"];
+	const FIELDS = ["code", "name", "type", "parent_code", "mun_code", "bar_code"];
 	const PRIMARY_KEY = "code";
-
-	public function set($param) {
-		$parent = $param["parent"];
-		
-		if(is_null($parent)) {
-			$this->parent_code = null;
-		}else{
-			if(is_null($parent->get_id())) {
-				throw new \RuntimeException("The parent area is not yet stored in the database.");
-			}
-
-			$this->parent_code = $parent->get_id();
-		}
-	}
 
 	public static function get_by_name($name) {
 		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
 			"name" => Database::normalize_string($name),
+		]);
+		if(!$ret) return null;
+		return new Area((int) $ret[static::PRIMARY_KEY], false);
+	}
+
+	public static function get_by_municipality_code($id) {
+		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
+			"mun_code" => $id,
+		]);
+		if(!$ret) return null;
+		return new Area((int) $ret[static::PRIMARY_KEY], false);
+	}
+
+	public static function get_by_barangay_code($id) {
+		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
+			"bar_code" => $id,
 		]);
 		if(!$ret) return null;
 		return new Area((int) $ret[static::PRIMARY_KEY], false);
@@ -110,8 +112,8 @@ class Area extends \Dynavis\Core\RefEntity {
 	}
 
 	public function get_parent() {
-		if($type == 0) return null;
 		$this->load();
+		if(is_null($this->parent_code)) return null;
 		return new Area($this->parent_code, false);
 	}
 
@@ -125,7 +127,7 @@ class Area extends \Dynavis\Core\RefEntity {
 			], [
 				Elect::TABLE . "." . Elect::PRIMARY_KEY
 			],[
-				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+				static::TABLE . "." . static::PRIMARY_KEY => $this->get_code()
 			])
 		);
 	}
@@ -161,17 +163,106 @@ class Area extends \Dynavis\Core\RefEntity {
 			throw new \Dynavis\Core\DataException("Empty name.");
 		}
 
+		// Calculate sub-codes
+		$this->bar_code = $this->code % 10000000;
+		$this->mun_code = Math.floor($this->bar_code / 1000);
+
 		parent::save();
 	}
 
-	public static function parse_area_name($name) {
-		$code = (int) $name;
-		if($code) {
-			return $code;
+	public static function file($file) {
+		$error = $file["error"];
+		if($error != UPLOAD_ERR_OK) {
+			throw new \RuntimeException("File upload error.");
 		}
 
-		// TODO: Need mapping of names to code
+		$size = $file["size"];
+		if($size == 0) {
+			throw new \Dynavis\Core\DataException("No file uploaded.");
+		}
 
-		return null;
+		$handle = fopen($file["tmp_name"], "r");
+		if ($handle === FALSE) {
+			throw new \RuntimeException("Error reading file.", 1);
+		}
+
+		$data = [];
+		while (($row = fgetcsv($handle)) !== FALSE) {
+			$data[] = $row;
+		}
+		fclose($handle);
+
+		$file_fields = ["code", "name"];
+		$num_fields = count($file_fields);
+
+		$insert_data = [];
+
+		$r = count($data);
+		for ($i = 0; $i < $r; $i++) {
+			$row = $data[$i];
+			if(count($row) !== $num_fields) {
+				throw new \Dynavis\Core\DataException("Incorrect number of columns in row. Expected " . $num_fields . ". Got " . count($row) . " at row " . ($i + 1) . ": " . join(",", $row));
+			}
+			$entry = [];
+			foreach ($row as $key => $value) {
+				$entry[$file_fields[$key]] = $value;
+			}
+			$insert_data[] = static::process_row($entry, $i);
+		}
+
+		$values_string = "(" . join("),(", array_map(
+			function ($row) {
+				return join(",", array_map(
+					function ($x) {
+						return empty($x) ? "NULL" : Database::get()->quote($x);
+					},
+					$row
+				));
+			},
+			$insert_data
+		)) . ")";
+
+		$ret = Database::get()->query("insert into " . static::TABLE . " (code,name,type,parent_code) values " . $values_string);
+
+		if(!$ret) {
+			throw new \Dynavis\Core\DataException("Error adding file data to database.");
+		}
+	}
+
+	private static function process_row($entry, $row) {
+		return [
+			"code" => $code,
+			"name" => Database::normalize_string($entry["name"]),
+			"type" => static::extract_level($area->code),
+			"parent_code" => static::extract_parent_code($area->code),
+		];
+	}
+
+	public static function extract_level($code) {
+		// Assuming valid PSGC $code
+		$str = (string) $code;
+
+		$province_code = substr($str, 2, 2);
+		$municipality_code = substr($str, 4, 2);
+		$barangay_code = substr($str, 6, 3);
+
+		if($province_code === "00") return 0;
+		if($municipality_code === "00") return 1;
+		if($barangay_code === "000") return 2;
+		return 3;
+	}
+
+	public static function extract_parent_code($code) {
+		// Assuming valid PSGC $code
+		$str = (string) $code;
+
+		$region_code = substr($str, 0, 2);
+		$province_code = substr($str, 2, 2);
+		$municipality_code = substr($str, 4, 2);
+		$barangay_code = substr($str, 6, 3);
+
+		if($municipality_code === "00") return intval($region_code . "0000000");
+		if($barangay_code === "000") return intval($region_code . $municipality_code . "00000");
+		return intval($region_code . $municipality_code . $barangay_code . "000");
 	}
 }
