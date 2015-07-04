@@ -32,7 +32,7 @@ abstract class Entity implements \JsonSerializable{
 	}
 
 	public static function has($id) {
-		return Database::get()->has(static::TABLE, [static::PRIMARY_KEY => $id])
+		return Database::get()->has(static::TABLE, [static::PRIMARY_KEY => $id]);
 	}
 
 	public static function count() {
