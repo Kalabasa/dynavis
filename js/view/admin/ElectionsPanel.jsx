@@ -44,7 +44,7 @@ define(["jquery", "react", "jsx!view/PageControls", "jsx!view/admin/ElectionRow"
 			fd.append("file", file );
 
 			$.ajax({
-				url: "api.php/elections",
+				url: this.collection().url(),
 				data: fd,
 				processData: false,
 				contentType: false,
