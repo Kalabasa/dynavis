@@ -9,6 +9,7 @@ define(["react"], function(React) {
 						<li><a href="#elections">Elections</a></li>
 						<li><a href="#officials">Officials</a></li>
 						<li><a href="#families">Families</a></li>
+						<li><a href="#areas">Areas</a></li>
 						<li><a href="#datasets">Datasets</a></li>
 						<li><a href="#users">Users</a></li>
 					</ul>

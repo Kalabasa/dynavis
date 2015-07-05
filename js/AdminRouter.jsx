@@ -6,6 +6,7 @@ define(["backbone", "react"], function(Backbone, React) {
 			"officials": "officials",
 			"families": "families",
 			"elections": "elections",
+			"areas": "areas",
 			"(users/:username/)datasets": "datasets",
 			"users": "users",
 		},
@@ -43,6 +44,15 @@ define(["backbone", "react"], function(Backbone, React) {
 				var dataset_collection = new DatasetCollection(null, username ? {username: username} : null);
 				React.render(<DatasetsPanel collection={dataset_collection} />, document.getElementById("body"));
 				dataset_collection.fetch();
+			});
+		},
+		areas: function(username) {
+			require([
+				"model/AreaCollection", "jsx!view/admin/AreasPanel"
+			], function(AreaCollection, AreasPanel) {
+				var area_collection = new AreaCollection();
+				React.render(<AreasPanel collection={area_collection} />, document.getElementById("body"));
+				area_collection.fetch();
 			});
 		},
 		users: function() {
