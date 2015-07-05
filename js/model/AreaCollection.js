@@ -1,5 +1,5 @@
 "use strict";
-define(["backbone", "Area", "backbone-pagec"], function(Backbone, Area) {
+define(["backbone", "model/Area", "backbone-pagec"], function(Backbone, Area) {
 	return Backbone.PageableCollection.extend({
 		model: Area,
 		url: "api.php/areas",
