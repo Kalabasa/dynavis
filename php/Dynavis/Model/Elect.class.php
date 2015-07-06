@@ -117,7 +117,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 			function ($row) {
 				return join(",", array_map(
 					function ($x) {
-						return empty($x) ? "NULL" : Database::get()->quote($x);
+						return is_null($x) ? "NULL" : Database::get()->quote($x);
 					},
 					$row
 				));

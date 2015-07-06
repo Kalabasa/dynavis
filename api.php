@@ -31,27 +31,27 @@ $auth_username_or_admin = authenticator(["username_match" => true, "roles" => ["
 // GET requests
 //-----------------------------------------------------------------------------
 
-$app->get("/officials", function () { generic_get_list("Official", ["surname", "name"]); } );
-$app->get("/officials/:id", "get_official" )->name("officials");
+$app->get("/officials", function () { generic_get_list("Official", ["surname", "name"]); } )->name("officials");
+$app->get("/officials/:id", "get_official");
 $app->get("/officials/:id/families", "get_official_families");
 $app->get("/families", function () { generic_get_list("Family", ["name"]); } );
-$app->get("/families/:id", "get_family")->name("families");
+$app->get("/families/:id", "get_family");
 $app->get("/families/:id/officials", "get_family_officials");
 $app->get("/parties", function () { generic_get_list("Party", ["name"]); } );
-$app->get("/parties/:id", function ($id) { generic_get_item("Party", $id); })->name("parties");
+$app->get("/parties/:id", function ($id) { generic_get_item("Party", $id); });
 $app->get("/parties/:id/elections", "get_party_elections");
-$app->get("/areas", "get_areas");
-$app->get("/areas/:code", function ($code) { generic_get_item("Area", $code); } )->name("areas");
+$app->get("/areas", "get_areas")->name("areas");
+$app->get("/areas/:code", function ($code) { generic_get_item("Area", $code); } );
 $app->get("/areas/:code/elections", "get_area_elections");
 $app->get("/elections", function () { generic_get_list("Elect", ["posiion"]); } );
-$app->get("/elections/:id", function ($id) { generic_get_item("Elect", $id); } )->name("elections");
+$app->get("/elections/:id", function ($id) { generic_get_item("Elect", $id); } );
 $app->get("/users", function () { generic_get_list("User", ["username"]); } );
-$app->get("/users/:username", "get_user")->name("users");
+$app->get("/users/:username", "get_user");
 $app->get("/users/:username/datasets", "get_user_datasets");
 $app->get("/users/:username/datasets/:id", "get_user_dataset");
 $app->get("/users/:username/datasets/:id/datapoints", "get_user_dataset_datapoints");
 $app->get("/datasets", function () { generic_get_list("Dataset", ["name"]); } );
-$app->get("/tokens/:id", $auth_token, "get_token")->name("tokens");
+$app->get("/tokens/:id", $auth_token, "get_token");
 
 
 //-----------------------------------------------------------------------------

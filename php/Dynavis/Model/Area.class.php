@@ -4,7 +4,7 @@ use \Dynavis\Database;
 
 class Area extends \Dynavis\Core\Entity {
 	const TABLE = "area";
-	const FIELDS = ["code", "name", "type", "parent_code", "mun_code", "bar_code"];
+	const FIELDS = ["code", "name", "type", "parent_code", "mun_id", "bar_id"];
 	const PRIMARY_KEY = "code";
 
 	public static function get_by_name($name) {
@@ -17,7 +17,7 @@ class Area extends \Dynavis\Core\Entity {
 
 	public static function get_by_municipality_code($id) {
 		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
-			"mun_code" => $id,
+			"mun_id" => $id,
 		]);
 		if(!$ret) return null;
 		return new Area((int) $ret[static::PRIMARY_KEY], false);
@@ -25,7 +25,7 @@ class Area extends \Dynavis\Core\Entity {
 
 	public static function get_by_barangay_code($id) {
 		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
-			"bar_code" => $id,
+			"bar_id" => $id,
 		]);
 		if(!$ret) return null;
 		return new Area((int) $ret[static::PRIMARY_KEY], false);
@@ -70,13 +70,13 @@ class Area extends \Dynavis\Core\Entity {
 			default: return false; break;
 		}
 
-		$query_value = "%" . join("%", $query) . "%";
+		$uquery = array_unique($query);
 		if(is_null($level)) {
-			$where = ["name[~]" => $query_value];
+			$where = ["name[~]" => $uquery];
 		}else{
 			$where = [
 				"AND" => [
-					"name[~]" => $query_value,
+					"name[~]" => $uquery,
 					"type" => $type,
 				],
 			];
@@ -164,8 +164,8 @@ class Area extends \Dynavis\Core\Entity {
 		}
 
 		// Calculate sub-codes
-		$this->bar_code = $this->code % 10000000;
-		$this->mun_code = Math.floor($this->bar_code / 1000);
+		$this->bar_id = $this->code % 10000000;
+		$this->mun_id = Math.floor($this->bar_id / 1000);
 
 		parent::save();
 	}
@@ -192,29 +192,33 @@ class Area extends \Dynavis\Core\Entity {
 		}
 		fclose($handle);
 
-		$file_fields = ["code", "name"];
-		$num_fields = count($file_fields);
-
 		$insert_data = [];
 
 		$r = count($data);
 		for ($i = 0; $i < $r; $i++) {
 			$row = $data[$i];
-			if(count($row) !== $num_fields) {
-				throw new \Dynavis\Core\DataException("Incorrect number of columns in row. Expected " . $num_fields . ". Got " . count($row) . " at row " . ($i + 1) . ": " . join(",", $row));
+
+			$entry = ["code" => null, "name" => null];
+			foreach ($row as $value) {
+				if(is_null($entry["code"]) && strlen($value) == 9 && intval($value)) {
+					$entry["code"] = $value;
+				}else{
+					if(is_null($entry["name"]) || strlen($value) > strlen($entry["name"])) {
+						$entry["name"] = $value;
+					}
+				}
 			}
-			$entry = [];
-			foreach ($row as $key => $value) {
-				$entry[$file_fields[$key]] = $value;
+			if(!is_null($entry["code"])) {
+				if(is_null($entry["name"])) $entry["name"] = "(Unnamed)";
+				$insert_data[] = static::process_row($entry, $i);
 			}
-			$insert_data[] = static::process_row($entry, $i);
 		}
 
 		$values_string = "(" . join("),(", array_map(
 			function ($row) {
 				return join(",", array_map(
 					function ($x) {
-						return empty($x) ? "NULL" : Database::get()->quote($x);
+						return is_null($x) ? "NULL" : Database::get()->quote($x);
 					},
 					$row
 				));
@@ -222,25 +226,31 @@ class Area extends \Dynavis\Core\Entity {
 			$insert_data
 		)) . ")";
 
-		$ret = Database::get()->query("insert into " . static::TABLE . " (code,name,type,parent_code) values " . $values_string);
+		$ret = Database::get()->query("replace into " . static::TABLE . " (code,name,type,parent_code,mun_id,bar_id) values " . $values_string);
 
 		if(!$ret) {
 			throw new \Dynavis\Core\DataException("Error adding file data to database.");
 		}
+
+		// TODO: What about parent_codes (they're null)
 	}
 
 	private static function process_row($entry, $row) {
+		$code = (int) $entry["code"];
+		$subcodes = static::extract_subcodes($code);
 		return [
 			"code" => $code,
 			"name" => Database::normalize_string($entry["name"]),
-			"type" => static::extract_level($area->code),
-			"parent_code" => static::extract_parent_code($area->code),
+			"type" => static::extract_level($code),
+			"parent_code" => null,
+			"mun_id" => $subcodes["mun_id"],
+			"bar_id" => $subcodes["bar_id"],
 		];
 	}
 
 	public static function extract_level($code) {
 		// Assuming valid PSGC $code
-		$str = (string) $code;
+		$str = str_pad($code, 9, "0", STR_PAD_LEFT);
 
 		$province_code = substr($str, 2, 2);
 		$municipality_code = substr($str, 4, 2);
@@ -252,17 +262,37 @@ class Area extends \Dynavis\Core\Entity {
 		return 3;
 	}
 
-	public static function extract_parent_code($code) {
+	public static function extract_subcodes($code) {
 		// Assuming valid PSGC $code
-		$str = (string) $code;
+		$str = str_pad($code, 9, "0", STR_PAD_LEFT);
 
 		$region_code = substr($str, 0, 2);
 		$province_code = substr($str, 2, 2);
 		$municipality_code = substr($str, 4, 2);
 		$barangay_code = substr($str, 6, 3);
 
-		if($municipality_code === "00") return intval($region_code . "0000000");
-		if($barangay_code === "000") return intval($region_code . $municipality_code . "00000");
-		return intval($region_code . $municipality_code . $barangay_code . "000");
+		$parent_code = null;
+		$mun_id = null;
+		$bar_id = null;
+
+		if($municipality_code === "00") {
+			// province.parent = region
+			$parent_code = intval($region_code . "0000000");
+		}else if($barangay_code === "000") {
+			// municipality.parent = province
+			$parent_code = intval($region_code . $province_code . "00000");
+			$mun_id = $province_code . $municipality_code;
+		}else{
+			// barangay.parent = municipality
+			$parent_code = intval($region_code . $mun_id . "000");
+			$mun_id = $province_code . $municipality_code;
+			$bar_id = $mun_id . $barangay_code;
+		}
+
+		return [
+			"parent_code" => $parent_code,
+			"mun_id" => $mun_id,
+			"bar_id" => $bar_id,
+		];
 	}
 }
