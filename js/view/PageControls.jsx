@@ -4,9 +4,9 @@ define(["react", "react.backbone"], function(React) {
 		render: function() {
 			return (
 				<div>
-					<button onClick={this.handle_prev}>Prev</button>
+					<button className="btn btn-default" onClick={this.handle_prev}>Prev</button>
 					Page {this.collection().getPage() + 1} of {this.collection().getTotalPages()}
-					<button onClick={this.handle_next}>Next</button>
+					<button className="btn btn-default" onClick={this.handle_next}>Next</button>
 				</div>
 			);
 		},
