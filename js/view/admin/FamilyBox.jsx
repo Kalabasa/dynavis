@@ -13,9 +13,9 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 		},
 		
 		render: function() {
-			var info = null;
+			var fields = null;
 			if(this.model().isNew() || this.state.edit) {
-				info = (
+				fields = (
 					<div>
 						<EditableName ref="name" model={this.model()} />
 						<button onClick={this.handle_save}>Save</button>
@@ -24,7 +24,7 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 					</div>
 				);
 			}else{
-				info = (
+				fields = (
 					<div>
 						<Name model={this.model()} />
 						<button onClick={this.handle_edit}>Edit</button>
@@ -33,8 +33,8 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 			}
 			return (
 				<li>
-					{info}
-					<FamilyMemberList collection={this.state.members} onDelete={this.props.onDelete} />
+					{fields}
+					<FamilyMemberList collection={this.state.members} onDeleteMember={this.props.onDeleteMember} />
 				</li>
 			);
 		},

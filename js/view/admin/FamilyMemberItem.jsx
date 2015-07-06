@@ -14,7 +14,7 @@ define(["react", "jsx!view/OfficialName", "react.backbone"], function(React, Off
 			this.model().destroy({
 				wait: true,
 				success: function() {
-					that.props.onDelete();
+					that.props.onDeleteMember(that.model());
 				},
 			});
 		},

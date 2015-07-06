@@ -49,10 +49,10 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 							display={display_official}
 							model={official}
 							required />
-						Position <input ref="position" type="text" valueLink={this.linkState("position")} />
-						Year <input ref="year" type="number" valueLink={this.linkState("year")} required />
-						Year end <input ref="year_end" type="number" valueLink={this.linkState("year_end")} required />
-						Votes <input ref="votes" type="number" valueLink={this.linkState("votes")} />
+						Position <input type="text" valueLink={this.linkState("position")} />
+						Year <input type="number" valueLink={this.linkState("year")} required />
+						Year end <input type="number" valueLink={this.linkState("year_end")} required />
+						Votes <input type="number" valueLink={this.linkState("votes")} />
 						Area <TypeaheadInput
 							for="Area"
 							ref="area"
@@ -117,10 +117,11 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 			var area_code = this.refs.area.state.selected.code;
 
 			var position = this.state.position || null;
+			
 			var votes = parseInt(this.state.votes);
 			if(this.state.votes && isNaN(votes)) {
 				console.error("Invalid votes format.");
-				return
+				return;
 			}
 
 			var dummy = {};

@@ -41,10 +41,10 @@ define(["jquery", "react", "jsx!view/PageControls", "jsx!view/admin/ElectionRow"
 
 			var fd = new FormData();
 			var file = this.refs.file.getDOMNode().files[0];
-			fd.append("file", file );
+			fd.append("file", file);
 
 			$.ajax({
-				url: this.collection().url(),
+				url: this.collection().url,
 				data: fd,
 				processData: false,
 				contentType: false,

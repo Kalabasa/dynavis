@@ -13,7 +13,7 @@ define(["react", "jsx!view/TypeaheadInput", "jsx!view/admin/FamilyMemberItem", "
 					<h3>Officials:</h3>
 					<ul>
 						{this.collection().map(function(official) {
-							return <FamilyMemberItem key={official.cid} model={official} onDelete={that.props.onDelete} />;
+							return <FamilyMemberItem key={official.cid} model={official} onDelete={that.props.onDeleteMember} />;
 						})}
 					</ul>
 					<form onSubmit={this.handle_submit}>
