@@ -2,11 +2,13 @@
 define(["react", "react.backbone"], function(React) {
 	return React.createBackboneClass({
 		render: function() {
+			var page = this.collection().getPage();
+			var pages = this.collection().getTotalPages();
 			return (
 				<div>
-					<button className="btn btn-default" onClick={this.handle_prev} disabled={this.collection().getPage() <= 0}>Prev</button>
-					Page {this.collection().getPage() + 1} of {this.collection().getTotalPages()}
-					<button className="btn btn-default" onClick={this.handle_next} disabled={this.collection().getPage() + 1 >= this.collection().getTotalPages()}>Next</button>
+					<button className="btn btn-default" onClick={this.handle_prev} disabled={page <= 0}>Prev</button>
+					Page {page + 1} of {pages}
+					<button className="btn btn-default" onClick={this.handle_next} disabled={page + 1 >= pages}>Next</button>
 				</div>
 			);
 		},
