@@ -10,6 +10,7 @@ define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/AreaRow", "reac
 						<input type="submit" value="Upload" />
 					</form>
 					<IndexedPageControls ref="index" collection={this.collection()} />
+					<button onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(area) {
 							return <AreaRow key={area.cid} model={area} />;
@@ -17,6 +18,19 @@ define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/AreaRow", "reac
 					</ul>
 				</div>
 			);
+		},
+
+		handle_add: function() {
+			var that = this;
+			if(this.refs.index.state.letter === null && this.collection().getPage() === 0) {
+				that.collection().add({}, {at: 0});
+			}else{
+				this.refs.index.set_letter(null, {
+					complete: function() {
+						that.collection().add({}, {at: 0});
+					},
+				});
+			}
 		},
 
 		handle_upload: function(e) {

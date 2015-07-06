@@ -6,7 +6,7 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 		getInitialState: function() {
 			return {
 				edit: this.model().isNew(),
-				code: this.model().get("code"),
+				code: this.format_code(this.model().get("code")),
 				level: this.model().get("level"),
 			};
 		},
@@ -27,8 +27,8 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 				}
 				return (
 					<li>
-						<EditableName ref="name" model={this.model()} />
-						Code <input type="text" valueLink={this.linkState("code")} required />
+						Name <EditableName ref="name" model={this.model()} />
+						Code <input type="text" valueLink={this.linkState("code")} disabled={!this.model().isNew()} required />
 						{/* TODO: USE RADIO BUTTON or WHATEVER SELECTOR */}
 						Level <input type="text" valueLink={this.linkState("level")} required />
 						Parent <TypeaheadInput
@@ -46,13 +46,18 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 				return (
 					<li>
 						<Name model={this.model()} />
-						{this.model().get("code")}
+						{this.format_code(this.model().get("code"))}
 						{this.model().get("level")}
 						<Name model={parent} />
 						<button onClick={this.handle_edit}>Edit</button>
 					</li>
 				);
 			}
+		},
+
+		format_code: function(code) {
+			if(!code) return null;
+			return ("00" + code).slice(-9);
 		},
 
 		handle_edit: function() {

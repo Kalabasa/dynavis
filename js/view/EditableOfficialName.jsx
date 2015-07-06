@@ -16,9 +16,9 @@ define(["react", "react.backbone"], function(React) {
 			return (
 				<span>
 					{/*TODO: add labels somehow*/}
-					<input type="text" valueLink={this.linkState("surname")} required />
-					<input type="text" valueLink={this.linkState("name")} required />
-					<input type="text" valueLink={this.linkState("nickname")} />
+					Surname <input type="text" valueLink={this.linkState("surname")} required />
+					Name <input type="text" valueLink={this.linkState("name")} required />
+					Nickname <input type="text" valueLink={this.linkState("nickname")} />
 				</span>
 			);
 		},

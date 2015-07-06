@@ -18,7 +18,7 @@ use \Dynavis\Model\Token;
 
 \Slim\Route::setDefaultConditions([
 	"id" => "\d+",
-	"code" => "\d{9}",
+	"code" => "\d{8,9}",
 ]);
 
 $app = new \Slim\Slim(["debug" => true]);
