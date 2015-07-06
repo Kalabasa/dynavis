@@ -5,7 +5,7 @@ define(["react", "leaflet"], function(React, L) {
 			var tile_layer = L.tileLayer("http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={access_token}", {
 				attribution: "Map data &copy; <a href='http://openstreetmap.org'>OpenStreetMap</a> contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='http://mapbox.com'>Mapbox</a>",
 				mapid: "mapbox.streets-basic",
-				access_token: "pk.eyJ1Ijoia2FsYWJhc2EiLCJhIjoiRmFCU2ZQdyJ9.VfSUFTi8_MjFMDM5KNvSVg",
+				access_token: "pk.eyJ1Ijoia2FsYWJhc2EiLCJhIjoiZjVhY2RiNmM0MTBlMTU0NjJiOGZlYmVlOWUxYTNjZjcifQ.BIFNQNrabSVgqSgtZZ5VQA",
 			});
 
 			var map = this.map = L.map(this.getDOMNode(), {
