@@ -23,23 +23,23 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 			var fields = null;
 			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){
-					var cancel_button = <button onClick={this.handle_cancel}>Cancel</button>;
+					var cancel_button = <button className="btn btn-default" onClick={this.handle_cancel}>Cancel</button>;
 				}
 				return (
-					<li>
+					<li className="form-inline">
 						Name <EditableName ref="name" model={this.model()} />
-						Code <input type="text" valueLink={this.linkState("code")} disabled={!this.model().isNew()} required />
+						Code <input className="form-control" type="text" valueLink={this.linkState("code")} disabled={!this.model().isNew()} required />
 						{/* TODO: USE RADIO BUTTON or WHATEVER SELECTOR */}
-						Level <input type="text" valueLink={this.linkState("level")} required />
+						Level <input className="form-control" type="text" valueLink={this.linkState("level")} required />
 						Parent <TypeaheadInput
 							for="Area"
 							ref="parent"
 							display={display}
 							model={parent}
 							required />
-						<button onClick={this.handle_save}>Save</button>
+						<button className="btn btn-primary" onClick={this.handle_save}>Save</button>
 						{cancel_button}
-						<button onClick={this.handle_delete}>Delete</button>
+						<button className="btn btn-danger" onClick={this.handle_delete}>Delete</button>
 					</li>
 				);
 			}else{
@@ -49,7 +49,7 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 						{this.format_code(this.model().get("code"))}
 						{this.model().get("level")}
 						<Name model={parent} />
-						<button onClick={this.handle_edit}>Edit</button>
+						<button className="btn btn-default" onClick={this.handle_edit}>Edit</button>
 					</li>
 				);
 			}

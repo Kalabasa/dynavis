@@ -55,7 +55,7 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 
 		render: function() {
 			return (
-				<input type="text" ref="input" value={this.state.value} onChange={this.handle_change} required={this.props.required} />
+				<input className="form-inline form-control" type="text" ref="input" value={this.state.value} onChange={this.handle_change} required={this.props.required} />
 			);
 		},
 

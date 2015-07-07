@@ -7,20 +7,20 @@ define(["react", "react.backbone"], function(React) {
 				<li>
 					<div>
 						<h2>{this.model().get("username")}</h2>
-						<input type="checkbox" checked={this.model().get("role")==="admin"} onChange={this.handle_toggle_admin} /> admin
-						<a href={url_datasets}>Datasets</a>
-						<button onClick={this.handle_delete}>Delete</button>
+						<a className="btn btn-link" href={url_datasets}>Datasets</a>
+						<label className="checkbox-inline">
+							<input type="checkbox" checked={this.model().get("role")==="admin"} onChange={this.handle_toggle_admin} /> admin
+						</label>
+						<button className="btn btn-danger" onClick={this.handle_delete}>Delete</button>
 					</div>
 				</li>
 			);
 		},
 
 		handle_toggle_admin: function(e) {
-			var new_role = "user";
-			if(this.model().get("role") === "user") {
-				new_role = "admin";
+			if(this.model().get("role") === "admin") {
+				this.model().save({role: "user"}, {wait: true});
 			}
-			this.model().save({role: new_role}, {wait: true});
 		},
 
 		handle_delete: function(e) {

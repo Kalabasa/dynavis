@@ -13,13 +13,13 @@ body { margin: 0 }
 
 .header {
 	height: $header-height;
+	left: $sidebar-width;
 	top: 0;
 
 	background-color: #D20035;
 }
 .sidebar {
 	width: $sidebar-width;
-	top: $header-height;
 	left: 0;
 
 	background-color: #D1F498;

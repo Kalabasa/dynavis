@@ -33,26 +33,26 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 			var area = InstanceCache.get("Area", area_code);
 			var party = isNaN(party_id) ? null : InstanceCache.get("Party", party_id);
 
-			official.fetch();
-			area.fetch();
+			if(official) official.fetch();
+			if(area) area.fetch();
 			if(party) party.fetch();
 
 			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){
-					var cancel_button = <button onClick={this.handle_cancel}>Cancel</button>;
+					var cancel_button = <button className="btn btn-default" onClick={this.handle_cancel}>Cancel</button>;
 				}
 				return (
-					<li>
+					<li className="form-inline">
 						Official <TypeaheadInput
 							for="Official"
 							ref="official"
 							display={display_official}
 							model={official}
 							required />
-						Position <input type="text" valueLink={this.linkState("position")} />
-						Year <input type="number" valueLink={this.linkState("year")} required />
-						Year end <input type="number" valueLink={this.linkState("year_end")} required />
-						Votes <input type="number" valueLink={this.linkState("votes")} />
+						Position <input className="form-control" type="text" valueLink={this.linkState("position")} />
+						Year <input className="form-control" type="number" valueLink={this.linkState("year")} required />
+						Year end <input className="form-control" type="number" valueLink={this.linkState("year_end")} required />
+						Votes <input className="form-control" type="number" valueLink={this.linkState("votes")} />
 						Area <TypeaheadInput
 							for="Area"
 							ref="area"
@@ -64,9 +64,9 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 							ref="party"
 							display={display}
 							model={party} />
-						<button onClick={this.handle_save}>Save</button>
+						<button className="btn btn-primary" onClick={this.handle_save}>Save</button>
 						{cancel_button}
-						<button onClick={this.handle_delete}>Delete</button>
+						<button className="btn btn-danger" onClick={this.handle_delete}>Delete</button>
 					</li>
 				);
 			}else{
@@ -78,7 +78,7 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 						<div>{this.model().get("votes")}</div>
 						<Name model={area} />
 						<Name model={party} />
-						<button onClick={this.handle_edit}>Edit</button>
+						<button className="btn btn-default" onClick={this.handle_edit}>Edit</button>
 					</li>
 				);
 			}

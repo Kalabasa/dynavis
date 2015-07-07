@@ -8,7 +8,7 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 						<form onSubmit={this.handle_login}>
 							<input id="username" type="text" required />
 							<input id="password" type="password" required />
-							<input type="submit" value="Login" />
+							<input className="btn btn-primary" type="submit" value="Login" />
 						</form>
 					</div>
 				);
@@ -16,7 +16,7 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 				return (
 					<div>
 						{this.model().get("username")}
-						<button onClick={this.handle_logout}>Logout</button>
+						<button className="btn btn-default" onClick={this.handle_logout}>Logout</button>
 					</div>
 				);
 			}

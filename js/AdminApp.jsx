@@ -7,13 +7,19 @@ define(function(require){
 		Sidebar = require("jsx!view/admin/Sidebar");
 
 	var AdminApp = function() {
-		this.token = new Token();
 		this.router = new AdminRouter();
+		this.router.on("route", this.on_route, this);
+
+		this.token = new Token();
+	};
+
+	AdminApp.prototype.on_route = function(route, params) {
+		this.header.set_title(route);
 	};
 
 	AdminApp.prototype.start = function() {
-		React.render(<Header model={this.token} />, document.getElementById("header"));
-		React.render(<Sidebar />, document.getElementById("sidebar"));
+		this.header = React.render(<Header title="Dashboard" />, document.getElementById("header"));
+		this.sidebar = React.render(<Sidebar token={this.token} />, document.getElementById("sidebar"));
 
 		Backbone.history.start();
 	};

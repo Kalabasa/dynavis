@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "model/Dataset", "jsx!view/PageControls", "jsx!view/admin/DatasetBox", "react.backbone"], function(React, Dataset, PageControls, DatasetBox) {
+define(["react", "model/Dataset", "jsx!view/PageControls", "jsx!view/main/DatasetBox", "react.backbone"], function(React, Dataset, PageControls, DatasetBox) {
 	return React.createBackboneClass({
  		mixins: [React.addons.LinkedStateMixin],
 
@@ -13,14 +13,14 @@ define(["react", "model/Dataset", "jsx!view/PageControls", "jsx!view/admin/Datas
 		render: function() {
 			return (
 				<div>
-					<a href="#">Back</a>
+					<a className="btn btn-link" href="#">Back</a>
 					<h1>Datasets</h1>
 					<form onSubmit={this.handle_upload}>
 						Upload dataset
-						Name <input ref="name" type="text" valueLink={this.linkState("name")} required />
-						Description <input ref="description" type="text" valueLink={this.linkState("description")} />
+						Name <input	className="form-control" ref="name" type="text" valueLink={this.linkState("name")} required />
+						Description <input	className="form-control" ref="description" type="text" valueLink={this.linkState("description")} />
 						File (csv) <input ref="file" type="file" />
-						<input type="submit" value="Upload" />
+						<input className="btn btn-default" type="submit" value="Upload" />
 					</form>
 					<PageControls collection={this.collection()} />
 					<ul>

@@ -11,8 +11,8 @@ define(["react", "react.backbone"], function(React) {
 
 		render: function() {
 			return (
-				<span>
-					<input type="text" valueLink={this.linkState("name")} required />
+				<span className="form-inline">
+					<input className="form-control" type="text" valueLink={this.linkState("name")} required />
 				</span>
 			);
 		},

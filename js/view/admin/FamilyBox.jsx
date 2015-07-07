@@ -18,16 +18,16 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 				fields = (
 					<div>
 						<EditableName ref="name" model={this.model()} />
-						<button onClick={this.handle_save}>Save</button>
-						<button onClick={this.handle_cancel}>Cancel</button>
-						<button onClick={this.handle_delete}>Delete</button>
+						<button className="btn btn-primary" onClick={this.handle_save}>Save</button>
+						<button className="btn btn-default" onClick={this.handle_cancel}>Cancel</button>
+						<button className="btn btn-danger" onClick={this.handle_delete}>Delete</button>
 					</div>
 				);
 			}else{
 				fields = (
 					<div>
 						<Name model={this.model()} />
-						<button onClick={this.handle_edit}>Edit</button>
+						<button className="btn btn-default" onClick={this.handle_edit}>Edit</button>
 					</div>
 				);
 			}

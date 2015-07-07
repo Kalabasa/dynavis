@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "jsx!view/PageControls", "jsx!view/admin/DatasetBox", "react.backbone"], function(React, PageControls, DatasetBox) {
+define(["react", "jsx!view/PageControls", "jsx!view/main/DatasetBox", "react.backbone"], function(React, PageControls, DatasetBox) {
 	return React.createBackboneClass({
 		render: function() {
 			return (

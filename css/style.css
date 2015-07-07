@@ -62,12 +62,12 @@ body {
 
 .header {
   height: 75px;
+  left: 200px;
   top: 0;
   background-color: #D20035; }
 
 .sidebar {
   width: 200px;
-  top: 75px;
   left: 0;
   background-color: #D1F498; }
 

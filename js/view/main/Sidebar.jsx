@@ -1,12 +1,12 @@
 "use strict";
-define(["react"], function(React) {
+define(["react", "jsx!view/Login"], function(React, Login) {
 	return React.createClass({
 		render: function() {
 			return (
 				<div>
-					<h1>Siedbar</h1>
+					<Login model={this.props.token} />
 					<ul>
-						<li><a href="#datasets">Manage datasets</a></li>
+						<li><a className="btn btn-link" href="#datasets">Manage datasets</a></li>
 						<li>Choropleth pane</li>
 						<li>Tag cloud pane</li>
 					</ul>

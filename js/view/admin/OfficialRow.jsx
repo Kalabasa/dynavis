@@ -29,21 +29,21 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 			var fields = null;
 			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){
-					var cancel_button = <button onClick={this.handle_cancel}>Cancel</button>;
+					var cancel_button = <button className="btn btn-default" onClick={this.handle_cancel}>Cancel</button>;
 				}
 				fields = (
-					<div>
+					<div className="form-inline">
 						<EditableOfficialName ref="name" model={this.model()} />
-						<button onClick={this.handle_save}>Save</button>
+						<button className="btn btn-primary" onClick={this.handle_save}>Save</button>
 						{cancel_button}
-						<button onClick={this.handle_delete}>Delete</button>
+						<button className="btn btn-danger" onClick={this.handle_delete}>Delete</button>
 					</div>
 				);
 			}else{
 				fields = (
 					<div>
 						<OfficialName model={this.model()} />
-						<button onClick={this.handle_edit}>Edit</button>
+						<button className="btn btn-default" onClick={this.handle_edit}>Edit</button>
 					</div>
 				);
 			}

@@ -7,7 +7,7 @@ define(["react", "react.backbone"], function(React) {
 					<h2>{this.model().get("name")}</h2>
 					by {this.model().get("username")}
 					{this.model().get("description")}
-					<button onClick={this.handle_delete}>Delete</button>
+					<button className="btn btn-danger" onClick={this.handle_delete}>Delete</button>
 				</li>
 			);
 		},

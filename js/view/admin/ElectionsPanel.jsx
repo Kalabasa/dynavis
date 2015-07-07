@@ -8,10 +8,10 @@ define(["jquery", "react", "jsx!view/PageControls", "jsx!view/admin/ElectionRow"
 					<h1>Elections</h1>
 					<form onSubmit={this.handle_upload}>
 						Upload election records (csv) <input ref="file" type="file" />
-						<input type="submit" value="Upload" />
+						<input className="btn btn-default" type="submit" value="Upload" />
 					</form>
 					<PageControls ref="pager" collection={this.collection()} />
-					<button onClick={this.handle_add}>Add</button>
+					<button className="btn btn-default" onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(election) {
 							return <ElectionRow

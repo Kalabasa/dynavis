@@ -8,12 +8,18 @@ define(function(require){
 
 	var MainApp = function() {
 		this.token = new Token();
+
 		this.router = new MainRouter({token: this.token});
+		this.router.on("route", this.on_route, this);
+	};
+
+	MainApp.prototype.on_route = function(route, params) {
+		this.header.set_title(route);
 	};
 
 	MainApp.prototype.start = function() {
-		React.render(<Header model={this.token} />, document.getElementById("header"));
-		React.render(<Sidebar />, document.getElementById("sidebar"));
+		this.header = React.render(<Header title="Dashboard" />, document.getElementById("header"));
+		this.sidebar = React.render(<Sidebar token={this.token} />, document.getElementById("sidebar"));
 
 		Backbone.history.start();
 	};

@@ -1,17 +1,17 @@
 "use strict";
-define(["react"], function(React) {
+define(["react", "jsx!view/Login"], function(React, Login) {
 	return React.createClass({
 		render: function() {
 			return (
 				<div>
-					<h1>Siedbar</h1>
+					<Login model={this.props.token} />
 					<ul>
-						<li><a href="#elections">Elections</a></li>
-						<li><a href="#officials">Officials</a></li>
-						<li><a href="#families">Families</a></li>
-						<li><a href="#areas">Areas</a></li>
-						<li><a href="#datasets">Datasets</a></li>
-						<li><a href="#users">Users</a></li>
+						<li><a className="btn btn-link" href="#elections">Elections</a></li>
+						<li><a className="btn btn-link" href="#officials">Officials</a></li>
+						<li><a className="btn btn-link" href="#families">Families</a></li>
+						<li><a className="btn btn-link" href="#areas">Areas</a></li>
+						<li><a className="btn btn-link" href="#datasets">Datasets</a></li>
+						<li><a className="btn btn-link" href="#users">Users</a></li>
 					</ul>
 				</div>
 			);

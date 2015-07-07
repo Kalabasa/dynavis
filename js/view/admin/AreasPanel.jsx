@@ -7,10 +7,10 @@ define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/AreaRow", "reac
 					<h1>Areas</h1>
 					<form onSubmit={this.handle_upload}>
 						Upload PSGC list (csv) <input ref="file" type="file" />
-						<input type="submit" value="Upload" />
+						<input className="btn btn-default" type="submit" value="Upload" />
 					</form>
 					<IndexedPageControls ref="index" collection={this.collection()} />
-					<button onClick={this.handle_add}>Add</button>
+					<button className="btn btn-default" onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(area) {
 							return <AreaRow key={area.cid} model={area} />;

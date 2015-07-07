@@ -4,7 +4,7 @@ define(["react", "react.backbone"], function(React) {
 		render: function() {
 			return (
 				<span>
-					{this.model().get("name")} <button onClick={this.handle_delete}>x</button>
+					{this.model().get("name")} <button className="btn btn-default btn-xs" onClick={this.handle_delete}>x</button>
 				</span>
 			);
 		},

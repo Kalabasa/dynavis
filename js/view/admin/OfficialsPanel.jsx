@@ -7,7 +7,7 @@ define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/OfficialRow", "
 				<div>
 					<h1>Officials</h1>
 					<IndexedPageControls ref="index" collection={this.collection()} />
-					<button onClick={this.handle_add}>Add</button>
+					<button className="btn btn-default" onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(official) {
 							return <OfficialRow key={official.cid} model={official} />;

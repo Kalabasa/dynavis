@@ -28,7 +28,7 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 							display={display}
 							collection={this.collection()}
 							required />
-						<input type="submit" value="Add" />
+						<input className="btn btn-default" type="submit" value="Add" />
 					</form>
 				</div>
 			);
