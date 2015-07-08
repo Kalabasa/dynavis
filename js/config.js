@@ -6,6 +6,7 @@ require.config({
 		"backbone": "lib/backbone",
 		"backbone-pagec": "lib/backbone-pagec",
 		"bloodhound": "lib/bloodhound",
+		"bootstrap": "lib/bootstrap.min",
 		"jquery": "lib/jquery-2.1.4.min",
 		"jsx": "lib/jsx",
 		"JSXTransformer": "lib/JSXTransformer",
@@ -24,8 +25,11 @@ require.config({
 			exports: "Backbone"
 		},
 		"backbone-pagec": {
-			deps: ['backbone'],
-			exports: 'Backbone.PageableCollection'
+			deps: ["backbone"],
+			exports: "Backbone.PageableCollection"
+		},
+		"bootstrap": {
+			deps: ["jquery"],
 		},
 		"JSXTransformer": "JSXTransformer",
 		"localStorage": {
@@ -48,3 +52,10 @@ require.config({
 		}
 	},
 });
+
+requirejs.onError = function (err) {
+	console.error(err);
+	if (err.requireType === 'timeout') {
+		console.error('modules: ' + err.requireModules);
+	}
+};
