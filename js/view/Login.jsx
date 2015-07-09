@@ -6,8 +6,8 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 				return (
 					<div>
 						<form onSubmit={this.handle_login}>
-							<input id="username" type="text" required />
-							<input id="password" type="password" required />
+							<input className="form-control" id="username" type="text" required />
+							<input className="form-control" id="password" type="password" required />
 							<input className="btn btn-primary" type="submit" value="Login" />
 						</form>
 					</div>

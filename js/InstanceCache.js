@@ -44,6 +44,8 @@ define(["require", "bloodhound"].concat(MODEL_PATHS_VALUES), function(require, B
 	};
 
 	InstanceCache.prototype.get = function(name, id) {
+		if(isNaN(id)) return null;
+		
 		if(this.hash[name]) {
 			if(this.hash[name][id]) {
 				return this.hash[name][id];
