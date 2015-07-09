@@ -1,5 +1,5 @@
 "use strict";
-define(["backbone"], function(Backbone) {
+define(["backbone", "model/DatapointCollection"], function(Backbone, DatapointCollection) {
 	return Backbone.Model.extend({
 		urlRoot: function() {
 			return "api.php/users/" + this.get("username") + "/datasets";
@@ -8,6 +8,10 @@ define(["backbone"], function(Backbone) {
 			username: null,
 			name: null,
 			description: null,
+		},
+		get_datapoints: function() {
+			if(!this.datapoints) this.datapoints = new DatapointCollection(null, {dataset: this});
+			return this.datapoints;
 		},
 	});
 });

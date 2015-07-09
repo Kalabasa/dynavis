@@ -36,7 +36,7 @@ define(["jquery", "react", "bootstrap"], function($, React) {
 		},
 	});
 
-	Modal.show = function(title, children) {
+	Modal.open = function(title, children) {
 		var node = document.createElement("div");
 		document.body.appendChild(node);
 		var modal = React.createElement(Modal,
@@ -49,8 +49,7 @@ define(["jquery", "react", "bootstrap"], function($, React) {
 			},
 			{children}
 		);
-		React.render(modal, node);
-		return modal;
+		return React.render(modal, node);
 	};
 
 	return Modal;
