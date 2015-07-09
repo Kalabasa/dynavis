@@ -1,6 +1,6 @@
 "use strict";
-define(["backbone", "model/Datapoint", "backbone-pagec"], function(Backbone, Datapoint) {
-	return Backbone.PageableCollection.extend({
+define(["backbone", "model/Datapoint"], function(Backbone, Datapoint) {
+	return Backbone.Collection.extend({
 		model: Datapoint,
 		initialize: function(models, options) {
 			this.dataset = options.dataset;
