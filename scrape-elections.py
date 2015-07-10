@@ -1,38 +1,109 @@
 #!/usr/bin/env python
-from __future__ import print_function
+import logging
 import argparse
 import requests
 from bs4 import BeautifulSoup
 import sys
 import csv
 
+email = "None"
+
+logging.basicConfig()
+logger = logging.getLogger("scraper")
+
 def main():
-	argparser = argparse.ArgumentParser(description="Scrape the COMELEC election results.")
-	argparser.add_argument("-c", "--congress", action="store_true", help="find congressional elections")
-	argparser.add_argument("area", metavar="code", type=int, help="PSGC of the area")
-	argparser.add_argument("year", metavar="year", type=int, help="year of election")
-	argparser.add_argument("-o", "--output", help="output csv file")
+	logger.setLevel(logging.DEBUG)
 
-	params = argparser.parse_args()
-	url, data = get_request_props(params)
+	parser = argparse.ArgumentParser(description="Scrape the COMELEC election results.")
+	parser.add_argument("--congress", action="store_true", help="find congressional elections")
+
+	parser.add_argument("year", metavar="YEAR", type=int, help="year of election")
+
+	input_group = parser.add_mutually_exclusive_group()
+	input_group.add_argument("-c", "--code", type=int, help="PSGC of the area")
+	input_group.add_argument("-i", "--input", help="input csv file containing PSGC")
+
+	parser.add_argument("-o", "--output", help="output csv file")
+
+	params = parser.parse_args()
+	
+	with open("scrape-elections.conf", "r") as f:
+		for line in f:
+			key,value = line.strip().split("=", 1)
+			if key.strip() == "email":
+				email = value.strip()
+				logger.debug("email " + email)
+	
+	with (open(params.output, "w") if params.output else sys.stdout) as outfile:
+		if params.input:
+			with (sys.stdin if params.input == "-" else open(params.input, "r")) as infile:
+				line = 0
+				for row in csv.reader(infile):
+					line += 1
+					logger.debug("file line " + str(line))
+					area = None
+					name = ""
+					for cell in row:
+						if len(cell) == 9:
+							try:
+								int(cell)
+								area = cell
+								continue
+							except ValueError:
+								pass
+						if len(cell) > len(name):
+							name = cell
+					if area and area[2:4] != "00":
+						logger.debug("scrape " + area + " " + name)
+						scrape(params.year, area, False, outfile)
+						if area[4:] == "00000":
+							scrape(params.year, area, True, outfile)
+
+		else:
+			scrape(params.year, params.code, params.congress, outfile)
+
+def scrape(year, area, congressional, outfile):
+	sid = str(year) + " " + str(area) + (" [C]" if congressional else "");
+
+	url, data = get_request_props(year, area, congressional)
 	if not url or not data:
-		print("Error: Invalid parameters.", file=sys.stderr)
+		logger.error("[" + sid + "] Invalid parameters")
 		sys.exit(1)
 
-	request = requests.post(url, data=data)
-	elections = parse_text(request.text)
-	if not elections:
-		print("Error: No results.", file=sys.stderr)
-		sys.exit(1)
+	try:
+		headers = {
+			"User-Agent": "scraperbot/0 (" + email + ")",
+			"From": email
+		}
+		request = requests.post(url, data=data, headers=headers)
+	except requests.ConnectionError as e:
+		logger.error("[" + sid + "] Error requesting")
+		logger.exception(e)
+		return False
 
-	area_str = str(params.area).zfill(9)
-	elections = [(area_str, params.year) + e for e in elections]
-	with (open(params.output, "w") if params.output else sys.stdout) as fp:
-		csv.writer(fp).writerows(elections)
+	try:
+		elections = parse_text(request.text)
+	except Exception as e:
+		logger.error("[" + sid + "] Error parsing")
+		logger.exception(e)
+		logger.debug(request.text)
+		return False
+	if elections is None:
+		logger.warning("[" + sid + "] No results")
+		return False
+	elif not elections:
+		logger.error("[" + sid + "] Malformed text")
+		logger.debug(request.text)
+		return False
 
-def get_request_props(params):
-	year = int(params.year)
-	area_string = str(params.area).zfill(9)
+	area_str = str(area).zfill(9)
+	elections = [(area_str, year) + e for e in elections]
+	csv.writer(outfile).writerows(elections)
+	return True
+
+def get_request_props(year, area, congressional=False):
+	year = int(year)
+	area_string = str(area).zfill(9)
 	region_code = area_string[0:2]
 	province_code = area_string[2:4]
 	municipality_code = area_string[4:6]
@@ -46,7 +117,7 @@ def get_request_props(params):
 		url = None
 		data["region"] = region_code
 	elif municipality_code == "00": # Province
-		category = "cong" if params.congress else "prov";
+		category = "cong" if congressional else "prov";
 		if year <= 2007:
 			url = "http://www.comelec.gov.ph/tpl/ResultsScripts/" + str(year)[-2:] + "search" + category + ".php"
 		elif year == 2010:
@@ -54,7 +125,7 @@ def get_request_props(params):
 		else:
 			url = "http://www.comelec.gov.ph/tpl/ResultsScripts/search" + category + str(year) + ".php"
 		data["province"] = province_code
-		if params.congress:
+		if congressional:
 			data["hidden_cong"] = 1
 		else:
 			data["hidden_prov"] = 1
@@ -99,7 +170,7 @@ def parse_text(text):
 				i += int(cells[i].attrs["colspan"])
 		if len(cells) == len(headers):
 			# elect tuple: (area, year, position, surname, name, nickname, party, votes)
-			surname, name = [x.strip() for x in values_store["NAME"].split(",")]
+			surname, name = [x.strip() for x in values_store["NAME"].split(",",1)]
 			elections.append((
 				values_store["POSITION"], 
 				surname, 
