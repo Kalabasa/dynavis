@@ -37,6 +37,7 @@ define(["jquery", "react", "jsx!view/PageControls", "jsx!view/admin/ElectionRow"
 		},
 
 		handle_upload: function(e) {
+			var that = this;
 			e.preventDefault();
 
 			var fd = new FormData();
@@ -50,7 +51,7 @@ define(["jquery", "react", "jsx!view/PageControls", "jsx!view/admin/ElectionRow"
 				contentType: false,
 				type: "POST",
 				success: function(data){
-					this.collection().fetch();
+					that.collection().fetch();
 				},
 			});
 		},
