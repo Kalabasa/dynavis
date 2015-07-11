@@ -115,7 +115,6 @@ function defaults($params, $defaults){
 }
 
 function authenticator($options) {
-	return function() {};
 	global $app;
 	return function($route) use ($options, $app) {
 		$auth = $app->request->headers->get("Authorization");
