@@ -31,6 +31,7 @@ def main():
 		for line in f:
 			key,value = line.strip().split("=", 1)
 			if key.strip() == "email":
+				global email
 				email = value.strip()
 				logger.debug("email " + email)
 	
@@ -97,7 +98,7 @@ def scrape(year, area, congressional, outfile):
 		return False
 
 	area_str = str(area).zfill(9)
-	elections = [(area_str, year) + e for e in elections]
+	elections = [(area_str, year) + tuple([s.encode("utf-8") for s in e]) for e in elections]
 	csv.writer(outfile).writerows(elections)
 	return True
 
@@ -142,13 +143,14 @@ def get_request_props(year, area, congressional=False):
 	else: # Barangay
 		if year == 2010:
 			url = "http://www.comelec.gov.ph/tpl/ResultsScripts/searchbarangay.php"
+			data["hidden_bar"] = 1
 		else:
 			url = "http://www.comelec.gov.ph/tpl/ResultsScripts/" + str(year) + "BskeSearch.php"
+			data["hidden_prov"] = 1
 		data["region"] = region_code
 		data["province"] = province_code
 		data["municipality"] = municipality_id
 		data["barangay"] = barangay_id
-		data["hidden_bar"] = 1
 
 	return (url, data)
 
@@ -156,29 +158,29 @@ def parse_text(text):
 	soup = BeautifulSoup(text)
 	rows = soup.find_all("tr")
 	if not rows:
-		return None
+		if len(soup.find_all("p")) == 1:
+			return None
+		else:
+			return []
 	headers = [th.get_text() for th in rows[0].find_all("th")]
-	values_store = {}
+	values = {}
 	elections = []
 	for row in rows[1:]:
 		cells = row.find_all("td")
 		for i in range(len(cells)):
 			text = cells[i].get_text().strip()
 			if text or i > 0:
-				values_store[headers[i]] = text
+				values[headers[i]] = text
 			if "colspan" in cells[i].attrs:
 				i += int(cells[i].attrs["colspan"])
 		if len(cells) == len(headers):
 			# elect tuple: (area, year, position, surname, name, nickname, party, votes)
-			surname, name = [x.strip() for x in values_store["NAME"].split(",",1)]
-			elections.append((
-				values_store["POSITION"], 
-				surname, 
-				name, 
-				values_store["NICKNAME"],
-				values_store["PARTY AFFILIATION"],
-				values_store["VOTES OBTAINED"]
-			))
+			surname, name = [x.strip() for x in values["NAME"].split(",",1)]
+			position = values["POSITION"] if "POSITION" in values else ""
+			nickname = values["NICKNAME"] if "NICKNAME" in values else ""
+			party = values["PARTY AFFILIATION"] if "PARTY AFFILIATION" in values else ""
+			votes = values["VOTES OBTAINED"] if "VOTES OBTAINED" in values else ""
+			elections.append((position, surname, name, nickname, party, votes))
 	return elections
 
 main()
