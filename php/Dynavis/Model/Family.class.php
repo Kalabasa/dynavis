@@ -19,27 +19,41 @@ class Family extends \Dynavis\Core\Entity {
 		]);
 	}
 
-	public function get_members() {
-		// TODO: add OPTIONAL year parameter to get_members and is_member
-		// * The set Members(f,t) is dependent of family f and time t.
+	public function get_members($year = False) {
+		$query =
+			" select " . Official::TABLE . "." . Official::PRIMARY_KEY
+			. " from " . Official::TABLE
+
+			. " inner join " . static::TABLE_FAMILY_MEMBERSHIP
+				. " on " . Official::TABLE . "." . Official::PRIMARY_KEY . " = " . static::TABLE_FAMILY_MEMBERSHIP . ".official_id"
+			. " inner join " . static::TABLE
+				. " on " . static::TABLE_FAMILY_MEMBERSHIP . ".family_id = " . static::TABLE . "." . static::PRIMARY_KEY;
+
+		if($year) {
+			$query .= 
+				" inner join " . Elect::TABLE . " e1 "
+					. "on " . Official::TABLE . "." . Official::PRIMARY_KEY . " = e1.official_id "
+				. " left join " . Elect::TABLE . " e2 "
+					. " on e1.official_id = e2.official_id and e1.year > e2.year ";
+		}
+
+		$query .= " where " . static::TABLE . "." . static::PRIMARY_KEY . " = " . Database::get()->quote($this->get_id());
+
+		if($year) {
+			$query .=
+				" and e2." . Elect::PRIMARY_KEY . " is null"
+				. " and e1.year <= " . Database::get()->quote($year);
+		}
+
 		return array_map(
 			function ($item) {
 				return new Official((int) $item[Official::PRIMARY_KEY], false);
 			},
-			Database::get()->select(Official::TABLE, [
-				"[><]" . static::TABLE_FAMILY_MEMBERSHIP => [Official::PRIMARY_KEY => "official_id"],
-				"[><]" . static::TABLE => [static::TABLE_FAMILY_MEMBERSHIP . ".family_id" => static::PRIMARY_KEY],
-			], [
-				Official::TABLE . "." . Official::PRIMARY_KEY
-			], [
-				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
-			])
+			Database::get()->query($query)->fetchAll()
 		);
 	}
 
 	public function count_members() {
-		// TODO: add OPTIONAL year parameter to get_members and is_member
-		// * The set Members(f,t) is dependent of family f and time t.
 		return Database::get()->count(Official::TABLE, [
 			"[><]" . static::TABLE_FAMILY_MEMBERSHIP => [Official::PRIMARY_KEY => "official_id"],
 			"[><]" . static::TABLE => [static::TABLE_FAMILY_MEMBERSHIP . ".family_id" => static::PRIMARY_KEY],

@@ -434,12 +434,17 @@ function get_family($id) {
 
 function get_family_officials($id) {
 	global $app;
+
+	$params = defaults($app->request->get(), [
+		"year" => False,
+	]);
+
 	try {
 		$family = new Family((int) $id);
 	}catch(NotFoundException $e) {
 		$app->halt(404);
 	}
-	$members = $family->get_members();
+	$members = $family->get_members($params["year"]);
 
 	echo json_encode([
 		"total" => count($members),

@@ -173,7 +173,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		}
 
 		$party = null;
-		if(!empty($entry["party"])) { // TODO: what is the coding for independents
+		if(!empty($entry["party"]) && $entry["party"] !== "IND") { // IND = coding for independent
 			$party = Party::get_by_name($entry["party"]);
 			if(!$party) {
 				$party = new Party();

@@ -132,19 +132,29 @@ class Area extends \Dynavis\Core\Entity {
 		);
 	}
 
-	public function get_officials() {
+	public function get_officials($year = False) {
+		$query =
+			" select distinct " . Official::TABLE . "." . Official::PRIMARY_KEY
+			. " from " . Official::TABLE
+
+			. " inner join " . Elect::TABLE
+				. " on " . Official::TABLE . "." . Official::PRIMARY_KEY . " = " . Elect::TABLE . ".official_id "
+			. " inner join " . static::TABLE
+				. " on " . Elect::TABLE . ".area_code = " . static::TABLE . "." . static::PRIMARY_KEY
+
+			. " where "
+				. static::TABLE . "." . static::PRIMARY_KEY . " = " . Database::get()->quote($this->get_id());
+
+		if($year) {
+			$query .= " and year <= " . Database::get()->quote($year)
+				. " and year_end > " . Database::get()->quote($year);
+		}
+
 		return array_map(
 			function ($item) {
 				return new Official((int) $item[Official::PRIMARY_KEY], false);
 			},
-			Database::get()->select(Official::TABLE, [
-				"[><]" . Elect::TABLE => [Official::PRIMARY_KEY => "official_id"],
-				"[><]" . static::TABLE => [Elect::TABLE . ".area_code" => static::PRIMARY_KEY],
-			], [
-				Official::TABLE . "." . Official::PRIMARY_KEY
-			], [
-				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
-			])
+			Database::get()->query($query)->fetchAll()
 		);
 	}
 
@@ -275,7 +285,10 @@ class Area extends \Dynavis\Core\Entity {
 		$mun_id = null;
 		$bar_id = null;
 
-		if($municipality_code === "00") {
+		if($province_code == "00") {
+			// region.parent = NULL
+			$parent_code = null;
+		}else if($municipality_code === "00") {
 			// province.parent = region
 			$parent_code = intval($region_code . "0000000");
 		}else if($barangay_code === "000") {
