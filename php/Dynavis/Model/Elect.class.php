@@ -111,7 +111,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 			$insert_data[] = static::process_row($entry, $i);
 		}
 
-		// TODO: Check for overlaps and stuff like in save()
+		// No checking for overlaps. Assume correct data.
 
 		$values_string = "(" . join("),(", array_map(
 			function ($row) {
@@ -144,18 +144,17 @@ class Elect extends \Dynavis\Core\RefEntity {
 
 		$year = (int) $entry["year"];
 		if(!$year) {
-			throw new \Dynavis\Core\DataException("Invalid year format. " . $entry["year"] . " at row " . ($i + 1));
+			throw new \Dynavis\Core\DataException("Invalid year format. " . $entry["year"] . " at row " . ($row + 1));
 		}
 		// The length of term for LGU positions is three (3) years.
 		$year_end = $year + 3; // TODO: how about special elections or rescheduled elections
 
 		$position = $entry["position"];
-		$position = $position && trim($position) ? $position : null;
+		$position = $position && trim($position) ? Database::normalize_string($position) : null;
 
 		$votes = (int) $entry["votes"];
 		if(!is_numeric($votes)) {
-			// TODO: what if really zero votes?
-			throw new \Dynavis\Core\DataException("Invalid votes format. " . $entry["votes"] . " at row " . ($i + 1));
+			throw new \Dynavis\Core\DataException("Invalid votes format. " . $entry["votes"] . " at row " . ($row + 1));
 		}
 
 		$area = null;
@@ -164,12 +163,12 @@ class Elect extends \Dynavis\Core\RefEntity {
 			try{
 				$area = new Area($area_code);
 			}catch(\Dynavis\Core\NotFoundException $e) {
-				throw new \Dynavis\Core\DataException("Invalid area code. " . $entry["area"] . " at row " . ($i + 1));
+				throw new \Dynavis\Core\DataException("Invalid area code. " . $entry["area"] . " at row " . ($row + 1));
 			}
 		}else{
 			$area = Area::get_by_name($entry["area"]);
 			if(!$area) {
-				throw new \Dynavis\Core\DataException("Invalid area name. " . $entry["area"] . " at row " . ($i + 1));
+				throw new \Dynavis\Core\DataException("Invalid area name. " . $entry["area"] . " at row " . ($row + 1));
 			}
 		}
 
