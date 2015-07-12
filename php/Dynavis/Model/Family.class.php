@@ -8,6 +8,14 @@ class Family extends \Dynavis\Core\Entity {
 
 	const TABLE_FAMILY_MEMBERSHIP = "family_membership";
 
+	public static function get_by_name($name) {
+		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
+			"name" => Database::normalize_string($name),
+		]);
+		if(!$ret) return null;
+		return new Family((int) $ret[static::PRIMARY_KEY], false);
+	}
+
 	public function add_member($official) {
 		if($this->is_member($official)) {
 			throw new \Dynavis\Core\DataException("Cannot add an already-added member.");
