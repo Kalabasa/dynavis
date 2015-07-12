@@ -175,7 +175,7 @@ def parse_text(text):
 				i += int(cells[i].attrs["colspan"])
 		if len(cells) == len(headers):
 			# elect tuple: (area, year, position, surname, name, nickname, party, votes)
-			surname, name = [x.strip() for x in values["NAME"].split(",",1)]
+			surname, name = [x.replace(r"/[^\P{P}-]+/", "").strip() for x in values["NAME"].split(",",1)]
 			position = values["POSITION"] if "POSITION" in values else ""
 			nickname = values["NICKNAME"] if "NICKNAME" in values else ""
 			party = values["PARTY AFFILIATION"] if "PARTY AFFILIATION" in values else ""
