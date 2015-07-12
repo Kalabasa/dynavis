@@ -99,8 +99,8 @@ abstract class Entity implements \JsonSerializable{
 		if(is_null($this->_data) && isset($this->_id)) {
 			$this->_data = Database::get()->get(static::TABLE, static::FIELDS, [static::PRIMARY_KEY => $this->_id]);
 			// TODO: cast values to field types
-			foreach ($this->_data as $key => $value) {
-				$this->$key = $value;
+			foreach (static::FIELDS as $f) {
+				$this->$f = $this->_data[$f];
 			}
 		}
 	}
