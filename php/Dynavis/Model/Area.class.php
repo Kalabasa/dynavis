@@ -7,14 +7,6 @@ class Area extends \Dynavis\Core\Entity {
 	const FIELDS = ["code", "name", "type", "parent_code", "mun_id", "bar_id"];
 	const PRIMARY_KEY = "code";
 
-	public static function get_by_name($name) {
-		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
-			"name" => Database::normalize_string($name),
-		]);
-		if(!$ret) return null;
-		return new Area((int) $ret[static::PRIMARY_KEY], false);
-	}
-
 	public static function get_by_municipality_code($id) {
 		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
 			"mun_id" => $id,
