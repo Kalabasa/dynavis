@@ -43,7 +43,7 @@ $app->get("/parties/:id/elections", "get_party_elections");
 $app->get("/areas", "get_areas")->name("areas");
 $app->get("/areas/:code", function ($code) { generic_get_item("Area", $code); } );
 $app->get("/areas/:code/elections", "get_area_elections");
-$app->get("/elections", function () { generic_get_list("Elect", ["posiion"]); } );
+$app->get("/elections", function () { generic_get_list("Elect", ["position"]); } );
 $app->get("/elections/:id", function ($id) { generic_get_item("Elect", $id); } );
 $app->get("/users", function () { generic_get_list("User", ["username"]); } );
 $app->get("/users/:username", "get_user");
@@ -177,7 +177,10 @@ function generic_get_list($class, $search_fields = null) {
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
-	if(!is_null($search_fields) && !is_null($params["q"])) {
+	if(!is_null($params["q"])) {
+		if(is_null($search_fields)) {
+			$search_fields = $class::FIELDS;
+		}
 		$query = $params["qnorm"]
 			? normalize_query($params["q"])
 			: [$params["q"]];
