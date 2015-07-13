@@ -12,6 +12,7 @@ require.config({
 		"JSXTransformer": "lib/JSXTransformer",
 		"leaflet": "lib/leaflet",
 		"localStorage": "lib/localStorage",
+		"minivents": "lib/minivents.min",
 		"react": "lib/react",
 		"react.backbone": "lib/react.backbone",
 		"text": "lib/text",
@@ -34,6 +35,9 @@ require.config({
 		"JSXTransformer": "JSXTransformer",
 		"localStorage": {
 			exports: "localStorage"
+		},
+		"minivents": {
+			exports: "Events"
 		},
 		"react": {
 			exports: "React"
