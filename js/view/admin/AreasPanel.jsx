@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/AreaRow", "react.backbone"], function(React, IndexedPageControls, AreaRow) {
+define(["react", "jsx!view/SearchControls", "jsx!view/admin/AreaRow", "react.backbone"], function(React, SearchControls, AreaRow) {
 	return React.createBackboneClass({
 		render: function() {
 			return (
@@ -9,7 +9,7 @@ define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/AreaRow", "reac
 						Upload PSGC list (csv) <input ref="file" type="file" />
 						<input className="btn btn-default" type="submit" value="Upload" />
 					</form>
-					<IndexedPageControls ref="index" collection={this.collection()} />
+					<SearchControls ref="searcher" collection={this.collection()} />
 					<button className="btn btn-default" onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(area) {
@@ -22,10 +22,10 @@ define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/AreaRow", "reac
 
 		handle_add: function() {
 			var that = this;
-			if(this.refs.index.state.letter === null && this.collection().getPage() === 0) {
+			if(this.refs.searcher.state.query === null && this.collection().getPage() === 0) {
 				that.collection().add({}, {at: 0});
 			}else{
-				this.refs.index.set_letter(null, {
+				this.refs.searcher.set_query(null, {
 					complete: function() {
 						that.collection().add({}, {at: 0});
 					},

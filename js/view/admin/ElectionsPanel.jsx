@@ -1,5 +1,5 @@
 "use strict";
-define(["jquery", "react", "jsx!view/PageControls", "jsx!view/admin/ElectionRow", "react.backbone"], function($, React, PageControls, ElectionRow) {
+define(["jquery", "react", "jsx!view/SearchControls", "jsx!view/admin/ElectionRow", "react.backbone"], function($, React, SearchControls, ElectionRow) {
 	return React.createBackboneClass({
 		render: function() {
 			var that = this;
@@ -10,7 +10,7 @@ define(["jquery", "react", "jsx!view/PageControls", "jsx!view/admin/ElectionRow"
 						Upload election records (csv) <input ref="file" type="file" />
 						<input className="btn btn-default" type="submit" value="Upload" />
 					</form>
-					<PageControls ref="pager" collection={this.collection()} />
+					<SearchControls ref="searcher" collection={this.collection()} />
 					<button className="btn btn-default" onClick={this.handle_add}>Add</button>
 					<ul>
 						{this.collection().map(function(election) {
@@ -25,10 +25,10 @@ define(["jquery", "react", "jsx!view/PageControls", "jsx!view/admin/ElectionRow"
 
 		handle_add: function() {
 			var that = this;
-			if(this.collection().getPage() === 0) {
+			if(this.refs.searcher.state.query === null && this.collection().getPage() === 0) {
 				that.collection().add({}, {at: 0});
 			}else{
-				this.collection().page(0, {
+				this.refs.searcher.set_query(null, {
 					complete: function() {
 						that.collection().add({}, {at: 0});
 					},

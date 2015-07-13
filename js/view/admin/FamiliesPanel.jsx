@@ -1,12 +1,12 @@
 "use strict";
-define(["react", "jsx!view/IndexedPageControls", "jsx!view/admin/FamilyBox", "react.backbone"], function(React, IndexedPageControls, FamilyBox) {
+define(["react", "jsx!view/SearchControls", "jsx!view/admin/FamilyBox", "react.backbone"], function(React, SearchControls, FamilyBox) {
 	return React.createBackboneClass({
 		render: function() {
 			var that = this;
 			return (
 				<div>
 					<h1>Families</h1>
-					<IndexedPageControls ref="index" collection={this.collection()} />
+					<SearchControls collection={this.collection()} />
 					<ul>
 						{this.collection().map(function(family) {
 							return <FamilyBox key={family.cid} model={family} onDeleteMember={that.handle_delete_official} />;
