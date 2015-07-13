@@ -29,7 +29,7 @@ define(["jquery", "localStorage", "backbone", "InstanceCache", "model/User"], fu
 		},
 
 		get_user: function() {
-			if(this.isNew()) return null;
+			if(!this.get("username") || this.isNew()) return null;
 			return InstanceCache.get("User", this.get("username"));
 		},
 
