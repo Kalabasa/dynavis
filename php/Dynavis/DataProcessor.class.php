@@ -6,8 +6,59 @@ use \Dynavis\Model\Official;
 use \Dynavis\Model\Family;
 use \Dynavis\Model\Area;
 use \Dynavis\Model\Elect;
+use \Dynavis\Model\Dataset;
+use \Dynavis\Model\Datapoint;
+use \Dynavis\Model\User;
 
 class DataProcessor {
+	public static function save_dataset($calc_data, $username, $name, $description) {
+		Database::get()->pdo->beginTransaction();
+
+		$dataset = new Dataset(["user" => User::get_by_username($username)]);
+		$dataset->name = $name;
+		$dataset->description = $description;
+		$dataset->save();
+
+		$insert_data = [];
+
+		$min_year = $calc_data["min_year"];
+		$max_year = $calc_data["max_year"];
+
+		foreach ($calc_data["result"] as $code => $values) {
+			for($t = $min_year; $t <= $max_year; $t++) {
+				$insert_data[] = [
+					"dataset_id" => $dataset->get_id(),
+					"year"  => $t,
+					"area_code" => $code,
+					"value" => array_key_exists($t, $values) ? $values[$t] : null,
+				];
+			}
+		}
+
+		$values_string = "(" . join("),(", array_map(
+			function ($row) {
+				return join(",", array_map(
+					function ($x) {
+						return is_null($x) ? "NULL" : Database::get()->quote($x);
+					},
+					$row
+				));
+			},
+			$insert_data
+		)) . ")";
+
+		$ret = Database::get()->query("insert into " . Datapoint::TABLE . " (dataset_id,year,area_code,value) values " . $values_string);
+
+		if(!$ret) {
+			Database::get()->pdo->rollBack();
+			return null;
+		}
+
+		Database::get()->pdo->commit();
+
+		return $dataset->get_id();
+	}
+
 	public static function calculate_indicator($name) {
 		$calc_function = [
 			"DYNSHA" => "calculate_dynsha",
