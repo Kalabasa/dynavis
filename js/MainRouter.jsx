@@ -22,6 +22,10 @@ define(["backbone", "react"], function(Backbone, React) {
 				"model/DatasetCollection", "jsx!view/main/DatasetsPanel"
 			], function(DatasetCollection, DatasetsPanel) {
 				var user = that.token.get_user();
+				if(!user) {
+					that.navigate("", true);
+					return;
+				}
 				var dataset_collection = new DatasetCollection(null, {username: user.get("username")});
 				dataset_collection.fetch();
 				React.render(<DatasetsPanel collection={dataset_collection}/>, document.getElementById("body"));
