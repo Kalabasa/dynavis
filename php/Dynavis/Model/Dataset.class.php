@@ -69,7 +69,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 
 			for ($j = 1; $j < $c; $j++) { 
 				if(!preg_match("/^(\+|-)?((\d{0,65}\.\d{0,30})|\d{1,65})$/", $row[$j])) {
-					throw new \Dynavis\Core\DataException("Invalid value format. " . $row[$j] . " at row " . ($i + 1));
+					throw new \Dynavis\Core\DataException("Invalid number format. " . $row[$j] . " at row " . ($i + 1));
 				}
 				$insert_data[] = [
 					"dataset_id" => $this->get_id(),
