@@ -8,11 +8,17 @@ define(["react", "leaflet"], function(React, L) {
 		componentDidMount: function() {
 			var that = this;
 
+			/*
 			var tile_layer = L.tileLayer("http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={access_token}", {
 				attribution: "Map data &copy; <a href='http://openstreetmap.org'>OpenStreetMap</a> contributors, <a href='http://creativecommons.org/licenses/by-sa/2.0/'>CC-BY-SA</a>, Imagery © <a href='http://mapbox.com'>Mapbox</a>",
 				mapid: "mapbox.streets-basic",
 				access_token: "pk.eyJ1Ijoia2FsYWJhc2EiLCJhIjoiZjVhY2RiNmM0MTBlMTU0NjJiOGZlYmVlOWUxYTNjZjcifQ.BIFNQNrabSVgqSgtZZ5VQA",
 			});
+			/*/
+			var tile_layer = L.tileLayer("http://{s}.basemaps.cartocdn.com/light/{z}/{x}/{y}.png", {
+				attribution: "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors, &copy; <a href='http://cartodb.com/attributions'>CartoDB</a>",
+			});
+			//*/
 
 			var map = this.map = L.map(this.getDOMNode(), {
 				center: [13, 122],
@@ -91,12 +97,12 @@ define(["react", "leaflet"], function(React, L) {
 		},
 
 		on_zoom: function() {
-			if(this.map.getZoom() >= 13) {
-				this.set_layer("json/MuniCities.json");
+			if(this.map.getZoom() >= 11) {
+				this.set_layer("json/MuniCities.psgc.json");
 			}else if(this.map.getZoom() >= 9) {
-				this.set_layer("json/Provinces.json");
+				this.set_layer("json/Provinces.psgc.json");
 			}else{
-				this.set_layer("json/Regions.json");
+				this.set_layer("json/Regions.psgc.json");
 			}
 		},
 	});
