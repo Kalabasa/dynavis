@@ -7,6 +7,7 @@ require.config({
 		"backbone-pagec": "lib/backbone-pagec",
 		"bloodhound": "lib/bloodhound",
 		"bootstrap": "lib/bootstrap.min",
+		"config.map": "lib/config.map",
 		"jquery": "lib/jquery-2.1.4.min",
 		"jsx": "lib/jsx",
 		"JSXTransformer": "lib/JSXTransformer",
