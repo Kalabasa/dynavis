@@ -1,3 +1,4 @@
+/js/config.map.js
 /php/db_config.include.php
-scrape-elections.conf
-.sass-cache/
+/scripts/scrape-elections.conf
+/.sass-cache/
