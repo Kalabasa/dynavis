@@ -44,7 +44,7 @@ def main():
 					logger.debug("file line " + str(line))
 					area = None
 					name = ""
-					for cell in row:
+					for cell in (unicode(x, "utf-8") for x in row):
 						if len(cell) == 9:
 							try:
 								int(cell)
