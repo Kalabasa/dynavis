@@ -2,6 +2,7 @@
 define(["backbone", "react"], function(Backbone, React) {
 	return Backbone.Router.extend({
 		initialize: function(options) {
+			this.bus = options.bus;
 			this.token = options.token;
 		},
 
@@ -10,10 +11,11 @@ define(["backbone", "react"], function(Backbone, React) {
 			"datasets": "datasets",
 		},
 		main: function() {
+			var that = this;
 			require([
 				"jsx!view/main/MapPanel"
 			], function(MapPanel) {
-				React.render(<MapPanel />, document.getElementById("body"));
+				React.render(<MapPanel bus={that.bus} />, document.getElementById("body"));
 			});
 		},
 		datasets: function() {

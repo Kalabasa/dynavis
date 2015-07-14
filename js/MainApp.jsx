@@ -1,6 +1,7 @@
 "use strict";
 define(function(require){
 	var React = require("react"),
+		Events = require("minivents"),
 		Token = require("model/Token"),
 		MainRouter = require("jsx!MainRouter"),
 		Header = require("jsx!view/Header"),
@@ -8,8 +9,11 @@ define(function(require){
 
 	var MainApp = function() {
 		this.token = new Token();
+		this.bus = {
+			choropleth_settings: new Events(),
+		};
 
-		this.router = new MainRouter({token: this.token});
+		this.router = new MainRouter({bus: this.bus, token: this.token});
 		this.router.on("route", this.on_route, this);
 	};
 
@@ -19,7 +23,7 @@ define(function(require){
 
 	MainApp.prototype.start = function() {
 		this.header = React.render(<Header title="Dashboard" />, document.getElementById("header"));
-		this.sidebar = React.render(<Sidebar token={this.token} />, document.getElementById("sidebar"));
+		this.sidebar = React.render(<Sidebar bus={this.bus} token={this.token} />, document.getElementById("sidebar"));
 
 		Backbone.history.start();
 	};

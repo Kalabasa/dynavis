@@ -8,6 +8,13 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 			};
 		},
 
+		componentWillUpdate: function(nextProps, nextState) {
+			this.props.bus.choropleth_settings.emit("dataset", {
+				dataset1: nextState.dataset1,
+				dataset2: nextState.dataset2,
+			});
+		},
+
 		render: function() {
 			return (
 				<div>
@@ -25,7 +32,7 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 			return function() {
 				var dataset_collection = new DatasetCollection();
 				dataset_collection.fetch();
-				that.modal = Modal.open("Test", (
+				that.modal = Modal.open("Select dataset", (
 					<DatasetChooser collection={dataset_collection} onSelect={function(dataset) {
 						that.select_dataset(i, dataset);
 					}}/>

@@ -6,7 +6,7 @@ define(["react", "jsx!view/Login", "jsx!view/main/ChoroplethSettingsPane"], func
 				<div>
 					<Login model={this.props.token} />
 					<div><a className="btn btn-link" href="#datasets">Manage datasets</a></div>
-					<ChoroplethSettingsPane />
+					<ChoroplethSettingsPane bus={this.props.bus} />
 					<div>Tag cloud pane</div>
 				</div>
 			);
