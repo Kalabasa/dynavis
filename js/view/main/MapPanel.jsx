@@ -139,7 +139,7 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 				}
 			};
 
-			if(this.datasets && (this.datasets.datasets1 || this.datasets.datasets2)) {
+			if(this.datasets && (this.datasets.dataset1 || this.datasets.dataset2)) {
 				dataset_callback(this.datasets);
 			}else{
 				this.props.bus.choropleth_settings.on("dataset", dataset_callback);
