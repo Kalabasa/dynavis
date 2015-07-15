@@ -23,7 +23,7 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 		},
 
 		get_max_value: function() {
-			if(this.max === undefined) {
+			if(this.max_value === undefined) {
 				var max = -Infinity;
 				this.forEach(function(p){
 					var value = parseFloat(p.get("value"));
@@ -31,12 +31,12 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 						max = value;
 					}
 				});
-				this.max = max;
+				this.max_value = max;
 			}
-			return this.max;
+			return this.max_value;
 		},
 		get_min_value: function() {
-			if(this.min === undefined) {
+			if(this.min_value === undefined) {
 				var min = Infinity;
 				this.forEach(function(p){
 					var value = parseFloat(p.get("value"));
@@ -44,9 +44,9 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 						min = value;
 					}
 				});
-				this.min = min;
+				this.min_value = min;
 			}
-			return this.min;
+			return this.min_value;
 		},
 	});
 });
