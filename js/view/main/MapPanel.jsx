@@ -113,11 +113,6 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			this.geoJson_cache = {};
 
 			var replaceGeoJSON = function(geoJson) {
-				for (var i = 0; i < that.update_timers.length; i++) {
-					clearInterval(that.update_timers[i]);
-				};
-				that.update_timers = [];
-
 				var old_layers = that.main_layer.getLayers();
 				var n = old_layers.length;
 				var c = 0;
