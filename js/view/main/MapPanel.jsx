@@ -209,15 +209,6 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 
 			layer.on({
 				click: function(e) {
-					// TODO: Use React view in the popup
-					var area_name = feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.PROVINCE || feature.properties.REGION;
-					var info = "";
-					if(that.datasets) {
-						var dataset_name = that.datasets.dataset1.get("name");
-						info = "<p> " + dataset_name + " (" + that.state.year + ") = " + (layer.value == null ? "no data" : layer.value.toFixed(2)) + "</p>";
-					}
-					that.map.openPopup("<div><h3>" + area_name + "</h3>" + info + "</div>", e.latlng);
-
 					var y = null, z = null;
 					var min,max;
 					if(that.datasets) {
@@ -234,6 +225,15 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 					that.setState({selected: layer});
 					layer.setStyle(that.compute_poly_style(y, true));
 					layer.bringToFront();
+
+					// TODO: Use React view in the popup
+					var area_name = feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.PROVINCE || feature.properties.REGION;
+					var info = "";
+					if(that.datasets) {
+						var dataset_name = that.datasets.dataset1.get("name");
+						info = "<p> " + dataset_name + " (" + that.state.year + ") = " + (layer.value == null ? "no data" : layer.value.toFixed(2)) + "</p>";
+					}
+					that.map.openPopup("<div><h3>" + area_name + "</h3>" + info + "</div>", e.latlng);
 				},
 			});
 		},
