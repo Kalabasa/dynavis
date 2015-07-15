@@ -3,6 +3,7 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 	return React.createClass({
 		getInitialState: function() {
 			return {
+				selected: null,
 				year: 2013,
 			}
 		},
@@ -71,40 +72,56 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			this.datasets = e;
 			var layers = this.main_layer.getLayers();
 			for (var i = 0; i < layers.length; i++) {
-				this.colorize_layer(e, layers[i], this.current_geoJson);
+				this.colorize_poly(e, layers[i], this.current_geoJson);
 			};
 		},
 
-		colorize_layer: function(datasets, layer, geoJson){
+		colorize_poly: function(datasets, poly, geoJson){
 			if(datasets.dataset1) {
 				var datapoints = datasets.dataset1.get_datapoints();
 				if(datapoints.size()) {
-					loop.call(this, layer, datapoints, this.current_geoJson);
+					loop.call(this, poly, datapoints, this.current_geoJson);
 				}else{
-					datapoints.once("sync", loop.bind(this, layer, datapoints, this.current_geoJson));
+					datapoints.once("sync", loop.bind(this, poly, datapoints, this.current_geoJson));
 				}
 			}
 
-			function loop(l, datapoints, geoJson) {
+			function loop(poly, datapoints, geoJson) {
 				if(this.current_geoJson == geoJson) {
-					if(l.getBounds().intersects(this.map.getBounds())) {
-						var area_code = parseInt(l.feature.properties.PSGC);
-						var value = datapoints.get_value(area_code, this.state.year);
-						if(value == null) {
-							l.setStyle(this.style_neutral);
-						}else{
-							var min = datapoints.get_min_value();
-							var max = datapoints.get_max_value();
-							var y = (value-min)/(max-min);
-							l.setStyle(_.defaults({
-								fillColor: this.get_color(y),
-							}, this.style_colored));
-						}
+					if(poly.getBounds().intersects(this.map.getBounds())) {
+						var area_code = parseInt(poly.feature.properties.PSGC);
+						poly.value = datapoints.get_value(area_code, this.state.year);
+						var min = datapoints.get_min_value();
+						var max = datapoints.get_max_value();
+						var y = (poly.value-min)/(max-min);
+						poly.setStyle(this.compute_poly_style(y, false));
 					}else{
-						setTimeout(loop.bind(this), 100, l, datapoints, geoJson);
+						setTimeout(loop.bind(this), 100, poly, datapoints, geoJson);
 					}
 				}
 			}
+		},
+
+		compute_poly_style: function(value, highlight) {
+			var style = null;
+			if(value == null) {
+				style = this.style_neutral;
+			}else{
+				style = _.defaults({
+					fillColor: this.get_color(value),
+				}, this.style_colored);
+			}
+
+			if(highlight) {
+				style = _.defaults({
+					weight: 3,
+					color: "#001032",
+					opacity: 1,
+					fillOpacity: 1,
+				}, style);
+			}
+
+			return style;
 		},
 
 		set_layer: function(layer) {
@@ -113,6 +130,8 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			if(this.geoJson_cache[layer] === this.current_geoJson) {
 				return;
 			}
+
+			this.setState({selected: null});
 
 			if(this.geoJson_cache[layer]) {
 				replaceGeoJSON(this.current_geoJson = this.geoJson_cache[layer]);
@@ -148,7 +167,7 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 						if(that.current_geoJson == geoJson) {
 							if(l.getBounds().intersects(that.map.getBounds())) {
 								if(that.datasets && (that.datasets.dataset1 || that.datasets.dataset2)) {
-									that.colorize_layer(that.datasets, l, geoJson);
+									that.colorize_poly(that.datasets, l, geoJson);
 								}
 								that.main_layer.addLayer(l);
 							}else{
@@ -186,25 +205,35 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			var that = this;
 
 			var area_code = parseInt(feature.properties.PSGC, 10);
+			layer.value = null;
 
 			layer.on({
 				click: function(e) {
-					var value = null;
-					if(that.datasets) {
-						var dataset = that.datasets.dataset1;
-						var datapoints = dataset.get_datapoints();
-						if(datapoints) {
-							value = datapoints.get_value(area_code, that.state.year);
-						}
-					}
 					// TODO: Use React view in the popup
 					var area_name = feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.PROVINCE || feature.properties.REGION;
 					var info = "";
 					if(that.datasets) {
 						var dataset_name = that.datasets.dataset1.get("name");
-						info = "<p> " + dataset_name + " (" + that.state.year + ") = " + (value == null ? "no data" : value.toFixed(2)) + "</p>";
+						info = "<p> " + dataset_name + " (" + that.state.year + ") = " + (layer.value == null ? "no data" : layer.value.toFixed(2)) + "</p>";
 					}
 					that.map.openPopup("<div><h3>" + area_name + "</h3>" + info + "</div>", e.latlng);
+
+					var y = null, z = null;
+					var min,max;
+					if(that.datasets) {
+						var datapoints = that.datasets.dataset1.get_datapoints();
+						min = datapoints.get_min_value();
+						max = datapoints.get_max_value();
+						y = (layer.value-min)/(max-min);
+						if(that.state.selected) z = (that.state.selected.value-min)/(max-min);
+					}
+
+					if(that.state.selected) {
+						that.state.selected.setStyle(that.compute_poly_style(z));
+					}
+					that.setState({selected: layer});
+					layer.setStyle(that.compute_poly_style(y, true));
+					layer.bringToFront();
 				},
 			});
 		},
