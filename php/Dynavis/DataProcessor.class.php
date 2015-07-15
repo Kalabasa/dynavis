@@ -110,7 +110,7 @@ class DataProcessor {
 				. Area::TABLE . "." . Area::PRIMARY_KEY
 				. " , count(" . Family::TABLE_FAMILY_MEMBERSHIP . ".family_id) AS Size "
 				. " , count(*) AS Total "
-				. " , count(" . Family::TABLE_FAMILY_MEMBERSHIP . ".family_id) / count(*) AS DYNSHA "
+				. " , 100 * count(" . Family::TABLE_FAMILY_MEMBERSHIP . ".family_id) / count(*) AS DYNSHA "
 			. " from " . Area::TABLE
 
 			. " inner join " . Elect::TABLE
