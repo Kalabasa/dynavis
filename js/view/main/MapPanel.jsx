@@ -40,7 +40,7 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			};
 			this.style_colored = _.defaults({
 				opacity: 1,
-				color: "#efefef",
+				color: "#ffffff",
 				fillOpacity: 0.8,
 				className: "map-polygon",
 			}, this.style_neutral);
@@ -197,15 +197,22 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 							value = datapoints.get_value(area_code, that.state.year);
 						}
 					}
-					that.map.openPopup("<div>name: " + feature.properties + " value: " + value + "</div>", e.latlng);
+					// TODO: Use React view in the popup
+					var area_name = feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.PROVINCE || feature.properties.REGION;
+					var info = "";
+					if(that.datasets) {
+						var dataset_name = that.datasets.dataset1.get("name");
+						info = "<p> " + dataset_name + " (" + that.state.year + ") = " + (value == null ? "no data" : value.toFixed(2)) + "</p>";
+					}
+					that.map.openPopup("<div><h3>" + area_name + "</h3>" + info + "</div>", e.latlng);
 				},
 			});
 		},
 
 		on_zoom: function() {
-			if(this.map.getZoom() >= 9) {
+			if(this.map.getZoom() >= 10) {
 				this.set_layer("json/MuniCities.psgc.json");
-			}else if(this.map.getZoom() >= 7) {
+			}else if(this.map.getZoom() >= 8) {
 				this.set_layer("json/Provinces.psgc.json");
 			}else{
 				this.set_layer("json/Regions.psgc.json");

@@ -64,6 +64,16 @@ define(["require", "bloodhound"].concat(MODEL_PATHS_VALUES), function(require, B
 		return instance;
 	};
 
+	InstanceCache.prototype.get_existing = function(name, id) {
+		if(this.hash[name] && this.hash[name][id]) return this.hash[name][id];
+		return null;
+	};
+
+	InstanceCache.prototype.set = function(name, key, value) {
+		if(!this.hash[name]) this.hash[name] = {};
+		this.hash[name][key] = value;
+	};
+
 	InstanceCache.prototype.search = function(name, query, sync, async) {
 		this.hounds[name].search(query, sync, async);
 	};
