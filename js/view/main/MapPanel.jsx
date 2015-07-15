@@ -111,7 +111,7 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			});
 
 			var datapoints_callback = function(datapoints){
-				that.current_layer.resetStyle(layer);
+				if(that.current_layer) that.current_layer.resetStyle(layer); // idk about this line
 				var value = datapoints.get_value(area_code, year);
 				if(value != null) {
 					var min = datapoints.get_min_value();
