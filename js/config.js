@@ -14,6 +14,8 @@ require.config({
 		"leaflet": "lib/leaflet",
 		"localStorage": "lib/localStorage",
 		"minivents": "lib/minivents.min",
+		"multithread": "lib/multithread.singleton",
+		"multithread.lib": "lib/multithread",
 		"react": "lib/react",
 		"react.backbone": "lib/react.backbone",
 		"text": "lib/text",
@@ -39,6 +41,9 @@ require.config({
 		},
 		"minivents": {
 			exports: "Events"
+		},
+		"multithread.lib": {
+			exports: "Multithread"
 		},
 		"react": {
 			exports: "React"

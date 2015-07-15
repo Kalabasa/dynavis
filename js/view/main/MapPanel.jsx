@@ -1,6 +1,12 @@
 "use strict";
 define(["react", "leaflet", "config.map"], function(React, L, config) {
 	return React.createClass({
+		getInitialState: function() {
+			return {
+				year: 2013,
+			}
+		},
+
 		componentWillMount: function() {
 			this.props.bus.choropleth_settings.on("dataset", this.on_dataset);
 		},
@@ -12,21 +18,30 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 				attribution: config.attribution,
 			});
 
-			var map = this.map = L.map(this.getDOMNode(), {
+			this.map = L.map(this.getDOMNode(), {
 				center: [13, 122],
 				zoom: 6,
 				layers: [tile_layer],
 				minZoom: 5,
 				maxZoom: 14,
 				maxBounds: [
-					[4, 114],
-					[22, 130]
+					[-1, 109],
+					[27, 135]
 				],
 			});
 
-			this.saved_layers = {};
+			this.neutral_style = {
+				weight: 2,
+				opacity: 0.2,
+				color: "#7f7f7f",
+				fillOpacity: 0.4,
+				fillColor: "#c7c7c7",
+			};
+
+			this.update_timers = [];
+			this.geoJson_cache = {};
 			this.current_layer_name = null;
-			this.current_layer = null;
+			this.main_layer = L.layerGroup([]).addTo(this.map);
 
 			this.datasets = null;
 
@@ -37,7 +52,7 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 		componentWillUnmount: function() {
 			this.props.bus.choropleth_settings.off("dataset", this.on_dataset);
 			this.map = null;
-			this.current_layer = null;
+			this.current_layer_name = null;
 		},
 
 		render: function() {
@@ -48,6 +63,47 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 
 		on_dataset: function(e) {
 			this.datasets = e;
+			var layers = this.main_layer.getLayers();
+			for (var i = 0; i < layers.length; i++) {
+				this.colorize_layer(e, layers[i]);
+			};
+		},
+
+		colorize_layer: function(datasets, layer){
+			var callback = function(datapoints, layer){
+				var id = setTimeout(function loop(that, l, datapoints) {
+					if(l.getBounds().intersects(that.map.getBounds())) {
+						var area_code = parseInt(l.feature.properties.PSGC);
+						var value = datapoints.get_value(area_code, that.state.year);
+						if(value == null) {
+							l.setStyle(that.neutral_style);
+						}else{
+							var min = datapoints.get_min_value();
+							var max = datapoints.get_max_value();
+							var y = (value-min)/(max-min);
+							l.setStyle({
+								weight: 2,
+								opacity: 1,
+								color: "#efefef",
+								fillOpacity: 0.8,
+								fillColor: that.get_color(y),
+							});
+						}
+					}else{
+						setTimeout(loop, 100, l, datapoints);
+					}
+				}, 100, this, layer, datapoints);
+				this.update_timers.push(id);
+			};
+
+			if(datasets.dataset1) {
+				var datapoints = datasets.dataset1.get_datapoints();
+				if(datapoints.size()) {
+					callback.call(this, datapoints, layer);
+				}else{
+					datapoints.once("sync", callback.bind(this, datapoints, layer));
+				}
+			}
 		},
 
 		set_layer: function(layer) {
@@ -56,100 +112,122 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			if(this.current_layer_name === layer) return;
 			this.current_layer_name = layer;
 			
-			var last_layer = this.current_layer;
-			this.current_layer = null;
+			this.geoJson_cache = {};
 
-			if(this.saved_layers[layer]) {
-				if(last_layer) this.map.removeLayer(last_layer);
-				this.current_layer = this.saved_layers[layer];
-				this.map.addLayer(this.current_layer);
+			var replaceGeoJSON = function(geoJson) {
+				for (var i = 0; i < that.update_timers.length; i++) {
+					clearInterval(that.update_timers[i]);
+				};
+				that.update_timers = [];
+
+				var old_layers = that.main_layer.getLayers();
+				var n = old_layers.length;
+				var c = 0;
+				for (var i = 0; i < n; i++) {
+					var t = i/n * 2000;
+					if(c < 300 && old_layers[i].getBounds().intersects(that.map.getBounds())) {
+						t = c++;
+					}
+					setTimeout(function(i, l) {
+						that.main_layer.removeLayer(l);
+					}, t, i, old_layers[i]);
+				};
+
+				var new_layers = geoJson.getLayers();
+				for (var i = 0; i < new_layers.length; i++) {
+					var id = setTimeout(function loop(that, l) {
+						if(l.getBounds().intersects(that.map.getBounds())) {
+							console.log("ADDED " + l.feature.properties.REGION);
+							if(that.datasets && (that.datasets.dataset1 || that.datasets.dataset2)) {
+								that.colorize_layer(that.datasets, l);
+							}
+							that.main_layer.addLayer(l);
+						}else{
+							setTimeout(loop, 100, that, l);
+						}
+					}, i % 100, that, new_layers[i]);
+					that.update_timers.push(id);
+				};
+			};
+
+			if(this.geoJson_cache[layer]) {
+				replaceGeoJSON(this.geoJson_cache[layer]);
 			}else{
 				var options = {
 					smoothFactor: 2.0,
-					style: {
-						weight: 2,
-						opacity: 0.2,
-						color: "#7f7f7f",
-						fillOpacity: 0.4,
-						fillColor: "#c7c7c7",
-					},
+					style: this.neutral_style,
 					onEachFeature: this.on_feature,
 				};
 				$.get(layer).success(function(data) {
-					if(last_layer) that.map.removeLayer(last_layer);
-					that.saved_layers[layer] = that.current_layer = L.geoJson(data, options);
-					that.map.addLayer(that.current_layer);
+					var geoJson = that.geoJson_cache[layer] = L.geoJson(data, options);
+					replaceGeoJSON(geoJson);
 				});
 			}
 		},
 
-		get_color: function(value) {
-			return value > 0.7 ? "#800026" :
-				value > 0.4  ? "#bd0026" :
-				value > 0.2  ? "#e31a1c" :
-				value > 0.1  ? "#fc4e2a" :
-				value > 0.05  ? "#fd8d3c" :
-				value > 0.02  ? "#feb24c" :
-				value > 0.01  ? "#fed976" :
-					"#ffeda0";
+		get_color: function(t) {
+			// Color curve function generated from:
+			// https://dl.dropboxusercontent.com/u/44461887/Maker/EquaMaker.swf
+			var t2,t3;
+			if(0 <= t < 0.5) {
+				t = 255 * (-1.13994*t*t + 1.84136*t + 0);
+			}else if(0.5 <= t <= 1) {
+				t = 255 * (0.05441*t*t + 0.647*t + 0.29859);
+			}
+			t3 = (t2 = t * t) * t;
+
+			var r,g,b;
+
+			if(0 <= t && t < 186) {
+				r = 0;
+			}else if(186 <= t && t <= 255) {
+				r = 0.00052559209*t3 + -0.41051815*t2 + 97.755334*t + -7764.4518;
+			}
+
+			if(0 <= t && t < 3) {
+				g = 0;
+			}else if(3 <= t && t < 236) {
+				g = 0.000139094098*t2 + 1.14567057*t + -1.43817284;
+			}else if(236 <= t && t <= 255) {
+				g = 255;
+			}
+
+			if(0 <= t && t < 140) {
+				b = -0.0052717369*t2 + 1.36056485*t + 66;
+			}else if(140 <= t && t < 246) {
+				b = 0.000098961308*t3 + -0.02211215*t2 + 3.87258264*t + -63.652382;
+			}else if(246 <= t && t <= 255) {
+				b = -0.024999991*t3 + 18.75*t2 + -4686.9749*t + 390628.25;
+			}
+
+			return "rgb("+Math.round(r)+","+Math.round(g)+","+Math.round(b)+")";
 		},
 
 		on_feature: function(feature, layer) {
 			var that = this;
 
+			console.log(feature.properties.REGION);
 			var area_code = parseInt(feature.properties.PSGC, 10);
-			var year = 2013;
 
 			layer.on({
 				click: function(e) {
-					var datapoints = that.datasets.dataset1.get_datapoints();
-					if(datapoints) {
-						var value = datapoints.get_value(area_code, year);
-						console.log(value);
+					var value = null;
+					if(that.datasets) {
+						var dataset = that.datasets.dataset1;
+						var datapoints = dataset.get_datapoints();
+						if(datapoints) {
+							value = datapoints.get_value(area_code, that.state.year);
+						}
 					}
+					that.map.openPopup("<div>name: " + feature.properties + " value: " + value + "</div>", e.latlng);
 				},
 			});
-
-			var datapoints_callback = function(datapoints){
-				if(that.current_layer) that.current_layer.resetStyle(layer); // idk about this line
-				var value = datapoints.get_value(area_code, year);
-				if(value != null) {
-					var min = datapoints.get_min_value();
-					var max = datapoints.get_max_value();
-					var y = (value-min)/(max-min);
-					layer.setStyle({
-						weight: 3,
-						opacity: 1,
-						color: "#efefef",
-						fillOpacity: 0.7,
-						fillColor: that.get_color(y),
-					});
-				}
-			};
-
-			var dataset_callback = function(datasets){
-				if(datasets.dataset1) {
-					window.dataset = datasets.dataset1;
-					var datapoints = datasets.dataset1.get_datapoints();
-					if(datapoints.size()) {
-						datapoints_callback(datapoints);
-					}else{
-						datapoints.once("sync", datapoints_callback);
-					}
-				}
-			};
-
-			if(this.datasets && (this.datasets.dataset1 || this.datasets.dataset2)) {
-				dataset_callback(this.datasets);
-			}else{
-				this.props.bus.choropleth_settings.on("dataset", dataset_callback);
-			}
 		},
 
 		on_zoom: function() {
 			if(this.map.getZoom() >= 10) {
 				this.set_layer("json/MuniCities.psgc.json");
-			}else if(this.map.getZoom() >= 7) {
+			}else if(this.map.getZoom() >= 8) {
 				this.set_layer("json/Provinces.psgc.json");
 			}else{
 				this.set_layer("json/Regions.psgc.json");

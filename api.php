@@ -16,6 +16,8 @@ use \Dynavis\Model\Dataset;
 use \Dynavis\Model\Datapoint;
 use \Dynavis\Model\Token;
 
+use \Dynavis\DataProcessor;
+
 \Slim\Route::setDefaultConditions([
 	"id" => "\d+",
 	"code" => "\d{8,9}",
@@ -68,6 +70,7 @@ $app->post("/users", "post_user");
 $app->post("/users/:username/datasets", $auth_username, "post_user_dataset");
 $app->post("/users/:username/datasets/:id/datapoints", $auth_username, "post_user_dataset_datapoint");
 $app->post("/tokens", "post_token");
+$app->post("/generate-indicator", $auth_admin, "generate_indicator");
 
 
 //-----------------------------------------------------------------------------
@@ -1164,4 +1167,33 @@ function post_token() {
 
 	$app->response->setStatus(201);
 	echo json_encode($token);
+}
+
+
+// Generate indicator
+
+function generate_indicator() {
+	global $app;
+
+	$data = json_decode($app->request->getBody(), TRUE);
+	if(is_null($data)) {
+		$app->halt(400, "Malformed data.");
+	}
+
+	if(!isset($data["username"], $data["indicator"], $data["description"])) {
+		$app->halt(400, "Incomplete data.");
+	}
+
+	$user = User::get_by_username($data["username"]);
+	if(!$user) {
+		$app->halt(400, "Invalid username.");
+	}
+	$indicator = $data["indicator"];
+	$description = $data["description"];
+
+	$data = DataProcessor::calculate_indicator($indicator);
+	$dataset_id = DataProcessor::save_dataset($data, $user->username, $indicator, $description);
+
+	$app->response->setStatus(201);
+	echo json_encode(["id" => $dataset_id]);
 }

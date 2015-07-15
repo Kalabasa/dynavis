@@ -7,10 +7,10 @@ define(function(require){
 		Sidebar = require("jsx!view/admin/Sidebar");
 
 	var AdminApp = function() {
-		this.router = new AdminRouter();
-		this.router.on("route", this.on_route, this);
-
 		this.token = new Token();
+
+		this.router = new AdminRouter({token: this.token});
+		this.router.on("route", this.on_route, this);
 	};
 
 	AdminApp.prototype.on_route = function(route, params) {
