@@ -1,5 +1,5 @@
 "use strict";
-define(["backbone", "model/Datapoint"], function(Backbone, Datapoint) {
+define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Datapoint) {
 	return Backbone.Collection.extend({
 		model: Datapoint,
 		initialize: function(models, options) {
@@ -11,16 +11,42 @@ define(["backbone", "model/Datapoint"], function(Backbone, Datapoint) {
 		parse: function(data) {
 			return data.data;
 		},
+
 		get_value: function(area_code, year) {
-			console.log({
+			var datapoint = this.findWhere({
 				area_code: parseInt(area_code).toString(),
 				year: parseInt(year).toString(),
 			});
-			var value = parseFloat(this.findWhere({
-				area_code: parseInt(area_code).toString(),
-				year: parseInt(year).toString(),
-			}));
+			if(!datapoint) return null;
+			var value = parseFloat(datapoint.get("value"));
 			return isNaN(value) ? null : value;
+		},
+
+		get_max_value: function() {
+			if(this.max === undefined) {
+				var max = -Infinity;
+				this.forEach(function(p){
+					var value = parseFloat(p.get("value"));
+					if(!isNaN(value) && value > max) {
+						max = value;
+					}
+				});
+				this.max = max;
+			}
+			return this.max;
+		},
+		get_min_value: function() {
+			if(this.min === undefined) {
+				var min = Infinity;
+				this.forEach(function(p){
+					var value = parseFloat(p.get("value"));
+					if(!isNaN(value) && value < min) {
+						min = value;
+					}
+				});
+				this.min = min;
+			}
+			return this.min;
 		},
 	});
 });

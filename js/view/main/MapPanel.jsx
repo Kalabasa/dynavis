@@ -68,7 +68,7 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 					smoothFactor: 2.0,
 					style: {
 						weight: 3,
-						color: "#77cc00",
+						color: "#c7c7c7",
 					},
 					onEachFeature: this.on_feature,
 				};
@@ -81,20 +81,19 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 		},
 
 		get_color: function(value) {
-			value *= 1000;
-			return
-				value > 1000 ? "#800026" :
-				value > 500  ? "#BD0026" :
-				value > 200  ? "#E31A1C" :
-				value > 100  ? "#FC4E2A" :
-				value > 50   ? "#FD8D3C" :
-				value > 20   ? "#FEB24C" :
-				value > 10   ? "#FED976" :
-					"#FFEDA0";
+			return value > 1 ? "#800026" :
+				value > 0.50  ? "#bd0026" :
+				value > 0.20  ? "#e31a1c" :
+				value > 0.10  ? "#fc4e2a" :
+				value > 0.05  ? "#fd8d3c" :
+				value > 0.02  ? "#feb24c" :
+				value > 0.01  ? "#fed976" :
+					"#ffeda0";
 		},
 
 		on_feature: function(feature, layer) {
 			var that = this;
+
 			layer.on({
 				click: function(e) {
 					that.map.fitBounds(e.target.getBounds());
@@ -106,9 +105,19 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			var year = 2013;
 
 			var datapoints_callback = function(datapoints){
+				that.current_layer.resetStyle(layer);
 				var value = datapoints.get_value(area_code, year);
-				if(value !== null) {
-					layer.setStyle(that.get_color(value));
+				if(value == null) {
+					layer.setStyle({
+						fillOpacity: 0,
+					});
+				}else{
+					var min = datapoints.get_min_value();
+					var max = datapoints.get_max_value();
+					var y = (value-min)/(max-min);
+					layer.setStyle({
+						color: that.get_color(y),
+					});
 				}
 			};
 
