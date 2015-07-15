@@ -91,9 +91,12 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 					if(poly.getBounds().intersects(this.map.getBounds())) {
 						var area_code = parseInt(poly.feature.properties.PSGC);
 						poly.value = datapoints.get_value(area_code, this.state.year);
-						var min = datapoints.get_min_value();
-						var max = datapoints.get_max_value();
-						var y = (poly.value-min)/(max-min);
+						var y = null;
+						if(poly.value != null) {
+							var min = datapoints.get_min_value();
+							var max = datapoints.get_max_value();
+							y = (poly.value-min)/(max-min);
+						}
 						poly.setStyle(this.compute_poly_style(y, false));
 					}else{
 						setTimeout(loop.bind(this), 100, poly, datapoints, geoJson);
@@ -104,12 +107,12 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 
 		compute_poly_style: function(value, highlight) {
 			var style = null;
-			if(value == null) {
-				style = this.style_neutral;
-			}else{
+			if(value || value === 0) {
 				style = _.defaults({
 					fillColor: this.get_color(value),
 				}, this.style_colored);
+			}else{
+				style = this.style_neutral;
 			}
 
 			if(highlight) {
@@ -220,7 +223,7 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 					}
 
 					if(that.state.selected) {
-						that.state.selected.setStyle(that.compute_poly_style(z));
+						that.state.selected.setStyle(that.compute_poly_style(z, false));
 					}
 					that.setState({selected: layer});
 					layer.setStyle(that.compute_poly_style(y, true));
