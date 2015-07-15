@@ -1,5 +1,5 @@
 <?php
-require 'php/init.include.php';
+require '../php/init.include.php';
 
 use \Dynavis\Database;
 use \Dynavis\DataProcessor;
@@ -9,7 +9,10 @@ use \Dynavis\Model\Family;
 $officials = Official::list_items(0, 0);
 Database::get()->pdo->beginTransaction();
 try {
+	$total = $officials["total"];
+	$i = 0;
 	foreach ($officials["data"] as $o) {
+		print "$i/$total\n"; $i++;
 		$official = new Official((int) $o["id"], false);
 		$family = Family::get_by_name($official->surname);
 		if(!$family) {
@@ -20,12 +23,21 @@ try {
 		$family->add_member($official);
 	}
 
-	$families = Family::list_items(0, 0);
-	foreach ($families["data"] as $f) {
-		if($f->count_members() == 1) {
-			$f->delete();
-		}
-	}
+	// Delete single-member families
+	Database::get()->query(
+		"DELETE FROM family
+		WHERE
+			id IN (SELECT 
+				T.family_id
+			FROM
+				(SELECT 
+					family_id
+				FROM
+					family_membership
+				INNER JOIN family ON id = family_id
+				GROUP BY id
+				HAVING COUNT(*) = 1) T)"
+	);
 }catch(Exception $e) {
 	Database::get()->pdo->rollBack();
 	throw $e;
