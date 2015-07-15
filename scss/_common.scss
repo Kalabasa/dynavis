@@ -42,3 +42,12 @@ body { margin: 0 }
 .tt-suggestion p {
 	margin: 0;
 }
+
+.fadein {
+	animation: fadein 0.4s;
+}
+
+@keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}

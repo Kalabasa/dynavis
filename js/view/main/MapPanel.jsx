@@ -30,16 +30,23 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 				],
 			});
 
-			this.neutral_style = {
+			this.style_neutral = {
 				weight: 2,
 				opacity: 0.2,
 				color: "#7f7f7f",
 				fillOpacity: 0.4,
 				fillColor: "#c7c7c7",
+				className: "fadein map-polygon",
 			};
+			this.style_colored = _.defaults({
+				opacity: 1,
+				color: "#efefef",
+				fillOpacity: 0.8,
+				className: "map-polygon",
+			}, this.style_neutral);
 
 			this.geoJson_cache = {};
-			this.current_layer_name = null;
+			this.current_geoJson = null;
 			this.main_layer = L.layerGroup([]).addTo(this.map);
 
 			this.datasets = null;
@@ -64,42 +71,38 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			this.datasets = e;
 			var layers = this.main_layer.getLayers();
 			for (var i = 0; i < layers.length; i++) {
-				this.colorize_layer(e, layers[i]);
+				this.colorize_layer(e, layers[i], this.current_geoJson);
 			};
 		},
 
-		colorize_layer: function(datasets, layer){
-			var callback = function(datapoints, layer){
-				function loop(that, l, datapoints) {
-					if(l.getBounds().intersects(that.map.getBounds())) {
+		colorize_layer: function(datasets, layer, geoJson){
+			if(datasets.dataset1) {
+				var datapoints = datasets.dataset1.get_datapoints();
+				if(datapoints.size()) {
+					loop.call(this, layer, datapoints, this.current_geoJson);
+				}else{
+					datapoints.once("sync", loop.bind(this, layer, datapoints, this.current_geoJson));
+				}
+			}
+
+			function loop(l, datapoints, geoJson) {
+				if(this.current_geoJson == geoJson) {
+					if(l.getBounds().intersects(this.map.getBounds())) {
 						var area_code = parseInt(l.feature.properties.PSGC);
-						var value = datapoints.get_value(area_code, that.state.year);
+						var value = datapoints.get_value(area_code, this.state.year);
 						if(value == null) {
-							l.setStyle(that.neutral_style);
+							l.setStyle(this.style_neutral);
 						}else{
 							var min = datapoints.get_min_value();
 							var max = datapoints.get_max_value();
 							var y = (value-min)/(max-min);
-							l.setStyle({
-								weight: 2,
-								opacity: 1,
-								color: "#efefef",
-								fillOpacity: 0.8,
-								fillColor: that.get_color(y),
-							});
+							l.setStyle(_.defaults({
+								fillColor: this.get_color(y),
+							}, this.style_colored));
 						}
 					}else{
-						setTimeout(loop, 100, l, datapoints);
+						setTimeout(loop.bind(this), 100, l, datapoints, geoJson);
 					}
-				}
-			};
-
-			if(datasets.dataset1) {
-				var datapoints = datasets.dataset1.get_datapoints();
-				if(datapoints.size()) {
-					callback.call(this, datapoints, layer);
-				}else{
-					datapoints.once("sync", callback.bind(this, datapoints, layer));
 				}
 			}
 		},
@@ -107,74 +110,74 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 		set_layer: function(layer) {
 			var that = this;
 
-			if(this.current_layer_name === layer) return;
-			this.current_layer_name = layer;
-			
-			this.geoJson_cache = {};
+			if(this.geoJson_cache[layer] === this.current_geoJson) {
+				return;
+			}
 
-			var replaceGeoJSON = function(geoJson) {
+			if(this.geoJson_cache[layer]) {
+				replaceGeoJSON(this.current_geoJson = this.geoJson_cache[layer]);
+			}else{
+				var options = {
+					smoothFactor: 2.0,
+					style: this.style_neutral,
+					onEachFeature: this.on_feature,
+				};
+				$.get(layer).success(function(data) {
+					var geoJson = that.current_geoJson = that.geoJson_cache[layer] = L.geoJson(data, options);
+					replaceGeoJSON(geoJson);
+				});
+			}
+
+			function replaceGeoJSON(geoJson) {
 				var old_layers = that.main_layer.getLayers();
 				var n = old_layers.length;
 				var c = 0;
 				for (var i = 0; i < n; i++) {
 					var t = i/n * 2000;
-					if(c < 300 && old_layers[i].getBounds().intersects(that.map.getBounds())) {
+					if(c < 200 && old_layers[i].getBounds().intersects(that.map.getBounds())) {
 						t = c++;
 					}
 					setTimeout(function(i, l) {
 						that.main_layer.removeLayer(l);
-					}, t, i, old_layers[i]);
+					}, 1000 + t, i, old_layers[i]);
 				};
 
 				var new_layers = geoJson.getLayers();
 				for (var i = 0; i < new_layers.length; i++) {
-					setTimeout(function loop(that, l) {
-						if(l.getBounds().intersects(that.map.getBounds())) {
-							console.log("ADDED " + l.feature.properties.REGION);
-							if(that.datasets && (that.datasets.dataset1 || that.datasets.dataset2)) {
-								that.colorize_layer(that.datasets, l);
+					setTimeout(function loop(l, geoJson) {
+						if(that.current_geoJson == geoJson) {
+							if(l.getBounds().intersects(that.map.getBounds())) {
+								if(that.datasets && (that.datasets.dataset1 || that.datasets.dataset2)) {
+									that.colorize_layer(that.datasets, l, geoJson);
+								}
+								that.main_layer.addLayer(l);
+							}else{
+								setTimeout(loop.bind(this), 100, l, geoJson);
 							}
-							that.main_layer.addLayer(l);
-						}else{
-							setTimeout(loop, 100, that, l);
 						}
-					}, i % 100, that, new_layers[i]);
+					}.bind(that), i % 1000, new_layers[i], geoJson);
 				};
-			};
-
-			if(this.geoJson_cache[layer]) {
-				replaceGeoJSON(this.geoJson_cache[layer]);
-			}else{
-				var options = {
-					smoothFactor: 2.0,
-					style: this.neutral_style,
-					onEachFeature: this.on_feature,
-				};
-				$.get(layer).success(function(data) {
-					var geoJson = that.geoJson_cache[layer] = L.geoJson(data, options);
-					replaceGeoJSON(geoJson);
-				});
 			}
 		},
 
 		get_color: function(t) {
 			// Color curve function generated from:
 			// https://dl.dropboxusercontent.com/u/44461887/Maker/EquaMaker.swf
-			var t2,t3;
-			t *= 255;
-			t3 = (t2 = t * t) * t;
+			if (0 <= t && t < 0.5) t = 255 * (0.03219*t*t + 1.29187*t + 0);
+			else if (0.5 <= t && t <= 1) t = 255 * (-1.26406*t*t + 2.58813*t + -0.32405);
 
 			var r,g,b;
+			var t2,t3;
+			t3 = (t2 = t * t) * t;
 
-			if(0 <= t && t < 21) r = 0.0005494505494505475*t^3 + -0.021978021978020568*t^2 + 0.2697802197802144*t + 248.99999999999997;
-			else if(21 <= t && t < 240) r = -0.003084126113487308*t^2 + 0.0864649829424563*t + 248.60545727242896;
-			else if(240 <= t && t <= 255) r = 0;
+			if (0 <= t && t < 23) r = 255;
+			else if (23 <= t && t <= 255) r = 0.00031706005872770226*t2 + -0.45603993103750085*t + 264.4266608327296;
 
-			if(0 <= t && t < 8) g = 255;
-			else if(8 <= t && t < 247) g = 0.00001680682780934362*t^3 + -0.0033371613483054656*t^2 + -1.2666196934332672*t + 264.3379307779192;
-			else if(247 <= t && t <= 255) g = 0;
+			if (0 <= t && t < 4) g = 255;
+			else if (4 <= t && t < 176) g = -0.000011933735924994102*t3 + 0.0017172534127885939*t2 + -1.4012094005738578*t + 259.57812530678996;
+			else if (176 <= t && t <= 255) g = 0;
 
-			if(0 <= t && t <= 255) b = -0.00002480554424041227*t^3 + 0.011311636407086993*t^2 + -1.6743759583352642*t + 170;
+			if (0 <= t && t <= 255) b = -0.000012434701152857986*t3 + 0.008053975696229959*t2 + -1.7552836708866706*t + 201;
 
 			return "rgb("+Math.round(r)+","+Math.round(g)+","+Math.round(b)+")";
 		},
@@ -182,7 +185,6 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 		on_feature: function(feature, layer) {
 			var that = this;
 
-			console.log(feature.properties.REGION);
 			var area_code = parseInt(feature.properties.PSGC, 10);
 
 			layer.on({
@@ -201,9 +203,9 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 		},
 
 		on_zoom: function() {
-			if(this.map.getZoom() >= 10) {
+			if(this.map.getZoom() >= 9) {
 				this.set_layer("json/MuniCities.psgc.json");
-			}else if(this.map.getZoom() >= 8) {
+			}else if(this.map.getZoom() >= 7) {
 				this.set_layer("json/Provinces.psgc.json");
 			}else{
 				this.set_layer("json/Regions.psgc.json");
