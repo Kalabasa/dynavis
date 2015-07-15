@@ -1,6 +1,7 @@
 <?php
 namespace Dynavis\Model;
 use \Dynavis\Database;
+use \Dynavis\PSGC;
 
 class Dataset extends \Dynavis\Core\RefEntity {
 	const TABLE = "dataset";
@@ -59,12 +60,12 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			
 			$area_code = (int) $row[0];
 			if(!$area_code) {
-				try {
-					$area = Area::get_by_name($row[0]);
-					$area_code = $area->code;
-				}catch(\Dynavis\Core\NotFoundException $e) {
-					throw new \Dynavis\Core\DataException("Invalid area format. " . $row[0] . " at row " . ($i + 1));
+				$area = Area::get_by_name($row[0]);
+				if(!$area) {
+					$why = $area_code ? "Invalid PSGC code. " : "Name not recognized. ";
+					throw new \Dynavis\Core\DataException("Invalid area format. " . $why . $area_name . " at row " . ($i + 1));
 				}
+				$area_code = $area->code;
 			}
 
 			for ($j = 1; $j < $c; $j++) { 

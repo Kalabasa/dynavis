@@ -1,6 +1,7 @@
 <?php
 namespace Dynavis\Model;
 use \Dynavis\Database;
+use \Dynavis\PSGC;
 
 class Area extends \Dynavis\Core\Entity {
 	const TABLE = "area";
@@ -300,4 +301,78 @@ class Area extends \Dynavis\Core\Entity {
 			"bar_id" => $bar_id,
 		];
 	}
+
+	public static function get_by_name($name) {
+		$names = static::psgc_get_names($name);
+		$candidates = [];
+		foreach ($names as $n) {
+			if(array_key_exists($n, PSGC::MAP)) {
+				$c = count(PSGC::MAP[$n]);
+				foreach (PSGC::MAP[$n] as $area_code) {
+					if(!isset($candidates[$area_code])) {
+						$candidates[$area_code] = 0;
+					}
+					$candidates[$area_code] += 1.0/$c;
+				}
+			}
+		}
+
+		if(empty($candidates)) return null;
+
+		$highest = null;
+		foreach ($candidates as $area_code => $prob) {
+			if(!$highest || $candidates[$highest] < $prob) {
+				$highest = $area_code;
+			}
+		}
+		return new Area($highest);
+	}
+
+	/* area name normalization functions */
+
+	private static function psgc_get_names($s) {
+		$split = preg_split("/[()]|\s+-\s+/", $s, 0, PREG_SPLIT_NO_EMPTY);
+		$names = [];
+		foreach ($split as $value) {
+			$nv = static::psgc_normalize($value);
+			if($nv) $names[] = $nv;
+		}
+		$add = [];
+		foreach($names as $n){
+			$len = strlen($n);
+			if(substr_compare($n, "city", $len-4, 4) === 0) {
+				$add[] = substr($n, $len-4);
+			}
+		}
+		return $names + $add;
+	}
+
+	private static function psgc_normalize($s) {
+		$s = iconv('UTF-8', 'ASCII//TRANSLIT', $s);
+		$s = preg_replace("/_/", " ", $s);
+		$s = strtolower(preg_replace_callback("/\b(?=[CLXVI]+\b)(C){0,3}(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\b/", "\Dynavis\Model\Area::psgc_roman_to_int", $s));
+		$s = preg_replace("/\bcity\s+of(.+)/", "$1city", $s);
+		$s = preg_replace("/\bbarangay\b/", "bgy", $s);
+		$s = preg_replace("/\bpoblacion\b/", "pob", $s);
+		$s = preg_replace("/\b(general|heneral|hen)\b/", "gen", $s);
+		$s = preg_replace("#[*-.'/\s]+|of|the#", "", $s);
+		return $s;
+	}
+
+	private static function psgc_roman_to_int($matches) {
+		$numeral_map = [[100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
+		$n = strtoupper($matches[0]);
+		$i = $result = 0;
+		foreach ($numeral_map as $pair) {
+			$integer = $pair[0];
+			$numeral = $pair[1];
+			$len = strlen($numeral);
+			while(substr($n, $i, $i + $len) == $numeral){
+				$result += $integer;
+				$i += $len;
+			}
+		}
+		return strval($result);
+	}
+	
 }
