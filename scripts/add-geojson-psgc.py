@@ -207,7 +207,7 @@ def get_main_name(strings, level, name_map):
 	return main
 
 def get_names(s):
-	names = [normalize(x) for x in [s] + filter(None, re_split.split(s))]
+	names = filter(None, [normalize(x) for x in [s] + filter(None, re_split.split(s))])
 	add = []
 	if names[0].endswith("city"):
 		add.append(names[0])
@@ -217,12 +217,13 @@ def get_names(s):
 			add.append(n[:-4])
 	return names + add
 
-re_split = re.compile(r"[()]")
+re_split = re.compile(r"[()]|\s+-\s+")
 re_roman = re.compile(r"\b(?=[CLXVI]+\b)(C){0,3}(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\b")
-re_trash = re.compile(r"[*-.'/()\s]+|of|the|capital")
+re_trash = re.compile(r"[*-._'/\s]+|of|the|capital")
 
 def normalize(s):
 	s = str(unicodedata.normalize("NFKD", unicode(s)).encode("ascii", "ignore"))
+	s = re.sub(r"_", r" ", s)
 	s = re_roman.sub(roman_to_int, s).lower()
 	s = re.sub(r"\bcity\s+of(.+)", r"\1city", s)
 	s = re.sub(r"\bbarangay\b", "bgy", s)
