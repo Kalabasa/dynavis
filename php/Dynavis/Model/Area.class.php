@@ -304,6 +304,7 @@ class Area extends \Dynavis\Core\Entity {
 
 	public static function get_by_name($name) {
 		$names = static::psgc_get_names($name);
+
 		$candidates = [];
 		foreach ($names as $n) {
 			if(array_key_exists($n, PSGC::MAP)) {
@@ -350,7 +351,25 @@ class Area extends \Dynavis\Core\Entity {
 	private static function psgc_normalize($s) {
 		$s = iconv('UTF-8', 'ASCII//TRANSLIT', $s);
 		$s = preg_replace("/_/", " ", $s);
-		$s = strtolower(preg_replace_callback("/\b(?=[CLXVI]+\b)(C){0,3}(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\b/", "\Dynavis\Model\Area::psgc_roman_to_int", $s));
+		$s = strtolower(preg_replace_callback(
+				"/\b(?=[CLXVI]+\b)(C){0,3}(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\b/",
+				function($matches) {
+					$numeral_map = [[100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
+					$n = strtoupper($matches[0]);
+					$i = $result = 0;
+					foreach ($numeral_map as $pair) {
+						$integer = $pair[0];
+						$numeral = $pair[1];
+						$len = strlen($numeral);
+						while(substr($n, $i, $len) == $numeral){
+							$result += $integer;
+							$i += $len;
+						}
+					}
+					return strval($result);
+				},
+				$s
+			));
 		$s = preg_replace("/\bcity\s+of(.+)/", "$1city", $s);
 		$s = preg_replace("/\bbarangay\b/", "bgy", $s);
 		$s = preg_replace("/\bpoblacion\b/", "pob", $s);
@@ -359,20 +378,4 @@ class Area extends \Dynavis\Core\Entity {
 		return $s;
 	}
 
-	private static function psgc_roman_to_int($matches) {
-		$numeral_map = [[100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
-		$n = strtoupper($matches[0]);
-		$i = $result = 0;
-		foreach ($numeral_map as $pair) {
-			$integer = $pair[0];
-			$numeral = $pair[1];
-			$len = strlen($numeral);
-			while(substr($n, $i, $i + $len) == $numeral){
-				$result += $integer;
-				$i += $len;
-			}
-		}
-		return strval($result);
-	}
-	
 }
