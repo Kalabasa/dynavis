@@ -67,8 +67,11 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 				var options = {
 					smoothFactor: 2.0,
 					style: {
-						weight: 3,
-						color: "#c7c7c7",
+						weight: 2,
+						opacity: 0.2,
+						color: "#7f7f7f",
+						fillOpacity: 0.4,
+						fillColor: "#c7c7c7",
 					},
 					onEachFeature: this.on_feature,
 				};
@@ -81,10 +84,10 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 		},
 
 		get_color: function(value) {
-			return value > 1 ? "#800026" :
-				value > 0.50  ? "#bd0026" :
-				value > 0.20  ? "#e31a1c" :
-				value > 0.10  ? "#fc4e2a" :
+			return value > 0.7 ? "#800026" :
+				value > 0.4  ? "#bd0026" :
+				value > 0.2  ? "#e31a1c" :
+				value > 0.1  ? "#fc4e2a" :
 				value > 0.05  ? "#fd8d3c" :
 				value > 0.02  ? "#feb24c" :
 				value > 0.01  ? "#fed976" :
@@ -94,29 +97,32 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 		on_feature: function(feature, layer) {
 			var that = this;
 
-			layer.on({
-				click: function(e) {
-					that.map.fitBounds(e.target.getBounds());
-					console.log(feature.properties.PSGC);
-				},
-			});
-
 			var area_code = parseInt(feature.properties.PSGC, 10);
 			var year = 2013;
+
+			layer.on({
+				click: function(e) {
+					var datapoints = that.datasets.dataset1.get_datapoints();
+					if(datapoints) {
+						var value = datapoints.get_value(area_code, year);
+						console.log(value);
+					}
+				},
+			});
 
 			var datapoints_callback = function(datapoints){
 				that.current_layer.resetStyle(layer);
 				var value = datapoints.get_value(area_code, year);
-				if(value == null) {
-					layer.setStyle({
-						fillOpacity: 0,
-					});
-				}else{
+				if(value != null) {
 					var min = datapoints.get_min_value();
 					var max = datapoints.get_max_value();
 					var y = (value-min)/(max-min);
 					layer.setStyle({
-						color: that.get_color(y),
+						weight: 3,
+						opacity: 1,
+						color: "#efefef",
+						fillOpacity: 0.7,
+						fillColor: that.get_color(y),
 					});
 				}
 			};
@@ -141,9 +147,9 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 		},
 
 		on_zoom: function() {
-			if(this.map.getZoom() >= 11) {
+			if(this.map.getZoom() >= 10) {
 				this.set_layer("json/MuniCities.psgc.json");
-			}else if(this.map.getZoom() >= 9) {
+			}else if(this.map.getZoom() >= 7) {
 				this.set_layer("json/Provinces.psgc.json");
 			}else{
 				this.set_layer("json/Regions.psgc.json");
