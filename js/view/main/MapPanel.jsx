@@ -38,7 +38,6 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 				fillColor: "#c7c7c7",
 			};
 
-			this.update_timers = [];
 			this.geoJson_cache = {};
 			this.current_layer_name = null;
 			this.main_layer = L.layerGroup([]).addTo(this.map);
@@ -71,7 +70,7 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 
 		colorize_layer: function(datasets, layer){
 			var callback = function(datapoints, layer){
-				var id = setTimeout(function loop(that, l, datapoints) {
+				function loop(that, l, datapoints) {
 					if(l.getBounds().intersects(that.map.getBounds())) {
 						var area_code = parseInt(l.feature.properties.PSGC);
 						var value = datapoints.get_value(area_code, that.state.year);
@@ -92,8 +91,7 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 					}else{
 						setTimeout(loop, 100, l, datapoints);
 					}
-				}, 100, this, layer, datapoints);
-				this.update_timers.push(id);
+				}
 			};
 
 			if(datasets.dataset1) {
@@ -135,7 +133,7 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 
 				var new_layers = geoJson.getLayers();
 				for (var i = 0; i < new_layers.length; i++) {
-					var id = setTimeout(function loop(that, l) {
+					setTimeout(function loop(that, l) {
 						if(l.getBounds().intersects(that.map.getBounds())) {
 							console.log("ADDED " + l.feature.properties.REGION);
 							if(that.datasets && (that.datasets.dataset1 || that.datasets.dataset2)) {
@@ -146,7 +144,6 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 							setTimeout(loop, 100, that, l);
 						}
 					}, i % 100, that, new_layers[i]);
-					that.update_timers.push(id);
 				};
 			};
 
@@ -169,36 +166,20 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			// Color curve function generated from:
 			// https://dl.dropboxusercontent.com/u/44461887/Maker/EquaMaker.swf
 			var t2,t3;
-			if(0 <= t < 0.5) {
-				t = 255 * (-1.13994*t*t + 1.84136*t + 0);
-			}else if(0.5 <= t <= 1) {
-				t = 255 * (0.05441*t*t + 0.647*t + 0.29859);
-			}
+			t *= 255;
 			t3 = (t2 = t * t) * t;
 
 			var r,g,b;
 
-			if(0 <= t && t < 186) {
-				r = 0;
-			}else if(186 <= t && t <= 255) {
-				r = 0.00052559209*t3 + -0.41051815*t2 + 97.755334*t + -7764.4518;
-			}
+			if(0 <= t && t < 21) r = 0.0005494505494505475*t^3 + -0.021978021978020568*t^2 + 0.2697802197802144*t + 248.99999999999997;
+			else if(21 <= t && t < 240) r = -0.003084126113487308*t^2 + 0.0864649829424563*t + 248.60545727242896;
+			else if(240 <= t && t <= 255) r = 0;
 
-			if(0 <= t && t < 3) {
-				g = 0;
-			}else if(3 <= t && t < 236) {
-				g = 0.000139094098*t2 + 1.14567057*t + -1.43817284;
-			}else if(236 <= t && t <= 255) {
-				g = 255;
-			}
+			if(0 <= t && t < 8) g = 255;
+			else if(8 <= t && t < 247) g = 0.00001680682780934362*t^3 + -0.0033371613483054656*t^2 + -1.2666196934332672*t + 264.3379307779192;
+			else if(247 <= t && t <= 255) g = 0;
 
-			if(0 <= t && t < 140) {
-				b = -0.0052717369*t2 + 1.36056485*t + 66;
-			}else if(140 <= t && t < 246) {
-				b = 0.000098961308*t3 + -0.02211215*t2 + 3.87258264*t + -63.652382;
-			}else if(246 <= t && t <= 255) {
-				b = -0.024999991*t3 + 18.75*t2 + -4686.9749*t + 390628.25;
-			}
+			if(0 <= t && t <= 255) b = -0.00002480554424041227*t^3 + 0.011311636407086993*t^2 + -1.6743759583352642*t + 170;
 
 			return "rgb("+Math.round(r)+","+Math.round(g)+","+Math.round(b)+")";
 		},
