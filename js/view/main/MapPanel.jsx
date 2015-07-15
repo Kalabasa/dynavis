@@ -28,6 +28,8 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			this.current_layer_name = null;
 			this.current_layer = null;
 
+			this.datasets = null;
+
 			this.map.on("zoomend", this.on_zoom);
 			this.on_zoom();
 		},
@@ -45,7 +47,7 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 		},
 
 		on_dataset: function(e) {
-			console.log("MapPanel: ", e);
+			this.datasets = e;
 		},
 
 		set_layer: function(layer) {
@@ -56,7 +58,6 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			
 			var last_layer = this.current_layer;
 			this.current_layer = null;
-
 
 			if(this.saved_layers[layer]) {
 				if(last_layer) this.map.removeLayer(last_layer);
@@ -79,13 +80,55 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			}
 		},
 
+		get_color: function(value) {
+			value *= 1000;
+			return
+				value > 1000 ? "#800026" :
+				value > 500  ? "#BD0026" :
+				value > 200  ? "#E31A1C" :
+				value > 100  ? "#FC4E2A" :
+				value > 50   ? "#FD8D3C" :
+				value > 20   ? "#FEB24C" :
+				value > 10   ? "#FED976" :
+					"#FFEDA0";
+		},
+
 		on_feature: function(feature, layer) {
 			var that = this;
 			layer.on({
 				click: function(e) {
 					that.map.fitBounds(e.target.getBounds());
+					console.log(feature.properties.PSGC);
 				},
 			});
+
+			var area_code = parseInt(feature.properties.PSGC, 10);
+			var year = 2013;
+
+			var datapoints_callback = function(datapoints){
+				var value = datapoints.get_value(area_code, year);
+				if(value !== null) {
+					layer.setStyle(that.get_color(value));
+				}
+			};
+
+			var dataset_callback = function(datasets){
+				if(datasets.dataset1) {
+					window.dataset = datasets.dataset1;
+					var datapoints = datasets.dataset1.get_datapoints();
+					if(datapoints.size()) {
+						datapoints_callback(datapoints);
+					}else{
+						datapoints.once("sync", datapoints_callback);
+					}
+				}
+			};
+
+			if(this.datasets && (this.datasets.datasets1 || this.datasets.datasets2)) {
+				dataset_callback(this.datasets);
+			}else{
+				this.props.bus.choropleth_settings.on("dataset", dataset_callback);
+			}
 		},
 
 		on_zoom: function() {

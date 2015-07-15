@@ -11,5 +11,16 @@ define(["backbone", "model/Datapoint"], function(Backbone, Datapoint) {
 		parse: function(data) {
 			return data.data;
 		},
+		get_value: function(area_code, year) {
+			console.log({
+				area_code: parseInt(area_code).toString(),
+				year: parseInt(year).toString(),
+			});
+			var value = parseFloat(this.findWhere({
+				area_code: parseInt(area_code).toString(),
+				year: parseInt(year).toString(),
+			}));
+			return isNaN(value) ? null : value;
+		},
 	});
 });
