@@ -13,29 +13,37 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 		},
 		
 		render: function() {
+			var classes = "data-row container-fluid";
 			var fields = null;
 			if(this.model().isNew() || this.state.edit) {
-				fields = (
-					<div>
-						<EditableName ref="name" model={this.model()} />
-						<button className="btn btn-primary" onClick={this.handle_save}>Save</button>
-						<button className="btn btn-default" onClick={this.handle_cancel}>Cancel</button>
-						<button className="btn btn-danger" onClick={this.handle_delete}>Delete</button>
-					</div>
-				);
+				classes += " edit";
+				fields = [
+					(<div className="row">
+						<EditableName className="col-md-12" ref="name" model={this.model()} />
+					</div>),
+					(<div className="row">
+						<div className="col-md-12">
+							<button className="pull-left btn btn-danger" onClick={this.handle_delete}>Delete</button>
+							<button className="pull-right btn btn-primary" onClick={this.handle_save}>Save</button>
+							<button className="pull-right btn btn-default" onClick={this.handle_cancel}>Cancel</button>
+						</div>
+					</div>)
+				];
 			}else{
-				fields = (
-					<div>
-						<Name model={this.model()} />
-						<button className="btn btn-default" onClick={this.handle_edit}>Edit</button>
-					</div>
-				);
+				fields = [
+					(<div className="row">
+						<Name className="field col-md-10 text-large" model={this.model()} />
+						<div className="col-md-2">
+							<button className="pull-right btn btn-default" onClick={this.handle_edit}>Edit</button>
+						</div>
+					</div>),
+					(<FamilyMemberList collection={this.state.members} onDeleteMember={this.props.onDeleteMember} />)
+				];
 			}
 			return (
-				<li>
+				<div className={classes}>
 					{fields}
-					<FamilyMemberList collection={this.state.members} onDeleteMember={this.props.onDeleteMember} />
-				</li>
+				</div>
 			);
 		},
 

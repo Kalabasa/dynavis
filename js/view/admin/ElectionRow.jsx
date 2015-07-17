@@ -39,47 +39,94 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 
 			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){
-					var cancel_button = <button className="btn btn-default" onClick={this.handle_cancel}>Cancel</button>;
+					var cancel_button = <button className="pull-right btn btn-default" onClick={this.handle_cancel}>Cancel</button>;
 				}
 				return (
-					<li className="form-inline">
-						Official <TypeaheadInput
-							for="Official"
-							ref="official"
-							display={display_official}
-							model={official}
-							required />
-						Position <input className="form-control" type="text" valueLink={this.linkState("position")} />
-						Year <input className="form-control" type="number" valueLink={this.linkState("year")} required />
-						Year end <input className="form-control" type="number" valueLink={this.linkState("year_end")} required />
-						Votes <input className="form-control" type="number" valueLink={this.linkState("votes")} />
-						Area <TypeaheadInput
-							for="Area"
-							ref="area"
-							display={display}
-							model={area}
-							required />
-						Party <TypeaheadInput
-							for="Party"
-							ref="party"
-							display={display}
-							model={party} />
-						<button className="btn btn-primary" onClick={this.handle_save}>Save</button>
-						{cancel_button}
-						<button className="btn btn-danger" onClick={this.handle_delete}>Delete</button>
-					</li>
+					<div className="edit data-row container-fluid">
+						<div className="row">
+							<div className="col-md-6">
+								<div className="form-label">Official</div>
+								<TypeaheadInput
+									for="Official"
+									ref="official"
+									display={display_official}
+									model={official}
+									required />
+							</div>
+							<div className="col-md-6">
+								<div className="form-label">Position</div>
+								<input className="form-control" type="text" valueLink={this.linkState("position")} />
+							</div>
+						</div>
+						<div className="row">
+							<div className="col-md-6">
+								<div className="form-label">Area</div>
+								<TypeaheadInput
+									for="Area"
+									ref="area"
+									display={display}
+									model={area}
+									required />
+							</div>
+							<div className="col-md-3">
+								<div className="form-label">Year</div>
+								<input className="form-control" type="number" valueLink={this.linkState("year")} required />
+							</div>
+							<div className="col-md-3">
+								<div className="form-label">Year end</div>
+								<input className="form-control" type="number" valueLink={this.linkState("year_end")} required />
+							</div>
+						</div>
+						<div className="row">
+							<div className="col-md-6">
+								<div className="form-label">Votes</div>
+								<input className="form-control" type="number" valueLink={this.linkState("votes")} />
+							</div>
+							<div className="col-md-6">
+								<div className="form-label">Party</div>
+								<TypeaheadInput
+									for="Party"
+									ref="party"
+									display={display}
+									model={party} />
+							</div>
+						</div>
+						<div className="row">
+							<div className="col-md-12">
+								<button className="pull-left btn btn-danger" onClick={this.handle_delete}>Delete</button>
+								<button className="pull-right btn btn-primary" onClick={this.handle_save}>Save</button>
+								{cancel_button}
+							</div>
+						</div>
+					</div>
 				);
 			}else{
 				return (
-					<li>
-						<OfficialName model={official} />
-						<div>{this.model().get("position")}</div>
-						<div>{this.model().get("year")} - {this.model().get("year_end")}</div>
-						<div>{this.model().get("votes")}</div>
-						<Name model={area} />
-						<Name model={party} />
-						<button className="btn btn-default" onClick={this.handle_edit}>Edit</button>
-					</li>
+					<div className="data-row container-fluid">
+						<div className="row">
+							<div className="col-md-10">
+								<div className="row">
+									<OfficialName className="field col-md-12 text-large" model={official} />
+								</div>
+								<div className="row">
+									<div className="col-md-6">
+										<div className="field">{this.model().get("position")}</div>
+										<Name className="field" model={area} />
+									</div>
+									<div className="col-md-6">
+										<div className="field">{this.model().get("votes")} votes</div>
+										<Name className="field" model={party} />
+									</div>
+								</div>
+								<div className="row">
+									<div className="field col-md-12">{this.model().get("year")} - {this.model().get("year_end")}</div>
+								</div>
+							</div>
+							<div className="col-md-2">
+								<button className="pull-right btn btn-default" onClick={this.handle_edit}>Edit</button>
+							</div>
+						</div>
+					</div>
 				);
 			}
 		},

@@ -3,9 +3,9 @@ define(["react", "jsx!view/OfficialName", "react.backbone"], function(React, Off
 	return React.createBackboneClass({
 		render: function() {
 			return (
-				<li>
-					<OfficialName model={this.model()} /> <button className="btn btn-default btn-xs" onClick={this.handle_delete}>x</button>
-				</li>
+				<div>
+					<OfficialName className="field" model={this.model()} /> <button className="btn btn-default btn-xs" onClick={this.handle_delete}>&times;</button>
+				</div>
 			);
 		},
 

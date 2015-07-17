@@ -4,21 +4,20 @@ define(["jquery", "react", "jsx!view/SearchControls", "jsx!view/admin/ElectionRo
 		render: function() {
 			var that = this;
 			return (
-				<div>
-					<h1>Elections</h1>
+				<div className="body-panel">
 					<form onSubmit={this.handle_upload}>
 						Upload election records (csv) <input ref="file" type="file" />
 						<input className="btn btn-default" type="submit" value="Upload" />
 					</form>
 					<SearchControls ref="searcher" collection={this.collection()} />
 					<button className="btn btn-default" onClick={this.handle_add}>Add</button>
-					<ul>
+					<div>
 						{this.collection().map(function(election) {
 							return <ElectionRow
 								key={election.cid}
 								model={election} />;
 						})}
-					</ul>
+					</div>
 				</div>
 			);
 		},

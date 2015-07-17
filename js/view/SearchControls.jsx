@@ -12,12 +12,14 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 
 		render: function() {
 			return(
-				<div>
-					<form className="form-inline" onSubmit={this.handle_search}>
+				<div className="clearfix form-inline">
+					<form className="pull-left input-group" onSubmit={this.handle_search}>
 						<input className="form-control" type="text" valueLink={this.linkState("input")} />
-						<input className="btn btn-default" type="submit" value="Search" />
+						<div className="input-group-btn">
+							<input className="btn btn-default" type="submit" value="Search" />
+						</div>
 					</form>
-					<PageControls
+					<PageControls className="pull-right"
 						collection={this.collection()}
 						onPrev={this.handle_prev}
 						onNext={this.handle_next} />

@@ -12,6 +12,12 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 			this.props.bus.choropleth_settings.on("dataset", this.on_dataset);
 		},
 
+		componentWillUnmount: function() {
+			this.props.bus.choropleth_settings.off("dataset", this.on_dataset);
+			this.map = null;
+			this.current_layer_name = null;
+		},
+
 		componentDidMount: function() {
 			var that = this;
 
@@ -54,12 +60,6 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 
 			this.map.on("zoomend", this.on_zoom);
 			this.on_zoom();
-		},
-
-		componentWillUnmount: function() {
-			this.props.bus.choropleth_settings.off("dataset", this.on_dataset);
-			this.map = null;
-			this.current_layer_name = null;
 		},
 
 		render: function() {

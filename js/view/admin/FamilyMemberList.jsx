@@ -9,22 +9,26 @@ define(["react", "jsx!view/TypeaheadInput", "jsx!view/admin/FamilyMemberItem", "
 			};
 
 			return (
-				<div>
-					<h3>Officials:</h3>
-					<ul>
+				<div className="row">
+					<div className="col-md-12">
+						<div className="field-label">Members</div>
 						{this.collection().map(function(official) {
 							return <FamilyMemberItem key={official.cid} model={official} onDelete={that.props.onDeleteMember} />;
 						})}
-					</ul>
-					<form onSubmit={this.handle_submit}>
-						<TypeaheadInput
-							for="Official"
-							ref="input"
-							display={display}
-							collection={this.collection()}
-							required />
-						<input className="btn btn-default" type="submit" value="Add" />
-					</form>
+						<form onSubmit={this.handle_submit}>
+							<div className="input-group field">
+								<TypeaheadInput
+									for="Official"
+									ref="input"
+									display={display}
+									collection={this.collection()}
+									required />
+								<div className="input-group-btn">
+									<input className="btn btn-default" type="submit" value="Add" />
+								</div>
+							</div>
+						</form>
+					</div>
 				</div>
 			);
 		},

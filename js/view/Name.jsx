@@ -3,7 +3,7 @@ define(["react", "react.backbone"], function(React) {
 	return React.createBackboneClass({
 		render: function() {
 			return (
-				<span>{this.model() ? this.model().get("name") : ""}</span>
+				<span className={this.props.className}>{this.model() ? this.model().get("name") : ""}</span>
 			);
 		},
 	});

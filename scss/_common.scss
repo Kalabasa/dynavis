@@ -1,47 +1,106 @@
 @import "reset";
+@import "typeahead";
+@import "drop-shadow";
 
 $header-height: 75px;
 $sidebar-width: 200px;
 
+$color-text: #1a1a1a;
+$color-background: #f8f8f8;
+
+$color-text-alt: #bcbfb4;
+$color-background-alt: #1f1f1f;
+
+$color-primary-1: #ff0040;
+$color-primary-2: #ffceee;
+$color-primary-3: #fffad8;
+$color-complement: #5bb827;
+$color-text-primary-1: #ffffff;
+$color-text-complement: #ffffff;
+
 body { margin: 0 }
-.row, .col { overflow: hidden; position: absolute; }
-.row { left: 0; right: 0; }
-.col { top: 0; bottom: 0; }
+.layout-row, .layout-col { overflow: hidden; position: absolute; }
+.layout-row { left: 0; right: 0; }
+.layout-col { top: 0; bottom: 0; }
 .scroll-x { overflow-x: auto; }
 .scroll-y { overflow-y: auto; }
 
-.tt-query {
-	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+$sidebar-width: 250px;
+
+.header {
+	height: $header-height;
+	z-index: 1;
+}
+.sidebar {
+	width: $sidebar-width;
+	top: $header-height;
+	z-index: 2;
+}
+.body {
+	top: $header-height;
+	left: $sidebar-width;
+	z-index: 0;
 }
 
-.tt-hint {
-	color: #999
+html,body {
+	color: $color-text;
+	background-color: $color-background;
+	font-size: 100%;
+}
+a {
+	color: $color-primary-1;
+	&:link {
+		color: $color-primary-1;
+	}
+	&:visited {
+		color: darken($color-primary-1, 10%);
+	}
+	&:hover {
+		color: lighten($color-primary-1, 20%);
+	}
+	&:active {
+		color: darken($color-primary-1, 10%);
+	}
 }
 
-.tt-menu {    // used to be tt-dropdown-menu in older versions
-	width: 422px;
-	margin-top: 4px;
-	padding: 4px 0;
-	background-color: #fff;
-	border: 1px solid #ccc;
-	border: 1px solid rgba(0, 0, 0, 0.2);
-	border-radius: 4px;
-	box-shadow: 0 5px 10px rgba(0,0,0,.2);
+h1,h2 {
+	font-size: 160%;
+	font-weight: lighter;
+}
+h3,h4 {
+	font-size: 140%;
+}
+h5,h6 {
+	font-size: 120%;
 }
 
-.tt-suggestion {
-	padding: 3px 20px;
-	line-height: 24px;
+.text-large {
+	font-size: 120%;
+	font-weight: bold;
 }
 
-.tt-suggestion.tt-cursor {
-	color: #fff;
-	background-color: #0097cf;
+.form-control, .btn {
+	position: relative;
+	top: 0;
+	margin: 4px 0;
+	border-radius: 2px;
+
+	&:not([disabled]) {
+		transition: top 0.02s ease-out;
+
+		@include drop-shadow(0);
+		&:hover {
+			top: -2px;
+			@include drop-shadow(2);
+		}
+	}
+}
+.btn:active:not([disabled]) {
+	top: -1px;
+	@include drop-shadow(1);
 }
 
-.tt-suggestion p {
-	margin: 0;
-}
+@import "components";
 
 .fadein {
 	animation: fadein 0.4s;

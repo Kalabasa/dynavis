@@ -4,19 +4,19 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 		render: function() {
 			if(this.model().isNew()) {
 				return (
-					<div>
+					<div className="login clearfix">
 						<form onSubmit={this.handle_login}>
 							<input className="form-control" id="username" type="text" required />
 							<input className="form-control" id="password" type="password" required />
-							<input className="btn btn-primary" type="submit" value="Login" />
+							<input className="button-login pull-right btn btn-primary" type="submit" value="Login" />
 						</form>
 					</div>
 				);
 			}else{
 				return (
-					<div>
-						{this.model().get("username")}
-						<button className="btn btn-default" onClick={this.handle_logout}>Logout</button>
+					<div className="login clearfix">
+						<span className="login-text pull-left">Logged in as <span className="login-username">{this.model().get("username")}</span></span>
+						<button className="button-logout pull-right btn btn-default btn-sm" onClick={this.handle_logout}>Logout</button>
 					</div>
 				);
 			}

@@ -13,8 +13,9 @@ define(["react", "react.backbone"], function(React) {
 
 		render: function() {
 			var nickname = this.state.nickname;
+			var classes = (this.props.className || "") + " form-inline";
 			return (
-				<span className="form-inline">
+				<span className={classes}>
 					{/*TODO: add labels somehow*/}
 					Surname <input className="form-control" type="text" valueLink={this.linkState("surname")} required />
 					Name <input className="form-control" type="text" valueLink={this.linkState("name")} required />

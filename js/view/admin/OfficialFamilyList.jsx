@@ -16,19 +16,29 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 			};
 
 			return (
-				<div>
-					<h3>Families:</h3>
-					{this.collection().map(function(family) {
-						return <OfficialFamilyToken key={family.cid} model={family} />;
-					})}
-					<form onSubmit={this.handle_submit}>
-						<TypeaheadInput
-							for="Family"
-							ref="input"
-							display={display}
-							collection={this.collection()}
-							required />
-						<input className="btn btn-default" type="submit" value="Add" />
+				<div className="row">
+					<form className="col-md-12" onSubmit={this.handle_submit}>
+						<div className="form-label">Families</div>
+						<div className="input-group">
+							<div className="form-control clearfix">
+								<div className="pull-left">
+									{this.collection().map(function(family) {
+										return <OfficialFamilyToken key={family.cid} model={family} />;
+									})}
+								</div>
+								<div className="token-input">
+									<TypeaheadInput className="typeahead-nostyle"
+										for="Family"
+										ref="input"
+										display={display}
+										collection={this.collection()}
+										required />
+								</div>
+							</div>
+							<div className="input-group-btn">
+								<input className="btn btn-default" type="submit" value="Add" />
+							</div>
+						</div>
 					</form>
 				</div>
 			);

@@ -1,22 +1,33 @@
 @import "common";
 
 .header {
-	height: $header-height;
-	left: $sidebar-width;
-	top: 0;
-
-	background-color: #D20035;
+	background-color: white;
 }
 .sidebar {
-	width: $sidebar-width;
-	left: 0;
-
-	background-color: #D1F498;
+	color: $color-text-alt;
+	background-color: $color-background-alt;
 }
 .body {
-	top: $header-height;
-	left: $sidebar-width;
-
-	background-color: #F0D8E0;
+	background-color: $color-background;
 }
 
+.sidebar .menu {
+	padding: 20px 0;
+
+	& > li {
+		width: 100%;
+
+		font-weight: bold;
+
+		&.active {
+			color: $color-text;
+			background-color: $color-background;
+		}
+
+		a {
+			color: inherit;
+			display: block;
+			padding: 1.2em 30px;
+		}
+	}
+}

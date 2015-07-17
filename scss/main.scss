@@ -1,27 +1,5 @@
 @import "common";
 
-$sidebar-width: 300px;
-
-.header {
-	height: $header-height;
-	left: $sidebar-width;
-	top: 0;
-
-	background-color: #D20035;
-}
-.sidebar {
-	width: $sidebar-width;
-	left: 0;
-
-	background-color: #D1F498;
-}
-.body {
-	top: $header-height;
-	left: $sidebar-width;
-
-	background-color: #F0D8E0;
-}
-
 .map-panel {
 	width: 100%;
 	height: 100%;

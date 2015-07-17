@@ -2,8 +2,16 @@
 define(["backbone", "react"], function(Backbone, React) {
 	return Backbone.Router.extend({
 		initialize: function(options) {
-			this.bus = options.bus;
 			this.token = options.token;
+			this.bus = options.bus;
+			this.listenTo(this, "route", this.on_route);
+		},
+
+		on_route: function(route, params) {
+			this.bus.router.emit("route", {
+				route: route,
+				params: params,
+			});
 		},
 
 		routes: {

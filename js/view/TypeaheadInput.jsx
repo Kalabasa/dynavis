@@ -43,6 +43,7 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 		},
 
 		filter_search: function(data) {
+			return data;
 			var that = this;
 			if(this.collection()) {
 				return _.filter(data, function(item) {
@@ -55,7 +56,7 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 
 		render: function() {
 			return (
-				<input className="form-inline form-control" type="text" ref="input" value={this.state.value} onChange={this.handle_change} required={this.props.required} />
+				<input className={this.props.className || "form-control"} type="text" ref="input" value={this.state.value} onChange={this.handle_change} required={this.props.required} />
 			);
 		},
 
@@ -109,7 +110,7 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 				};
 
 				var query = _.values(match).join(" ");
-				InstanceCache.search(this.props.for, query, function(){}, callback);
+				InstanceCache.search(this.props.for, {string: query, limit:1}, function(){}, callback);
 			}else{
 				options.callback(null, false);
 			}

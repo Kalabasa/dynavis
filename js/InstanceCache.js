@@ -21,11 +21,17 @@ define(["require", "bloodhound"].concat(MODEL_PATHS_VALUES), function(require, B
 	var create_hound = function(path) {
 		return new Bloodhound({
 			queryTokenizer: Bloodhound.tokenizers.nonword,
-			datumTokenizer: Bloodhound.tokenizers.nonword,
+			datumTokenizer: Bloodhound.tokenizers.obj.nonword,
 			remote: {
 				cache: false,
-				url: "api.php/" + path + "?q=%QUERY",
-				wildcard: "%QUERY",
+				prepare: function(query, settings) {
+					return _.extend(settings, {
+						url: "api.php/" + path
+							+ "?q=" + encodeURIComponent(query.string)
+							+ "&count=" + encodeURIComponent(query.limit)
+					});
+				},
+				url: "api.php/" + path + "?count=1",
 				transform: function(data) { return data.data; },
 			},
 		});
@@ -75,6 +81,12 @@ define(["require", "bloodhound"].concat(MODEL_PATHS_VALUES), function(require, B
 	};
 
 	InstanceCache.prototype.search = function(name, query, sync, async) {
+		if(typeof query === "string") {
+			query = {
+				string: query,
+				limit: 5,
+			};
+		}
 		this.hounds[name].search(query, sync, async);
 	};
 

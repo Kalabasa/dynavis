@@ -33,7 +33,7 @@ $auth_username_or_admin = authenticator(["username_match" => true, "roles" => ["
 // GET requests
 //-----------------------------------------------------------------------------
 
-$app->get("/officials", function () { generic_get_list("Official", ["surname", "name"]); } )->name("officials");
+$app->get("/officials", function () { generic_get_list("Official", ["surname", "name", "nickname"]); } )->name("officials");
 $app->get("/officials/:id", "get_official");
 $app->get("/officials/:id/families", "get_official_families");
 $app->get("/families", function () { generic_get_list("Family", ["name"]); } );

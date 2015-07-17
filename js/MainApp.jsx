@@ -10,20 +10,16 @@ define(function(require){
 	var MainApp = function() {
 		this.token = new Token();
 		this.bus = {
+			router: new Events(),
 			choropleth_settings: new Events(),
 		};
 
 		this.router = new MainRouter({bus: this.bus, token: this.token});
-		this.router.on("route", this.on_route, this);
-	};
-
-	MainApp.prototype.on_route = function(route, params) {
-		this.header.set_title(route);
 	};
 
 	MainApp.prototype.start = function() {
-		this.header = React.render(<Header title="Dashboard" />, document.getElementById("header"));
-		this.sidebar = React.render(<Sidebar bus={this.bus} token={this.token} />, document.getElementById("sidebar"));
+		this.header = React.render(<Header title="Dashboard" token={this.token} bus={this.bus} />, document.getElementById("header"));
+		this.sidebar = React.render(<Sidebar bus={this.bus} />, document.getElementById("sidebar"));
 
 		Backbone.history.start();
 	};

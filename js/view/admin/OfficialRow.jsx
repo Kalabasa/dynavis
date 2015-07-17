@@ -26,35 +26,36 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 		},
 
 		render: function() {
+			var classes = "data-row container-fluid";
 			var fields = null;
 			if(this.model().isNew() || this.state.edit) {
-				if(!this.model().isNew()){
-					var cancel_button = <button className="btn btn-default" onClick={this.handle_cancel}>Cancel</button>;
-				}
-				fields = (
-					<div className="form-inline">
-						<EditableOfficialName ref="name" model={this.model()} />
-						<button className="btn btn-primary" onClick={this.handle_save}>Save</button>
-						{cancel_button}
-						<button className="btn btn-danger" onClick={this.handle_delete}>Delete</button>
-					</div>
-				);
+				classes += " edit";
+				fields = [
+					(<div className="row">
+						<EditableOfficialName className="col-md-12" ref="name" model={this.model()} />
+					</div>),
+					(<div className="row">
+						<div className="col-md-12">
+							<button className="pull-right btn btn-primary" onClick={this.handle_save}>Save</button>
+							<button className="pull-right btn btn-default" onClick={this.handle_cancel}>Cancel</button>
+						</div>
+					</div>)
+				];
 			}else{
-				fields = (
-					<div>
-						<OfficialName model={this.model()} />
-						<button className="btn btn-default" onClick={this.handle_edit}>Edit</button>
-					</div>
-				);
-			}
-			if(!this.model().isNew()) {
-				var family_list = <OfficialFamilyList collection={this.state.families} />;
+				fields = [
+					(<div className="row">
+						<OfficialName className="field col-md-10 text-large" model={this.model()} />
+						<div className="col-md-2">
+							<button className="pull-right btn btn-default" onClick={this.handle_edit}>Edit</button>
+						</div>
+					</div>),
+					(<OfficialFamilyList collection={this.state.families} />)
+				];
 			}
 			return (
-				<li>
+				<div className={classes}>
 					{fields}
-					{family_list}
-				</li>
+				</div>
 			);
 		},
 
@@ -86,10 +87,6 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 					}
 				});
 			}
-		},
-
-		handle_delete: function() {
-			this.model().destroy({wait: true});
 		},
 	});
 });

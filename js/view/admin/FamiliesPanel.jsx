@@ -4,14 +4,13 @@ define(["react", "jsx!view/SearchControls", "jsx!view/admin/FamilyBox", "react.b
 		render: function() {
 			var that = this;
 			return (
-				<div>
-					<h1>Families</h1>
+				<div className="body-panel">
 					<SearchControls collection={this.collection()} />
-					<ul>
+					<div>
 						{this.collection().map(function(family) {
 							return <FamilyBox key={family.cid} model={family} onDeleteMember={that.handle_delete_official} />;
 						})}
-					</ul>
+					</div>
 				</div>
 			);
 		},
