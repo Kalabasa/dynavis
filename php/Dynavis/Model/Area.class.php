@@ -54,6 +54,8 @@ class Area extends \Dynavis\Core\Entity {
 
 	public static function query_areas($count, $start, $query, $level = null) {
 		if($count < 0 || $start < -1) return false;
+		if(empty($query)) return ["total" => 0, "data" => []];
+		
 		switch ($level) {
 			case "region": $type = 0; break;
 			case "province": $type = 1; break;
