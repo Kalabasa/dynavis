@@ -148,7 +148,7 @@ def main():
 			p = hier["children"]
 			for i in range(0,level+1):
 				aname = get_main_name(values[i], i, name_map)
-				if aname in p:
+				if aname in p and p[aname]:
 					print i,aname
 					if i == level:
 						area = p[aname]["area"]

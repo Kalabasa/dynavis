@@ -25,7 +25,7 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 									return <OfficialFamilyToken key={family.cid} model={family} />;
 								})}
 							</div>
-							<div className="token-input">
+							<div className="token-input" onKeyDown={this.handle_key}>
 								<TypeaheadInput className="token-input-typeahead typeahead-nostyle"
 									for="Family"
 									ref="input"
@@ -40,6 +40,13 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 					</form>
 				</div>
 			);
+		},
+
+		handle_key: function(e) {
+			var size = this.collection().size();
+			if(!e.target.value.length && e.keyCode == 8 && size) {
+				this.collection().at(-1).destroy({wait: true});
+			}
 		},
 
 		handle_submit: function(e) {

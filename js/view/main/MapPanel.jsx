@@ -242,7 +242,9 @@ define(["react", "leaflet", "config.map"], function(React, L, config) {
 		},
 
 		on_zoom: function() {
-			if(this.map.getZoom() >= 10) {
+			if(this.map.getZoom() >= 12) {
+				this.set_layer("json/Barangays.psgc.json");
+			}else if(this.map.getZoom() >= 10) {
 				this.set_layer("json/MuniCities.psgc.json");
 			}else if(this.map.getZoom() >= 8) {
 				this.set_layer("json/Provinces.psgc.json");

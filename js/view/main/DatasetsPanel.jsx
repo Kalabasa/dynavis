@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "model/Dataset", "jsx!view/SearchControls", "jsx!view/main/DatasetBox", "react.backbone"], function(React, Dataset, SearchControls, DatasetBox) {
+define(["react", "model/Dataset", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/main/DatasetBox", "react.backbone"], function(React, Dataset, SearchControls, PageControls, DatasetBox) {
 	return React.createBackboneClass({
  		mixins: [React.addons.LinkedStateMixin],
 
@@ -12,22 +12,22 @@ define(["react", "model/Dataset", "jsx!view/SearchControls", "jsx!view/main/Data
 
 		render: function() {
 			return (
-				<div>
+				<div className="body-panel">
 					<a className="btn btn-link" href="#">Back</a>
-					<h1>Datasets</h1>
 					<form onSubmit={this.handle_upload}>
 						Upload dataset
-						Name <input	className="form-control" ref="name" type="text" valueLink={this.linkState("name")} required />
-						Description <input	className="form-control" ref="description" type="text" valueLink={this.linkState("description")} />
+						Name <input	className="input" ref="name" type="text" valueLink={this.linkState("name")} required />
+						Description <input	className="input" ref="description" type="text" valueLink={this.linkState("description")} />
 						File (csv) <input ref="file" type="file" />
 						<input className="button" type="submit" value="Upload" />
 					</form>
 					<SearchControls collection={this.collection()} />
-					<ul>
+					<div>
 						{this.collection().map(function(dataset) {
 							return <DatasetBox key={dataset.cid} model={dataset} />;
 						})}
-					</ul>
+					</div>
+					<PageControls className="text-center" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
 				</div>
 			);
 		},

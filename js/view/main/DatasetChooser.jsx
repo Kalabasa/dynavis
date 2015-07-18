@@ -13,11 +13,11 @@ define(["react", "react.backbone"], function(React) {
 				<div>
 					<div>
 						{this.collection().map(function(dataset) {
-							return <button onClick={function() { that.select(dataset); }}>{dataset.get("name")}</button>
+							return <button className="button" onClick={function() { that.select(dataset); }}>{dataset.get("name")}</button>
 						})}
 					</div>
 					<div>
-						<button onClick={this.handle_select}>Select</button>
+						<button className="button" onClick={this.handle_select}>Select</button>
 					</div>
 				</div>
 			);

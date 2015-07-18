@@ -31,12 +31,12 @@ $sidebar-width: 250px;
 
 .header {
 	height: $header-height;
-	z-index: 1;
+	z-index: 2;
 }
 .sidebar {
 	width: $sidebar-width;
 	top: $header-height;
-	z-index: 2;
+	z-index: 1;
 }
 .body {
 	top: $header-height;
@@ -118,7 +118,7 @@ h5,h6 {
 	background-color: white;
 
 	@extend %floating-transitions;
-	&:not([disabled]) {
+	&:not([disabled]):not([readonly]) {
 		top: -0.5px;
 		@include drop-shadow(1);
 		&:hover {
@@ -128,7 +128,7 @@ h5,h6 {
 	}
 }
 .button {
-	&:active:not([disabled]) {
+	&:active:not([disabled]):not([readonly]) {
 		top: -0.5px;
 		@include drop-shadow(1);
 	}

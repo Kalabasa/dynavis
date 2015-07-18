@@ -17,12 +17,14 @@ define(["react", "jsx!view/TypeaheadInput", "jsx!view/admin/FamilyMemberItem", "
 						})}
 						<form onSubmit={this.handle_submit}>
 							<div className="group pure-g">
-								<TypeaheadInput className="group-component pure-u-9-10 input"
-									for="Official"
-									ref="input"
-									display={display}
-									collection={this.collection()}
-									required />
+								<div className="group-component pure-u-9-10">
+									<TypeaheadInput className="input"
+										for="Official"
+										ref="input"
+										display={display}
+										collection={this.collection()}
+										required />
+								</div>
 								<input className="group-component pure-u-1-10 button" type="submit" value="Add" />
 							</div>
 						</form>

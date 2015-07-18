@@ -77,6 +77,10 @@
 		}
 	}
 
+	.button {
+		background-color: $color-background;
+	}
+
 	&.edit {
 		padding: 28px;
 		margin: 8px 0;
@@ -108,7 +112,7 @@
 	top: 0;
 
 	padding: 2px 4px;
-	margin: 0 4px;
+	margin: 2px 4px;
 	border-radius: 2px;
 	font-size: 90%;
 
@@ -141,7 +145,6 @@
 		border-radius: 0;
 	}
 	.group-component:first-child {
-		margin-left: 0;
 		border-top-left-radius: 2px;
 		border-bottom-left-radius: 2px;
 	}
@@ -155,4 +158,8 @@
 .typeahead-nostyle {
 	border: none;
 	outline: none;
+}
+
+.pane {
+	padding: 20px;
 }

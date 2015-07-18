@@ -26,36 +26,34 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 		},
 
 		indicator_generator: function(indicator) {
+			var that = this;
+
 			var descriptions = {
 				"DYNSHA": "Proportion of dynastic officials in each local government unit.",
 				"DYNLAR": "Proprtion of the dynasty with the largest proportion of dynastic officials in each local government unit.",
 				"DYNHERF": "Herfindal index on dynasties in each local government unit.",
 			};
 
-			return function() {
-				var that = this;
+			var token = InstanceCache.get("Token", "session");
+			var user = token ? token.get_user() : null;
+			if(!user) return;
 
-				var token = InstanceCache.get("Token", "session");
-				var user = token ? token.get_user() : null;
-				if(!user) return;
-
-				var props = {
-					username: user.get("username"),
-					indicator: indicator,
-					description: descriptions[indicator] + " Generated on " + new Date(),
-				};
-
-				$.ajax({
-					method: "POST",
-					url: "api.php/generate-indicator",
-					data: JSON.stringify(props),
-					processData: false,
-					dataType: "json",
-					success: function(data) {
-						that.collection().fetch();
-					},
-				});
+			var props = {
+				username: user.get("username"),
+				indicator: indicator,
+				description: descriptions[indicator] + " Generated on " + new Date(),
 			};
+
+			$.ajax({
+				method: "POST",
+				url: "api.php/generate-indicator",
+				data: JSON.stringify(props),
+				processData: false,
+				dataType: "json",
+				success: function(data) {
+					that.collection().fetch();
+				},
+			});
 		},
 	});
 });

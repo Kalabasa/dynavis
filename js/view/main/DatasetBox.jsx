@@ -11,10 +11,12 @@ define(["react", "mixin/ClickToTopMixin", "react.backbone"], function(React, Cli
 					<div className="pure-g">
 						<div className="pure-u-5-6">
 							<div className="field text-large">{this.model().get("name")}</div>
-							<span className="field-label">Uploaded by</span>
-							<span className="field">
-								<a href={url_datasets}>{username}</a>
-							</span>
+							<div className="field-group">
+								<span className="label">Uploaded by</span>
+								<span className="field">
+									<a href={url_datasets}>{username}</a>
+								</span>
+							</div>
 							<div className="field text">{this.model().get("description")}</div>
 						</div>
 						<div className="pure-u-1-6">
