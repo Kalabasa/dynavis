@@ -11,12 +11,16 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 		},
 
 		render: function() {
+			if(this.state.query) {
+				var cancel_button = <button className="pure-button" onClick={this.handle_cancel}>&times;</button>;
+			}
 			return(
 				<div className="clearfix form-inline">
 					<form className="pull-left input-group" onSubmit={this.handle_search}>
-						<input className="form-control" type="text" valueLink={this.linkState("input")} />
+						<input className="form-control" type="text" placeholder={this.state.query} valueLink={this.linkState("input")} />
 						<div className="input-group-btn">
-							<input className="btn btn-default" type="submit" value="Search" />
+							{cancel_button}
+							<input className="pure-button" type="submit" value="Search" />
 						</div>
 					</form>
 					<PageControls className="pull-right"
@@ -28,10 +32,13 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 		},
 
 		set_query: function(query, options) {
-			options = options || {};
-			var data = this.get_data(query) || {};
-			this.collection().page(0, _.extend(data, options));
+			this.collection().setParams(this.get_data(query));
+			this.collection().page(0);
 			this.setState({query: query});
+		},
+
+		handle_cancel: function() {
+			this.set_query(null);
 		},
 
 		handle_search: function(e) {
@@ -40,15 +47,15 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 		},
 
 		handle_prev: function() {
-			this.collection().prev(this.get_data());
+			this.collection().prev();
 		},
 		handle_next: function() {
-			this.collection().next(this.get_data());
+			this.collection().next();
 		},
 
 		get_data: function(query) {
 			if(query === undefined) query = this.state.query;
-			return query ? {data: {q: query}} : null;
+			return query ? {q: query} : null;
 		},
 	});
 });

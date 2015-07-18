@@ -8,6 +8,7 @@ var Backbone = Backbone || {};
 
 		initialize: function(models, options) {
 			options = options || {};
+			this.params = options.params || null;
 			this.per_page = options.per_page || this.per_page;
 			this.total = options.total || this.total;
 		},
@@ -17,6 +18,10 @@ var Backbone = Backbone || {};
 		},
 		getTotalPages: function() {
 			return Math.ceil(this.total/this.per_page);
+		},
+
+		setParams: function(params) {
+			this.params = params;
 		},
 
 		next: function(options) {
@@ -54,7 +59,7 @@ var Backbone = Backbone || {};
 			var that = this;
 
 			options = options || {};
-			options.data = options.data || {};
+			options.data = options.data || this.params || {};
 
 			if(options.data.start === undefined) options.data.start = this.start;
 			if(options.data.count === undefined) options.data.count = this.per_page;

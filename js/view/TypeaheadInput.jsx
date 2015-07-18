@@ -30,12 +30,18 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 
 			var $input = $(React.findDOMNode(this.refs.input));
 			$input.typeahead({highlight: true}, {
+				limit: 6,
+				highlight: true,
+				display: that.props.display,
+				templates: {
+					notFound: "Not Found",
+					pending: "Pending",
+				},
 				source: function(q, sync, async) {
 					InstanceCache.search(that.props.for, q,
 						function(d) { sync(that.filter_search(d)); },
 						function(d) { async(that.filter_search(d)); });
 				},
-				display: that.props.display,
 			});
 			$input.bind("typeahead:select typeahead:autocomplete", function(e, s) {
 				that.handle_select(s);
@@ -43,7 +49,6 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 		},
 
 		filter_search: function(data) {
-			return data;
 			var that = this;
 			if(this.collection()) {
 				return _.filter(data, function(item) {
@@ -56,7 +61,7 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 
 		render: function() {
 			return (
-				<input className={this.props.className || "form-control"} type="text" ref="input" value={this.state.value} onChange={this.handle_change} required={this.props.required} />
+				<input className={this.props.className} type="text" ref="input" value={this.state.value} onChange={this.handle_change} required={this.props.required} />
 			);
 		},
 
@@ -110,7 +115,7 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 				};
 
 				var query = _.values(match).join(" ");
-				InstanceCache.search(this.props.for, {string: query, limit:1}, function(){}, callback);
+				InstanceCache.search(this.props.for, {string: query, limit:1}, callback);
 			}else{
 				options.callback(null, false);
 			}

@@ -9,8 +9,8 @@ define(["react", "jsx!view/TypeaheadInput", "jsx!view/admin/FamilyMemberItem", "
 			};
 
 			return (
-				<div className="row">
-					<div className="col-md-12">
+				<div className="pure-g">
+					<div className="pure-u-1">
 						<div className="field-label">Members</div>
 						{this.collection().map(function(official) {
 							return <FamilyMemberItem key={official.cid} model={official} onDelete={that.props.onDeleteMember} />;
@@ -24,7 +24,7 @@ define(["react", "jsx!view/TypeaheadInput", "jsx!view/admin/FamilyMemberItem", "
 									collection={this.collection()}
 									required />
 								<div className="input-group-btn">
-									<input className="btn btn-default" type="submit" value="Add" />
+									<input className="pure-button" type="submit" value="Add" />
 								</div>
 							</div>
 						</form>

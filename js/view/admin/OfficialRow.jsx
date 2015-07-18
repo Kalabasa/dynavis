@@ -1,6 +1,8 @@
 "use strict";
-define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialName", "jsx!view/OfficialName", "jsx!view/admin/OfficialFamilyList", "react.backbone"], function(React, OfficialFamilyCollection, EditableOfficialName, OfficialName, OfficialFamilyList) {
+define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialName", "jsx!view/OfficialName", "jsx!view/admin/OfficialFamilyList", "mixin/ClickToTopMixin", "react.backbone"], function(React, OfficialFamilyCollection, EditableOfficialName, OfficialName, OfficialFamilyList, ClickToTopMixin) {
 	return React.createBackboneClass({
+		mixins: [ClickToTopMixin],
+
 		getInitialState: function() {
 			return {
 				edit: this.model().isNew(),
@@ -26,27 +28,27 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 		},
 
 		render: function() {
-			var classes = "data-row container-fluid";
+			var classes = "data-row pure-form";
 			var fields = null;
 			if(this.model().isNew() || this.state.edit) {
 				classes += " edit";
 				fields = [
-					(<div className="row">
-						<EditableOfficialName className="col-md-12" ref="name" model={this.model()} />
+					(<div className="pure-g">
+						<EditableOfficialName className="pure-u-1" ref="name" model={this.model()} />
 					</div>),
-					(<div className="row">
-						<div className="col-md-12">
-							<button className="pull-right btn btn-primary" onClick={this.handle_save}>Save</button>
-							<button className="pull-right btn btn-default" onClick={this.handle_cancel}>Cancel</button>
+					(<div className="pure-g">
+						<div className="pure-u-1">
+							<button className="pull-right pure-button pure-button-primary" onClick={this.handle_save}>Save</button>
+							<button className="pull-right pure-button" onClick={this.handle_cancel}>Cancel</button>
 						</div>
 					</div>)
 				];
 			}else{
 				fields = [
-					(<div className="row">
-						<OfficialName className="field col-md-10 text-large" model={this.model()} />
-						<div className="col-md-2">
-							<button className="pull-right btn btn-default" onClick={this.handle_edit}>Edit</button>
+					(<div className="pure-g">
+						<OfficialName className="field pure-u-5-6 text-large" model={this.model()} />
+						<div className="pure-u-1-6">
+							<button className="pull-right pure-button" onClick={this.handle_edit}>Edit</button>
 						</div>
 					</div>),
 					(<OfficialFamilyList collection={this.state.families} />)

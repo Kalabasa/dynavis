@@ -5,9 +5,9 @@ define(["react", "react.backbone"], function(React) {
 			var that = this;
 			return (
 				<div>
-					<button className="btn btn-default" onClick={this.props.getCallback(null)}>All</button>
+					<button className="pure-button" onClick={this.props.getCallback(null)}>All</button>
 					{_.map("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""), function(letter) {
-						return <button className="btn btn-default" key={letter} onClick={that.props.getCallback(letter)}>{letter}</button>
+						return <button className="pure-button" key={letter} onClick={that.props.getCallback(letter)}>{letter}</button>
 					})}
 				</div>
 			);

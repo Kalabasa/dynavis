@@ -1,6 +1,8 @@
 "use strict";
-define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!view/Name", "jsx!view/admin/FamilyMemberList", "react.backbone"], function(React, FamilyMemberCollection, EditableName, Name, FamilyMemberList) {
+define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!view/Name", "jsx!view/admin/FamilyMemberList", "mixin/ClickToTopMixin", "react.backbone"], function(React, FamilyMemberCollection, EditableName, Name, FamilyMemberList, ClickToTopMixin) {
 	return React.createBackboneClass({
+		mixins: [ClickToTopMixin],
+
 		getInitialState: function() {
 			return {
 				edit: this.model().isNew(),
@@ -13,28 +15,28 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 		},
 		
 		render: function() {
-			var classes = "data-row container-fluid";
+			var classes = "data-row pure-form";
 			var fields = null;
 			if(this.model().isNew() || this.state.edit) {
 				classes += " edit";
 				fields = [
-					(<div className="row">
-						<EditableName className="col-md-12" ref="name" model={this.model()} />
+					(<div className="pure-g">
+						<EditableName className="pure-u-1" ref="name" model={this.model()} />
 					</div>),
-					(<div className="row">
-						<div className="col-md-12">
-							<button className="pull-left btn btn-danger" onClick={this.handle_delete}>Delete</button>
-							<button className="pull-right btn btn-primary" onClick={this.handle_save}>Save</button>
-							<button className="pull-right btn btn-default" onClick={this.handle_cancel}>Cancel</button>
+					(<div className="pure-g">
+						<div className="pure-u-1">
+							<button className="pull-left pure-button " onClick={this.handle_delete}>Delete</button>
+							<button className="pull-right pure-button pure-button-primary" onClick={this.handle_save}>Save</button>
+							<button className="pull-right pure-button" onClick={this.handle_cancel}>Cancel</button>
 						</div>
 					</div>)
 				];
 			}else{
 				fields = [
-					(<div className="row">
-						<Name className="field col-md-10 text-large" model={this.model()} />
-						<div className="col-md-2">
-							<button className="pull-right btn btn-default" onClick={this.handle_edit}>Edit</button>
+					(<div className="pure-g">
+						<Name className="field pure-u-5-6 text-large" model={this.model()} />
+						<div className="pure-u-1-6">
+							<button className="pull-right pure-button" onClick={this.handle_edit}>Edit</button>
 						</div>
 					</div>),
 					(<FamilyMemberList collection={this.state.members} onDeleteMember={this.props.onDeleteMember} />)

@@ -2,7 +2,6 @@
 define(["backbone", "react"], function(Backbone, React) {
 	return Backbone.Router.extend({
 		initialize: function(options) {
-			this.token = options.token;
 			this.bus = options.bus;
 			this.listenTo(this, "route", this.on_route);
 		},
@@ -56,7 +55,7 @@ define(["backbone", "react"], function(Backbone, React) {
 				"model/DatasetCollection", "jsx!view/admin/DatasetsPanel"
 			], function(DatasetCollection, DatasetsPanel) {
 				var dataset_collection = new DatasetCollection(null, username ? {username: username} : null);
-				React.render(<DatasetsPanel collection={dataset_collection} token={that.token} />, document.getElementById("body"));
+				React.render(<DatasetsPanel collection={dataset_collection} />, document.getElementById("body"));
 				dataset_collection.fetch();
 			});
 		},

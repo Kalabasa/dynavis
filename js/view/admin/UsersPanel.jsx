@@ -1,16 +1,17 @@
 "use strict";
-define(["react", "jsx!view/SearchControls", "jsx!view/admin/UserRow", "react.backbone"], function(React, SearchControls, UserRow) {
+define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/UserRow", "react.backbone"], function(React, SearchControls, PageControls, UserRow) {
 	return React.createBackboneClass({
 		render: function() {
+			console.log(this.collection());
 			return (
-				<div>
-					<h1>Users</h1>
+				<div className="body-panel">
 					<SearchControls collection={this.collection()} />
-					<ul>
+					<div>
 						{this.collection().map(function(user) {
 							return <UserRow key={user.cid} model={user} />;
 						})}
-					</ul>
+					</div>
+					<PageControls className="text-center" collection={this.collection()} />
 				</div>
 			);
 		},

@@ -170,7 +170,7 @@ class Area extends \Dynavis\Core\Entity {
 
 		// Calculate sub-codes
 		$this->bar_id = $this->code % 10000000;
-		$this->mun_id = Math.floor($this->bar_id / 1000);
+		$this->mun_id = floor($this->bar_id / 1000);
 
 		parent::save();
 	}

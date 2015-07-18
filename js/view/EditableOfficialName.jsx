@@ -13,13 +13,12 @@ define(["react", "react.backbone"], function(React) {
 
 		render: function() {
 			var nickname = this.state.nickname;
-			var classes = (this.props.className || "") + " form-inline";
 			return (
-				<span className={classes}>
+				<span className={this.props.className}>
 					{/*TODO: add labels somehow*/}
-					Surname <input className="form-control" type="text" valueLink={this.linkState("surname")} required />
-					Name <input className="form-control" type="text" valueLink={this.linkState("name")} required />
-					Nickname <input className="form-control" type="text" valueLink={this.linkState("nickname")} />
+					Surname <input className="pure-u" type="text" valueLink={this.linkState("surname")} required />
+					Name <input className="pure-u" type="text" valueLink={this.linkState("name")} required />
+					Nickname <input className="pure-u" type="text" valueLink={this.linkState("nickname")} />
 				</span>
 			);
 		},

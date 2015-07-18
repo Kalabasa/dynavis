@@ -16,8 +16,8 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 			};
 
 			return (
-				<div className="row">
-					<form className="col-md-12" onSubmit={this.handle_submit}>
+				<div className="pure-g">
+					<form className="pure-u-1" onSubmit={this.handle_submit}>
 						<div className="form-label">Families</div>
 						<div className="input-group">
 							<div className="form-control clearfix">
@@ -36,7 +36,7 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 								</div>
 							</div>
 							<div className="input-group-btn">
-								<input className="btn btn-default" type="submit" value="Add" />
+								<input className="pure-button" type="submit" value="Add" />
 							</div>
 						</div>
 					</form>

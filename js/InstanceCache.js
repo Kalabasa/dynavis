@@ -17,13 +17,12 @@ for(var key in MODEL_PATHS) {
 	MODEL_PATHS_VALUES.push(MODEL_PATHS[key]);
 }
 
-define(["require", "bloodhound"].concat(MODEL_PATHS_VALUES), function(require, Bloodhound) {
+define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), function(require, _, Bloodhound) {
 	var create_hound = function(path) {
 		return new Bloodhound({
 			queryTokenizer: Bloodhound.tokenizers.nonword,
 			datumTokenizer: Bloodhound.tokenizers.obj.nonword,
 			remote: {
-				cache: false,
 				prepare: function(query, settings) {
 					return _.extend(settings, {
 						url: "api.php/" + path
@@ -80,14 +79,37 @@ define(["require", "bloodhound"].concat(MODEL_PATHS_VALUES), function(require, B
 		this.hash[name][key] = value;
 	};
 
-	InstanceCache.prototype.search = function(name, query, sync, async) {
+	InstanceCache.prototype.search = function(name, query, callback, async) {
 		if(typeof query === "string") {
 			query = {
 				string: query,
-				limit: 5,
+				limit: 6,
 			};
 		}
-		this.hounds[name].search(query, sync, async);
+
+		var callback_sync, callback_async;
+		if(async) {
+			callback_sync = callback;
+			callback_async = async;
+		}else{
+			callback_sync = callback_async = (function() {
+				var fin = false;
+				var exec_count = 0;
+				var collected_data = [];
+				return function(data) {
+					if(!fin) {
+						exec_count++;
+						collected_data = collected_data.concat(data);
+						if (collected_data.length >= query.limit || exec_count == 2) {
+							fin = true;
+							callback(data);
+						}
+					}
+				};
+			})();
+		}
+
+		this.hounds[name].search(query, callback_sync, callback_async);
 	};
 
 	return new InstanceCache();

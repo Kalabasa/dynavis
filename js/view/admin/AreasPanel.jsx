@@ -1,21 +1,21 @@
 "use strict";
-define(["react", "jsx!view/SearchControls", "jsx!view/admin/AreaRow", "react.backbone"], function(React, SearchControls, AreaRow) {
+define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/AreaRow", "react.backbone"], function(React, SearchControls, PageControls, AreaRow) {
 	return React.createBackboneClass({
 		render: function() {
 			return (
-				<div>
-					<h1>Areas</h1>
+				<div className="body-panel">
 					<form onSubmit={this.handle_upload}>
 						Upload PSGC list (csv) <input ref="file" type="file" />
-						<input className="btn btn-default" type="submit" value="Upload" />
+						<input className="pure-button" type="submit" value="Upload" />
 					</form>
 					<SearchControls ref="searcher" collection={this.collection()} />
-					<button className="btn btn-default" onClick={this.handle_add}>Add</button>
-					<ul>
+					<button className="pure-button" onClick={this.handle_add}>Add</button>
+					<div>
 						{this.collection().map(function(area) {
 							return <AreaRow key={area.cid} model={area} />;
 						})}
-					</ul>
+					</div>
+					<PageControls className="text-center" collection={this.collection()} />
 				</div>
 			);
 		},

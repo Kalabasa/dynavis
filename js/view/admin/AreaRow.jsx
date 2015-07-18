@@ -1,7 +1,7 @@
 "use strict";
-define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/Name", "react.backbone"], function(React, EditableName, TypeaheadInput, Name) {
+define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/Name", "mixin/ClickToTopMixin", "react.backbone"], function(React, EditableName, TypeaheadInput, Name, ClickToTopMixin) {
 	return React.createBackboneClass({
- 		mixins: [React.addons.LinkedStateMixin],
+ 		mixins: [React.addons.LinkedStateMixin, ClickToTopMixin],
 
 		getInitialState: function() {
 			return {
@@ -23,34 +23,80 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 			var fields = null;
 			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){
-					var cancel_button = <button className="btn btn-default" onClick={this.handle_cancel}>Cancel</button>;
+					var cancel_button = <button className="pull-right pure-button" onClick={this.handle_cancel}>Cancel</button>;
 				}
 				return (
-					<li className="form-inline">
-						Name <EditableName ref="name" model={this.model()} />
-						Code <input className="form-control" type="text" valueLink={this.linkState("code")} disabled={!this.model().isNew()} required />
-						{/* TODO: USE RADIO BUTTON or WHATEVER SELECTOR */}
-						Level <input className="form-control" type="text" valueLink={this.linkState("level")} required />
-						Parent <TypeaheadInput
-							for="Area"
-							ref="parent"
-							display={display}
-							model={parent}
-							required />
-						<button className="btn btn-primary" onClick={this.handle_save}>Save</button>
-						{cancel_button}
-						<button className="btn btn-danger" onClick={this.handle_delete}>Delete</button>
-					</li>
+					<div className="edit data-row pure-form">
+						<div className="pure-g">
+							<div className="pure-u-1-2">
+								Name <EditableName className="pure-u-1" ref="name" model={this.model()} />
+							</div>
+							<div className="pure-u-1-2">
+								Code <input className="pure-u-1" type="text" valueLink={this.linkState("code")} readOnly={!this.model().isNew()} required />
+							</div>
+							<div className="pure-u-1-2">
+								Type <select className="pure-u-1" valueLink={this.linkState("level")} required>
+									<option value="region">Region</option>
+									<option value="province">Province</option>
+									<option value="municipality">City/Municipality</option>
+									<option value="barangay">Barangay</option>
+								</select>
+							</div>
+							<div className="pure-u-1-2">
+								Parent <TypeaheadInput className="pure-u-1"
+									for="Area"
+									ref="parent"
+									display={display}
+									model={parent}
+									required />
+							</div>
+						</div>
+						<div className="pure-g">
+							<div className="pure-u-1">
+								<button className="pull-left pure-button " onClick={this.handle_delete}>Delete</button>
+								<button className="pull-right pure-button pure-button-primary" onClick={this.handle_save}>Save</button>
+								{cancel_button}
+							</div>
+						</div>
+					</div>
 				);
 			}else{
+				if(parent) {
+					var parent_field = [
+						(<span className="field-label">Parent</span>),
+						(<Name className="field" model={parent} />)
+					];
+				}
+				var type = {
+					"region": "Region",
+					"province": "Province",
+					"municipality": "City/Municipality",
+					"barangay": "Barangay",
+				}[this.model().get("level")];
 				return (
-					<li>
-						<Name model={this.model()} />
-						{this.format_code(this.model().get("code"))}
-						{this.model().get("level")}
-						<Name model={parent} />
-						<button className="btn btn-default" onClick={this.handle_edit}>Edit</button>
-					</li>
+					<div className="data-row container-fluid">
+						<div className="pure-g">
+							<div className="pure-u-5-6">
+								<div className="pure-g">
+									<Name className="pure-u-1 text-large field" model={this.model()} />
+									<div className="pure-u-1-3">
+										<span className="field-label">Type</span>
+										<span className="field">{type}</span>
+									</div>
+									<div className="pure-u-1-3">
+										<span className="field-label">PSGC</span>
+										<span className="field">{this.format_code(this.model().get("code"))}</span>
+									</div>
+									<div className="pure-u-1-3">
+										{parent_field}
+									</div>
+								</div>
+							</div>
+							<div className="pure-u-1-6">
+								<button className="pull-right pure-button" onClick={this.handle_edit}>Edit</button>
+							</div>
+						</div>
+					</div>
 				);
 			}
 		},

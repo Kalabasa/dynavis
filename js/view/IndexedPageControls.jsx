@@ -19,9 +19,8 @@ define(["react", "jsx!view/AlphabetIndex", "jsx!view/PageControls", "react.backb
 		},
 
 		set_letter: function(letter, options) {
-			options = options || {};
-			var data = this.get_data(letter) || {};
-			this.collection().page(0, _.extend(data, options));
+			this.collection().setParams(this.get_data(letter));
+			this.collection().page(0);
 			this.setState({letter: letter});
 		},
 
@@ -33,15 +32,15 @@ define(["react", "jsx!view/AlphabetIndex", "jsx!view/PageControls", "react.backb
 		},
 
 		handle_prev: function() {
-			this.collection().prev(this.get_data());
+			this.collection().prev();
 		},
 		handle_next: function() {
-			this.collection().next(this.get_data());
+			this.collection().next();
 		},
 
 		get_data: function(letter) {
 			if(letter === undefined) letter = this.state.letter;
-			return letter ? {data: {q: letter, qindex: 1}} : null;
+			return letter ? {q: letter, qindex: 1} : null;
 		},
 	});
 });

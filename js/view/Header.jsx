@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "jsx!view/Login"], function(React, Login) {
+define(["react", "InstanceCache", "jsx!view/Login"], function(React, InstanceCache, Login) {
 	return React.createClass({
 		componentWillMount: function() {
 			this.props.bus.router.on("route", this.on_route);
@@ -18,16 +18,21 @@ define(["react", "jsx!view/Login"], function(React, Login) {
 		render: function() {
 			return (
 				<div>
-					<Login model={this.props.token} />
+					<Login model={InstanceCache.get("Token", "session")} />
 					<div id="header-content">
-						<h2>{this.state.title}</h2>
+						<h2 className="header-title">{this.state.title}</h2>
+						<h3 className="header-subtitle">{this.state.subtitle}</h3>
 					</div>
 				</div>
 			);
 		},
 
 		set_title: function(title) {
-			this.setState({title: title});
+			this.setState({title: title, subtitle: null});
+		},
+
+		set_subtitle: function(subtitle) {
+			this.setState({subtitle: subtitle});
 		},
 
 		on_route: function(e) {
@@ -40,6 +45,9 @@ define(["react", "jsx!view/Login"], function(React, Login) {
 				"users": "Users",
 			};
 			this.set_title(title_map[e.route]);
+			if(e.route === "datasets" && e.params[0]) {
+				this.set_subtitle("uploaded by " + e.params[0]);
+			}
 		},
 	});
 });

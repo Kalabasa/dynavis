@@ -1,8 +1,7 @@
 "use strict";
-define(["backbone", "react"], function(Backbone, React) {
+define(["backbone", "react", "InstanceCache"], function(Backbone, React, InstanceCache) {
 	return Backbone.Router.extend({
 		initialize: function(options) {
-			this.token = options.token;
 			this.bus = options.bus;
 			this.listenTo(this, "route", this.on_route);
 		},
@@ -31,7 +30,8 @@ define(["backbone", "react"], function(Backbone, React) {
 			require([
 				"model/DatasetCollection", "jsx!view/main/DatasetsPanel"
 			], function(DatasetCollection, DatasetsPanel) {
-				var user = that.token.get_user();
+				var token = InstanceCache.get("Token", "session");
+				var user = token ? token.get_user() : null;
 				if(!user) {
 					that.navigate("", true);
 					return;

@@ -12,6 +12,16 @@
 		padding: 0 40px;
 		line-height: 100%;
 		vertical-align: middle;
+		
+		.header-title {
+			display: inline;
+		}
+		.header-subtitle {
+			display: inline;
+			margin-left: 0.6em;
+			font-weight: lighter;
+			color: lighten($color-text, 40%);
+		}
 	}
 
 	.login {
@@ -44,7 +54,7 @@
 .data-row {
 	position: relative;
 
-	padding: 12px 20px;
+	padding: 20px;
 	margin: 0 8px;
 
 	background-color: white;
@@ -52,6 +62,7 @@
 	@include drop-shadow(0);
 
 	.form-label, .field-label {
+		margin-right: 0.3em;
 		font-size: 90%;
 		color: lighten($color-text, 40%);
 	}

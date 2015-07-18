@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "jsx!view/SearchControls", "jsx!view/admin/FamilyBox", "react.backbone"], function(React, SearchControls, FamilyBox) {
+define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/FamilyBox", "react.backbone"], function(React, SearchControls, PageControls, FamilyBox) {
 	return React.createBackboneClass({
 		render: function() {
 			var that = this;
@@ -11,6 +11,7 @@ define(["react", "jsx!view/SearchControls", "jsx!view/admin/FamilyBox", "react.b
 							return <FamilyBox key={family.cid} model={family} onDeleteMember={that.handle_delete_official} />;
 						})}
 					</div>
+					<PageControls className="text-center" collection={this.collection()} />
 				</div>
 			);
 		},
