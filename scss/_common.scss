@@ -101,7 +101,11 @@ h5,h6 {
 	display: none;
 }
 
-.form input:not([type=file]), .input, .button {
+.pad {
+	padding: 0.5em;
+}
+
+.form input:not([type=file]), .form select, .input, .button {
 	position: relative;
 	top: 0;
 

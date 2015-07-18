@@ -20,7 +20,7 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 			if(this.model().isNew() || this.state.edit) {
 				classes += " edit";
 				fields = [
-					(<div className="pure-g">
+					(<div className="pure-g form">
 						<EditableName className="pure-u-1" ref="name" model={this.model()} />
 					</div>),
 					(<div className="pure-g">

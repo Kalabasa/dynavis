@@ -26,16 +26,19 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 					var cancel_button = <button className="pull-right button" onClick={this.handle_cancel}>Cancel</button>;
 				}
 				return (
-					<div className="edit data-row pure-form">
+					<div className="edit data-row form">
 						<div className="pure-g">
 							<div className="pure-u-1-2">
-								Name <EditableName className="pure-u-1" ref="name" model={this.model()} />
+								<div className="label">Name</div>
+								<EditableName className="pure-u-1" ref="name" model={this.model()} />
 							</div>
 							<div className="pure-u-1-2">
-								Code <input className="pure-u-1" type="text" valueLink={this.linkState("code")} readOnly={!this.model().isNew()} required />
+								<div className="label">Code</div>
+								<input className="pure-u-1" type="text" valueLink={this.linkState("code")} readOnly={!this.model().isNew()} required />
 							</div>
 							<div className="pure-u-1-2">
-								Type <select className="pure-u-1" valueLink={this.linkState("level")} required>
+								<div className="label">Type</div>
+								<select className="pure-u-1" valueLink={this.linkState("level")} required>
 									<option value="region">Region</option>
 									<option value="province">Province</option>
 									<option value="municipality">City/Municipality</option>
@@ -43,7 +46,8 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 								</select>
 							</div>
 							<div className="pure-u-1-2">
-								Parent <TypeaheadInput className="pure-u-1"
+								<div className="label">Parent</div>
+								<TypeaheadInput className="pure-u-1"
 									for="Area"
 									ref="parent"
 									display={display}
@@ -63,8 +67,8 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 			}else{
 				if(parent) {
 					var parent_field = [
-						(<span className="field-label">Parent</span>),
-						(<Name className="field" model={parent} />)
+						(<span className="pure-u-1-4 label">Parent</span>),
+						(<Name className="pure-u-3-4 field" model={parent} />)
 					];
 				}
 				var type = {
@@ -78,16 +82,20 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 						<div className="pure-g">
 							<div className="pure-u-5-6">
 								<div className="pure-g">
-									<Name className="pure-u-1 text-large field" model={this.model()} />
-									<div className="pure-u-1-3">
-										<span className="field-label">Type</span>
-										<span className="field">{type}</span>
+									<div className="pure-u-1 field-group">
+										<Name className="pure-u-1 field text-large" model={this.model()} />
 									</div>
-									<div className="pure-u-1-3">
-										<span className="field-label">PSGC</span>
-										<span className="field">{this.format_code(this.model().get("code"))}</span>
+								</div>
+								<div className="pure-g">
+									<div className="pure-u-1-3 field-group">
+										<span className="pure-u-1-4 label">Type</span>
+										<span className="pure-u-3-4 field">{type}</span>
 									</div>
-									<div className="pure-u-1-3">
+									<div className="pure-u-1-3 field-group">
+										<span className="pure-u-1-4 label">PSGC</span>
+										<span className="pure-u-3-4 field">{this.format_code(this.model().get("code"))}</span>
+									</div>
+									<div className="pure-u-1-3 field-group">
 										{parent_field}
 									</div>
 								</div>

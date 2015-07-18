@@ -35,7 +35,7 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
-.form input:not([type=file]), .input, .button, .token {
+.form input:not([type=file]), .form select, .input, .button, .token {
   transition: all 0.06s ease-out;
   transition-property: box-shadow, top; }
 
@@ -113,7 +113,7 @@ fieldset[disabled] .twitter-typeahead .tt-input {
 .tt-menu .tt-suggestion p {
   margin: 0; }
 
-.form input:not([type=file]), .input, .button, .token {
+.form input:not([type=file]), .form select, .input, .button, .token {
   transition: all 0.06s ease-out;
   transition-property: box-shadow, top; }
 
@@ -201,7 +201,10 @@ h5, h6 {
 .hidden {
   display: none; }
 
-.form input:not([type=file]), .input, .button {
+.pad {
+  padding: 0.5em; }
+
+.form input:not([type=file]), .form select, .input, .button {
   position: relative;
   top: 0;
   margin: 4px 0;
@@ -210,11 +213,11 @@ h5, h6 {
   border-radius: 2px;
   color: #2E2E2E;
   background-color: white; }
-  .form input:not([type=file]):not([disabled]), .input:not([disabled]), .button:not([disabled]) {
+  .form input:not([type=file]):not([disabled]), .form select:not([disabled]), .input:not([disabled]), .button:not([disabled]) {
     top: -0.5px;
     box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.22222), 0 0.5px 1px -1px rgba(0, 0, 0, 0.1);
     z-index: 1; }
-    .form input:not([type=file]):not([disabled]):hover, .input:not([disabled]):hover, .button:not([disabled]):hover {
+    .form input:not([type=file]):not([disabled]):hover, .form select:not([disabled]):hover, .input:not([disabled]):hover, .button:not([disabled]):hover {
       top: -1px;
       box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -2px rgba(0, 0, 0, 0.1);
       z-index: 2; }
@@ -259,13 +262,14 @@ h5, h6 {
 
 .data-row {
   position: relative;
-  padding: 20px;
+  padding: 1em 22px;
   margin: 0 8px;
   background-color: white;
-  box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.125), 0 0px 0px 0px rgba(0, 0, 0, 0.1);
-  z-index: 0; }
+  box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.22222), 0 0.5px 1px -1px rgba(0, 0, 0, 0.1);
+  z-index: 1; }
   .data-row .field-group {
-    margin: 12px 0; }
+    line-height: 150%;
+    margin: 0.6em 0; }
   .data-row .label {
     font-size: 90%;
     padding-right: 0.3em;
@@ -277,8 +281,8 @@ h5, h6 {
   .data-row.edit {
     padding: 28px;
     margin: 8px 0;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.41667), 0 2px 4px -4px rgba(0, 0, 0, 0.1);
-    z-index: 4; }
+    box-shadow: 0 2.5px 10px 0 rgba(0, 0, 0, 0.46154), 0 2.5px 5px -5px rgba(0, 0, 0, 0.1);
+    z-index: 5; }
 
 .token-list-input .token-list {
   float: left; }

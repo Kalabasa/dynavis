@@ -40,7 +40,7 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 				return (
 					<div className="edit data-row form">
 						<div className="pure-g">
-							<div className="pure-u-1-2">
+							<div className="pure-u-1-2 pad">
 								<div className="label">Official</div>
 								<TypeaheadInput className="pure-u-1"
 									for="Official"
@@ -49,13 +49,13 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 									model={official}
 									required />
 							</div>
-							<div className="pure-u-1-2">
+							<div className="pure-u-1-2 pad">
 								<div className="label">Position</div>
 								<input className="pure-u-1" type="text" valueLink={this.linkState("position")} />
 							</div>
 						</div>
 						<div className="pure-g">
-							<div className="pure-u-1-2">
+							<div className="pure-u-1-2 pad">
 								<div className="label">Area</div>
 								<TypeaheadInput className="pure-u-1"
 									for="Area"
@@ -64,21 +64,21 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 									model={area}
 									required />
 							</div>
-							<div className="pure-u-1-4">
+							<div className="pure-u-1-4 pad">
 								<div className="label">Year</div>
 								<input className="pure-u-1" type="number" valueLink={this.linkState("year")} required />
 							</div>
-							<div className="pure-u-1-4">
+							<div className="pure-u-1-4 pad">
 								<div className="label">Year end</div>
 								<input className="pure-u-1" type="number" valueLink={this.linkState("year_end")} required />
 							</div>
 						</div>
 						<div className="pure-g">
-							<div className="pure-u-1-2">
+							<div className="pure-u-1-2 pad">
 								<div className="label">Votes</div>
 								<input className="pure-u-1" type="number" valueLink={this.linkState("votes")} />
 							</div>
-							<div className="pure-u-1-2">
+							<div className="pure-u-1-2 pad">
 								<div className="label">Party</div>
 								<TypeaheadInput className="pure-u-1"
 									for="Party"

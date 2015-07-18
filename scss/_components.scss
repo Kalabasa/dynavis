@@ -54,15 +54,16 @@
 .data-row {
 	position: relative;
 
-	padding: 20px;
+	padding: 1em 22px;
 	margin: 0 8px;
 
 	background-color: white;
 
-	@include drop-shadow(0);
+	@include drop-shadow(1);
 
 	.field-group {
-		margin: 12px 0;
+		line-height: 150%;
+		margin: 0.6em 0;
 	}
 	.label {
 		font-size: 90%;
@@ -80,7 +81,7 @@
 		padding: 28px;
 		margin: 8px 0;
 
-		@include drop-shadow(4);
+		@include drop-shadow(5);
 	}
 }
 
