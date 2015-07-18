@@ -59,7 +59,12 @@ var Backbone = Backbone || {};
 			var that = this;
 
 			options = options || {};
-			options.data = options.data || this.params || {};
+			options.data = options.data || {}
+			if(this.params) {
+				_.each(this.params, function(v,k) {
+					if(!(k in options.data)) options.data[k] = v;
+				});
+			}
 
 			if(options.data.start === undefined) options.data.start = this.start;
 			if(options.data.count === undefined) options.data.count = this.per_page;

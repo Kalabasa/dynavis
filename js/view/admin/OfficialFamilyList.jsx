@@ -18,7 +18,7 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 			return (
 				<div className="pure-g">
 					<form className="pure-u-1 clearfix" onSubmit={this.handle_submit}>
-						<div className="form-label">Families</div>
+						<div className="label">Families</div>
 						<div className="input token-list-input">
 							<div className="token-list">
 								{this.collection().map(function(family) {

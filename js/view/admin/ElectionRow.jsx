@@ -41,7 +41,7 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 					<div className="edit data-row form">
 						<div className="pure-g">
 							<div className="pure-u-1-2">
-								<div className="form-label">Official</div>
+								<div className="label">Official</div>
 								<TypeaheadInput className="pure-u-1"
 									for="Official"
 									ref="official"
@@ -50,13 +50,13 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 									required />
 							</div>
 							<div className="pure-u-1-2">
-								<div className="form-label">Position</div>
+								<div className="label">Position</div>
 								<input className="pure-u-1" type="text" valueLink={this.linkState("position")} />
 							</div>
 						</div>
 						<div className="pure-g">
 							<div className="pure-u-1-2">
-								<div className="form-label">Area</div>
+								<div className="label">Area</div>
 								<TypeaheadInput className="pure-u-1"
 									for="Area"
 									ref="area"
@@ -65,21 +65,21 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 									required />
 							</div>
 							<div className="pure-u-1-4">
-								<div className="form-label">Year</div>
+								<div className="label">Year</div>
 								<input className="pure-u-1" type="number" valueLink={this.linkState("year")} required />
 							</div>
 							<div className="pure-u-1-4">
-								<div className="form-label">Year end</div>
+								<div className="label">Year end</div>
 								<input className="pure-u-1" type="number" valueLink={this.linkState("year_end")} required />
 							</div>
 						</div>
 						<div className="pure-g">
 							<div className="pure-u-1-2">
-								<div className="form-label">Votes</div>
+								<div className="label">Votes</div>
 								<input className="pure-u-1" type="number" valueLink={this.linkState("votes")} />
 							</div>
 							<div className="pure-u-1-2">
-								<div className="form-label">Party</div>
+								<div className="label">Party</div>
 								<TypeaheadInput className="pure-u-1"
 									for="Party"
 									ref="party"
@@ -101,21 +101,34 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 					<div className="data-row container-fluid">
 						<div className="pure-g">
 							<div className="pure-u-5-6">
-								<div className="pure-g">
-									<OfficialName className="field pure-u-1 text-large" model={official} />
+								<div className="pure-g field-group">
+									<OfficialName className="pure-u-1 field text-large" model={official} />
 								</div>
 								<div className="pure-g">
 									<div className="pure-u-1-2">
-										<div className="field">{this.model().get("position")}</div>
-										<Name className="field" model={area} />
+										<div className="field-group">
+											<span className="pure-u-1-3 label">Position</span>
+											<span className="pure-u-2-3 field">{this.model().get("position")}</span>
+										</div>
+										<div className="field-group">
+											<span className="pure-u-1-3 label">Area</span>
+											<Name className="pure-u-2-3 field" model={area} />
+										</div>
+										<div className="field-group">
+											<span className="pure-u-1-3 label">Duration</span>
+											<span className="pure-u-2-3 field">{this.model().get("year")} - {this.model().get("year_end")}</span>
+										</div>
 									</div>
 									<div className="pure-u-1-2">
-										<div className="field">{this.model().get("votes")} votes</div>
-										<Name className="field" model={party} />
+										<div className="field-group">
+											<span className="pure-u-1-3 label">Votes</span>
+											<span className="pure-u-2-3 field">{this.model().get("votes")} votes</span>
+										</div>
+										<div className="field-group">
+											<span className="pure-u-1-3 label">Party</span>
+											<Name className="pure-u-2-3 field" model={party} />
+										</div>
 									</div>
-								</div>
-								<div className="pure-g">
-									<div className="field pure-u-1">{this.model().get("year")} - {this.model().get("year_end")}</div>
 								</div>
 							</div>
 							<div className="pure-u-1-6">

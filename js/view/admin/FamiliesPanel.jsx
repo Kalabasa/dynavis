@@ -1,6 +1,8 @@
 "use strict";
-define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/FamilyBox", "react.backbone"], function(React, SearchControls, PageControls, FamilyBox) {
+define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/FamilyBox", "mixin/ScrollToTopMixin", "react.backbone"], function(React, SearchControls, PageControls, FamilyBox, ScrollToTopMixin) {
 	return React.createBackboneClass({
+		mixins: [ScrollToTopMixin],
+
 		render: function() {
 			var that = this;
 			return (
@@ -11,7 +13,7 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 							return <FamilyBox key={family.cid} model={family} onDeleteMember={that.handle_delete_official} />;
 						})}
 					</div>
-					<PageControls className="text-center" collection={this.collection()} />
+					<PageControls className="text-center" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
 				</div>
 			);
 		},

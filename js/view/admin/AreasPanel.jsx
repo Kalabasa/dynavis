@@ -1,6 +1,8 @@
 "use strict";
-define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/AreaRow", "react.backbone"], function(React, SearchControls, PageControls, AreaRow) {
+define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/AreaRow", "mixin/ScrollToTopMixin", "react.backbone"], function(React, SearchControls, PageControls, AreaRow, ScrollToTopMixin) {
 	return React.createBackboneClass({
+		mixins: [ScrollToTopMixin],
+
 		render: function() {
 			return (
 				<div className="body-panel">
@@ -15,7 +17,7 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 							return <AreaRow key={area.cid} model={area} />;
 						})}
 					</div>
-					<PageControls className="text-center" collection={this.collection()} />
+					<PageControls className="text-center" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
 				</div>
 			);
 		},

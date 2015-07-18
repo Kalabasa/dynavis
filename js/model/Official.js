@@ -8,6 +8,8 @@ define(["backbone"], function(Backbone) {
 		},
 
 		get_full_name: function() {
+			if(!this.get("surname") || !this.get("name")) return null;
+
 			var nickname = null;
 			if(this.get("nickname")) {
 				nickname = ' "' + this.get("nickname") + '"';

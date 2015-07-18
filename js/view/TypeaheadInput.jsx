@@ -33,10 +33,6 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 				limit: 6,
 				highlight: true,
 				display: that.props.display,
-				templates: {
-					notFound: "Not Found",
-					pending: "Pending",
-				},
 				source: function(q, sync, async) {
 					var params = {
 						string: q,

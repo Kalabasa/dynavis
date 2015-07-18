@@ -93,31 +93,39 @@ h5,h6 {
 	font-weight: bold;
 }
 
+.text-center {
+	text-align: center;
+}
+
+.hidden {
+	display: none;
+}
+
 .form input:not([type=file]), .input, .button {
 	position: relative;
 	top: 0;
 
 	margin: 4px 0;
-	padding: 0.5em 1em;
+	padding: 0.5em 0.7em;
 	border: none;
 	border-radius: 2px;
 
 	color: $color-text;
 	background-color: white;
 
+	@extend %floating-transitions;
 	&:not([disabled]) {
-		transition: top 0.02s ease-out;
-
+		top: -0.5px;
 		@include drop-shadow(1);
 		&:hover {
-			top: -2px;
+			top: -1px;
 			@include drop-shadow(2);
 		}
 	}
 }
 .button {
 	&:active:not([disabled]) {
-		top: -1px;
+		top: -0.5px;
 		@include drop-shadow(1);
 	}
 }
@@ -125,7 +133,7 @@ h5,h6 {
 @import "components";
 
 .fadein {
-	animation: fadein 0.4s;
+	animation: fadein 0.3s;
 }
 
 @keyframes fadein {

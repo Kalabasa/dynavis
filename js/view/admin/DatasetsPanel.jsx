@@ -1,6 +1,8 @@
 "use strict";
-define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/main/DatasetBox", "react.backbone"], function(React, InstanceCache, SearchControls, PageControls, DatasetBox) {
+define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/main/DatasetBox", "mixin/ScrollToTopMixin", "react.backbone"], function(React, InstanceCache, SearchControls, PageControls, DatasetBox, ScrollToTopMixin) {
 	return React.createBackboneClass({
+		mixins: [ScrollToTopMixin],
+
 		render: function() {
 			if(!this.collection().username) {
 				var generate_button = <button className="button" onClick={this.generate_indicator}>Generate indicator</button>;
@@ -14,7 +16,7 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 							return <DatasetBox key={dataset.cid} model={dataset} />;
 						})}
 					</div>
-					<PageControls className="text-center" collection={this.collection()} />
+					<PageControls className="text-center" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
 				</div>
 			);
 		},

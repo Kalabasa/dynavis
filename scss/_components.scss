@@ -1,6 +1,6 @@
 .header {
-	box-shadow: 0 0 8px 8px rgba(0,0,0,0.2),
-		0 4px 4px 0 rgba(0,0,0,0.4);
+	box-shadow: 0 0 8px 8px rgba(0,0,0,0.1),
+		0 2px 4px 0 rgba(0,0,0,0.4);
 
 	& > div {
 		height: inherit;
@@ -61,20 +61,16 @@
 
 	@include drop-shadow(0);
 
-	.form-label, .field-label {
-		margin-right: 0.3em;
+	.field-group {
+		margin: 12px 0;
+	}
+	.label {
 		font-size: 90%;
+		padding-right: 0.3em;
 		color: lighten($color-text, 40%);
 	}
-	.form-label {
-	}
-	.field-label {
-	}
-
 	.field {
-		margin: 12px 0;
 		font-size: 90%;
-
 		&.text-large {
 			font-size: 110%;
 		}
@@ -108,6 +104,7 @@
 .token {
 	display: inline-block;
 	position: relative;
+	top: 0;
 
 	padding: 2px 4px;
 	margin: 0 4px;
@@ -116,10 +113,11 @@
 
 	background-color: $color-primary-2;
 
+	@extend %floating-transitions;
 	@include drop-shadow(1);
 
 	&:hover {
-		top: -1px;
+		top: -0.5px;
 		@include drop-shadow(2);
 	}
 
@@ -136,14 +134,13 @@
 	.group-component {
 		display: table-cell;
 		height: 100%;
+		margin-left: 0;
+		margin-right: 0;
 		vertical-align: middle;
 		border-radius: 0;
-
-		&.group-side {
-			width: 1%;
-		}
 	}
 	.group-component:first-child {
+		margin-left: 0;
 		border-top-left-radius: 2px;
 		border-bottom-left-radius: 2px;
 	}

@@ -1,6 +1,8 @@
 "use strict";
-define(["jquery", "react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/ElectionRow", "react.backbone"], function($, React, SearchControls, PageControls, ElectionRow) {
+define(["jquery", "react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/ElectionRow", "mixin/ScrollToTopMixin", "react.backbone"], function($, React, SearchControls, PageControls, ElectionRow, ScrollToTopMixin) {
 	return React.createBackboneClass({
+		mixins: [ScrollToTopMixin],
+
 		render: function() {
 			var that = this;
 			return (
@@ -18,7 +20,7 @@ define(["jquery", "react", "jsx!view/SearchControls", "jsx!view/PageControls", "
 								model={election} />;
 						})}
 					</div>
-					<PageControls className="text-center" collection={this.collection()} />
+					<PageControls className="text-center" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
 				</div>
 			);
 		},
