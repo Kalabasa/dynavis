@@ -24,6 +24,19 @@ class Official extends \Dynavis\Core\Entity {
 		);
 	}
 
+	public function get_elections() {
+		return array_map(
+			function ($item) {
+				return new Elect((int) $item[Elect::PRIMARY_KEY], false);
+			},
+			Database::get()->select(Elect::TABLE, [
+				Elect::TABLE . "." . Elect::PRIMARY_KEY
+			], [
+				Elect::TABLE . ".official_id" => $this->get_id()
+			])
+		);
+	}
+
 	public function save() {
 		// normalize strings
 		$this->surname = Database::normalize_string($this->surname);
@@ -35,6 +48,20 @@ class Official extends \Dynavis\Core\Entity {
 		}
 
 		parent::save();
+	}
+
+	public function autodelete() {
+		$elections = Database::get()->count(Elect::TABLE, [
+			Elect::TABLE . "." . Elect::PRIMARY_KEY
+		], [
+			Elect::TABLE . ".official_id" => $this->get_id()
+		]);
+		
+		if($elections === 0) {
+			$this->delete();
+			return true;
+		}
+		return false;
 	}
 
 	public function delete() {

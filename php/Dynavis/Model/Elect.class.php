@@ -71,6 +71,12 @@ class Elect extends \Dynavis\Core\RefEntity {
 		parent::save();
 	}
 
+	public function delete() {
+		$official = new Official((int) $this->official_id, false);
+		parent::delete();
+		$official->autodelete();
+	}
+
 	public static function file($file) {
 		$error = $file["error"];
 		if($error != UPLOAD_ERR_OK) {

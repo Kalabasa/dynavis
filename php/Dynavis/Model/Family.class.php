@@ -97,9 +97,15 @@ class Family extends \Dynavis\Core\Entity {
 			throw new \Dynavis\Core\DataException("Error removing family membership from the database.");
 		}
 
+		$this->autodelete();
+	}
+
+	public function autodelete() {
 		if($this->count_members() == 0) {
 			$this->delete();
+			return true;
 		}
+		return false;
 	}
 
 	public function save() {
