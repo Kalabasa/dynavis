@@ -38,7 +38,12 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 					pending: "Pending",
 				},
 				source: function(q, sync, async) {
-					InstanceCache.search(that.props.for, q,
+					var params = {
+						string: q,
+						limit: this.limit,
+						qtypeahead: true,
+					};
+					InstanceCache.search(that.props.for, params,
 						function(d) { sync(that.filter_search(d)); },
 						function(d) { async(that.filter_search(d)); });
 				},

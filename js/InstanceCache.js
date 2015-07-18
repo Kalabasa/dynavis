@@ -24,10 +24,14 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 			datumTokenizer: Bloodhound.tokenizers.obj.nonword,
 			remote: {
 				prepare: function(query, settings) {
+					query.q = query.string; delete query.string;
+					query.count = query.limit; delete query.limit;
 					return _.extend(settings, {
-						url: "api.php/" + path
-							+ "?q=" + encodeURIComponent(query.string)
-							+ "&count=" + encodeURIComponent(query.limit)
+						url: "api.php/" + path + "?" + _.map(_.keys(query), function(k) {
+							var v = query[k];
+							if(typeof v == "boolean") v = v ? 1 : 0;
+							return encodeURIComponent(k) + "=" + encodeURIComponent(v);
+						}).join("&"),
 					});
 				},
 				url: "api.php/" + path + "?count=1",

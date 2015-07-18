@@ -391,19 +391,13 @@ h5, h6 {
     box-shadow: 0 4px 9px 0 rgba(0, 0, 0, 0.41667), 0 4px 4px -4px rgba(0, 0, 0, 0.1);
     z-index: 4; }
 
-.token-list-input {
+.token-list-input .token-list {
+  float: left; }
+.token-list-input .token-input {
   display: inline-block; }
-  .token-list-input .token-list {
-    display: inline-block;
-    float: left; }
-  .token-list-input .token-input {
-    display: inline-block; }
-    .token-list-input .token-input .token-input-typeahead {
-      overflow: hidden; }
 
 .token-submit {
-  display: inline-block;
-  float: right; }
+  display: none; }
 
 .token {
   display: inline-block;

@@ -90,23 +90,20 @@
 
 .token-list-input {
 	@extend .clearfix;
-	display: inline-block;
 
 	.token-list {
-		display: inline-block;
 		float: left;
 	}
 	.token-input {
 		display: inline-block;
 
 		.token-input-typeahead {
-			overflow: hidden;
+			// overflow: hidden;
 		}
 	}
 }
 .token-submit {
-	display: inline-block;
-	float: right;
+	display: none;
 }
 .token {
 	display: inline-block;

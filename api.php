@@ -176,6 +176,7 @@ function generic_get_list($class, $search_fields = null) {
 		"q" => null,
 		"qnorm" => true,
 		"qindex" => false,
+		"qtypeahead" => false,
 	]);
 
 	$start = (int) $params["start"];
@@ -190,6 +191,10 @@ function generic_get_list($class, $search_fields = null) {
 		if($params["qindex"]) {
 			$search_fields = [$search_fields[0]];
 			$query = [$query[0] . "%"];
+		}elseif($params["qtypeahead"]) {
+			$query = array_map(function($str) {
+				return $str . "%";
+			}, $query);
 		}
 	}
 
@@ -525,6 +530,7 @@ function get_areas() {
 		"q" => null,
 		"qnorm" => true,
 		"qindex" => false,
+		"qtypeahead" => false,
 	]);
 
 	$start = (int) $params["start"];
@@ -539,6 +545,10 @@ function get_areas() {
 			: [$params["q"]];
 		if($params["qindex"]) {
 			$query = [$query[0] . "%"];
+		}elseif($params["qtypeahead"]) {
+			$query = array_map(function($str) {
+				return $str . "%";
+			}, $query);
 		}
 	}
 
