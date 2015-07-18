@@ -4,7 +4,7 @@ define(["react", "jsx!view/OfficialName", "react.backbone"], function(React, Off
 		render: function() {
 			return (
 				<div>
-					<OfficialName className="field" model={this.model()} /> <button className="pure-button btn-xs" onClick={this.handle_delete}>&times;</button>
+					<OfficialName className="field" model={this.model()} /> <button className="button btn-xs" onClick={this.handle_delete}>&times;</button>
 				</div>
 			);
 		},

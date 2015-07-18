@@ -21,7 +21,7 @@ define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Collectio
 							</label>
 						</div>
 						<div className="pure-u-1-6">
-							<button className="pure-button " onClick={this.handle_delete}>Delete</button>
+							<button className="button " onClick={this.handle_delete}>Delete</button>
 						</div>
 					</div>
 				</div>

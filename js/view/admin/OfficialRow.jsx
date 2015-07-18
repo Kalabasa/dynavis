@@ -28,27 +28,27 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 		},
 
 		render: function() {
-			var classes = "data-row pure-form";
+			var classes = "data-row";
 			var fields = null;
 			if(this.model().isNew() || this.state.edit) {
 				classes += " edit";
 				fields = [
-					(<div className="pure-g">
+					(<div className="pure-g form">
 						<EditableOfficialName className="pure-u-1" ref="name" model={this.model()} />
 					</div>),
 					(<div className="pure-g">
 						<div className="pure-u-1">
-							<button className="pull-right pure-button pure-button-primary" onClick={this.handle_save}>Save</button>
-							<button className="pull-right pure-button" onClick={this.handle_cancel}>Cancel</button>
+							<button className="pull-right button pure-button-primary" onClick={this.handle_save}>Save</button>
+							<button className="pull-right button" onClick={this.handle_cancel}>Cancel</button>
 						</div>
 					</div>)
 				];
 			}else{
 				fields = [
-					(<div className="pure-g">
+					(<div className="pure-g form">
 						<OfficialName className="field pure-u-5-6 text-large" model={this.model()} />
 						<div className="pure-u-1-6">
-							<button className="pull-right pure-button" onClick={this.handle_edit}>Edit</button>
+							<button className="pull-right button" onClick={this.handle_edit}>Edit</button>
 						</div>
 					</div>),
 					(<OfficialFamilyList collection={this.state.families} />)

@@ -7,10 +7,10 @@ define(["jquery", "react", "jsx!view/SearchControls", "jsx!view/PageControls", "
 				<div className="body-panel">
 					<form className="pure-form" onSubmit={this.handle_upload}>
 						Upload election records (csv) <input ref="file" type="file" />
-						<input className="pure-button" type="submit" value="Upload" />
+						<input className="button" type="submit" value="Upload" />
 					</form>
 					<SearchControls ref="searcher" collection={this.collection()} />
-					<button className="pure-button" onClick={this.handle_add}>Add</button>
+					<button className="button" onClick={this.handle_add}>Add</button>
 					<div>
 						{this.collection().map(function(election) {
 							return <ElectionRow

@@ -18,7 +18,7 @@ define(["react", "mixin/ClickToTopMixin", "react.backbone"], function(React, Cli
 							<div className="field text">{this.model().get("description")}</div>
 						</div>
 						<div className="pure-u-1-6">
-							<button className="pull-right pure-button " onClick={this.handle_delete}>Delete</button>
+							<button className="pull-right button " onClick={this.handle_delete}>Delete</button>
 						</div>
 					</div>
 				</div>

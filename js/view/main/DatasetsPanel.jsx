@@ -20,7 +20,7 @@ define(["react", "model/Dataset", "jsx!view/SearchControls", "jsx!view/main/Data
 						Name <input	className="form-control" ref="name" type="text" valueLink={this.linkState("name")} required />
 						Description <input	className="form-control" ref="description" type="text" valueLink={this.linkState("description")} />
 						File (csv) <input ref="file" type="file" />
-						<input className="pure-button" type="submit" value="Upload" />
+						<input className="button" type="submit" value="Upload" />
 					</form>
 					<SearchControls collection={this.collection()} />
 					<ul>

@@ -5,7 +5,7 @@
 $header-height: 75px;
 $sidebar-width: 200px;
 
-$color-text: #1a1a1a;
+$color-text: #2E2E2E;
 $color-background: #f8f8f8;
 
 $color-text-alt: #bcbfb4;
@@ -17,6 +17,8 @@ $color-primary-3: #fffad8;
 $color-complement: #5bb827;
 $color-text-primary-1: #ffffff;
 $color-text-complement: #ffffff;
+
+* { box-sizing: border-box }
 
 body { margin: 0 }
 .layout-row, .layout-col { overflow: hidden; position: absolute; }
@@ -40,6 +42,14 @@ $sidebar-width: 250px;
 	top: $header-height;
 	left: $sidebar-width;
 	z-index: 0;
+}
+
+.clearfix:after {
+	content: " ";
+	visibility: hidden;
+	display: block;
+	height: 0;
+	clear: both;
 }
 
 html,body {
@@ -83,26 +93,33 @@ h5,h6 {
 	font-weight: bold;
 }
 
-.form-control, .btn {
+.form input:not([type=file]), .input, .button {
 	position: relative;
 	top: 0;
 
 	margin: 4px 0;
+	padding: 0.5em 1em;
+	border: none;
 	border-radius: 2px;
+
+	color: $color-text;
+	background-color: white;
 
 	&:not([disabled]) {
 		transition: top 0.02s ease-out;
 
-		@include drop-shadow(0);
+		@include drop-shadow(1);
 		&:hover {
 			top: -2px;
 			@include drop-shadow(2);
 		}
 	}
 }
-.btn:active:not([disabled]) {
-	top: -1px;
-	@include drop-shadow(1);
+.button {
+	&:active:not([disabled]) {
+		top: -1px;
+		@include drop-shadow(1);
+	}
 }
 
 @import "components";

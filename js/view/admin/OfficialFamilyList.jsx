@@ -17,27 +17,25 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 
 			return (
 				<div className="pure-g">
-					<form className="pure-u-1" onSubmit={this.handle_submit}>
+					<form className="pure-u-1 clearfix" onSubmit={this.handle_submit}>
 						<div className="form-label">Families</div>
-						<div className="input-group">
-							<div className="form-control clearfix">
-								<div className="pull-left">
-									{this.collection().map(function(family) {
-										return <OfficialFamilyToken key={family.cid} model={family} />;
-									})}
-								</div>
-								<div className="token-input">
-									<TypeaheadInput className="typeahead-nostyle"
-										for="Family"
-										ref="input"
-										display={display}
-										collection={this.collection()}
-										required />
-								</div>
+						<div className="input token-list-input">
+							<div className="token-list">
+								{this.collection().map(function(family) {
+									return <OfficialFamilyToken key={family.cid} model={family} />;
+								})}
 							</div>
-							<div className="input-group-btn">
-								<input className="pure-button" type="submit" value="Add" />
+							<div className="token-input">
+								<TypeaheadInput className="token-input-typeahead typeahead-nostyle"
+									for="Family"
+									ref="input"
+									display={display}
+									collection={this.collection()}
+									required />
 							</div>
+						</div>
+						<div className="token-submit">
+							<input className="button" type="submit" value="Add" />
 						</div>
 					</form>
 				</div>

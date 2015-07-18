@@ -235,6 +235,9 @@ fieldset[disabled] .twitter-typeahead .tt-input {
 .tt-menu .tt-suggestion p {
   margin: 0; }
 
+* {
+  box-sizing: border-box; }
+
 body {
   margin: 0; }
 
@@ -270,8 +273,15 @@ body {
   left: 250px;
   z-index: 0; }
 
+.clearfix:after, .token-list-input:after, .group:after {
+  content: " ";
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both; }
+
 html, body {
-  color: #1a1a1a;
+  color: #2E2E2E;
   background-color: #f8f8f8;
   font-size: 100%; }
 
@@ -303,21 +313,25 @@ h5, h6 {
   font-size: 120%;
   font-weight: bold; }
 
-.form-control, .btn {
+.form input:not([type=file]), .input, .button {
   position: relative;
   top: 0;
   margin: 4px 0;
-  border-radius: 2px; }
-  .form-control:not([disabled]), .btn:not([disabled]) {
+  padding: 0.5em 1em;
+  border: none;
+  border-radius: 2px;
+  color: #2E2E2E;
+  background-color: white; }
+  .form input:not([type=file]):not([disabled]), .input:not([disabled]), .button:not([disabled]) {
     transition: top 0.02s ease-out;
-    box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.125), 0 0px 0px 0px rgba(0, 0, 0, 0.1);
-    z-index: 0; }
-    .form-control:not([disabled]):hover, .btn:not([disabled]):hover {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.22222), 0 1px 1px -1px rgba(0, 0, 0, 0.1);
+    z-index: 1; }
+    .form input:not([type=file]):not([disabled]):hover, .input:not([disabled]):hover, .button:not([disabled]):hover {
       top: -2px;
       box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3), 0 2px 2px -2px rgba(0, 0, 0, 0.1);
       z-index: 2; }
 
-.btn:active:not([disabled]) {
+.button:active:not([disabled]) {
   top: -1px;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.22222), 0 1px 1px -1px rgba(0, 0, 0, 0.1);
   z-index: 1; }
@@ -338,7 +352,7 @@ h5, h6 {
       display: inline;
       margin-left: 0.6em;
       font-weight: lighter;
-      color: gray; }
+      color: #949494; }
   .header .login {
     display: inline-block;
     width: 250px;
@@ -365,7 +379,7 @@ h5, h6 {
   .data-row .form-label, .data-row .field-label {
     margin-right: 0.3em;
     font-size: 90%;
-    color: gray; }
+    color: #949494; }
   .data-row .field {
     margin: 12px 0;
     font-size: 90%; }
@@ -377,10 +391,22 @@ h5, h6 {
     box-shadow: 0 4px 9px 0 rgba(0, 0, 0, 0.41667), 0 4px 4px -4px rgba(0, 0, 0, 0.1);
     z-index: 4; }
 
-.token-input {
-  overflow: hidden; }
+.token-list-input {
+  display: inline-block; }
+  .token-list-input .token-list {
+    display: inline-block;
+    float: left; }
+  .token-list-input .token-input {
+    display: inline-block; }
+    .token-list-input .token-input .token-input-typeahead {
+      overflow: hidden; }
+
+.token-submit {
+  display: inline-block;
+  float: right; }
 
 .token {
+  display: inline-block;
   position: relative;
   padding: 2px 4px;
   margin: 0 4px;
@@ -396,6 +422,23 @@ h5, h6 {
   .token button {
     background: none;
     border: none; }
+
+.group {
+  display: table; }
+  .group .group-component {
+    display: table-cell;
+    height: 100%;
+    vertical-align: middle;
+    border-radius: 0; }
+    .group .group-component.group-side {
+      width: 1%; }
+  .group .group-component:first-child {
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px; }
+  .group .group-component:last-child {
+    float: right;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px; }
 
 .typeahead-nostyle {
   border: none;

@@ -88,10 +88,28 @@
 	}
 }
 
-.token-input {
-	overflow: hidden;
+.token-list-input {
+	@extend .clearfix;
+	display: inline-block;
+
+	.token-list {
+		display: inline-block;
+		float: left;
+	}
+	.token-input {
+		display: inline-block;
+
+		.token-input-typeahead {
+			overflow: hidden;
+		}
+	}
+}
+.token-submit {
+	display: inline-block;
+	float: right;
 }
 .token {
+	display: inline-block;
 	position: relative;
 
 	padding: 2px 4px;
@@ -111,6 +129,31 @@
 	button {
 		background: none;
 		border: none;
+	}
+}
+
+.group {
+	@extend .clearfix;
+	display: table;
+
+	.group-component {
+		display: table-cell;
+		height: 100%;
+		vertical-align: middle;
+		border-radius: 0;
+
+		&.group-side {
+			width: 1%;
+		}
+	}
+	.group-component:first-child {
+		border-top-left-radius: 2px;
+		border-bottom-left-radius: 2px;
+	}
+	.group-component:last-child {
+		float: right;
+		border-top-right-radius: 2px;
+		border-bottom-right-radius: 2px;
 	}
 }
 

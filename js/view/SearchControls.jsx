@@ -12,16 +12,14 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 
 		render: function() {
 			if(this.state.query) {
-				var cancel_button = <button className="pure-button" onClick={this.handle_cancel}>&times;</button>;
+				var cancel_button = <input className="group-component button" type="button" onClick={this.handle_cancel} value="&times;" />;
 			}
 			return(
 				<div className="clearfix form-inline">
-					<form className="pull-left input-group" onSubmit={this.handle_search}>
-						<input className="form-control" type="text" placeholder={this.state.query} valueLink={this.linkState("input")} />
-						<div className="input-group-btn">
-							{cancel_button}
-							<input className="pure-button" type="submit" value="Search" />
-						</div>
+					<form className="pull-left group pure-g" onSubmit={this.handle_search}>
+						<input className="group-component input pure-u-9-10" type="text" placeholder={this.state.query} valueLink={this.linkState("input")} />
+						{cancel_button}
+						<input className="group-component button pure-u-1-10" type="submit" value="Search" />
 					</form>
 					<PageControls className="pull-right"
 						collection={this.collection()}
@@ -38,6 +36,7 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 		},
 
 		handle_cancel: function() {
+			this.setState({input: ""});
 			this.set_query(null);
 		},
 

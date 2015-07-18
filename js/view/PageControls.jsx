@@ -7,14 +7,14 @@ define(["react", "react.backbone"], function(React) {
 			if(page > 1 || pages > 1) {
 				return (
 					<div className={this.props.className}>
-						<button className="pure-button"
+						<button className="button"
 							title="Previous page"
 							onClick={this.handle_prev}
 							disabled={page <= 0}>
 							&lt;
 						</button>
 						Page {page + 1} of {pages}
-						<button className="pure-button"
+						<button className="button"
 							title="Next page"
 							onClick={this.handle_next}
 							disabled={page + 1 >= pages}>

@@ -20,9 +20,9 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 				<div>
 					Choropleth
 					Dataset 1: {this.state.dataset1 ? this.state.dataset1.get("name") : null}
-					<button className="pure-button" onClick={this.select_handler(1)}>Select dataset</button>
+					<button className="button" onClick={this.select_handler(1)}>Select dataset</button>
 					Dataset 2: {this.state.dataset2 ? this.state.dataset2.get("name") : null}
-					<button className="pure-button" onClick={this.select_handler(2)}>Select dataset</button>
+					<button className="button" onClick={this.select_handler(2)}>Select dataset</button>
 				</div>
 			);
 		},

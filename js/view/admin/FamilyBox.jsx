@@ -25,9 +25,9 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 					</div>),
 					(<div className="pure-g">
 						<div className="pure-u-1">
-							<button className="pull-left pure-button " onClick={this.handle_delete}>Delete</button>
-							<button className="pull-right pure-button pure-button-primary" onClick={this.handle_save}>Save</button>
-							<button className="pull-right pure-button" onClick={this.handle_cancel}>Cancel</button>
+							<button className="pull-left button " onClick={this.handle_delete}>Delete</button>
+							<button className="pull-right button pure-button-primary" onClick={this.handle_save}>Save</button>
+							<button className="pull-right button" onClick={this.handle_cancel}>Cancel</button>
 						</div>
 					</div>)
 				];
@@ -36,7 +36,7 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 					(<div className="pure-g">
 						<Name className="field pure-u-5-6 text-large" model={this.model()} />
 						<div className="pure-u-1-6">
-							<button className="pull-right pure-button" onClick={this.handle_edit}>Edit</button>
+							<button className="pull-right button" onClick={this.handle_edit}>Edit</button>
 						</div>
 					</div>),
 					(<FamilyMemberList collection={this.state.members} onDeleteMember={this.props.onDeleteMember} />)

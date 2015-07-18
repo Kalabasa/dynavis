@@ -3,7 +3,7 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 	return React.createBackboneClass({
 		render: function() {
 			if(!this.collection().username) {
-				var generate_button = <button className="pure-button" onClick={this.generate_indicator}>Generate indicator</button>;
+				var generate_button = <button className="button" onClick={this.generate_indicator}>Generate indicator</button>;
 			}
 			return (
 				<div className="body-panel">
