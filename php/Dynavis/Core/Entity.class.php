@@ -50,7 +50,7 @@ abstract class Entity implements \JsonSerializable{
 
 	public static function query_items($count, $start, $query, $fields) {
 		if($count < 0 || $start < -1) return false;
-		if(empty($query)) return ["total" => 0, "data" => []];
+		if(!is_null($query) && empty($query)) return ["total" => 0, "data" => []];
 		
 		$uquery = array_unique($query);
 		$search = [];

@@ -52,7 +52,7 @@ $app->get("/users/:username", "get_user");
 $app->get("/users/:username/datasets", "get_user_datasets");
 $app->get("/users/:username/datasets/:id", "get_user_dataset");
 $app->get("/users/:username/datasets/:id/datapoints", "get_user_dataset_datapoints");
-$app->get("/datasets", function () { generic_get_list("Dataset", ["name"]); } );
+$app->get("/datasets", "get_datasets" );
 $app->get("/tokens/:id", $auth_token, "get_token");
 
 
@@ -539,7 +539,9 @@ function get_areas() {
 	if(isset($params["level"])) $level = $params["level"];
 	else $level = null;
 
-	if(!is_null($params["q"])) {
+	if(is_null($params["q"])) {
+		$query = null;
+	}else{
 		$query = $params["qnorm"]
 			? normalize_query($params["q"])
 			: [$params["q"]];
@@ -552,9 +554,7 @@ function get_areas() {
 		}
 	}
 
-	$result = isset($query)
-		? Area::query_areas($count, $start, $query, $level)
-		: Area::list_areas($count, $start, $level);
+	$result = Area::list_areas($count, $start, $level, $query);
 	if(!$result) {
 		$app->halt(400, "Invalid request parameters.");
 	}
@@ -840,16 +840,81 @@ function delete_user($username) {
 
 // Datasets
 
+function get_datasets() {
+	global $app;
+	$params = defaults($app->request->get(), [
+		"count" => 0,
+		"start" => 0,
+		"type" => null,
+		"q" => null,
+		"qnorm" => true,
+		"qindex" => false,
+		"qtypeahead" => false,
+	]);
+
+	$start = (int) $params["start"];
+	$count = (int) $params["count"];
+
+	if(isset($params["type"])) $type = $params["type"];
+	else $type = null;
+
+	if(is_null($params["q"])) {
+		$query = null;
+	}else{
+		$query = $params["qnorm"]
+			? normalize_query($params["q"])
+			: [$params["q"]];
+		if($params["qindex"]) {
+			$query = [$query[0] . "%"];
+		}elseif($params["qtypeahead"]) {
+			$query = array_map(function($str) {
+				return $str . "%";
+			}, $query);
+		}
+	}
+
+	$result = Dataset::list_datasets($count, $start, $type, $query);
+	if(!$result) {
+		$app->halt(400, "Invalid request parameters.");
+	}
+	$areas = array_map(
+		function ($item) {
+			return new Dataset((int) $item[Dataset::PRIMARY_KEY]);
+		},
+		$result["data"]
+	);
+	$total = $result["total"];
+
+	$end = $start + $count;
+	if($end > $total) $end = $total;
+
+	echo json_encode([
+		"total" => $total,
+		"start" => $start,
+		"end" => $end,
+		"data" => $areas,
+	]);
+}
+
 function get_user_datasets($username) {
 	global $app;
+	$params = defaults($app->request->get(), [
+		"count" => 0,
+		"start" => 0,
+		"type" => null,
+	]);
+
+	$start = (int) $params["start"];
+	$count = (int) $params["count"];
+
 	$user = User::get_by_username($username);
 	if(!$user) {
 		$app->halt(404);
 	}
-	$datasets = $user->get_datasets();
+	$datasets = $user->get_datasets($count, $start, $type);
 
 	echo json_encode([
-		"total" => count($datasets),
+		"total" => $user->count_datasets($type),
 		"data" => $datasets,
 	]);
 }

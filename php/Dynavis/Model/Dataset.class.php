@@ -16,6 +16,65 @@ class Dataset extends \Dynavis\Core\RefEntity {
 
 		$this->user_id = is_null($user) ? null : $user->get_id();
 	}
+
+	public static function list_datasets($count, $start, $type = null, $query = null) {
+		if($count < 0 || $start < -1) return false;
+		if(!is_null($query) && empty($query)) return ["total" => 0, "data" => []];
+		
+		switch ($type) {
+			case "area": $type = 0; break;
+			case "tag": $type = 1; break;
+			case null: break;
+			default: return false; break;
+		}
+
+		$where = [];
+		if(!is_null($type)) {
+			$where["type"] = $type;
+		}
+		if(!is_null($query)) {
+			$where = ["AND" => array_merge($where, ["name[~]" => array_unique($query)])];
+		}
+
+		$total = Database::get()->count(static::TABLE, $where);
+		if($count != 0) {
+			$where["LIMIT"] = [(int) $start , (int) $count];
+		}
+
+		return [
+			"total" => $total,
+			"data" => Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where),
+		];
+	}
+
+	public function get_points() {
+		$this->load();
+		$class = [
+			"\\Dynavis\\Model\\Datapoint",
+			"\\Dynavis\\Model\\TagDatapoint"
+		][$this->type];
+		
+		return array_map(
+			function ($item) use ($class) {
+				return new $class((int) $item[$class::PRIMARY_KEY], false);
+			},
+			Database::get()->select($class::TABLE, [
+				"[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]
+			], [
+				$class::TABLE . "." . $class::PRIMARY_KEY
+			],[
+				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+			])
+		);
+	}
+
+	public function jsonSerialize() {
+		$data = parent::jsonSerialize();
+		$data["username"] = (new User((int) $data["user_id"], false))->username;
+		unset($data["user_id"]);
+		$data["type"] = ["area", "tag"][$data["type"]];
+		return $data;
+	}
 	
 	public function file($file) {
 		$error = $file["error"];
@@ -98,33 +157,5 @@ class Dataset extends \Dynavis\Core\RefEntity {
 		if(!$ret) {
 			throw new \Dynavis\Core\DataException("Error adding file data to the database.");
 		}
-	}
-
-	public function get_points() {
-		$class = [
-			Datapoint,
-			TagDatapoint,
-		][$this->type];
-		
-		return array_map(
-			function ($item) {
-				return new $class((int) $item[$class::PRIMARY_KEY], false);
-			},
-			Database::get()->select($class::TABLE, [
-				"[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]
-			], [
-				$class::TABLE . "." . $class::PRIMARY_KEY
-			],[
-				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
-			])
-		);
-	}
-
-	public function jsonSerialize() {
-		$data = parent::jsonSerialize();
-		$data["username"] = (new User((int) $data["user_id"], false))->username;
-		unset($data["user_id"]);
-		$data["type"] = ["area", "tag"][$data["type"]];
-		return $data;
 	}
 }

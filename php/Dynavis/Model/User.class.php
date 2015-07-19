@@ -19,7 +19,20 @@ class User extends \Dynavis\Core\Entity {
 		return new User((int) $ret[static::PRIMARY_KEY], false);
 	}
 
-	public function get_datasets() {
+	public function count_datasets($type = null) {
+		$where = [
+			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+		];
+
+		if(!is_null($type)) {
+			switch ($type) {
+				case "area": $type = 0; break;
+				case "tag": $type = 1; break;
+				default: $app->halt(400, "Invalid type. " . $type);
+			}
+			$where = ["AND" => array_merge($where, ["type" => $type])];
+		}
+
 		return array_map(
 			function ($item) {
 				return new Dataset((int) $item[Dataset::PRIMARY_KEY], false);
@@ -28,9 +41,39 @@ class User extends \Dynavis\Core\Entity {
 				"[><]" . static::TABLE => ["user_id" => static::PRIMARY_KEY]
 			], [
 				Dataset::TABLE . "." . Dataset::PRIMARY_KEY
-			],[
-				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
-			])
+			], $where)
+		);
+	}
+
+	public function get_datasets($count, $start, $type = null) {
+		if($count < 0 || $start < -1) return false;
+
+		$where = [
+			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+		];
+		
+		if(!is_null($type)) {
+			switch ($type) {
+				case "area": $type = 0; break;
+				case "tag": $type = 1; break;
+				default: $app->halt(400, "Invalid type. " . $type);
+			}
+			$where = ["AND" => array_merge($where, ["type" => $type])];
+		}
+
+		if($count != 0) {
+			$where["LIMIT"] = [(int) $start , (int) $count];
+		}
+
+		return array_map(
+			function ($item) {
+				return new Dataset((int) $item[Dataset::PRIMARY_KEY], false);
+			},
+			Database::get()->select(Dataset::TABLE, [
+				"[><]" . static::TABLE => ["user_id" => static::PRIMARY_KEY]
+			], [
+				Dataset::TABLE . "." . Dataset::PRIMARY_KEY
+			], $where)
 		);
 	}
 

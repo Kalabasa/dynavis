@@ -24,9 +24,10 @@ class Area extends \Dynavis\Core\Entity {
 		return new Area((int) $ret[static::PRIMARY_KEY], false);
 	}
 
-	public static function list_areas($count, $start, $level = null) {
-		// TODO: merge with query_areas (DRY principle)
+	public static function list_areas($count, $start, $level = null, $query = null) {
 		if($count < 0 || $start < -1) return false;
+		if(!is_null($query) && empty($query)) return ["total" => 0, "data" => []];
+		
 		switch ($level) {
 			case "region": $type = 0; break;
 			case "province": $type = 1; break;
@@ -40,41 +41,8 @@ class Area extends \Dynavis\Core\Entity {
 		if(!is_null($level)) {
 			$where["type"] = $type;
 		}
-
-		$total = Database::get()->count(static::TABLE, $where);
-		if($count != 0) {
-			$where["LIMIT"] = [(int) $start , (int) $count];
-		}
-
-		return [
-			"total" => $total,
-			"data" => Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where)
-		];
-	}
-
-	public static function query_areas($count, $start, $query, $level = null) {
-		if($count < 0 || $start < -1) return false;
-		if(empty($query)) return ["total" => 0, "data" => []];
-		
-		switch ($level) {
-			case "region": $type = 0; break;
-			case "province": $type = 1; break;
-			case "municipality": $type = 2; break;
-			case "barangay": $type = 3; break;
-			case null: break;
-			default: return false; break;
-		}
-
-		$uquery = array_unique($query);
-		if(is_null($level)) {
-			$where = ["name[~]" => $uquery];
-		}else{
-			$where = [
-				"AND" => [
-					"name[~]" => $uquery,
-					"type" => $type,
-				],
-			];
+		if(!is_null($query)) {
+			$where = ["AND" => array_merge($where, ["name[~]" => array_unique($query)])];
 		}
 
 		$total = Database::get()->count(static::TABLE, $where);
