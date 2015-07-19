@@ -5,7 +5,7 @@ use \Dynavis\PSGC;
 
 class Dataset extends \Dynavis\Core\RefEntity {
 	const TABLE = "dataset";
-	const FIELDS = ["user_id", "name", "description"];
+	const FIELDS = ["user_id", "type", "name", "description"];
 
 	public function set($param) {
 		$user = $param["user"];
@@ -16,7 +16,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 
 		$this->user_id = is_null($user) ? null : $user->get_id();
 	}
-
+	
 	public function file($file) {
 		$error = $file["error"];
 		if($error != UPLOAD_ERR_OK) {
@@ -101,14 +101,19 @@ class Dataset extends \Dynavis\Core\RefEntity {
 	}
 
 	public function get_points() {
+		$class = [
+			Datapoint,
+			TagDatapoint,
+		][$this->type];
+		
 		return array_map(
 			function ($item) {
-				return new Datapoint((int) $item[Datapoint::PRIMARY_KEY], false);
+				return new $class((int) $item[$class::PRIMARY_KEY], false);
 			},
-			Database::get()->select(Datapoint::TABLE, [
+			Database::get()->select($class::TABLE, [
 				"[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]
 			], [
-				Datapoint::TABLE . "." . Datapoint::PRIMARY_KEY
+				$class::TABLE . "." . $class::PRIMARY_KEY
 			],[
 				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
 			])
@@ -119,6 +124,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 		$data = parent::jsonSerialize();
 		$data["username"] = (new User((int) $data["user_id"], false))->username;
 		unset($data["user_id"]);
+		$data["type"] = ["area", "tag"][$data["type"]];
 		return $data;
 	}
 }

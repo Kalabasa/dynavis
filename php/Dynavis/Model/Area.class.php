@@ -164,6 +164,10 @@ class Area extends \Dynavis\Core\Entity {
 		// normalize strings
 		$this->name = Database::normalize_string($this->name);
 
+		if(0 < $this->type || $this->type >= 4) {
+			throw new \Dynavis\Core\DataException("Invalid type.");
+		}
+
 		if(!strlen($this->name)) {
 			throw new \Dynavis\Core\DataException("Empty name.");
 		}

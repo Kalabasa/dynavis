@@ -8,6 +8,7 @@ use \Dynavis\Model\Area;
 use \Dynavis\Model\Elect;
 use \Dynavis\Model\Dataset;
 use \Dynavis\Model\Datapoint;
+use \Dynavis\Model\TagDatapoint;
 use \Dynavis\Model\User;
 
 class DataProcessor {
@@ -17,6 +18,7 @@ class DataProcessor {
 		$dataset = new Dataset(["user" => User::get_by_username($username)]);
 		$dataset->name = $name;
 		$dataset->description = $description;
+		$dataset->type = $calc_data["type"];
 		$dataset->save();
 
 		$insert_data = [];
@@ -24,14 +26,30 @@ class DataProcessor {
 		$min_year = $calc_data["min_year"];
 		$max_year = $calc_data["max_year"];
 
-		foreach ($calc_data["result"] as $code => $values) {
-			for($t = $min_year; $t <= $max_year; $t++) {
-				$insert_data[] = [
-					"dataset_id" => $dataset->get_id(),
-					"year"  => $t,
-					"area_code" => $code,
-					"value" => array_key_exists($t, $values) ? $values[$t] : null,
-				];
+		if($dataset->type === 0) {
+			foreach ($calc_data["result"] as $code => $values) {
+				for($t = $min_year; $t <= $max_year; $t++) {
+					$insert_data[] = [
+						"dataset_id" => $dataset->get_id(),
+						"year"  => $t,
+						"area_code" => $code,
+						"value" => array_key_exists($t, $values) ? $values[$t] : null,
+					];
+				}
+			}
+		}else{
+			foreach ($calc_data["result"] as $code => $tags) {
+				foreach ($tags as $tag => $values) {
+					for($t = $min_year; $t <= $max_year; $t++) {
+						$insert_data[] = [
+							"dataset_id" => $dataset->get_id(),
+							"year"  => $t,
+							"area_code" => $code,
+							"family_id" => $tag,
+							"value" => array_key_exists($t, $values) ? $values[$t] : null,
+						];
+					}
+				}
 			}
 		}
 
@@ -47,7 +65,11 @@ class DataProcessor {
 			$insert_data
 		)) . ")";
 
-		$ret = Database::get()->query("insert into " . Datapoint::TABLE . " (dataset_id,year,area_code,value) values " . $values_string);
+		if($dataset->type === 0) {
+			$ret = Database::get()->query("insert into " . Datapoint::TABLE . " (dataset_id,year,area_code,value) values " . $values_string);
+		}else{
+			$ret = Database::get()->query("insert into " . TagDatapoint::TABLE . " (dataset_id,year,area_code,family_id,value) values " . $values_string);
+		}
 
 		if(!$ret) {
 			Database::get()->pdo->rollBack();
@@ -60,21 +82,15 @@ class DataProcessor {
 	}
 
 	public static function calculate_indicator($name) {
-		$calc_function = [
-			"DYNSHA" => "calculate_dynsha",
-			"DYNLAR" => "calculate_dynlar",
-			"DYNHERF" => "calculate_dynherf",
-			"LocalDynastySize" => "calculate_localdynastysize",
-			"RecursiveDynastySize" => "calculate_recursivedynastysize",
+		$p = [
+			"DYNSHA" => ["calculate_dynsha", ["code"]],
+			"DYNLAR" => ["calculate_dynlar", ["code"]],
+			"DYNHERF" => ["calculate_dynherf", ["code"]],
+			"LocalDynastySize" => ["calculate_localdynastysize", ["code", "id"]],
+			"RecursiveDynastySize" => ["calculate_recursivedynastysize", ["code", "id"]],
 		][$name];
-
-		$variables = [
-			"DYNSHA" => ["code"],
-			"DYNLAR" => ["code"],
-			"DYNHERF" => ["code"],
-			"LocalDynastySize" => ["code", "id"],
-			"RecursiveDynastySize" => ["code", "id"],
-		][$name];
+		$calc_function = $p[0];
+		$variables = $p[1];
 
 		$min_year = Database::get()->min(Elect::TABLE, "year");
 		$max_year = Database::get()->max(Elect::TABLE, "year_end") - 1;
@@ -99,6 +115,7 @@ class DataProcessor {
 		return [
 			"min_year" => $min_year,
 			"max_year" => $max_year,
+			"type" => count($variables) - 1, // FIXME: DANGEROUS!
 			"result" => $result,
 		];
 	}
