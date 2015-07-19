@@ -15,10 +15,18 @@ define(["react", "react.backbone"], function(React) {
 			var nickname = this.state.nickname;
 			return (
 				<span className={this.props.className}>
-					{/*TODO: add labels somehow*/}
-					Surname <input className="pure-u" type="text" valueLink={this.linkState("surname")} required />
-					Name <input className="pure-u" type="text" valueLink={this.linkState("name")} required />
-					Nickname <input className="pure-u" type="text" valueLink={this.linkState("nickname")} />
+					<label className="pure-u-1 pad">
+						<div className="label">Surname</div>
+						<input className="pure-u-1" type="text" valueLink={this.linkState("surname")} required />
+					</label>
+					<label className="pure-u-1 pad">
+						<div className="label">Name</div>
+						<input className="pure-u-1" type="text" valueLink={this.linkState("name")} required />
+					</label>
+					<label className="pure-u-1 pad">
+						<div className="label">Nickname</div>
+						<input className="pure-u-1" type="text" valueLink={this.linkState("nickname")} />
+					</label>
 				</span>
 			);
 		},

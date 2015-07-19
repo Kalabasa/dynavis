@@ -8,7 +8,7 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 		},
 
 		componentWillUpdate: function(nextProps, nextState) {
-			this.props.bus.choropleth_settings.emit("dataset", {
+			this.props.bus.tagcloud_settings.emit("dataset", {
 				dataset: nextState.dataset,
 			});
 		},

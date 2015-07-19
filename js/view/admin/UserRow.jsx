@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/CollectionCount", "mixin/ClickToTopMixin", "react.backbone"], function(React, InstanceCache, DatasetCollection, CollectionCount, ClickToTopMixin) {
+define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Toggle", "jsx!view/CollectionCount", "mixin/ClickToTopMixin", "react.backbone"], function(React, InstanceCache, DatasetCollection, Toggle, CollectionCount, ClickToTopMixin) {
 	return React.createBackboneClass({
 		mixins: [ClickToTopMixin],
 
@@ -7,21 +7,22 @@ define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Collectio
 			var username = this.model().get("username");
 			var url_datasets = "#users/" + username + "/datasets";
 			var datasets = new DatasetCollection(null, {username: username});
-			datasets.fetch({count: 1}); // TODO: this is ugly, but... whatever
+			datasets.fetch({count: 1}); // FIXME: this is ugly, but... whatever, just need the datasets count
 			return (
 				<div className="data-row container-fluid">
 					<div className="pure-g">
-						<div className="pure-u-1-3 field text-large">{this.model().get("username")}</div>
-						<div className="pure-u-1-3">
+						<div className="pure-u-1-4 field text-large">{this.model().get("username")}</div>
+						<div className="pure-u-1-4">
 							<a href={url_datasets}><CollectionCount collection={datasets} /> Datasets</a>
 						</div>
-						<div className="pure-u-1-6">
-							<label className="checkbox-inline">
-								<input type="checkbox" checked={this.model().get("role")==="admin"} disabled={this.user_in()} onChange={this.handle_toggle_admin} /> admin
+						<div className="pure-u-1-4">
+							<label>
+								<span className="label">Admin</span>
+								<Toggle type="checkbox" checked={this.model().get("role")==="admin"} disabled={this.user_in()} onChange={this.handle_toggle_admin} />
 							</label>
 						</div>
-						<div className="pure-u-1-6">
-							<button className="button " onClick={this.handle_delete}>Delete</button>
+						<div className="pure-u-1-4 clearfix">
+							<button className="pull-right button" onClick={this.handle_delete}>Delete</button>
 						</div>
 					</div>
 				</div>

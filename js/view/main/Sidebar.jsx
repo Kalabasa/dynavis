@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "jsx!view/main/ChoroplethSettingsPane"], function(React, ChoroplethSettingsPane) {
+define(["react", "jsx!view/main/ChoroplethSettingsPane", "jsx!view/main/TagCloudSettingsPane"], function(React, ChoroplethSettingsPane, TagCloudSettingsPane) {
 	return React.createClass({
 		render: function() {
 			return (

@@ -25,8 +25,12 @@ define(["react"], function(React) {
 		},
 
 		on_route: function(e) {
-			$(React.findDOMNode(this.refs.menu)).children(".active").removeClass("active");
-			$(React.findDOMNode(this.refs[e.route])).addClass("active");
+			$(React.findDOMNode(this.refs.menu)).children(".active").removeClass("active indirect");
+			var $li = $(React.findDOMNode(this.refs[e.route]));
+			$li.addClass("active");
+			if(e.params[0]) {
+				$li.addClass("indirect");
+			}
 		},
 	});
 });

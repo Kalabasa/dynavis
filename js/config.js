@@ -61,6 +61,7 @@ require.config({
 	config: {
 		jsx: {
 			fileExtension: ".jsx",
+			harmony: true,
 		}
 	},
 });

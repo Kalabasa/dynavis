@@ -18,7 +18,7 @@
 		}
 		.header-subtitle {
 			display: inline;
-			margin-left: 0.6em;
+			margin-left: 0.4em;
 			font-weight: lighter;
 			color: lighten($color-text, 40%);
 		}
@@ -162,4 +162,68 @@
 
 .pane {
 	padding: 20px;
+}
+
+/* The following toggle styles are adpated from Materialize (materializecss.com)
+ * License: The MIT License (MIT)
+ * Copyright (c) 2014-2015 Materialize
+ */
+.toggle label {
+	cursor: pointer;
+
+	.toggle-lever {
+		content: "";
+		display: inline-block;
+		position: relative;
+		width: 40px;
+		height: 15px;
+		background-color: darken($color-background, 10%);
+		border-radius: 15px;
+		margin-right: 10px;
+		transition: background 0.3s ease;
+		vertical-align: middle;
+		margin: 0 16px;
+
+		&:after {
+			content: "";
+			position: absolute;
+			display: inline-block;
+			width: 21px;
+			height: 21px;
+			background-color: $color-background;
+			border-radius: 21px;
+			left: -5px;
+			top: -3px;
+			transition: left 0.3s ease, background 0.3s ease;
+		}
+	}
+
+	input[type=checkbox] {
+		opacity: 0;
+		width: 0;
+		height: 0;
+
+		&:checked + .toggle-lever:after {
+			left: 24px;
+		}
+		&:not(:disabled) {
+			& + .toggle-lever:after {
+				@include drop-shadow(1);
+			}
+			&:checked + .toggle-lever {
+				background-color: $color-primary-2;
+			}
+			&:checked + .toggle-lever:after {
+				background-color: $color-primary-1;
+			}
+		}
+		&:disabled {
+			& + .toggle-lever {
+				background-color: desaturate($color-primary-2, 50%);
+			}
+			& + .toggle-lever:after {
+				background-color: desaturate($color-primary-1, 50%);
+			}
+		}
+	}
 }

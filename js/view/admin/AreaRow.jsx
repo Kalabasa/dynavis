@@ -28,15 +28,15 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 				return (
 					<div className="edit data-row form">
 						<div className="pure-g">
-							<div className="pure-u-1-2 pad">
+							<label className="pure-u-1-2 pad">
 								<div className="label">Name</div>
 								<EditableName className="pure-u-1" ref="name" model={this.model()} />
-							</div>
-							<div className="pure-u-1-2 pad">
+							</label>
+							<label className="pure-u-1-2 pad">
 								<div className="label">Code</div>
 								<input className="pure-u-1" type="text" valueLink={this.linkState("code")} readOnly={!this.model().isNew()} required />
-							</div>
-							<div className="pure-u-1-2 pad">
+							</label>
+							<label className="pure-u-1-2 pad">
 								<div className="label">Type</div>
 								<select className="pure-u-1" valueLink={this.linkState("level")} required>
 									<option value="region">Region</option>
@@ -44,8 +44,8 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 									<option value="municipality">City/Municipality</option>
 									<option value="barangay">Barangay</option>
 								</select>
-							</div>
-							<div className="pure-u-1-2 pad">
+							</label>
+							<label className="pure-u-1-2 pad">
 								<div className="label">Parent</div>
 								<TypeaheadInput className="pure-u-1"
 									for="Area"
@@ -53,7 +53,7 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 									display={display}
 									model={parent}
 									required />
-							</div>
+							</label>
 						</div>
 						<div className="pure-g">
 							<div className="pure-u-1">

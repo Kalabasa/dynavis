@@ -23,6 +23,9 @@
 			color: $color-text;
 			background-color: $color-background;
 		}
+		&.indirect {
+			background-color: darken($color-background, 20%);
+		}
 
 		a {
 			color: inherit;

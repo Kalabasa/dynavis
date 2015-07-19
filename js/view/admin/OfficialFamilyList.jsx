@@ -25,14 +25,14 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 									return <OfficialFamilyToken key={family.cid} model={family} />;
 								})}
 							</div>
-							<div className="token-input" onKeyDown={this.handle_key}>
+							<label className="token-input" onKeyDown={this.handle_key}>
 								<TypeaheadInput className="token-input-typeahead typeahead-nostyle"
 									for="Family"
 									ref="input"
 									display={display}
 									collection={this.collection()}
 									required />
-							</div>
+							</label>
 						</div>
 						<div className="token-submit">
 							<input className="button" type="submit" value="Add" />
