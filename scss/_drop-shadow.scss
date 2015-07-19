@@ -1,10 +1,10 @@
 @mixin drop-shadow($depth) {
-	box-shadow: 0 ($depth*1px) ($depth*4px) 0 rgba(0,0,0,1 - 7/($depth + 8)),
+	box-shadow: 0 ($depth*1px) ($depth*2px) 0 rgba(0,0,0,1 - 14/($depth + 16)),
 		0 ($depth*1px) ($depth*1px) ($depth*-1px) rgba(0,0,0,0.4);
 	z-index: $depth;
 }
 
 %floating-transitions {
-	transition: all 0.3s ease-out;
+	transition: all 0.1s ease-out;
 	transition-property: box-shadow, top;
 }

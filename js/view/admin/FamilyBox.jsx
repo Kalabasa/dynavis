@@ -20,14 +20,14 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/EditableName", "jsx!v
 			if(this.model().isNew() || this.state.edit) {
 				classes += " edit";
 				fields = [
-					(<div className="pure-g form">
+					(<div className="pure-g form pad">
 						<EditableName className="pure-u-1" ref="name" model={this.model()} />
 					</div>),
 					(<div className="pure-g">
 						<div className="pure-u-1">
-							<button className="pull-left button " onClick={this.handle_delete}>Delete</button>
-							<button className="pull-right button pure-button-primary" onClick={this.handle_save}>Save</button>
-							<button className="pull-right button" onClick={this.handle_cancel}>Cancel</button>
+							<button className="pull-left button mar" onClick={this.handle_delete}>Delete</button>
+							<button className="pull-right button button-primary mar" onClick={this.handle_save}>Save</button>
+							<button className="pull-right button mar" onClick={this.handle_cancel}>Cancel</button>
 						</div>
 					</div>)
 				];

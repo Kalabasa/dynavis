@@ -38,8 +38,8 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 					</div>),
 					(<div className="pure-g">
 						<div className="pure-u-1">
-							<button className="pull-right button pure-button-primary" onClick={this.handle_save}>Save</button>
-							<button className="pull-right button" onClick={this.handle_cancel}>Cancel</button>
+							<button className="pull-right button button-primary mar" onClick={this.handle_save}>Save</button>
+							<button className="pull-right button mar" onClick={this.handle_cancel}>Cancel</button>
 						</div>
 					</div>)
 				];

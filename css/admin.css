@@ -36,7 +36,7 @@ table {
   border-spacing: 0; }
 
 .form input:not([type=file]), .form select, .input, .button, .token {
-  transition: all 0.3s ease-out;
+  transition: all 0.1s ease-out;
   transition-property: box-shadow, top; }
 
 /*
@@ -80,7 +80,7 @@ fieldset[disabled] .twitter-typeahead .tt-input {
   font-size: 14px;
   background-color: #ffffff;
   border-radius: 2px;
-  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.41667), 0 4px 4px -4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 4px 4px -4px rgba(0, 0, 0, 0.4);
   z-index: 4;
   background-clip: padding-box; }
 
@@ -114,7 +114,7 @@ fieldset[disabled] .twitter-typeahead .tt-input {
   margin: 0; }
 
 .form input:not([type=file]), .form select, .input, .button, .token {
-  transition: all 0.3s ease-out;
+  transition: all 0.1s ease-out;
   transition-property: box-shadow, top; }
 
 * {
@@ -204,10 +204,14 @@ h5, h6 {
 .pad {
   padding: 0.5em; }
 
+.mar {
+  margin: 0.5em; }
+
 .form input:not([type=file]), .form select, .input, .button {
   position: relative;
   top: 0;
-  margin: 4px 0;
+  margin-top: 4px;
+  margin-bottom: 4px;
   padding: 0.5em 0.7em;
   border: none;
   border-radius: 2px;
@@ -215,17 +219,20 @@ h5, h6 {
   background-color: white; }
   .form input:not([type=file]):not([disabled]):not([readonly]), .form select:not([disabled]):not([readonly]), .input:not([disabled]):not([readonly]), .button:not([disabled]):not([readonly]) {
     top: -0.5px;
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.22222), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.17647), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
     z-index: 1; }
     .form input:not([type=file]):not([disabled]):not([readonly]):hover, .form select:not([disabled]):not([readonly]):hover, .input:not([disabled]):not([readonly]):hover, .button:not([disabled]):not([readonly]):hover {
-      top: -1px;
-      box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.3), 0 2px 2px -2px rgba(0, 0, 0, 0.4);
-      z-index: 2; }
+      top: -1.5px;
+      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.26316), 0 3px 3px -3px rgba(0, 0, 0, 0.4);
+      z-index: 3; }
 
+.button.button-primary:not(_) {
+  color: #ffffff;
+  background-color: #ff0040; }
 .button:active:not([disabled]):not([readonly]) {
-  top: -0.5px;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.22222), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
-  z-index: 1; }
+  top: -1px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.22222), 0 2px 2px -2px rgba(0, 0, 0, 0.4);
+  z-index: 2; }
 
 .header {
   box-shadow: 0 0 8px 8px rgba(0, 0, 0, 0.1), 0 2px 4px 0 rgba(0, 0, 0, 0.4); }
@@ -265,7 +272,7 @@ h5, h6 {
   padding: 1em 22px;
   margin: 0 8px;
   background-color: white;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.22222), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.17647), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
   z-index: 1; }
   .data-row .field-group {
     line-height: 150%;
@@ -283,7 +290,7 @@ h5, h6 {
   .data-row.edit {
     padding: 28px;
     margin: 8px 0;
-    box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.46154), 0 5px 5px -5px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.33333), 0 5px 5px -5px rgba(0, 0, 0, 0.4);
     z-index: 5; }
 
 .token-list-input .token-list {
@@ -303,11 +310,11 @@ h5, h6 {
   border-radius: 2px;
   font-size: 90%;
   background-color: #ffceee;
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.22222), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.17647), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
   z-index: 1; }
   .token:hover {
     top: -0.5px;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.3), 0 2px 2px -2px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.22222), 0 2px 2px -2px rgba(0, 0, 0, 0.4);
     z-index: 2; }
   .token button {
     background: none;
@@ -342,7 +349,9 @@ h5, h6 {
  * Copyright (c) 2014-2015 Materialize
  */
 .toggle label {
-  cursor: pointer; }
+  color: #949494;
+  font-size: 80%;
+  padding: 0 11px; }
   .toggle label .toggle-lever {
     content: "";
     display: inline-block;
@@ -351,10 +360,9 @@ h5, h6 {
     height: 15px;
     background-color: #dfdfdf;
     border-radius: 15px;
-    margin-right: 10px;
     transition: background 0.3s ease;
     vertical-align: middle;
-    margin: 0 16px; }
+    margin: 0 11px; }
     .toggle label .toggle-lever:after {
       content: "";
       position: absolute;
@@ -372,17 +380,20 @@ h5, h6 {
     height: 0; }
     .toggle label input[type=checkbox]:checked + .toggle-lever:after {
       left: 24px; }
+    .toggle label input[type=checkbox]:not(:disabled) + .toggle-lever {
+      cursor: pointer; }
     .toggle label input[type=checkbox]:not(:disabled) + .toggle-lever:after {
-      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.22222), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.17647), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
       z-index: 1; }
     .toggle label input[type=checkbox]:not(:disabled):checked + .toggle-lever {
       background-color: #ffceee; }
     .toggle label input[type=checkbox]:not(:disabled):checked + .toggle-lever:after {
       background-color: #ff0040; }
     .toggle label input[type=checkbox]:disabled + .toggle-lever {
-      background-color: #f3daea; }
+      background-color: #faecf5; }
     .toggle label input[type=checkbox]:disabled + .toggle-lever:after {
-      background-color: #bf4060; }
+      background-color: #e699ac; }
 
 .fadein {
   animation: fadein 0.3s; }

@@ -104,12 +104,16 @@ h5,h6 {
 .pad {
 	padding: 0.5em;
 }
+.mar {
+	margin: 0.5em;
+}
 
 .form input:not([type=file]), .form select, .input, .button {
 	position: relative;
 	top: 0;
 
-	margin: 4px 0;
+	margin-top: 4px;
+	margin-bottom: 4px;
 	padding: 0.5em 0.7em;
 	border: none;
 	border-radius: 2px;
@@ -122,15 +126,19 @@ h5,h6 {
 		top: -0.5px;
 		@include drop-shadow(1);
 		&:hover {
-			top: -1px;
-			@include drop-shadow(2);
+			top: -1.5px;
+			@include drop-shadow(3);
 		}
 	}
 }
 .button {
+	&.button-primary:not(_) {
+		color: $color-text-primary-1;
+		background-color: $color-primary-1;
+	}
 	&:active:not([disabled]):not([readonly]) {
-		top: -0.5px;
-		@include drop-shadow(1);
+		top: -1px;
+		@include drop-shadow(2);
 	}
 }
 

@@ -31,7 +31,7 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 			var that = this;
 			return function() {
 				var dataset_collection = new DatasetCollection();
-				dataset_collection.fetch();
+				dataset_collection.fetch({data: {type: "area"}});
 				that.modal = Modal.open("Select dataset", (
 					<DatasetChooser collection={dataset_collection} onSelect={function(dataset) {
 						that.select_dataset(i, dataset);
