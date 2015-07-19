@@ -6,6 +6,7 @@ define(["require", "backbone", "InstanceCache", "model/DatapointCollection"], fu
 		},
 		defaults: {
 			username: null,
+			type: null,
 			name: null,
 			description: null,
 		},
