@@ -12,6 +12,14 @@ use \Dynavis\Model\TagDatapoint;
 use \Dynavis\Model\User;
 
 class DataProcessor {
+	const INDICATORS = [
+		"DYNSHA" => ["calculate_dynsha", ["code"]],
+		"DYNLAR" => ["calculate_dynlar", ["code"]],
+		"DYNHERF" => ["calculate_dynherf", ["code"]],
+		"LocalDynastySize" => ["calculate_localdynastysize", ["code", "id"]],
+		"RecursiveDynastySize" => ["calculate_recursivedynastysize", ["code", "id"]],
+	];
+
 	public static function save_dataset($calc_data, $username, $name, $description) {
 		Database::get()->pdo->beginTransaction();
 
@@ -24,9 +32,19 @@ class DataProcessor {
 		$result = $calc_data["result"];
 		$min_year = $calc_data["min_year"];
 		$max_year = $calc_data["max_year"];
+		$insert_data = [];
+		$variables = static::INDICATORS[$name][1];
 
 		foreach ($result as $row) {
-			$row["dataset_id"] = $dataset->get_id();
+			$a = [
+				$dataset->get_id(),
+				$row["year"],
+			];
+			foreach ($variables as $v) {
+				$a[] = $row[$v];
+			}
+			$a[] = $row[$name];
+			$insert_data[] = $a;
 		}
 
 		$values_string = "(" . join("),(", array_map(
@@ -38,7 +56,7 @@ class DataProcessor {
 					$row
 				));
 			},
-			$result
+			$insert_data
 		)) . ")";
 
 		if($dataset->type === 0) {
@@ -58,13 +76,7 @@ class DataProcessor {
 	}
 
 	public static function calculate_indicator($name) {
-		$p = [
-			"DYNSHA" => ["calculate_dynsha", ["code"]],
-			"DYNLAR" => ["calculate_dynlar", ["code"]],
-			"DYNHERF" => ["calculate_dynherf", ["code"]],
-			"LocalDynastySize" => ["calculate_localdynastysize", ["code", "id"]],
-			"RecursiveDynastySize" => ["calculate_recursivedynastysize", ["code", "id"]],
-		][$name];
+		$p = static::INDICATORS[$name];
 		$calc_function = $p[0];
 		$variables = $p[1];
 

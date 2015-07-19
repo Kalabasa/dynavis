@@ -189,13 +189,13 @@ class Elect extends \Dynavis\Core\RefEntity {
 		}
 
 		return [
-			"official_id" => $official->get_id(),
-			"year" => $year,
-			"year_end" => $year_end,
-			"position" => $position,
-			"votes" => $votes,
-			"area_code" => $area->get_id(),
-			"party_id" => is_null($party) ? null : $party->get_id(),
+			$official->get_id(),
+			$year,
+			$year_end,
+			$position,
+			$votes,
+			$area->get_id(),
+			is_null($party) ? null : $party->get_id(),
 		];
 	}
 }

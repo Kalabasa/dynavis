@@ -248,12 +248,12 @@ class Area extends \Dynavis\Core\Entity {
 		$code = (int) $entry["code"];
 		$subcodes = static::extract_subcodes($code);
 		return [
-			"code" => $code,
-			"name" => Database::normalize_string($entry["name"]),
-			"type" => static::extract_level($code),
-			"parent_code" => null,
-			"mun_id" => $subcodes["mun_id"],
-			"bar_id" => $subcodes["bar_id"],
+			$code,
+			Database::normalize_string($entry["name"]),
+			static::extract_level($code),
+			null,
+			$subcodes["mun_id"],
+			$subcodes["bar_id"],
 		];
 	}
 
@@ -275,30 +275,33 @@ class Area extends \Dynavis\Core\Entity {
 		// Assuming valid PSGC $code
 		$str = str_pad($code, 9, "0", STR_PAD_LEFT);
 
-		$region_code = substr($str, 0, 2);
-		$province_code = substr($str, 2, 2);
-		$municipality_code = substr($str, 4, 2);
-		$barangay_code = substr($str, 6, 3);
-
 		$parent_code = null;
 		$mun_id = null;
 		$bar_id = null;
 
+		$province_code = substr($str, 2, 2);
 		if($province_code == "00") {
 			// region.parent = NULL
 			$parent_code = null;
-		}else if($municipality_code === "00") {
-			// province.parent = region
-			$parent_code = intval($region_code . "0000000");
-		}else if($barangay_code === "000") {
-			// municipality.parent = province
-			$parent_code = intval($region_code . $province_code . "00000");
-			$mun_id = $province_code . $municipality_code;
 		}else{
-			// barangay.parent = municipality
-			$parent_code = intval($region_code . $mun_id . "000");
-			$mun_id = $province_code . $municipality_code;
-			$bar_id = $mun_id . $barangay_code;
+			$region_code = substr($str, 0, 2);
+			$municipality_code = substr($str, 4, 2);
+			if($municipality_code === "00") {
+				// province.parent = region
+				$parent_code = intval($region_code . "0000000");
+			}else{
+				$barangay_code = substr($str, 6, 3);
+				if($barangay_code === "000") {
+					// municipality.parent = province
+					$parent_code = intval($region_code . $province_code . "00000");
+					$mun_id = $province_code . $municipality_code;
+				}else{
+					// barangay.parent = municipality
+					$parent_code = intval($region_code . $mun_id . "000");
+					$mun_id = $province_code . $municipality_code;
+					$bar_id = $mun_id . $barangay_code;
+				}
+			}
 		}
 
 		return [
