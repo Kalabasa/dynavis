@@ -794,20 +794,24 @@ function put_user($username) {
 		$app->halt(404);
 	}
 
-	if($user->type == 1) {
-		$data["type"] = [
-			"user" => 0,
-			"admin" => 1,
-		][$data["role"]];
-	}
-	unset($data["role"]);
-
-	foreach ($data as $key => $value) {
-		if(!in_array($key, User::FIELDS)) {
-			$app->halt(400, "Invalid property. " . $key);
+	if(array_key_exists("password", $data)) {
+		if(!isset($data["old_password"])) {
+			$app->halt(400, "No old_password parameter found. The current password is needed to change password.");
+		}else if(!$user->check_password($data["old_password"])) {
+			$app->halt(400, "Invalid old password.");
 		}
-		$user->$key = $value;
+		$user->set_password($data["password"]);
 	}
+
+	if(array_key_exists("role", $data)) {
+		switch ($data["role"]) {
+			case "user": $type = 0; break;
+			case "admin": $type = 1; break;
+			default: $app->halt(400, "Invalid role. " . $data["role"]);
+		}
+		$user->type = $type;
+	}
+
 	try {
 		$user->save();
 	}catch(DataException $e) {
