@@ -14,6 +14,7 @@ define(function(require){
 		this.bus = {
 			router: new Events(),
 			choropleth_settings: new Events(),
+			tagcloud_settings: new Events(),
 		};
 
 		this.router = new MainRouter({bus: this.bus});

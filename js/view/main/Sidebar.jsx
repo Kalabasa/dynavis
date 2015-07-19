@@ -6,7 +6,7 @@ define(["react", "jsx!view/main/ChoroplethSettingsPane"], function(React, Chorop
 				<div>
 					<div><a className="btn btn-link" href="#datasets">Manage datasets</a></div>
 					<ChoroplethSettingsPane bus={this.props.bus} />
-					<div>Tag cloud pane</div>
+					<TagCloudSettingsPane bus={this.props.bus} />
 				</div>
 			);
 		},

@@ -21,36 +21,12 @@ class DataProcessor {
 		$dataset->type = $calc_data["type"];
 		$dataset->save();
 
-		$insert_data = [];
-
+		$result = $calc_data["result"];
 		$min_year = $calc_data["min_year"];
 		$max_year = $calc_data["max_year"];
 
-		if($dataset->type === 0) {
-			foreach ($calc_data["result"] as $code => $values) {
-				for($t = $min_year; $t <= $max_year; $t++) {
-					$insert_data[] = [
-						"dataset_id" => $dataset->get_id(),
-						"year"  => $t,
-						"area_code" => $code,
-						"value" => array_key_exists($t, $values) ? $values[$t] : null,
-					];
-				}
-			}
-		}else{
-			foreach ($calc_data["result"] as $code => $tags) {
-				foreach ($tags as $tag => $values) {
-					for($t = $min_year; $t <= $max_year; $t++) {
-						$insert_data[] = [
-							"dataset_id" => $dataset->get_id(),
-							"year"  => $t,
-							"area_code" => $code,
-							"family_id" => $tag,
-							"value" => array_key_exists($t, $values) ? $values[$t] : null,
-						];
-					}
-				}
-			}
+		foreach ($result as $row) {
+			$row["dataset_id"] = $dataset->get_id();
 		}
 
 		$values_string = "(" . join("),(", array_map(
@@ -62,7 +38,7 @@ class DataProcessor {
 					$row
 				));
 			},
-			$insert_data
+			$result
 		)) . ")";
 
 		if($dataset->type === 0) {
@@ -100,15 +76,8 @@ class DataProcessor {
 		for($t = $min_year; $t <= $max_year; $t++) {
 			$subresult = static::$calc_function($t);
 			foreach ($subresult as $s) {
-				$arr = &$result;
-				foreach ($variables as $v) {
-					$key = $s[$v];
-					if(!array_key_exists($key, $arr)) {
-						$arr[$key] = [];
-					}
-					$arr = &$arr[$key];
-				}
-				$arr[$t] = $s[$name];
+				$s["year"] = $t;
+				$result[] = $s;
 			}
 		}
 
@@ -317,9 +286,13 @@ class DataProcessor {
 			$area = $l["code"];
 			$family = $l["id"];
 			$value = $l["LocalDynastySize"];
-			while($area) {
+			while(1) {
 				// TODO: use parent_code in the Area table first
 				$area = Area::extract_subcodes($area)["parent_code"];
+				if(!$area) {
+					break;
+				}
+
 				if(!array_key_exists($area, $rds_index)) {
 					$rds_index[$area] = [];
 				}

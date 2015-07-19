@@ -9,6 +9,8 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 					(<button className="button" onClick={this.indicator_generator.bind(this, "DYNSHA")}>Generate DYNSHA</button>),
 					(<button className="button" onClick={this.indicator_generator.bind(this, "DYNLAR")}>Generate DYNLAR</button>),
 					(<button className="button" onClick={this.indicator_generator.bind(this, "DYNHERF")}>Generate DYNHERF</button>),
+					(<button className="button" onClick={this.indicator_generator.bind(this, "LocalDynastySize")}>Generate LocalDynastySize</button>),
+					(<button className="button" onClick={this.indicator_generator.bind(this, "RecursiveDynastySize")}>Generate RecursiveDynastySize</button>),
 				];
 			}
 			return (
@@ -32,6 +34,8 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 				"DYNSHA": "Proportion of dynastic officials in each local government unit.",
 				"DYNLAR": "Proprtion of the dynasty with the largest proportion of dynastic officials in each local government unit.",
 				"DYNHERF": "Herfindal index on dynasties in each local government unit.",
+				"LocalDynastySize": "Number of members of each dynasty in each local government unit.",
+				"RecursiveDynastySize": "Number of members of each dynasty in each local government unit including members in subdivisions.",
 			};
 
 			var token = InstanceCache.get("Token", "session");
