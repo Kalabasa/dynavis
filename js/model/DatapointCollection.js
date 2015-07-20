@@ -12,7 +12,7 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 			return data.data;
 		},
 
-		get_value: function(area_code, year) {
+		find_datapoint: function(area_code, year) {
 			year = parseInt(year).toString();
 			area_code = ("000000000" + area_code).slice(-9);
 			// var reg_code = area_code.substr(0,2);
@@ -23,10 +23,14 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 				mun_code == "00" ? [2,2] :
 				bar_code == "000" ? [2,4] : [2,7];
 			var area_code_match = area_code.substr(match[0], match[1]);
-			var datapoint = this.find(function(p) {
+			return this.find(function(p) {
 				return p.get("year") == year
 					&& ("0"+p.get("area_code")).substr(match[0]-9,match[1]) == area_code_match;
 			});
+		},
+
+		get_value: function(area_code, year) {
+			var datapoint = this.find_datapoint(area_code, year);
 			if(!datapoint) return null;
 			var value = parseFloat(datapoint.get("value"));
 			return isNaN(value) ? null : value;
