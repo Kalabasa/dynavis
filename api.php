@@ -911,7 +911,7 @@ function get_user_datasets($username) {
 	if(!$user) {
 		$app->halt(404);
 	}
-	$datasets = $user->get_datasets($count, $start, $type);
+	$datasets = $user->get_datasets($count, $start, $params["type"]);
 
 	echo json_encode([
 		"total" => $user->count_datasets($type),
