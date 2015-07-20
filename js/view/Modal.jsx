@@ -39,16 +39,13 @@ define(["jquery", "react", "bootstrap"], function($, React) {
 	Modal.open = function(title, children) {
 		var node = document.createElement("div");
 		document.body.appendChild(node);
-		var modal = React.createElement(Modal,
-			{
-				title: title,
-				onClose: function() {
-					React.unmountComponentAtNode(node);
-					document.body.removeChild(node);
-				},
+		var modal = React.createElement(Modal,{
+			title: title,
+			onClose: function() {
+				React.unmountComponentAtNode(node);
+				document.body.removeChild(node);
 			},
-			{children}
-		);
+		}, null, children);
 		return React.render(modal, node);
 	};
 
