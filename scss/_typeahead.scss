@@ -41,7 +41,7 @@ fieldset[disabled] .twitter-typeahead .tt-input {
   font-size: 14px;
   background-color: #ffffff;
   border-radius: 2px;
-  @include drop-shadow(4);
+  @include drop-shadow(8);
   background-clip: padding-box;
 }
 .tt-dropdown-menu .tt-suggestion,

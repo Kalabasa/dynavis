@@ -51,6 +51,10 @@
 	padding: 40px;
 }
 
+.pane {
+	padding: 20px;
+}
+
 .data-row {
 	position: relative;
 
@@ -155,15 +159,6 @@
 	}
 }
 
-.typeahead-nostyle {
-	border: none;
-	outline: none;
-}
-
-.pane {
-	padding: 20px;
-}
-
 /* The following toggle styles are adpated from Materialize (materializecss.com)
  * License: The MIT License (MIT)
  * Copyright (c) 2014-2015 Materialize
@@ -231,4 +226,13 @@
 			}
 		}
 	}
+}
+
+.typeahead-nostyle {
+	border: none;
+	outline: none;
+}
+
+.modal-content {
+	border-radius: 3px;
 }

@@ -80,8 +80,8 @@ fieldset[disabled] .twitter-typeahead .tt-input {
   font-size: 14px;
   background-color: #ffffff;
   border-radius: 2px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 4px 4px -4px rgba(0, 0, 0, 0.4);
-  z-index: 4;
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.41667), 0 4px 8px -8px rgba(0, 0, 0, 0.4);
+  z-index: 8;
   background-clip: padding-box; }
 
 .tt-dropdown-menu .tt-suggestion,
@@ -219,11 +219,11 @@ h5, h6 {
   background-color: white; }
   .form input:not([type=file]):not([disabled]):not([readonly]), .form select:not([disabled]):not([readonly]), .input:not([disabled]):not([readonly]), .button:not([disabled]):not([readonly]) {
     top: -0.5px;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.17647), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.17647), 0 0.5px 1px -1px rgba(0, 0, 0, 0.4);
     z-index: 1; }
     .form input:not([type=file]):not([disabled]):not([readonly]):hover, .form select:not([disabled]):not([readonly]):hover, .input:not([disabled]):not([readonly]):hover, .button:not([disabled]):not([readonly]):hover {
       top: -1.5px;
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.26316), 0 3px 3px -3px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 1.5px 6px 0 rgba(0, 0, 0, 0.26316), 0 1.5px 3px -3px rgba(0, 0, 0, 0.4);
       z-index: 3; }
 
 .button.button-primary:not(_) {
@@ -231,7 +231,7 @@ h5, h6 {
   background-color: #ff0040; }
 .button:active:not([disabled]):not([readonly]) {
   top: -1px;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.22222), 0 2px 2px -2px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.22222), 0 1px 2px -2px rgba(0, 0, 0, 0.4);
   z-index: 2; }
 
 .header {
@@ -267,12 +267,15 @@ h5, h6 {
 .body-panel {
   padding: 40px; }
 
+.pane {
+  padding: 20px; }
+
 .data-row {
   position: relative;
   padding: 1em 22px;
   margin: 0 8px;
   background-color: white;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.17647), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.17647), 0 0.5px 1px -1px rgba(0, 0, 0, 0.4);
   z-index: 1; }
   .data-row .field-group {
     line-height: 150%;
@@ -290,7 +293,7 @@ h5, h6 {
   .data-row.edit {
     padding: 28px;
     margin: 8px 0;
-    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.33333), 0 5px 5px -5px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2.5px 10px 0 rgba(0, 0, 0, 0.33333), 0 2.5px 5px -5px rgba(0, 0, 0, 0.4);
     z-index: 5; }
 
 .token-list-input .token-list {
@@ -310,11 +313,11 @@ h5, h6 {
   border-radius: 2px;
   font-size: 90%;
   background-color: #ffceee;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.17647), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.17647), 0 0.5px 1px -1px rgba(0, 0, 0, 0.4);
   z-index: 1; }
   .token:hover {
     top: -0.5px;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.22222), 0 2px 2px -2px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.22222), 0 1px 2px -2px rgba(0, 0, 0, 0.4);
     z-index: 2; }
   .token button {
     background: none;
@@ -336,13 +339,6 @@ h5, h6 {
     float: right;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px; }
-
-.typeahead-nostyle {
-  border: none;
-  outline: none; }
-
-.pane {
-  padding: 20px; }
 
 /* The following toggle styles are adpated from Materialize (materializecss.com)
  * License: The MIT License (MIT)
@@ -384,7 +380,7 @@ h5, h6 {
       cursor: pointer; }
     .toggle label input[type=checkbox]:not(:disabled) + .toggle-lever:after {
       cursor: pointer;
-      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.17647), 0 1px 1px -1px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.17647), 0 0.5px 1px -1px rgba(0, 0, 0, 0.4);
       z-index: 1; }
     .toggle label input[type=checkbox]:not(:disabled):checked + .toggle-lever {
       background-color: #ffceee; }
@@ -394,6 +390,13 @@ h5, h6 {
       background-color: #faecf5; }
     .toggle label input[type=checkbox]:disabled + .toggle-lever:after {
       background-color: #e699ac; }
+
+.typeahead-nostyle {
+  border: none;
+  outline: none; }
+
+.modal-content {
+  border-radius: 3px; }
 
 .fadein {
   animation: fadein 0.3s; }
