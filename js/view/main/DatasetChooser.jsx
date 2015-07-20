@@ -16,8 +16,8 @@ define(["react", "react.backbone"], function(React) {
 							return <button key={dataset.cid} className="button" onClick={function() { that.select(dataset); }}>{dataset.get("name")}</button>
 						})}
 					</div>
-					<div>
-						<button className="button" onClick={this.handle_select}>Select</button>
+					<div className="clearfix">
+						<button className="pull-right button button-primary" onClick={this.handle_select}>Select</button>
 					</div>
 				</div>
 			);
