@@ -8,7 +8,7 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 			}
 		},
 
-		componentDidMount: function() {
+		componentWillMount: function() {
 			this.props.bus.choropleth_settings.on("dataset", this.on_area_dataset);
 			this.props.bus.tagcloud_settings.on("dataset", this.on_tag_dataset);
 		},
@@ -52,9 +52,7 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 		},
 
 		render: function() {
-			return (
-				<div className="map-panel"></div>
-			);
+			return <div className="map-panel"></div>;
 		},
 
 		set_geojson: function(geojson_url) {
