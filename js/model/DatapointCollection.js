@@ -13,22 +13,22 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 		},
 
 		find_datapoints: function(area_code, year, single) {
+			single = single || false;
 			area_code = ("000000000" + area_code).slice(-9);
-			year = parseInt(year).toString();
+			year = year.toString();
 
 			// var reg_code = area_code.substr(0,2);
 			var prov_code = area_code.substr(2,2);
 			var mun_code = area_code.substr(4,2);
 			var bar_code = area_code.substr(6,3);
 			
-			var match = prov_code == "00" ? [0,2] :
-				mun_code == "00" ? [2,2] :
-				bar_code == "000" ? [2,4] : [2,7];
-			var area_code_match = area_code.substr(match[0], match[1]);
-			
-			return (single ? this.find : this.filter)(function(p) {
+			var match_start = prov_code == "00" ? 0 : 2;
+			var area_code_match = area_code.substr(match_start);
+
+			console.log(area_code, area_code_match, year);
+			return (single ? this.find : this.filter).call(this, function(p) {
 				return p.get("year") == year
-					&& ("0"+p.get("area_code")).substr(match[0]-9,match[1]) == area_code_match;
+					&& ("0"+p.get("area_code")).substr(match_start-9) == area_code_match;
 			});
 		},
 
