@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "leaflet", "config.map", "view/main/ChoroplethLayer"], function(React, L, config, ChoroplethLayer) {
+define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view/main/map/TagCloudLayer"], function(React, L, config, ChoroplethLayer, TagCloudLayer) {
 	return React.createClass({
 		getInitialState: function() {
 			return {
@@ -38,6 +38,9 @@ define(["react", "leaflet", "config.map", "view/main/ChoroplethLayer"], function
 
 			this.choropleth = new ChoroplethLayer();
 			this.choropleth.addTo(this.map);
+
+			this.tagcloud = new TagCloudLayer();
+			this.tagcloud.addTo(this.map);
 
 			this.map.on("zoomend", this.on_zoom);
 			this.on_zoom();

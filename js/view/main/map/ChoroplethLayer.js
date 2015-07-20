@@ -32,11 +32,11 @@ define(["underscore", "leaflet"], function(_, L) {
 			L.LayerGroup.prototype.onAdd.call(this, map);
 		},
 
-		set_dataset: function(_datasets) {
-			this._datasets = _datasets;
+		set_dataset: function(datasets) {
+			this._datasets = datasets;
 			var layers = this.getLayers();
 			for (var i = 0; i < layers.length; i++) {
-				this.colorize_poly(_datasets, layers[i], this._current_geoJson);
+				this.colorize_poly(datasets, layers[i], this._current_geoJson);
 			};
 		},
 
