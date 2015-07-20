@@ -8,12 +8,14 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 			}
 		},
 
-		componentWillMount: function() {
+		componentDidMount: function() {
 			this.props.bus.choropleth_settings.on("dataset", this.on_area_dataset);
+			this.props.bus.tagcloud_settings.on("dataset", this.on_tag_dataset);
 		},
 
 		componentWillUnmount: function() {
 			this.props.bus.choropleth_settings.off("dataset", this.on_area_dataset);
+			this.props.bus.tagcloud_settings.off("dataset", this.on_tag_dataset);
 			this.map = null;
 		},
 
@@ -36,6 +38,9 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 				],
 			});
 
+			this.geoJson_cache = {};
+			this.current_geoJson = null;
+
 			this.choropleth = new ChoroplethLayer();
 			this.choropleth.addTo(this.map);
 
@@ -52,6 +57,34 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 			);
 		},
 
+		set_geojson: function(geojson_url) {
+			var that = this;
+
+			if(this.geoJson_cache[geojson_url] === this.current_geoJson) {
+				return;
+			}
+
+			this.selected = null;
+
+			if(this.geoJson_cache[geojson_url]) {
+				var geoJson = this.current_geoJson = this.geoJson_cache[geojson_url];
+				this.choropleth.replace_geojson(geoJson);
+				this.tagcloud.replace_geojson(geoJson);
+			}else{
+				var options = _.defaults(this.choropleth.geojson_options, {
+					onEachFeature: function(feature, layer) {
+						that.choropleth.on_feature(feature, layer);
+						that.tagcloud.on_feature(feature, layer);
+					}
+				});
+				$.get(geojson_url).success(function(data) {
+					var geoJson = that.current_geoJson = that.geoJson_cache[geojson_url] = L.geoJson(data, options);
+					that.choropleth.replace_geojson(geoJson);
+					that.tagcloud.replace_geojson(geoJson);
+				});
+			}
+		},
+
 		on_area_dataset: function(e) {
 			var datasets = [];
 			if(e.dataset1) {
@@ -61,15 +94,19 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 			this.choropleth.set_dataset(datasets);
 		},
 
+		on_tag_dataset: function(e) {
+			this.tagcloud.set_dataset(e.dataset);
+		},
+
 		on_zoom: function() {
 			if(this.map.getZoom() >= 12) {
-				// this.choropleth.set_geojson("json/Barangays.psgc.json");
+				// this.set_geojson("json/Barangays.psgc.json");
 			}else if(this.map.getZoom() >= 10) {
-				this.choropleth.set_geojson("json/MuniCities.psgc.json");
+				this.set_geojson("json/MuniCities.psgc.json");
 			}else if(this.map.getZoom() >= 8) {
-				this.choropleth.set_geojson("json/Provinces.psgc.json");
+				this.set_geojson("json/Provinces.psgc.json");
 			}else{
-				this.choropleth.set_geojson("json/Regions.psgc.json");
+				this.set_geojson("json/Regions.psgc.json");
 			}
 		},
 	});

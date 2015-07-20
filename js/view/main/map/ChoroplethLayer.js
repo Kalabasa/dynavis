@@ -3,6 +3,7 @@ define(["underscore", "leaflet"], function(_, L) {
 	return L.LayerGroup.extend({
 		initialize: function(layers) {
 			L.LayerGroup.prototype.initialize.call(this, layers);
+			var that = this;
 
 			this._style_neutral = {
 				weight: 2,
@@ -19,7 +20,11 @@ define(["underscore", "leaflet"], function(_, L) {
 				className: "map-polygon",
 			}, this._style_neutral);
 
-			this._geoJson_cache = {};
+			this.geojson_options = {
+				smoothFactor: 2.0,
+				style: this._style_neutral,
+			};
+
 			this._current_geoJson = null;
 			this._datasets = [];
 
@@ -38,6 +43,78 @@ define(["underscore", "leaflet"], function(_, L) {
 			for (var i = 0; i < layers.length; i++) {
 				this.colorize_poly(datasets, layers[i], this._current_geoJson);
 			};
+		},
+
+		replace_geojson: function(geoJson) {
+			var that = this;
+
+			this._current_geoJson = geoJson;
+
+			var old_layers = this.getLayers();
+			var n = old_layers.length;
+			var c = 0;
+			for (var i = 0; i < n; i++) {
+				var t = i/n * 2000;
+				if(c < 200 && old_layers[i].getBounds().intersects(this.map.getBounds())) {
+					t = c++;
+				}
+				setTimeout(function(i, l) {
+					that.removeLayer(l);
+				}, 1000 + t, i, old_layers[i]);
+			};
+
+			var new_layers = geoJson.getLayers();
+			for (var i = 0; i < new_layers.length; i++) {
+				setTimeout(function loop(l, geoJson) {
+					if(that._current_geoJson == geoJson) {
+						if(l.getBounds().intersects(that.map.getBounds())) {
+							if(that._datasets.length) {
+								that.colorize_poly(that._datasets, l, geoJson);
+							}
+							that.addLayer(l);
+						}else{
+							setTimeout(loop.bind(this), 100, l, geoJson);
+						}
+					}
+				}.bind(that), i % 1000, new_layers[i], geoJson);
+			};
+		},
+
+		on_feature: function(feature, layer) {
+			var that = this;
+
+			var area_code = parseInt(feature.properties.PSGC, 10);
+			layer.value = null;
+
+			layer.on({
+				click: function(e) {
+					var y = null, z = null;
+					var min,max;
+					if(that._datasets.length) {
+						var datapoints = that._datasets[0].get_datapoints();
+						min = datapoints.get_min_value();
+						max = datapoints.get_max_value();
+						y = (layer.value-min)/(max-min);
+						if(that.selected) z = (that.selected.value-min)/(max-min);
+					}
+
+					if(that.selected) {
+						that.selected.setStyle(that.compute_poly_style(z, false));
+					}
+					that.selected = layer;
+					layer.setStyle(that.compute_poly_style(y, true));
+					layer.bringToFront();
+
+					// TODO: Use React view in the popup
+					var area_name = feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.PROVINCE || feature.properties.REGION;
+					var info = "";
+					if(that._datasets.length) {
+						var dataset_name = that._datasets[0].get("name");
+						info = "<p> " + dataset_name + " (" + that.year + ") = " + (layer.value == null ? "no data" : layer.value.toFixed(2)) + "</p>";
+					}
+					that.map.openPopup("<div><h3>" + area_name + "</h3>" + info + "</div>", e.latlng);
+				},
+			});
 		},
 
 		// Sets polygon style based on the dataset
@@ -92,63 +169,6 @@ define(["underscore", "leaflet"], function(_, L) {
 			return style;
 		},
 
-		set_geojson: function(geojson_url) {
-			var that = this;
-
-			if(this._geoJson_cache[geojson_url] === this._current_geoJson) {
-				return;
-			}
-
-			this.selected = null;
-
-			if(this._geoJson_cache[geojson_url]) {
-				replaceGeoJSON(this._current_geoJson = this._geoJson_cache[geojson_url]);
-			}else{
-				var options = {
-					smoothFactor: 2.0,
-					style: this._style_neutral,
-					onEachFeature: function(feature, layer) {
-						that.on_feature(feature, layer);
-					},
-				};
-				$.get(geojson_url).success(function(data) {
-					var geoJson = that._current_geoJson = that._geoJson_cache[geojson_url] = L.geoJson(data, options);
-					replaceGeoJSON(geoJson);
-				});
-			}
-
-			function replaceGeoJSON(geoJson) {
-				var old_layers = that.getLayers();
-				var n = old_layers.length;
-				var c = 0;
-				for (var i = 0; i < n; i++) {
-					var t = i/n * 2000;
-					if(c < 200 && old_layers[i].getBounds().intersects(that.map.getBounds())) {
-						t = c++;
-					}
-					setTimeout(function(i, l) {
-						that.removeLayer(l);
-					}, 1000 + t, i, old_layers[i]);
-				};
-
-				var new_layers = geoJson.getLayers();
-				for (var i = 0; i < new_layers.length; i++) {
-					setTimeout(function loop(l, geoJson) {
-						if(that._current_geoJson == geoJson) {
-							if(l.getBounds().intersects(that.map.getBounds())) {
-								if(that._datasets.length) {
-									that.colorize_poly(that._datasets, l, geoJson);
-								}
-								that.addLayer(l);
-							}else{
-								setTimeout(loop.bind(this), 100, l, geoJson);
-							}
-						}
-					}.bind(that), i % 1000, new_layers[i], geoJson);
-				};
-			}
-		},
-
 		get_color: function(t) {
 			// Color curve function generated from:
 			// https://dl.dropboxusercontent.com/u/44461887/Maker/EquaMaker.swf
@@ -169,43 +189,6 @@ define(["underscore", "leaflet"], function(_, L) {
 			if (0 <= t && t <= 255) b = -0.000012434701152857986*t3 + 0.008053975696229959*t2 + -1.7552836708866706*t + 201;
 
 			return "rgb("+Math.round(r)+","+Math.round(g)+","+Math.round(b)+")";
-		},
-
-		on_feature: function(feature, layer) {
-			var that = this;
-
-			var area_code = parseInt(feature.properties.PSGC, 10);
-			layer.value = null;
-
-			layer.on({
-				click: function(e) {
-					var y = null, z = null;
-					var min,max;
-					if(that._datasets.length) {
-						var datapoints = that._datasets[0].get_datapoints();
-						min = datapoints.get_min_value();
-						max = datapoints.get_max_value();
-						y = (layer.value-min)/(max-min);
-						if(that.selected) z = (that.selected.value-min)/(max-min);
-					}
-
-					if(that.selected) {
-						that.selected.setStyle(that.compute_poly_style(z, false));
-					}
-					that.selected = layer;
-					layer.setStyle(that.compute_poly_style(y, true));
-					layer.bringToFront();
-
-					// TODO: Use React view in the popup
-					var area_name = feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.PROVINCE || feature.properties.REGION;
-					var info = "";
-					if(that._datasets.length) {
-						var dataset_name = that._datasets[0].get("name");
-						info = "<p> " + dataset_name + " (" + that.year + ") = " + (layer.value == null ? "no data" : layer.value.toFixed(2)) + "</p>";
-					}
-					that.map.openPopup("<div><h3>" + area_name + "</h3>" + info + "</div>", e.latlng);
-				},
-			});
 		},
 	});
 });
