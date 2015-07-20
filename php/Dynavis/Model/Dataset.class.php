@@ -53,19 +53,15 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			"\\Dynavis\\Model\\Datapoint",
 			"\\Dynavis\\Model\\TagDatapoint"
 		][$this->type];
+
+		$fields = array_merge($class::FIELDS, [$class::TABLE . "." . $class::PRIMARY_KEY]);
+		unset($fields[0]);
 		
-		return array_map(
-			function ($item) use ($class) {
-				return new $class((int) $item[$class::PRIMARY_KEY], false);
-			},
-			Database::get()->select($class::TABLE, [
-				"[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]
-			], [
-				$class::TABLE . "." . $class::PRIMARY_KEY
-			],[
-				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
-			])
-		);
+		return Database::get()->select($class::TABLE, [
+			"[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]
+		], $fields,[
+			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+		]);
 	}
 
 	public function jsonSerialize() {
