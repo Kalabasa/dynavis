@@ -398,14 +398,6 @@ h5, h6 {
 .modal-content {
   border-radius: 3px; }
 
-.fadein {
-  animation: fadein 0.3s; }
-
-@keyframes fadein {
-  from {
-    opacity: 0; }
-  to {
-    opacity: 1; } }
 .header {
   background-color: white; }
 

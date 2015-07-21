@@ -11,13 +11,12 @@ define(["underscore", "leaflet"], function(_, L) {
 				color: "#7f7f7f",
 				fillOpacity: 0.4,
 				fillColor: "#c7c7c7",
-				className: "fadein map-polygon",
+				className: "map-polygon visible",
 			};
 			this._style_colored = _.defaults({
 				opacity: 1,
 				color: "#ffffff",
 				fillOpacity: 0.8,
-				className: "map-polygon",
 			}, this._style_neutral);
 
 			this.geojson_options = {
@@ -25,7 +24,7 @@ define(["underscore", "leaflet"], function(_, L) {
 				style: this._style_neutral,
 			};
 
-			this._current_geoJson = null;
+			this._current_geojson = null;
 			this._datasets = [];
 
 			this.selected = null;
@@ -41,15 +40,14 @@ define(["underscore", "leaflet"], function(_, L) {
 			this._datasets = datasets;
 			var layers = this.getLayers();
 			for (var i = 0; i < layers.length; i++) {
-				this.colorize_poly(datasets, layers[i], this._current_geoJson);
+				this.colorize_poly(layers[i]);
 			};
 		},
 
-		replace_geojson: function(geoJson) {
-			var that = this;
+		replace_geojson: function(geojson) {
+			this._current_geojson = geojson;
 
-			this._current_geoJson = geoJson;
-
+			// Remove old polyline layers incrementally
 			var old_layers = this.getLayers();
 			var n = old_layers.length;
 			var c = 0;
@@ -59,50 +57,41 @@ define(["underscore", "leaflet"], function(_, L) {
 					t = c++;
 				}
 				setTimeout(function(i, l) {
-					that.removeLayer(l);
-				}, 1000 + t, i, old_layers[i]);
-			};
+					this.removeLayer(l);
+				}.bind(this), 1000 + t, i, old_layers[i]);
+			}
 
-			var new_layers = geoJson.getLayers();
+			// Add new polyline layers when they get on screen
+			var new_layers = this._current_geojson.getLayers();
 			for (var i = 0; i < new_layers.length; i++) {
-				setTimeout(function loop(l, geoJson) {
-					if(that._current_geoJson == geoJson) {
-						if(l.getBounds().intersects(that.map.getBounds())) {
-							if(that._datasets.length) {
-								that.colorize_poly(that._datasets, l, geoJson);
+				setTimeout(function loop(l, geojson) {
+					if(this._current_geojson == geojson) {
+						if(l.getBounds().intersects(this.map.getBounds())) {
+							this.addLayer(l);
+							if(this._datasets.length) {
+								this.colorize_poly(l);
 							}
-							that.addLayer(l);
 						}else{
-							setTimeout(loop.bind(this), 100, l, geoJson);
+							setTimeout(loop.bind(this), 100, l, geojson);
 						}
 					}
-				}.bind(that), i % 1000, new_layers[i], geoJson);
-			};
+				}.bind(this), i % 1000, new_layers[i], this._current_geojson);
+			}
 		},
 
 		on_feature: function(feature, layer) {
 			var that = this;
 
-			var area_code = parseInt(feature.properties.PSGC, 10);
 			layer.value = null;
+			layer.normalized_value = null;
 
 			layer.on({
 				click: function(e) {
-					var y = null, z = null;
-					var min,max;
-					if(that._datasets.length) {
-						var datapoints = that._datasets[0].get_datapoints();
-						min = datapoints.get_min_value();
-						max = datapoints.get_max_value();
-						y = (layer.value-min)/(max-min);
-						if(that.selected) z = (that.selected.value-min)/(max-min);
-					}
-
 					if(that.selected) {
-						that.selected.setStyle(that.compute_poly_style(z, false));
+						that.selected.setStyle(that.compute_poly_style(that.selected, false));
 					}
 					that.selected = layer;
-					layer.setStyle(that.compute_poly_style(y, true));
+					layer.setStyle(that.compute_poly_style(layer, true));
 					layer.bringToFront();
 
 					// TODO: Use React view in the popup
@@ -118,40 +107,41 @@ define(["underscore", "leaflet"], function(_, L) {
 		},
 
 		// Sets polygon style based on the dataset
-		colorize_poly: function(datasets, poly, geoJson){
-			if(datasets.length) {
-				var datapoints = datasets[0].get_datapoints();
+		colorize_poly: function(poly){
+			if(this._datasets.length) {
+				var datapoints = this._datasets[0].get_datapoints();
 				if(datapoints.size()) {
-					loop.call(this, poly, datapoints, this._current_geoJson);
+					loop.call(this, poly, datapoints, this._current_geojson);
 				}else{
-					datapoints.once("sync", loop.bind(this, poly, datapoints, this._current_geoJson));
+					datapoints.once("sync", loop.bind(this, poly, datapoints, this._current_geojson));
 				}
 			}
 
-			function loop(poly, datapoints, geoJson) {
-				if(this._current_geoJson == geoJson) {
+			function loop(poly, datapoints, geojson) {
+				if(this._current_geojson == geojson) {
 					if(poly.getBounds().intersects(this.map.getBounds())) {
 						var area_code = parseInt(poly.feature.properties.PSGC);
 						poly.value = datapoints.get_value(area_code, this.year);
-						var y = null;
+						poly.normalized_value = null;
 						if(poly.value != null) {
 							var min = datapoints.get_min_value();
 							var max = datapoints.get_max_value();
-							y = (poly.value-min)/(max-min);
+							poly.normalized_value = (poly.value-min)/(max-min);
 						}
-						poly.setStyle(this.compute_poly_style(y, false));
+						poly.setStyle(this.compute_poly_style(poly, false));
 					}else{
-						setTimeout(loop.bind(this), 100, poly, datapoints, geoJson);
+						setTimeout(loop.bind(this), 100, poly, datapoints, geojson);
 					}
 				}
 			}
 		},
 
-		compute_poly_style: function(value, highlight) {
+		compute_poly_style: function(poly, highlight) {
 			var style = null;
-			if(value || value === 0) {
+			var nv = poly.normalized_value;
+			if(nv || nv === 0) {
 				style = _.defaults({
-					fillColor: this.get_color(value),
+					fillColor: this.get_color(nv),
 				}, this._style_colored);
 			}else{
 				style = this._style_neutral;

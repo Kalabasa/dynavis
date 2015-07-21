@@ -17,18 +17,12 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 			area_code = ("000000000" + area_code).slice(-9);
 			year = year.toString();
 
-			// var reg_code = area_code.substr(0,2);
-			var prov_code = area_code.substr(2,2);
-			var mun_code = area_code.substr(4,2);
-			var bar_code = area_code.substr(6,3);
-			
-			var match_start = prov_code == "00" ? 0 : 2;
+			var match_start = area_code.substr(2,2) == "00" ? 0 : 2;
 			var area_code_match = area_code.substr(match_start);
 
-			console.log(area_code, area_code_match, year);
 			return (single ? this.find : this.filter).call(this, function(p) {
 				return p.get("year") == year
-					&& ("0"+p.get("area_code")).substr(match_start-9) == area_code_match;
+					&& ("0"+p.get("area_code")).substr(match_start) == area_code_match;
 			});
 		},
 
