@@ -10,6 +10,7 @@ require.config({
 		"bloodhound": "lib/bloodhound",
 		"bootstrap": "lib/bootstrap.min",
 		"config.map": "config.map",
+		"d3": "lib/d3.min",
 		"jquery": "lib/jquery-2.1.4.min",
 		"jsx": "lib/jsx",
 		"JSXTransformer": "lib/JSXTransformer",
