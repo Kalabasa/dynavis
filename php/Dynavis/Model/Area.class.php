@@ -248,7 +248,7 @@ class Area extends \Dynavis\Core\Entity {
 		$bar_id = null;
 
 		$province_code = substr($str, 2, 2);
-		if($province_code == "00") {
+		if($province_code === "00") {
 			// region.parent = NULL
 			$parent_code = null;
 		}else{
@@ -258,16 +258,15 @@ class Area extends \Dynavis\Core\Entity {
 				// province.parent = region
 				$parent_code = intval($region_code . "0000000");
 			}else{
+				$mun_id = $province_code . $municipality_code;
 				$barangay_code = substr($str, 6, 3);
 				if($barangay_code === "000") {
 					// municipality.parent = province
 					$parent_code = intval($region_code . $province_code . "00000");
-					$mun_id = $province_code . $municipality_code;
 				}else{
 					// barangay.parent = municipality
-					$parent_code = intval($region_code . $mun_id . "000");
-					$mun_id = $province_code . $municipality_code;
 					$bar_id = $mun_id . $barangay_code;
+					$parent_code = intval($region_code . $mun_id . "000");
 				}
 			}
 		}
