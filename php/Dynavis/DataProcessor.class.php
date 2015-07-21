@@ -280,44 +280,34 @@ class DataProcessor {
 	private static function calculate_recursivedynastysize($year) {
 		// RecursiveDynastySize(a,f,t) = LocalDynastySize(a,f,t) + sum over s in S(a) [ RecursiveDynastySize(s,f,t) ]
 		$lds = static::calculate_localdynastysize($year);
-		$rds = $lds;
 
 		$rds_index = [];
-		foreach ($rds as &$r) {
-			$area = $r["code"];
-			$family = $r["id"];
-			$r["RecursiveDynastySize"] = $r["LocalDynastySize"];
-			unset($r["LocalDynastySize"]);
-			if(!array_key_exists($area, $rds_index)) {
-				$rds_index[$area] = [];
-			}
-			$rds_index[$area][$family] = &$r;
-		}
-
 		foreach ($lds as $l) {
-			$area = $l["code"];
-			$family = $l["id"];
+			$area = (int) $l["code"];
+			$family = (int) $l["id"];
 			$value = $l["LocalDynastySize"];
-			while(1) {
-				// TODO: use parent_code in the Area table first
-				$area = Area::extract_subcodes($area)["parent_code"];
-				if(!$area) {
-					break;
-				}
-
+			while($area) {
 				if(!array_key_exists($area, $rds_index)) {
 					$rds_index[$area] = [];
 				}
 				if(!array_key_exists($family, $rds_index[$area])) {
-					$new_row = [
+					$rds_index[$area][$family] = [
 						"code" => $area,
 						"id" => $family,
 						"RecursiveDynastySize" => 0,
 					];
-					$rds[] = &$new_row;
-					$rds_index[$area][$family] = &$new_row;
 				}
 				$rds_index[$area][$family]["RecursiveDynastySize"] += $value;
+
+				// TODO: use parent_code in the Area table first
+				$area = Area::extract_subcodes($area)["parent_code"];
+			}
+		}
+
+		$rds = [];
+		foreach ($rds_index as $area => $families) {
+			foreach ($families as $family => $row) {
+				$rds[] = $row;
 			}
 		}
 
