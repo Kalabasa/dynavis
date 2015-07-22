@@ -238,26 +238,27 @@ h5, h6 {
   box-shadow: 0 0 8px 8px rgba(0, 0, 0, 0.1), 0 2px 4px 0 rgba(0, 0, 0, 0.4); }
   .header > div {
     height: inherit; }
+  .header #logo {
+    display: inline-block;
+    width: 250px; }
   .header #header-content {
     display: inline-block;
-    height: 100%;
-    padding: 0 40px;
-    line-height: 100%;
-    vertical-align: middle; }
+    padding: 0 40px; }
     .header #header-content .header-title {
-      display: inline; }
+      display: inline;
+      line-height: 75px;
+      vertical-align: middle; }
     .header #header-content .header-subtitle {
       display: inline;
+      line-height: 75px;
       margin-left: 0.4em;
-      font-weight: lighter;
-      color: #949494; }
+      font-weight: lighter; }
   .header .login {
+    float: right;
     display: inline-block;
     width: 250px;
     height: 100%;
-    padding: 15px;
-    color: #ffffff;
-    background-color: #5bb827; }
+    padding: 15px; }
     .header .login .login-text {
       float: left;
       line-height: 100%; }
@@ -399,7 +400,8 @@ h5, h6 {
   border-radius: 3px; }
 
 .header {
-  background-color: white; }
+  color: #ffffff;
+  background-color: #ff0040; }
 
 .sidebar {
   color: #bcbfb4;

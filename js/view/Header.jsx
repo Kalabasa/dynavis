@@ -17,12 +17,15 @@ define(["react", "InstanceCache", "jsx!view/Login"], function(React, InstanceCac
 
 		render: function() {
 			return (
-				<div>
-					<Login model={InstanceCache.get("Token", "session")} />
+				<div className="clearfix">
+					<div id="logo">
+						name
+					</div>
 					<div id="header-content">
 						<h2 className="header-title">{this.state.title}</h2>
 						<h3 className="header-subtitle">{this.state.subtitle}</h3>
 					</div>
+					<Login model={InstanceCache.get("Token", "session")} />
 				</div>
 			);
 		},

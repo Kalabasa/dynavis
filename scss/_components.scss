@@ -6,32 +6,34 @@
 		height: inherit;
 	}
 
+	#logo {
+		display: inline-block;
+		width: $sidebar-width;
+	}
+
 	#header-content {
 		display: inline-block;
-		height: 100%;
 		padding: 0 40px;
-		line-height: 100%;
-		vertical-align: middle;
 		
 		.header-title {
 			display: inline;
+			line-height: $header-height;
+			vertical-align: middle;
 		}
 		.header-subtitle {
 			display: inline;
+			line-height: $header-height;
 			margin-left: 0.4em;
 			font-weight: lighter;
-			color: lighten($color-text, 40%);
 		}
 	}
 
 	.login {
+		float: right;
 		display: inline-block;
 		width: $sidebar-width;
 		height: 100%;
 		padding: 15px;
-
-		color: $color-text-complement;
-		background-color: $color-complement;
 
 		.login-text {
 			float: left;
