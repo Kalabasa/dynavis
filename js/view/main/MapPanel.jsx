@@ -66,6 +66,7 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 
 			if(this.geoJson_cache[geojson_url]) {
 				var geoJson = this.current_geoJson = this.geoJson_cache[geojson_url];
+				geoJson.url = geojson_url;
 				this.choropleth.replace_geojson(geoJson);
 				this.tagcloud.replace_geojson(geoJson);
 			}else{
@@ -77,6 +78,7 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 				});
 				$.get(geojson_url).success(function(data) {
 					var geoJson = that.current_geoJson = that.geoJson_cache[geojson_url] = L.geoJson(data, options);
+					geoJson.url = geojson_url;
 					that.choropleth.replace_geojson(geoJson);
 					that.tagcloud.replace_geojson(geoJson);
 				});

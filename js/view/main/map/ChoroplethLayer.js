@@ -1,12 +1,12 @@
 "use strict";
-define(["underscore", "leaflet"], function(_, L) {
+define(["underscore", "jenks", "leaflet"], function(_, jenks, L) {
 	return L.LayerGroup.extend({
 		initialize: function(layers) {
 			L.LayerGroup.prototype.initialize.call(this, layers);
 			var that = this;
 
 			this._style_neutral = {
-				weight: 3,
+				weight: 2,
 				opacity: 0.2,
 				color: "#7f7f7f",
 				fillOpacity: 0.4,
@@ -14,6 +14,7 @@ define(["underscore", "leaflet"], function(_, L) {
 				className: "map-polygon visible",
 			};
 			this._style_colored = _.defaults({
+				weight: 3,
 				opacity: 1,
 				color: "#ffffff",
 				fillOpacity: 0.8,
@@ -31,6 +32,7 @@ define(["underscore", "leaflet"], function(_, L) {
 
 			this._current_geojson = null;
 			this._datasets = [];
+			this._classes = [];
 
 			this.map = null;
 			this.selected = null;
@@ -103,7 +105,7 @@ define(["underscore", "leaflet"], function(_, L) {
 					var area_name = feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.PROVINCE || feature.properties.REGION;
 					var info = "";
 					_.each(layer.variables, function(variable) {
-						info += "<p> " + _.escape(variable.name) + " (" + that.year + ") = " + (variable.value == null ? "no data" : variable.value.toFixed(2)) + "</p>";
+						info += "<p> " + _.escape(variable.dataset.get("name")) + " (" + that.year + ") = " + (variable.value == null ? "no data" : variable.value.toFixed(2)) + "</p>";
 					});
 					that.map.openPopup("<div><h3>" + _.escape(area_name) + "</h3>" + info + "</div>", e.latlng);
 				},
@@ -124,10 +126,7 @@ define(["underscore", "leaflet"], function(_, L) {
 							var datapoints = dataset.get_datapoints();
 							var value = datapoints.get_value(area_code, this.year);
 							if(value === null) return;
-							var min = datapoints.get_min_value();
-							var max = datapoints.get_max_value();
-							var normalized = (value-min)/(max-min);
-							poly.variables.push({name: dataset.get("name"), value: value, normalized: normalized});
+							poly.variables.push({dataset: dataset, geojson: geojson, value: value});
 						}, this);
 						poly.setStyle(this.compute_poly_style(poly, false));
 					}else{
@@ -161,14 +160,51 @@ define(["underscore", "leaflet"], function(_, L) {
 			];
 			var color = {r:255,g:255,b:255};
 			_.each(variables, function(variable, i) {
-				var t = variable.normalized;
+				try{
 				var scale = scales[i];
-				var c = scale[Math.min(scale.length-1, Math.floor(t * scale.length))];
+				var value = variable.value;
+				var classes = this.calculate_breaks(variable.dataset, variable.geojson, this.year, scale.length);
+				var class_color = null;
+				for (var i = 1; i < classes.length; i++) {
+					var min = classes[i - 1];
+					var max = classes[i];
+					if(min <= value && value <= max) {
+						class_color = scale[i - 1];
+						break;
+					}
+				};
 				color = _.mapObject(color, function(v,k) {
-					return v * c[k] / 255;
+					return Math.min(v, class_color[k]);
 				});
-			});
+			}catch(e){
+				console.log(variable, classes);
+				console.log(this.calculate_breaks.cache);
+				throw e;
+			}
+			}, this);
 			return "rgb("+Math.floor(color.r)+","+Math.floor(color.g)+","+Math.floor(color.b)+")";
 		},
+
+		calculate_breaks: _.memoize(function(dataset, geojson, year, n) {
+			year = year.toString();
+			
+			var area_codes = {};
+			var layers = geojson.getLayers();
+			for (var i = 0; i < layers.length; i++) {
+				area_codes[("0"+parseInt(layers[i].feature.properties.PSGC)).slice(-9)] = true;
+			}
+
+			var data = dataset.get_datapoints().chain()
+				.filter(function(p) {
+					return p.get("year") == year
+						&& p.get("value") !== null
+						&& area_codes[("0"+p.get("area_code")).slice(-9)];
+				})
+				.map(function(p) { return parseFloat(p.get("value")); })
+				.value();
+			return jenks(data, n);
+		}, function(dataset, geojson, year, n) {
+			return dataset.get("id") + "|" + geojson.url + "|" + year + "|" + n;
+		}),
 	});
 });
