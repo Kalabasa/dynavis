@@ -21,7 +21,7 @@ define(function(require){
 	};
 
 	MainApp.prototype.start = function() {
-		this.header = React.render(<Header title="Dashboard" bus={this.bus} />, document.getElementById("header"));
+		this.header = React.render(<Header title="" bus={this.bus} />, document.getElementById("header"));
 		this.sidebar = React.render(<Sidebar bus={this.bus} />, document.getElementById("sidebar"));
 
 		Backbone.history.start();
