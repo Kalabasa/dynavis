@@ -13,7 +13,7 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 					dataset: nextState.dataset,
 				});
 			}.bind(this);
-			if(nextState.dataset.get_datapoints().size()){
+			if(!nextState.dataset || nextState.dataset.get_datapoints().size()){
 				callback();
 			}else{
 				nextState.dataset.get_datapoints().fetch({

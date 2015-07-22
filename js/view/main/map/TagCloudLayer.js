@@ -4,6 +4,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 		initialize: function(layers) {
 			L.LayerGroup.prototype.initialize.call(this, layers);
 			
+			this._year = new Date().getFullYear();
 			this._current_geojson = null;
 			this._dataset = null;
 			this._tags = [];
@@ -11,7 +12,6 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			this._redraw_callback = _.debounce(this.redraw.bind(this), 1000);
 
 			this.map = null;
-			this.year = new Date().getFullYear();
 			this.minimum_size = 2;
 		},
 
@@ -19,6 +19,12 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			this.map = map;
 			map.on("viewreset moveend", this.redraw.bind(this));
 			L.LayerGroup.prototype.onAdd.call(this, map);
+		},
+
+		set_year: function(year) {
+			this._year = year;
+			this.update_minimum_size();
+			this.construct_tags();
 		},
 
 		set_dataset: function(dataset) {
@@ -64,7 +70,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 						var bottom_right = bounds.getSouthEast();
 
 						var area_code = parseInt(poly.feature.properties.PSGC);
-						poly.datapoints = datapoints.find_datapoints(area_code, this.year);
+						poly.datapoints = datapoints.find_datapoints(area_code, this._year);
 						for (var i = 0; i < poly.datapoints.length; i++) {
 							var p = poly.datapoints[i];
 							var family = InstanceCache.get("Family", p.get("family_id"));
@@ -133,7 +139,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 
 		update_minimum_size: function() {
 			if(this._dataset && this._current_geojson) {
-				this.minimum_size = this.calculate_minimum_size(this._dataset, this._current_geojson, this.year);
+				this.minimum_size = this.calculate_minimum_size(this._dataset, this._current_geojson, this._year);
 			}
 		},
 

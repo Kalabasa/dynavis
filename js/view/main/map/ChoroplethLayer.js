@@ -30,13 +30,13 @@ define(["underscore", "jenks", "leaflet"], function(_, jenks, L) {
 				style: this._style_neutral,
 			};
 
+			this._year = new Date().getFullYear();
 			this._current_geojson = null;
 			this._datasets = [];
 			this._classes = [];
 
 			this.map = null;
 			this.selected = null;
-			this.year = new Date().getFullYear();
 		},
 
 		onAdd: function (map) {
@@ -44,12 +44,20 @@ define(["underscore", "jenks", "leaflet"], function(_, jenks, L) {
 			L.LayerGroup.prototype.onAdd.call(this, map);
 		},
 
+		set_year: function(year) {
+			this._year = year;
+			if(this._datasets.length) {
+				_.each(this.getLayers(), function(layer) {
+					this.colorize_poly(layer);
+				}, this);
+			}
+		},
+
 		set_dataset: function(datasets) {
 			this._datasets = datasets;
-			var layers = this.getLayers();
-			for (var i = 0; i < layers.length; i++) {
-				this.colorize_poly(layers[i]);
-			};
+			_.each(this.getLayers(), function(layer) {
+				this.colorize_poly(layer);
+			}, this);
 		},
 
 		replace_geojson: function(geojson) {
@@ -105,7 +113,7 @@ define(["underscore", "jenks", "leaflet"], function(_, jenks, L) {
 					var area_name = feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.PROVINCE || feature.properties.REGION;
 					var info = "";
 					_.each(layer.variables, function(variable) {
-						info += "<p> " + _.escape(variable.dataset.get("name")) + " (" + that.year + ") = " + (variable.value == null ? "no data" : variable.value.toFixed(2)) + "</p>";
+						info += "<p> " + _.escape(variable.dataset.get("name")) + " (" + that._year + ") = " + (variable.value == null ? "no data" : variable.value.toFixed(2)) + "</p>";
 					});
 					that.map.openPopup("<div><h3>" + _.escape(area_name) + "</h3>" + info + "</div>", e.latlng);
 				},
@@ -124,7 +132,7 @@ define(["underscore", "jenks", "leaflet"], function(_, jenks, L) {
 						_.each(datasets, function(dataset) {
 							if(!dataset) return;
 							var datapoints = dataset.get_datapoints();
-							var value = datapoints.get_value(area_code, this.year);
+							var value = datapoints.get_value(area_code, this._year);
 							if(value === null) return;
 							poly.variables.push({dataset: dataset, geojson: geojson, value: value});
 						}, this);
@@ -160,10 +168,9 @@ define(["underscore", "jenks", "leaflet"], function(_, jenks, L) {
 			];
 			var color = {r:255,g:255,b:255};
 			_.each(variables, function(variable, i) {
-				try{
 				var scale = scales[i];
 				var value = variable.value;
-				var classes = this.calculate_breaks(variable.dataset, variable.geojson, this.year, scale.length);
+				var classes = this.calculate_breaks(variable.dataset, variable.geojson, this._year, scale.length);
 				var class_color = null;
 				for (var i = 1; i < classes.length; i++) {
 					var min = classes[i - 1];
@@ -176,11 +183,6 @@ define(["underscore", "jenks", "leaflet"], function(_, jenks, L) {
 				color = _.mapObject(color, function(v,k) {
 					return Math.min(v, class_color[k]);
 				});
-			}catch(e){
-				console.log(variable, classes);
-				console.log(this.calculate_breaks.cache);
-				throw e;
-			}
 			}, this);
 			return "rgb("+Math.floor(color.r)+","+Math.floor(color.g)+","+Math.floor(color.b)+")";
 		},

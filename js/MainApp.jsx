@@ -13,6 +13,7 @@ define(function(require){
 		InstanceCache.set("Token", "session", this.token);
 		this.bus = {
 			router: new Events(),
+			main_settings: new Events(),
 			choropleth_settings: new Events(),
 			tagcloud_settings: new Events(),
 		};

@@ -9,11 +9,13 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 		},
 
 		componentWillMount: function() {
+			this.props.bus.main_settings.on("update", this.on_update_settings);
 			this.props.bus.choropleth_settings.on("dataset", this.on_area_dataset);
 			this.props.bus.tagcloud_settings.on("dataset", this.on_tag_dataset);
 		},
 
 		componentWillUnmount: function() {
+			this.props.bus.main_settings.off("update", this.on_update_settings);
 			this.props.bus.choropleth_settings.off("dataset", this.on_area_dataset);
 			this.props.bus.tagcloud_settings.off("dataset", this.on_tag_dataset);
 			this.map = null;
@@ -83,6 +85,11 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 					that.tagcloud.replace_geojson(geoJson);
 				});
 			}
+		},
+
+		on_update_settings: function(e) {
+			this.choropleth.set_year(e.year);
+			this.tagcloud.set_year(e.year);
 		},
 
 		on_area_dataset: function(e) {
