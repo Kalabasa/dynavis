@@ -6,7 +6,7 @@ define(["underscore", "leaflet"], function(_, L) {
 			var that = this;
 
 			this._style_neutral = {
-				weight: 2,
+				weight: 3,
 				opacity: 0.2,
 				color: "#7f7f7f",
 				fillOpacity: 0.4,
@@ -19,7 +19,7 @@ define(["underscore", "leaflet"], function(_, L) {
 				fillOpacity: 0.8,
 			}, this._style_neutral);
 			this._style_highlight = {
-				weight: 3,
+				weight: 4,
 				color: "#000000",
 				opacity: 1,
 			};
@@ -88,7 +88,7 @@ define(["underscore", "leaflet"], function(_, L) {
 		on_feature: function(feature, layer) {
 			var that = this;
 
-			layer.values = [];
+			layer.variables = [];
 
 			layer.on({
 				click: function(e) {
@@ -102,33 +102,32 @@ define(["underscore", "leaflet"], function(_, L) {
 					// TODO: Use React view in the popup
 					var area_name = feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.PROVINCE || feature.properties.REGION;
 					var info = "";
-					if(that._datasets.length) {
-						var dataset_name = that._datasets[0].get("name");
-						info = "<p> " + dataset_name + " (" + that.year + ") = " + (layer.value == null ? "no data" : layer.value.toFixed(2)) + "</p>";
-					}
-					that.map.openPopup("<div><h3>" + area_name + "</h3>" + info + "</div>", e.latlng);
+					_.each(layer.variables, function(variable) {
+						info += "<p> " + _.escape(variable.name) + " (" + that.year + ") = " + (variable.value == null ? "no data" : variable.value.toFixed(2)) + "</p>";
+					});
+					that.map.openPopup("<div><h3>" + _.escape(area_name) + "</h3>" + info + "</div>", e.latlng);
 				},
 			});
 		},
 
 		// Sets polygon style based on the dataset
 		colorize_poly: function(poly){
+			poly.variables = [];
 			loop.call(this, poly, this._datasets, this._current_geojson);
 			function loop(poly, datasets, geojson) {
 				if(this._current_geojson == geojson) {
 					if(poly.getBounds().intersects(this.map.getBounds())) {
 						var area_code = parseInt(poly.feature.properties.PSGC);
-						poly.values = [];
+						poly.variables = [];
 						_.each(datasets, function(dataset) {
 							if(!dataset) return;
 							var datapoints = dataset.get_datapoints();
 							var value = datapoints.get_value(area_code, this.year);
 							if(value === null) return;
-							var normalized = null;
 							var min = datapoints.get_min_value();
 							var max = datapoints.get_max_value();
-							normalized = (value-min)/(max-min);
-							poly.values.push({value: value, normalized: normalized});
+							var normalized = (value-min)/(max-min);
+							poly.variables.push({name: dataset.get("name"), value: value, normalized: normalized});
 						}, this);
 						poly.setStyle(this.compute_poly_style(poly, false));
 					}else{
@@ -140,9 +139,9 @@ define(["underscore", "leaflet"], function(_, L) {
 
 		compute_poly_style: function(poly, highlight) {
 			var style = null;
-			if(poly.values.length) {
+			if(poly.variables.length) {
 				style = _.defaults({
-					fillColor: this.get_color(poly.values),
+					fillColor: this.get_color(poly.variables),
 				}, this._style_colored);
 			}else{
 				style = this._style_neutral;
@@ -155,27 +154,21 @@ define(["underscore", "leaflet"], function(_, L) {
 			return style;
 		},
 
-		get_color: function(values) {
-			var t = values[0].normalized;
-			// Color curve function generated from:
-			// https://dl.dropboxusercontent.com/u/44461887/Maker/EquaMaker.swf
-			if (0 <= t && t < 0.5) t = 255 * (0.03219*t*t + 1.29187*t + 0);
-			else if (0.5 <= t && t <= 1) t = 255 * (-1.26406*t*t + 2.58813*t + -0.32405);
-
-			var r,g,b;
-			var t2,t3;
-			t3 = (t2 = t * t) * t;
-
-			if (0 <= t && t < 23) r = 255;
-			else if (23 <= t && t <= 255) r = 0.00031706005872770226*t2 + -0.45603993103750085*t + 264.4266608327296;
-
-			if (0 <= t && t < 4) g = 255;
-			else if (4 <= t && t < 176) g = -0.000011933735924994102*t3 + 0.0017172534127885939*t2 + -1.4012094005738578*t + 259.57812530678996;
-			else if (176 <= t && t <= 255) g = 0;
-
-			if (0 <= t && t <= 255) b = -0.000012434701152857986*t3 + 0.008053975696229959*t2 + -1.7552836708866706*t + 201;
-
-			return "rgb("+Math.round(r)+","+Math.round(g)+","+Math.round(b)+")";
+		get_color: function(variables) {
+			var scales = [
+				[{r:254,g:235,b:226},{r:251,g:180,b:185},{r:247,g:104,b:161},{r:174,g:1,b:126}],
+				[{r:255,g:255,b:204},{r:194,g:230,b:153},{r:120,g:198,b:121},{r:35,g:132,b:67}],
+			];
+			var color = {r:255,g:255,b:255};
+			_.each(variables, function(variable, i) {
+				var t = variable.normalized;
+				var scale = scales[i];
+				var c = scale[Math.min(scale.length-1, Math.floor(t * scale.length))];
+				color = _.mapObject(color, function(v,k) {
+					return v * c[k] / 255;
+				});
+			});
+			return "rgb("+Math.floor(color.r)+","+Math.floor(color.g)+","+Math.floor(color.b)+")";
 		},
 	});
 });

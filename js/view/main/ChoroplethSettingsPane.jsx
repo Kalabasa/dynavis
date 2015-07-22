@@ -31,15 +31,28 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 				<div className="pane">
 					Choropleth
 					<div>
-						<div>Dataset 1: {this.state.dataset1 ? this.state.dataset1.get("name") : null}</div>
+						<div>
+							Dataset 1: {this.state.dataset1 ? this.state.dataset1.get("name") : null}
+							<button className="button" onClick={this.remove_handler(1)}>&times;</button>
+						</div>
 						<button className="button" onClick={this.select_handler(1)}>Select dataset</button>
 					</div>
 					<div>
-						<div>Dataset 2: {this.state.dataset2 ? this.state.dataset2.get("name") : null}</div>
+						<div>
+							Dataset 2: {this.state.dataset2 ? this.state.dataset2.get("name") : null}
+							<button className="button" onClick={this.remove_handler(2)}>&times;</button>
+						</div>
 						<button className="button" onClick={this.select_handler(2)}>Select dataset</button>
 					</div>
 				</div>
 			);
+		},
+
+		remove_handler: function(i) {
+			var that = this;
+			return function() {
+				that.select_dataset(i, null);
+			};
 		},
 
 		select_handler: function(i) {
@@ -50,16 +63,16 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 				that.modal = Modal.open("Select dataset", (
 					<DatasetChooser collection={dataset_collection} onSelect={function(dataset) {
 						that.select_dataset(i, dataset);
+						that.modal.close();
 					}}/>
 				));
-			}
+			};
 		},
 
 		select_dataset: function(i, dataset) {
 			var s = {}
 			s["dataset" + i] = dataset;
 			this.setState(s);
-			this.modal.close();
 		},
 	});
 });

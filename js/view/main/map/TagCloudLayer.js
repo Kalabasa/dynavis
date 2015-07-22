@@ -49,7 +49,8 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 		},
 
 		tag_poly: function(poly) {
-			loop.call(this, poly, this._datasets.get_datapoints(), this._current_geojson);
+			poly.datapoints = [];
+			loop.call(this, poly, this._dataset.get_datapoints(), this._current_geojson);
 			function loop(poly, datapoints, geojson) {
 				if(this._current_geojson == geojson) {
 					if(poly.getBounds().intersects(this.map.getBounds())) {
