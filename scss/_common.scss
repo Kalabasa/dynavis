@@ -133,7 +133,7 @@ h5,h6 {
 		}
 	}
 }
-.button {
+form input[type=button], form input[type=submit], form input[type=reset], .button {
 	&.button-primary:not(_) {
 		color: $color-text-primary-1;
 		background-color: $color-primary-1;

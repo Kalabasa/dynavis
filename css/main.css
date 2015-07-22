@@ -226,10 +226,10 @@ h5, h6 {
       box-shadow: 0 1.5px 6px 0 rgba(0, 0, 0, 0.26316), 0 1.5px 3px -3px rgba(0, 0, 0, 0.4);
       z-index: 3; }
 
-.button.button-primary:not(_) {
+form input[type=button].button-primary:not(_), form input[type=submit].button-primary:not(_), form input[type=reset].button-primary:not(_), .button.button-primary:not(_) {
   color: #ffffff;
   background-color: #3498DB; }
-.button:active:not([disabled]):not([readonly]) {
+form input[type=button]:active:not([disabled]):not([readonly]), form input[type=submit]:active:not([disabled]):not([readonly]), form input[type=reset]:active:not([disabled]):not([readonly]), .button:active:not([disabled]):not([readonly]) {
   top: -1px;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.22222), 0 1px 2px -2px rgba(0, 0, 0, 0.4);
   z-index: 2; }
