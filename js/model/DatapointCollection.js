@@ -22,7 +22,7 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 
 			return (single ? this.find : this.filter).call(this, function(p) {
 				return p.get("year") == year
-					&& ("0"+p.get("area_code")).substr(match_start) == area_code_match;
+					&& ("0"+p.get("area_code")).substr(match_start-9) == area_code_match;
 			});
 		},
 
