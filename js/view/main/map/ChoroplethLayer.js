@@ -129,7 +129,7 @@ define(["underscore", "leaflet"], function(_, L) {
 								normalized = (value-min)/(max-min);
 							}
 							poly.values.push({value: value, normalized: normalized});
-						}
+						});
 						poly.setStyle(this.compute_poly_style(poly, false));
 					}else{
 						setTimeout(loop.bind(this), 100, poly, datapoints, geojson);
