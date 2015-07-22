@@ -168,15 +168,15 @@ html, body {
   font-size: 100%; }
 
 a {
-  color: #ff0040; }
+  color: #3498DB; }
   a:link {
-    color: #ff0040; }
+    color: #3498DB; }
   a:visited {
-    color: #cc0033; }
+    color: #217dbb; }
   a:hover {
-    color: #ff668c; }
+    color: #8bc4ea; }
   a:active {
-    color: #cc0033; }
+    color: #217dbb; }
 
 h1, h2 {
   font-size: 160%;
@@ -228,7 +228,7 @@ h5, h6 {
 
 .button.button-primary:not(_) {
   color: #ffffff;
-  background-color: #ff0040; }
+  background-color: #3498DB; }
 .button:active:not([disabled]):not([readonly]) {
   top: -1px;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.22222), 0 1px 2px -2px rgba(0, 0, 0, 0.4);
@@ -313,7 +313,8 @@ h5, h6 {
   margin: 2px 4px;
   border-radius: 2px;
   font-size: 90%;
-  background-color: #ffceee;
+  color: #2C3E50;
+  background-color: #B9EEF7;
   box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.17647), 0 0.5px 1px -1px rgba(0, 0, 0, 0.4);
   z-index: 1; }
   .token:hover {
@@ -384,13 +385,13 @@ h5, h6 {
       box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.17647), 0 0.5px 1px -1px rgba(0, 0, 0, 0.4);
       z-index: 1; }
     .toggle label input[type=checkbox]:not(:disabled):checked + .toggle-lever {
-      background-color: #ffceee; }
+      background-color: #B9EEF7; }
     .toggle label input[type=checkbox]:not(:disabled):checked + .toggle-lever:after {
-      background-color: #ff0040; }
+      background-color: #3498DB; }
     .toggle label input[type=checkbox]:disabled + .toggle-lever {
-      background-color: #faecf5; }
+      background-color: #e4f1f3; }
     .toggle label input[type=checkbox]:disabled + .toggle-lever:after {
-      background-color: #e699ac; }
+      background-color: #b2c7d5; }
 
 .typeahead-nostyle {
   border: none;
@@ -401,7 +402,7 @@ h5, h6 {
 
 .header {
   color: #ffffff;
-  background-color: #ff0040; }
+  background-color: #3498DB; }
 
 .sidebar {
   background-color: white;
