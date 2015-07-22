@@ -8,8 +8,11 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			this._dataset = null;
 			this._tags = [];
 
+			this._redraw_callback = _.debounce(this.redraw.bind(this), 1000);
+
 			this.map = null;
 			this.year = new Date().getFullYear();
+			this.minimum_size = 2;
 		},
 
 		onAdd: function (map) {
@@ -20,11 +23,13 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 
 		set_dataset: function(dataset) {
 			this._dataset = dataset;
+			this.update_minimum_size();
 			this.construct_tags();
 		},
 
 		replace_geojson: function(geojson) {
 			this._current_geojson = geojson;
+			this.update_minimum_size();
 			this.construct_tags();
 		},
 
@@ -60,13 +65,12 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 
 						var area_code = parseInt(poly.feature.properties.PSGC);
 						poly.datapoints = datapoints.find_datapoints(area_code, this.year);
-						var callback = _.after(poly.datapoints.length, this.redraw.bind(this));
 						for (var i = 0; i < poly.datapoints.length; i++) {
 							var p = poly.datapoints[i];
 							var family = InstanceCache.get("Family", p.get("family_id"));
 							family.fetch({
-								success: callback,
-								error: callback,
+								success: this._redraw_callback,
+								error: this._redraw_callback,
 							});
 							var lat = top_left.lat + (bottom_right.lat - top_left.lat) * Math.random();
 							var lng = top_left.lng + (bottom_right.lng - top_left.lng) * Math.random();
@@ -90,14 +94,19 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
     		d3.select("#tag-cloud-overlay").remove();
 
 			var bounds = this.map.getBounds();
-			var tags = _.filter(this._tags, function(tag) {
-				if(!bounds.contains(tag.coords)) return false;
-				if(parseFloat(tag.data.get("value")) <= 1) return false;
-				var point = that.map.latLngToLayerPoint(tag.coords);
-				tag.x = point.x;
-				tag.y = point.y;
-				return true;
-			});
+			var tags = _.chain(this._tags)
+				.filter(function(tag) {
+					if(!bounds.contains(tag.coords)) return false;
+					var size = parseFloat(tag.data.get("value"));
+					if(size < this.minimum_size) return false;
+					tag.size = size;
+					var point = that.map.latLngToLayerPoint(tag.coords);
+					tag.x = point.x;
+					tag.y = point.y;
+					return true;
+				}, this)
+				.sortBy(function(tag) { return tag.size; })
+				.value();
 			
 			var top_left = this.map.latLngToLayerPoint(bounds.getNorthWest());
 			var svg = d3.select(this.map.getPanes().overlayPane).append("svg")
@@ -114,9 +123,41 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 				.data(tags)
 					.enter().append("g");
 			svg_tags.append("text")
-				.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
-				.text(function(d) { return d.family.get("name"); })
-				.style("font-size", function(d) { return (0.4 * parseFloat(d.data.get("value"))) + "em"; });
+				.attr("transform", function(tag) { return "translate(" + tag.x + "," + tag.y + ")"; })
+				.text(function(tag) { return tag.family.get("name"); })
+				.style("font-size", function(tag) { return (0.4 * tag.size) + "em"; })
+				.style("font-weight", "bold")
+				.style("stroke", "white")
+				.style("stroke-width", "1px");
 		},
+
+		update_minimum_size: function() {
+			if(this._dataset && this._current_geojson) {
+				this.minimum_size = this.calculate_minimum_size(this._dataset, this._current_geojson, this.year);
+			}
+		},
+
+		calculate_minimum_size: _.memoize(function(dataset, geojson, year) {
+			year = year.toString();
+			
+			var area_codes = {};
+			var layers = geojson.getLayers();
+			for (var i = 0; i < layers.length; i++) {
+				area_codes[("0"+parseInt(layers[i].feature.properties.PSGC)).slice(-9)] = true;
+			}
+
+			var data = dataset.get_datapoints().chain()
+				.filter(function(p) {
+					return p.get("year") == year
+						&& p.get("value") !== null
+						&& area_codes[("0"+p.get("area_code")).slice(-9)];
+				})
+				.map(function(p) { return parseFloat(p.get("value")); })
+				.sortBy()
+				.value();
+			return data[Math.floor(data.length * 0.95)];
+		}, function(dataset, geojson, year) {
+			return dataset.get("id") + "|" + geojson.url + "|" + year;
+		}),
 	});
 });
