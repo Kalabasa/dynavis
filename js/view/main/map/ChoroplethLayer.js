@@ -120,19 +120,19 @@ define(["underscore", "leaflet"], function(_, L) {
 						var area_code = parseInt(poly.feature.properties.PSGC);
 						poly.values = [];
 						_.each(datasets, function(dataset) {
+							if(!dataset) return;
 							var datapoints = dataset.get_datapoints();
 							var value = datapoints.get_value(area_code, this.year);
+							if(value === null) return;
 							var normalized = null;
-							if(value != null) {
-								var min = datapoints.get_min_value();
-								var max = datapoints.get_max_value();
-								normalized = (value-min)/(max-min);
-							}
+							var min = datapoints.get_min_value();
+							var max = datapoints.get_max_value();
+							normalized = (value-min)/(max-min);
 							poly.values.push({value: value, normalized: normalized});
-						});
+						}, this);
 						poly.setStyle(this.compute_poly_style(poly, false));
 					}else{
-						setTimeout(loop.bind(this), 100, poly, datapoints, geojson);
+						setTimeout(loop.bind(this), 100, poly, datasets, geojson);
 					}
 				}
 			}
@@ -155,7 +155,8 @@ define(["underscore", "leaflet"], function(_, L) {
 			return style;
 		},
 
-		get_color: function(t) {
+		get_color: function(values) {
+			var t = values[0].normalized;
 			// Color curve function generated from:
 			// https://dl.dropboxusercontent.com/u/44461887/Maker/EquaMaker.swf
 			if (0 <= t && t < 0.5) t = 255 * (0.03219*t*t + 1.29187*t + 0);
