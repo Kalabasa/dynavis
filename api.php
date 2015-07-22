@@ -973,7 +973,7 @@ function post_user_dataset($username) {
 		$app->halt(400, "Malformed data.");
 	}
 
-	if(!isset($data["name"], $data["description"])) {
+	if(!isset($data["name"], $data["description"], $data["type"])) {
 		$app->halt(400, "Incomplete data.");
 	}
 
@@ -984,6 +984,10 @@ function post_user_dataset($username) {
 
 	$dataset = new Dataset(["user" => $user]);
 	$dataset->name = $data["name"];
+	$dataset->type = [
+		"area" => 0,
+		"tag" => 1,
+	][$data["type"]];
 	$dataset->description = $data["description"];
 	try {
 		$dataset->save();
