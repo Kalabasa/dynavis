@@ -48,6 +48,7 @@ define(["react", "model/Dataset", "jsx!view/SearchControls", "jsx!view/PageContr
 			var dataset = new Dataset({
 				username: this.collection().username,
 				name: this.state.name,
+				type: 0,
 				description: this.state.description,
 			});
 			dataset.save(null, {
