@@ -45,9 +45,6 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 
 		select_dataset: function(dataset) {
 			this.setState({dataset: dataset});
-			if(!dataset.get_datapoints().size()){
-				dataset.get_datapoints().fetch();
-			}
 			this.modal.close();
 		},
 	});
