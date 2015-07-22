@@ -11,6 +11,7 @@ require.config({
 		"bootstrap": "lib/bootstrap.min",
 		"config.map": "config.map",
 		"d3": "lib/d3.min",
+		"jenks": "lib/jenks",
 		"jquery": "lib/jquery-2.1.4.min",
 		"jsx": "lib/jsx",
 		"JSXTransformer": "lib/JSXTransformer",
@@ -33,25 +34,14 @@ require.config({
 			deps: ["backbone"],
 			exports: "Backbone.PageableCollection"
 		},
-		"bootstrap": {
-			deps: ["jquery"],
-		},
+		"bootstrap": { deps: ["jquery"], },
+		"jenks": { exports: "jenks" },
 		"JSXTransformer": "JSXTransformer",
-		"localStorage": {
-			exports: "localStorage"
-		},
-		"minivents": {
-			exports: "Events"
-		},
-		"react": {
-			exports: "React"
-		},
-		"react.backbone": {
-			deps: ["react"]
-		},
-		"underscore": {
-			exports: "_"
-		},
+		"localStorage": { exports: "localStorage" },
+		"minivents": { exports: "Events" },
+		"react": { exports: "React" },
+		"react.backbone": { deps: ["react"] },
+		"underscore": { exports: "_" },
 	},
 
 	config: {
