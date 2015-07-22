@@ -1,26 +1,31 @@
 "use strict";
-define(["underscore", "leaflet"], function(_, L) {
+define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, InstanceCache) {
 	return L.LayerGroup.extend({
 		initialize: function(layers) {
 			L.LayerGroup.prototype.initialize.call(this, layers);
+			
 			this._current_geojson = null;
 			this._dataset = null;
+			this._tags = [];
+
+			this.map = null;
 			this.year = new Date().getFullYear();
 		},
 
 		onAdd: function (map) {
 			this.map = map;
+			map.on("viewreset moveend", this.redraw.bind(this));
 			L.LayerGroup.prototype.onAdd.call(this, map);
 		},
 
 		set_dataset: function(dataset) {
 			this._dataset = dataset;
-			this.redraw();
+			this.construct_tags();
 		},
 
 		replace_geojson: function(geojson) {
 			this._current_geojson = geojson;
-			this.redraw();
+			this.construct_tags();
 		},
 
 		on_feature: function(feature, layer) {
@@ -30,68 +35,87 @@ define(["underscore", "leaflet"], function(_, L) {
 			layer.families = null;
 		},
 
-		redraw: function() {
-			// Remove old tag layers
-			var old_layers = this.getLayers();
-			var n = old_layers.length;
-			var c = 0;
-			for (var i = 0; i < n; i++) {
-				var t = i/n * 2000;
-				if(c < 200 && this.map.getBounds().contains(old_layers[i].getLatLng())) {
-					t = c++;
-				}
-				setTimeout(function(i, l) {
-					this.removeLayer(l);
-				}.bind(this), 1000 + t, i, old_layers[i]);
-			}
+		construct_tags: function() {
+			// Remove old tags
+			this._tags = [];
 
-			// Add new tag layers
+			// Add new tags
 			if(this._dataset) {
 				var geojson_layers = this._current_geojson.getLayers();
 				for (var i = 0; i < geojson_layers.length; i++) {
-					setTimeout(function loop(l, geojson) {
-						if(this._current_geojson == geojson) {
-							if(l.getBounds().intersects(this.map.getBounds())) {
-								this.tag_poly(l);
-							}else{
-								setTimeout(loop.bind(this), 100, l, geojson);
-							}
-						}
-					}.bind(this), i % 1000, geojson_layers[i], this._current_geojson);
+					this.tag_poly(geojson_layers[i]);
 				}
 			}
 		},
 
 		tag_poly: function(poly) {
-			if(this._dataset) {
-				var datapoints = this._dataset.get_datapoints();
-				if(datapoints.size()) {
-					loop.call(this, poly, datapoints, this._current_geojson);
-				}else{
-					datapoints.once("sync", loop.bind(this, poly, datapoints, this._current_geojson));
-				}
-			}
-
+			loop.call(this, poly, this._datasets.get_datapoints(), this._current_geojson);
 			function loop(poly, datapoints, geojson) {
 				if(this._current_geojson == geojson) {
 					if(poly.getBounds().intersects(this.map.getBounds())) {
+						var bounds = poly.getBounds();
+						var top_left = bounds.getNorthWest();
+						var bottom_right = bounds.getSouthEast();
+
 						var area_code = parseInt(poly.feature.properties.PSGC);
 						poly.datapoints = datapoints.find_datapoints(area_code, this.year);
+						var callback = _.after(poly.datapoints.length, this.redraw.bind(this));
 						for (var i = 0; i < poly.datapoints.length; i++) {
 							var p = poly.datapoints[i];
-							var label = L.marker(poly.getBounds().getCenter(), {
-								icon: L.divIcon({
-									className: "map-label",
-									html: p.get("family_id") + "<br/>" + p.get("value"),
-								}),
+							var family = InstanceCache.get("Family", p.get("family_id"));
+							family.fetch({
+								success: callback,
+								error: callback,
 							});
-							this.addLayer(label);
+							var lat = top_left.lat + (bottom_right.lat - top_left.lat) * Math.random();
+							var lng = top_left.lng + (bottom_right.lng - top_left.lng) * Math.random();
+							this._tags.push({
+								"data": p,
+								"family": family,
+								"coords": [lat, lng],
+								"area": poly,
+							});
 						}
 					}else{
 						setTimeout(loop.bind(this), 100, poly, datapoints, geojson);
 					}
 				}
 			}
+		},
+
+		redraw: function() {
+			var that = this;
+
+    		d3.select("#tag-cloud-overlay").remove();
+
+			var bounds = this.map.getBounds();
+			var tags = _.filter(this._tags, function(tag) {
+				if(!bounds.contains(tag.coords)) return false;
+				if(parseFloat(tag.data.get("value")) <= 1) return false;
+				var point = that.map.latLngToLayerPoint(tag.coords);
+				tag.x = point.x;
+				tag.y = point.y;
+				return true;
+			});
+			
+			var top_left = this.map.latLngToLayerPoint(bounds.getNorthWest());
+			var svg = d3.select(this.map.getPanes().overlayPane).append("svg")
+				.attr("id", "tag-cloud-overlay")
+				.style("pointer-events", "none")
+				.attr("class", "leaflet-zoom-hide")
+				.style("width", this.map.getSize().x + "px")
+				.style("height", this.map.getSize().y + "px")
+				.style("margin-left", top_left.x + "px")
+				.style("margin-top", top_left.y + "px");
+			var g = svg.append("g")
+				.attr("transform", "translate(" + (-top_left.x) + "," + (-top_left.y) + ")");
+			var svg_tags = g.selectAll("g")
+				.data(tags)
+					.enter().append("g");
+			svg_tags.append("text")
+				.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+				.text(function(d) { return d.family.get("name"); })
+				.style("font-size", function(d) { return (0.4 * parseFloat(d.data.get("value"))) + "em"; });
 		},
 	});
 });

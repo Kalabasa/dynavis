@@ -18,6 +18,11 @@ define(["underscore", "leaflet"], function(_, L) {
 				color: "#ffffff",
 				fillOpacity: 0.8,
 			}, this._style_neutral);
+			this._style_highlight = {
+				weight: 3,
+				color: "#000000",
+				opacity: 1,
+			};
 
 			this.geojson_options = {
 				smoothFactor: 2.0,
@@ -27,6 +32,7 @@ define(["underscore", "leaflet"], function(_, L) {
 			this._current_geojson = null;
 			this._datasets = [];
 
+			this.map = null;
 			this.selected = null;
 			this.year = new Date().getFullYear();
 		},
@@ -82,8 +88,7 @@ define(["underscore", "leaflet"], function(_, L) {
 		on_feature: function(feature, layer) {
 			var that = this;
 
-			layer.value = null;
-			layer.normalized_value = null;
+			layer.values = [];
 
 			layer.on({
 				click: function(e) {
@@ -108,25 +113,22 @@ define(["underscore", "leaflet"], function(_, L) {
 
 		// Sets polygon style based on the dataset
 		colorize_poly: function(poly){
-			if(this._datasets.length) {
-				var datapoints = this._datasets[0].get_datapoints();
-				if(datapoints.size()) {
-					loop.call(this, poly, datapoints, this._current_geojson);
-				}else{
-					datapoints.once("sync", loop.bind(this, poly, datapoints, this._current_geojson));
-				}
-			}
-
-			function loop(poly, datapoints, geojson) {
+			loop.call(this, poly, this._datasets, this._current_geojson);
+			function loop(poly, datasets, geojson) {
 				if(this._current_geojson == geojson) {
 					if(poly.getBounds().intersects(this.map.getBounds())) {
 						var area_code = parseInt(poly.feature.properties.PSGC);
-						poly.value = datapoints.get_value(area_code, this.year);
-						poly.normalized_value = null;
-						if(poly.value != null) {
-							var min = datapoints.get_min_value();
-							var max = datapoints.get_max_value();
-							poly.normalized_value = (poly.value-min)/(max-min);
+						poly.values = [];
+						_.each(datasets, function(dataset) {
+							var datapoints = dataset.get_datapoints();
+							var value = datapoints.get_value(area_code, this.year);
+							var normalized = null;
+							if(value != null) {
+								var min = datapoints.get_min_value();
+								var max = datapoints.get_max_value();
+								normalized = (value-min)/(max-min);
+							}
+							poly.values.push({value: value, normalized: normalized});
 						}
 						poly.setStyle(this.compute_poly_style(poly, false));
 					}else{
@@ -138,22 +140,16 @@ define(["underscore", "leaflet"], function(_, L) {
 
 		compute_poly_style: function(poly, highlight) {
 			var style = null;
-			var nv = poly.normalized_value;
-			if(nv || nv === 0) {
+			if(poly.values.length) {
 				style = _.defaults({
-					fillColor: this.get_color(nv),
+					fillColor: this.get_color(poly.values),
 				}, this._style_colored);
 			}else{
 				style = this._style_neutral;
 			}
 
 			if(highlight) {
-				style = _.defaults({
-					weight: 3,
-					color: "#001032",
-					opacity: 1,
-					fillOpacity: 1,
-				}, style);
+				style = _.extend(_.clone(style), this._style_highlight);
 			}
 
 			return style;

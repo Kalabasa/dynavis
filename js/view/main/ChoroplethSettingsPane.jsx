@@ -9,9 +9,20 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 		},
 
 		componentWillUpdate: function(nextProps, nextState) {
-			this.props.bus.choropleth_settings.emit("dataset", {
-				dataset1: nextState.dataset1,
-				dataset2: nextState.dataset2,
+			var callback = _.after(2, function() {
+				this.props.bus.choropleth_settings.emit("dataset", {
+					dataset1: nextState.dataset1,
+					dataset2: nextState.dataset2,
+				});
+			}).bind(this);
+			_.each([nextState.dataset1, nextState.dataset2], function(dataset) {
+				if(!dataset || dataset.get_datapoints().size()){
+					callback();
+				}else{
+					dataset.get_datapoints().fetch({
+						success: callback
+					});
+				}
 			});
 		},
 
@@ -19,10 +30,14 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 			return (
 				<div className="pane">
 					Choropleth
-					Dataset 1: {this.state.dataset1 ? this.state.dataset1.get("name") : null}
-					<button className="button" onClick={this.select_handler(1)}>Select dataset</button>
-					Dataset 2: {this.state.dataset2 ? this.state.dataset2.get("name") : null}
-					<button className="button" onClick={this.select_handler(2)}>Select dataset</button>
+					<div>
+						<div>Dataset 1: {this.state.dataset1 ? this.state.dataset1.get("name") : null}</div>
+						<button className="button" onClick={this.select_handler(1)}>Select dataset</button>
+					</div>
+					<div>
+						<div>Dataset 2: {this.state.dataset2 ? this.state.dataset2.get("name") : null}</div>
+						<button className="button" onClick={this.select_handler(2)}>Select dataset</button>
+					</div>
 				</div>
 			);
 		},
@@ -44,9 +59,6 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 			var s = {}
 			s["dataset" + i] = dataset;
 			this.setState(s);
-			if(!dataset.get_datapoints().size()){
-				dataset.get_datapoints().fetch();
-			}
 			this.modal.close();
 		},
 	});
