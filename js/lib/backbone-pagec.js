@@ -3,7 +3,7 @@ var Backbone = Backbone || {};
 (function() {
 	Backbone.PageableCollection = Backbone.Collection.extend({
 		start: 0,
-		per_page: 20,
+		per_page: 15,
 		total: 0,
 
 		initialize: function(models, options) {

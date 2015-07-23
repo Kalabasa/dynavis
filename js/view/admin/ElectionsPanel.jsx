@@ -1,5 +1,5 @@
 "use strict";
-define(["jquery", "react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/ElectionRow", "mixin/ScrollToTopMixin", "react.backbone"], function($, React, SearchControls, PageControls, ElectionRow, ScrollToTopMixin) {
+define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/ElectionRow", "mixin/ScrollToTopMixin", "react.backbone"], function($, React, FileInput, SearchControls, PageControls, ElectionRow, ScrollToTopMixin) {
 	return React.createBackboneClass({
 		mixins: [ScrollToTopMixin],
 
@@ -7,12 +7,22 @@ define(["jquery", "react", "jsx!view/SearchControls", "jsx!view/PageControls", "
 			var that = this;
 			return (
 				<div className="body-panel">
-					<form className="pure-form" onSubmit={this.handle_upload}>
-						Upload election records (csv) <input ref="file" type="file" />
-						<input className="button" type="submit" value="Upload" />
-					</form>
+					<div className="panel-toolbar pure-g">
+						<div className="pure-u-1-3 text-center pad">
+							<h6>Add single row</h6>
+							<button className="button" onClick={this.handle_add}>Add Row</button>
+						</div>
+						<div className="pure-u-2-3 text-center pad">
+							<form onSubmit={this.handle_upload}>
+								<h6>Upload election records (csv)</h6>
+								<div>
+									<FileInput ref="file" type="file" />
+								</div>
+								<input className="button button-primary" type="submit" value="Upload File" />
+							</form>
+						</div>
+					</div>
 					<SearchControls ref="searcher" collection={this.collection()} />
-					<button className="button" onClick={this.handle_add}>Add</button>
 					<div>
 						{this.collection().map(function(election) {
 							return <ElectionRow
@@ -43,7 +53,7 @@ define(["jquery", "react", "jsx!view/SearchControls", "jsx!view/PageControls", "
 			e.preventDefault();
 
 			var fd = new FormData();
-			var file = this.refs.file.getDOMNode().files[0];
+			var file = this.refs.file.get_input().files[0];
 			fd.append("file", file);
 
 			$.ajax({

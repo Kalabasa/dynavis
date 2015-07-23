@@ -60,8 +60,8 @@ fieldset[disabled] .twitter-typeahead .tt-input {
   cursor: pointer;
   text-decoration: none;
   outline: 0;
-  background-color: #f5f5f5;
-  color: #262626;
+  background-color: $color-primary-1;
+  color: $color-text-primary-1;
 }
 .tt-dropdown-menu .tt-suggestion.tt-cursor a,
 .tt-menu .tt-suggestion.tt-cursor a,

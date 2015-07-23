@@ -25,13 +25,9 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 			var area_code = parseInt(this.model().get("area_code"));
 			var party_id = parseInt(this.model().get("party_id"));
 
-			var official = InstanceCache.get("Official", official_id);
-			var area = InstanceCache.get("Area", area_code);
-			var party = isNaN(party_id) ? null : InstanceCache.get("Party", party_id);
-
-			if(official) official.fetch();
-			if(area) area.fetch();
-			if(party) party.fetch();
+			var official = InstanceCache.get("Official", official_id, true);
+			var area = InstanceCache.get("Area", area_code, true);
+			var party = isNaN(party_id) ? null : InstanceCache.get("Party", party_id, true);
 
 			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){
@@ -89,7 +85,7 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 						</div>
 						<div className="pure-g">
 							<div className="pure-u-1">
-								<button className="pull-left button mar" onClick={this.handle_delete}>Delete</button>
+								<button className="pull-left button button-complement mar" onClick={this.handle_delete}>Delete</button>
 								<button className="pull-right button button-primary mar" onClick={this.handle_save}>Save</button>
 								{cancel_button}
 							</div>
@@ -132,7 +128,7 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 								</div>
 							</div>
 							<div className="pure-u-1-6">
-								<button className="pull-right button" onClick={this.handle_edit}>Edit</button>
+								<button className="pull-right button button-flat" onClick={this.handle_edit}>Edit</button>
 							</div>
 						</div>
 					</div>

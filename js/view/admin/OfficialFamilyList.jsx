@@ -17,22 +17,20 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 
 			return (
 				<div className="pure-g">
-					<form className="pure-u-1 clearfix" onSubmit={this.handle_submit}>
+					<form className="pure-u-1" onSubmit={this.handle_submit}>
 						<div className="label">Families</div>
-						<div className="input token-list-input">
-							<div className="token-list">
-								{this.collection().map(function(family) {
-									return <OfficialFamilyToken key={family.cid} model={family} />;
-								})}
-							</div>
-							<label className="token-input" onKeyDown={this.handle_key}>
+						<div className="input token-list-input clearfix" onClick={this.handle_focus}>
+							{this.collection().map(function(family) {
+								return <OfficialFamilyToken key={family.cid} model={family} />;
+							})}
+							<div className="token-input" onKeyDown={this.handle_key}>
 								<TypeaheadInput className="token-input-typeahead typeahead-nostyle"
 									for="Family"
 									ref="input"
 									display={display}
 									collection={this.collection()}
 									required />
-							</label>
+							</div>
 						</div>
 						<div className="token-submit">
 							<input className="button" type="submit" value="Add" />
@@ -47,6 +45,10 @@ define(["react", "model/Family", "jsx!view/TypeaheadInput", "jsx!view/admin/Offi
 			if(!e.target.value.length && e.keyCode == 8 && size) {
 				this.collection().at(-1).destroy({wait: true});
 			}
+		},
+
+		handle_focus: function(e) {
+			setTimeout(function(){ React.findDOMNode(this.refs.input).focus(); }.bind(this), 0);
 		},
 
 		handle_submit: function(e) {

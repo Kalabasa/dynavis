@@ -6,25 +6,12 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 		getInitialState: function() {
 			return {
 				edit: this.model().isNew(),
-				families: null,
+				families: new OfficialFamilyCollection(null, {official_id: this.model().id}),
 			};
 		},
 
 		componentWillMount: function() {
-			this.refresh_families();
-		},
-		onModelChange: function() {
-			this.refresh_families();
-		},
-		refresh_families: function() {
-			if(!this.model().isNew()) {
-				var families = this.state.families;
-				if(!families) {
-					families = new OfficialFamilyCollection(null, {official_id: this.model().id});
-					this.setState({families: families});
-				}
-				families.fetch();
-			}
+			this.state.families.fetch();
 		},
 
 		render: function() {
@@ -48,7 +35,7 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 					(<div className="pure-g form">
 						<OfficialName className="field pure-u-5-6 text-large" model={this.model()} />
 						<div className="pure-u-1-6">
-							<button className="pull-right button" onClick={this.handle_edit}>Edit</button>
+							<button className="pull-right button button-flat" onClick={this.handle_edit}>Edit</button>
 						</div>
 					</div>),
 					(<OfficialFamilyList collection={this.state.families} />)

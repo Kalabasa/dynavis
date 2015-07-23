@@ -33,14 +33,14 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 					<div>
 						<div>
 							Dataset 1: {this.state.dataset1 ? this.state.dataset1.get("name") : null}
-							<button className="button" onClick={this.remove_handler(1)}>&times;</button>
+							<button className="button button-complement button-flat button-close" onClick={this.remove_handler(1)}>&times;</button>
 						</div>
 						<button className="button" onClick={this.select_handler(1)}>Select dataset</button>
 					</div>
 					<div>
 						<div>
 							Dataset 2: {this.state.dataset2 ? this.state.dataset2.get("name") : null}
-							<button className="button" onClick={this.remove_handler(2)}>&times;</button>
+							<button className="button button-complement button-flat button-close" onClick={this.remove_handler(2)}>&times;</button>
 						</div>
 						<button className="button" onClick={this.select_handler(2)}>Select dataset</button>
 					</div>

@@ -24,9 +24,6 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 						</form>
 						<PageControls className="pull-right" collection={this.collection()} />
 					</div>
-					<div className="text">
-						Search results: {this.state.query}
-					</div>
 				</div>
 			);
 		},

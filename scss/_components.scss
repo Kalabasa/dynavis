@@ -14,24 +14,29 @@
 	#header-content {
 		display: inline-block;
 		padding: 0 40px;
+		font-family: "Roboto Slab", serif;
+		font-weight: lighter;
 		
+		*:last-child {
+			font-weight: normal;
+		}
 		.header-title {
 			display: inline;
 			line-height: $header-height;
-			vertical-align: middle;
+			vertical-align: baseline;
 		}
 		.header-subtitle {
 			display: inline;
+			margin-left: 0.5em;
 			line-height: $header-height;
-			margin-left: 0.4em;
-			font-weight: lighter;
+			vertical-align: baseline;
+			font-size: 100%;
 		}
 	}
 
 	.login {
 		float: right;
 		display: inline-block;
-		width: $sidebar-width;
 		height: 100%;
 		padding: 15px;
 
@@ -57,11 +62,115 @@
 	padding: 20px;
 }
 
+.panel-toolbar {
+	padding: 10px 0;
+	&>div {
+		padding: 30px;
+		border-right: solid 1px rgba(0,0,0,0.1);
+		&:last-child {
+			border-right: none;
+		}
+	}
+	h6 {
+		opacity: 0.8;
+	}
+}
+
+.form input:not([type=file]), .form select, .input, .button {
+	position: relative;
+	top: 0;
+
+	margin-top: 4px;
+	margin-bottom: 4px;
+	padding: 0.5em 0.7em;
+	border: none;
+	border-radius: 2px;
+
+	font-family: "Roboto", sans-serif;
+	font-size: 90%;
+	color: $color-text;
+	background-color: white;
+
+	@extend %floating-transitions;
+	&:not(.button-flat):not([disabled]):not([readonly]) {
+		top: -0.5px;
+		@include drop-shadow(1);
+		&:hover {
+			top: -1.5px;
+			@include drop-shadow(3);
+		}
+	}
+}
+form input[type=button], form input[type=submit], form input[type=reset], .button {
+	padding: 0.7em 0.9em;
+	font-family: "Roboto", sans-serif;
+	font-size: 80%;
+	font-weight: bold;
+	text-transform: uppercase;
+
+	&[disabled],&[readonly] {
+		background-color: transparent;
+	}
+	&:active {
+		top: -0.5px;
+		@include drop-shadow(1);
+	}
+	&.button-primary:not(x) {
+		color: $color-text-primary-1;
+		background-color: $color-primary-1;
+	}
+	&.button-complement:not(x) {
+		color: $color-text-complement;
+		background-color: $color-complement;
+	}
+	&:active:not([disabled]):not([readonly]) {
+		top: -1px;
+		@include drop-shadow(2);
+	}
+	&.button-flat:not(x) {
+		color: $color-primary-1;
+		background-color: transparent;
+		&.button-complement {
+			color: $color-complement;
+			background-color: transparent;
+		}
+		@include drop-shadow(0);
+		&:hover {
+			top: -1px;
+			@include drop-shadow(2);
+		}
+	}
+}
+.button-close {
+	opacity: 0.6;
+	font-size: 140%;
+	font-weight: bold;
+	padding: 0.1em 0.3em;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.file-wrapper {
+	display: inline-block;
+	cursor: pointer;
+	margin: 4px;
+
+	.input {
+		width: 12em;
+		overflow-x: hidden;
+	}
+	input[type=file] {
+		display: none;
+	}
+}
+
 .data-row {
 	position: relative;
 
 	padding: 1em 22px;
-	margin: 0 8px;
+	margin: 0 8px 1px;
 
 	background-color: white;
 
@@ -90,6 +199,8 @@
 	&.edit {
 		padding: 28px;
 		margin: 8px 0;
+		border-radius: 2px;
+		border-left: 4px solid $color-complement;
 
 		@include drop-shadow(5);
 	}
@@ -97,15 +208,16 @@
 
 .token-list-input {
 	@extend .clearfix;
+	padding: 0 1em;
+	width: auto;
 
-	.token-list {
-		float: left;
-	}
 	.token-input {
 		display: inline-block;
+		width: auto;
+		min-width: 6em;
 
 		.token-input-typeahead {
-			// overflow: hidden;
+			padding: 0.5em;
 		}
 	}
 }
@@ -113,29 +225,35 @@
 	display: none;
 }
 .token {
+	float: left;
 	display: inline-block;
 	position: relative;
 	top: 0;
 
-	padding: 2px 4px;
-	margin: 2px 4px;
+	margin: 0.5em 3px;
 	border-radius: 2px;
-	font-size: 90%;
+	font-size: 0.8em;
 
 	color: $color-text-primary-2;
 	background-color: $color-primary-2;
 
 	@extend %floating-transitions;
-	@include drop-shadow(1);
 
 	&:hover {
 		top: -0.5px;
-		@include drop-shadow(2);
+		@include drop-shadow(1);
 	}
 
+	span {
+		padding: 0.4em 8px;
+		padding-right: 0;
+	}
 	button {
-		background: none;
+		margin: 0;
+		padding: 0.4em 8px;
+		font-size: 100%;
 		border: none;
+		background: none;
 	}
 }
 
@@ -179,7 +297,7 @@
 		height: 15px;
 		background-color: darken($color-background, 10%);
 		border-radius: 15px;
-		transition: background 0.3s ease;
+		transition: background 0.3s ease-out;
 		vertical-align: middle;
 		margin: 0 11px;
 
@@ -193,7 +311,7 @@
 			border-radius: 21px;
 			left: -5px;
 			top: -3px;
-			transition: left 0.3s ease, background 0.3s ease;
+			transition: left 0.3s $ease-swift, background 0.3s ease-out;
 		}
 	}
 

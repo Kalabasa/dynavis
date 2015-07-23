@@ -15,7 +15,7 @@ define(["jquery", "react", "bootstrap"], function($, React) {
 					<div className="modal-dialog">
 						<div className="modal-content">
 							<div className="modal-header">
-								<button type="button" className="close" onClick={this.handle_close}>&times;</button>
+								<button type="button" className="pull-right button button-flat button-close" onClick={this.handle_close}>&times;</button>
 								<h4 className="modal-title">{this.props.title}</h4>
 							</div>
 							<div className="modal-body">

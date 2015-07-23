@@ -1,6 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto+Condensed:400italic,700italic,400,700|Roboto+Slab:300,700,400|Roboto:400italic,700italic,700,400);
 @import "reset";
-@import "typeahead";
-@import "drop-shadow";
 
 $header-height: 75px;
 $sidebar-width: 200px;
@@ -11,14 +10,17 @@ $color-background: #f8f8f8;
 $color-text-alt: #bcbfb4;
 $color-background-alt: #1f1f1f;
 
-$color-primary-1: #3498DB;
-$color-primary-2: #B9EEF7;
-$color-primary-3: #ECF0F1;
-$color-complement: #E74C3C;
+$color-primary-1: #1DA15A;
+$color-primary-2: #C7EDB5;
+$color-complement: #C50066;
 $color-text-primary-1: #ffffff;
-$color-text-primary-2: #2C3E50;
-$color-text-primary-3: $color-text-primary-2;
+$color-text-primary-2: #192421;
 $color-text-complement: #ffffff;
+
+$ease-swift: cubic-bezier(0.2, 0, 0.1, 1);
+
+@import "typeahead";
+@import "drop-shadow";
 
 * { box-sizing: border-box }
 
@@ -57,6 +59,7 @@ $sidebar-width: 250px;
 html,body {
 	color: $color-text;
 	background-color: $color-background;
+	font-family: "Roboto Condensed", sans-serif;
 	font-size: 100%;
 }
 a {
@@ -76,18 +79,22 @@ a {
 }
 
 h1,h2 {
+	line-height: 180%;
 	font-size: 160%;
 	font-weight: lighter;
 }
 h3,h4 {
+	line-height: 170%;
 	font-size: 140%;
 }
 h5,h6 {
+	line-height: 160%;
 	font-size: 120%;
 }
 
 .text {
-	line-height: 1.6em;
+	line-height: 2em;
+	font-family: "Roboto", sans-serif;
 }
 
 .text-large {
@@ -109,39 +116,4 @@ h5,h6 {
 .mar {
 	margin: 0.5em;
 }
-
-.form input:not([type=file]), .form select, .input, .button {
-	position: relative;
-	top: 0;
-
-	margin-top: 4px;
-	margin-bottom: 4px;
-	padding: 0.5em 0.7em;
-	border: none;
-	border-radius: 2px;
-
-	color: $color-text;
-	background-color: white;
-
-	@extend %floating-transitions;
-	&:not([disabled]):not([readonly]) {
-		top: -0.5px;
-		@include drop-shadow(1);
-		&:hover {
-			top: -1.5px;
-			@include drop-shadow(3);
-		}
-	}
-}
-form input[type=button], form input[type=submit], form input[type=reset], .button {
-	&.button-primary:not(_) {
-		color: $color-text-primary-1;
-		background-color: $color-primary-1;
-	}
-	&:active:not([disabled]):not([readonly]) {
-		top: -1px;
-		@include drop-shadow(2);
-	}
-}
-
 @import "components";

@@ -22,7 +22,7 @@ define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Toggle", 
 							</label>
 						</div>
 						<div className="pure-u-1-4 clearfix">
-							<button className="pull-right button" onClick={this.handle_delete}>Delete</button>
+							<button className="pull-right button button-complement" onClick={this.handle_delete}>Delete</button>
 						</div>
 					</div>
 				</div>

@@ -17,8 +17,7 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 			};
 
 			var parent_code = parseInt(this.model().get("parent_code"));
-			var parent = isNaN(parent_code) ? null : InstanceCache.get("Area", parent_code);
-			if(parent) parent.fetch();
+			var parent = isNaN(parent_code) ? null : InstanceCache.get("Area", parent_code, true);
 
 			var fields = null;
 			if(this.model().isNew() || this.state.edit) {
@@ -57,7 +56,7 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 						</div>
 						<div className="pure-g">
 							<div className="pure-u-1">
-								<button className="pull-left button mar" onClick={this.handle_delete}>Delete</button>
+								<button className="pull-left button button-complement mar" onClick={this.handle_delete}>Delete</button>
 								<button className="pull-right button button-primary mar" onClick={this.handle_save}>Save</button>
 								{cancel_button}
 							</div>
@@ -101,7 +100,7 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 								</div>
 							</div>
 							<div className="pure-u-1-6">
-								<button className="pull-right button" onClick={this.handle_edit}>Edit</button>
+								<button className="pull-right button button-flat" onClick={this.handle_edit}>Edit</button>
 							</div>
 						</div>
 					</div>

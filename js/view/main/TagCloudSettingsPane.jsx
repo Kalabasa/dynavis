@@ -27,12 +27,13 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 				<div className="pane">
 					Tag Cloud
 					Dataset: {this.state.dataset ? this.state.dataset.get("name") : null}
+					<button className="button button-complement button-flat button-close" onClick={this.handle_remove}>&times;</button>
 					<button className="button" onClick={this.handle_select}>Select dataset</button>
 				</div>
 			);
 		},
 
-		handle_select: function(i) {
+		handle_select: function() {
 			var that = this;
 			var dataset_collection = new DatasetCollection();
 			dataset_collection.fetch({data: {type: "tag"}});
@@ -41,6 +42,10 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 					that.select_dataset(dataset);
 				}}/>
 			));
+		},
+
+		handle_remove: function() {
+			that.select_dataset(null);
 		},
 
 		select_dataset: function(dataset) {

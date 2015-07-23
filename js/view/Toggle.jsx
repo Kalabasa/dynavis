@@ -6,7 +6,7 @@ define(["jquery", "react"], function($, React) {
 				<span className="toggle">
 					<label>
 						Off
-						<input ref="checkbox" type="checkbox" {...this.props} />
+						<input type="checkbox" {...this.props} />
 						<span className="toggle-lever"></span>
 						On
 					</label>

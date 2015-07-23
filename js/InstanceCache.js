@@ -52,8 +52,9 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 		};
 	};
 
-	InstanceCache.prototype.get = function(name, id) {
+	InstanceCache.prototype.get = function(name, id, fetch) {
 		if(id !== id) return null; // for NaN
+		fetch = fetch || false;
 		
 		if(this.hash[name]) {
 			if(this.hash[name][id]) {
@@ -69,6 +70,8 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 
 		var instance = this.hash[name][id] = new this.models[name]();
 		instance.set(instance.idAttribute, id);
+
+		if(fetch) instance.fetch();
 
 		return instance;
 	};

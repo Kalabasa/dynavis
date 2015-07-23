@@ -4,7 +4,8 @@ define(["react", "react.backbone"], function(React) {
 		render: function() {
 			return (
 				<span className="token">
-					{this.model().get("name")} <button type="button" onClick={this.handle_delete}>&times;</button>
+					<span>{this.model().get("name")}</span>
+					<button className="button-close" type="button" onClick={this.handle_delete}>&times;</button>
 				</span>
 			);
 		},
