@@ -43,7 +43,7 @@ $app->get("/parties", function () { generic_get_list("Party", ["name"]); } );
 $app->get("/parties/:id", function ($id) { generic_get_item("Party", $id); });
 $app->get("/parties/:id/elections", "get_party_elections");
 $app->get("/areas", "get_areas")->name("areas");
-$app->get("/areas/:code", function ($code) { generic_get_item("Area", $code); } );
+$app->get("/areas/:code", "get_area");
 $app->get("/areas/:code/elections", "get_area_elections");
 $app->get("/elections", function () { generic_get_list("Elect", ["position"]); } );
 $app->get("/elections/:id", function ($id) { generic_get_item("Elect", $id); } );
@@ -96,7 +96,9 @@ $app->delete("/officials/:official_id/families/:id", $auth_admin, "delete_offici
 $app->delete("/families/:id", $auth_admin, function ($id) { generic_delete_item("Family", $id); } );
 $app->delete("/families/:official_id/officials/:id", $auth_admin, "delete_family_official");
 $app->delete("/parties/:id", $auth_admin, function ($id) { generic_delete_item("Party", $id); } );
+$app->delete("/areas", $auth_admin, function () { generic_delete_all("Area"); } );
 $app->delete("/areas/:code", $auth_admin, function ($code) { generic_delete_item("Area", $code); } );
+$app->delete("/elections", $auth_admin, function () { generic_delete_all("Elect"); } );
 $app->delete("/elections/:id", $auth_admin, function ($id) { generic_delete_item("Elect", $id); } );
 $app->delete("/users/:username", $auth_username_or_admin, "delete_user" );
 $app->delete("/users/:username/datasets/:id", $auth_username_or_admin, "delete_user_dataset" );
@@ -303,6 +305,13 @@ function generic_delete_item($class, $id) {
 		$app->halt(400, $e->getMessage());
 	}
 
+	$app->response->setStatus(204);
+}
+
+function generic_delete_all($class) {
+	global $app;
+	$class = "\\Dynavis\\Model\\" . $class;
+	$class::delete_all();
 	$app->response->setStatus(204);
 }
 
@@ -560,7 +569,7 @@ function get_areas() {
 	}
 	$areas = array_map(
 		function ($item) {
-			return new Area((int) $item[Area::PRIMARY_KEY]);
+			return new Area((int) $item[Area::PRIMARY_KEY], false);
 		},
 		$result["data"]
 	);
@@ -577,10 +586,20 @@ function get_areas() {
 	]);
 }
 
+function get_area($code) {
+	global $app;
+	try {
+		$area = Area::get_by_code((int) $code);
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+	echo json_encode($area);
+}
+
 function get_area_elections($code) {
 	global $app;
 	try {
-		$area = new Area((int) $code);
+		$area = Area::get_by_code((int) $code);
 	}catch(NotFoundException $e) {
 		$app->halt(404);
 	}
@@ -599,18 +618,20 @@ function put_area($code) {
 		$app->halt(400, "Malformed data.");
 	}
 
-	$area = new Area((int)$code);
+	$area = Area::get_by_code((int) $code);
 	if(!$area) {
 		$app->halt(404);
 	}
 
-	$data["type"] = [
-		"region" => 0,
-		"province" => 1,
-		"municipality" => 2,
-		"barangay" => 3,
-	][$data["level"]];
-	unset($data["level"]);
+	if(isset($data["level"])) {
+		$data["type"] = [
+			"region" => 0,
+			"province" => 1,
+			"municipality" => 2,
+			"barangay" => 3,
+		][$data["level"]];
+		unset($data["level"]);
+	}
 
 	foreach ($data as $key => $value) {
 		if(!in_array($key, Area::FIELDS)) {
@@ -702,7 +723,7 @@ function post_election() {
 		$app->halt(400, "Invalid official ID.");
 	}
 	try{
-		$area = new Area((int) $data["area_code"]);
+		$area = Area::get_by_code((int) $data["area_code"]);
 	}catch(NotFoundException $e) {
 		$app->halt(400, "Invalid area code.");
 	}
@@ -1031,7 +1052,7 @@ function post_user_dataset_datapoint($username, $dataset_id) {
 	}
 
 	try {
-		$area = new Area((int) $data["area_code"]);
+		$area = Area::get_by_code((int) $data["area_code"]);
 	}catch(NotFoundException $e) {
 		$app->halt(400, "Invalid area code.");
 	}

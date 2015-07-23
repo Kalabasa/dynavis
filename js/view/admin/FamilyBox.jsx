@@ -13,6 +13,11 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/SliderTransitionGroup
 
 		componentWillMount: function() {
 			this.state.members.fetch();
+			this.state.members.on("remove", this.check_empty, this);
+		},
+
+		componentDidUnmount: function() {
+			this.state.members.off("remove", this.check_empty, this);
 		},
 		
 		render: function() {
@@ -50,6 +55,12 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/SliderTransitionGroup
 				</SliderTransitionGroupChild></ReactTransitionGroup>
 				</div>
 			);
+		},
+
+		check_empty: function() {
+			if(this.state.members.size() == 0) {
+				this.model().destroy();
+			}
 		},
 
 		handle_edit: function() {

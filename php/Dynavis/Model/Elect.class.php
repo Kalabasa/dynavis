@@ -24,7 +24,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		}
 
 		$this->official_id = $official->get_id();
-		$this->area_code = $area->get_id();
+		$this->area_code = $area->code;
 		$this->party_id = is_null($party) ? null : $party->get_id();
 	}
 
@@ -167,7 +167,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$area_code = (int) $entry["area"];
 		if($area_code) {
 			try{
-				$area = new Area($area_code);
+				$area = Area::get_by_code($area_code);
 			}catch(\Dynavis\Core\NotFoundException $e) {
 				throw new \Dynavis\Core\DataException("Invalid area code. " . $entry["area"] . " at row " . ($row + 1));
 			}
@@ -194,7 +194,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 			$year_end,
 			$position,
 			$votes,
-			$area->get_id(),
+			$area->code,
 			is_null($party) ? null : $party->get_id(),
 		];
 	}

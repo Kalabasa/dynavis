@@ -11,7 +11,7 @@ class Area extends \Dynavis\Core\Entity {
 		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
 			"code" => $code,
 		]);
-		if(!$ret) return null;
+		if(!$ret) throw new \Dynavis\Core\NotFoundException("Code does not exist. " . $code);
 		return new Area((int) $ret[static::PRIMARY_KEY], false);
 	}
 
@@ -139,8 +139,9 @@ class Area extends \Dynavis\Core\Entity {
 		// normalize strings
 		$this->name = Database::normalize_string($this->name);
 
-		if(0 < $this->type || $this->type >= 4) {
-			throw new \Dynavis\Core\DataException("Invalid type.");
+		$type = (int) $this->type;
+		if($type < 0 || $type >= 4) {
+			throw new \Dynavis\Core\DataException("Invalid type. " . $type);
 		}
 
 		if(!strlen($this->name)) {

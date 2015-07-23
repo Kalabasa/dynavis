@@ -8,5 +8,6 @@ define(["backbone"], function(Backbone) {
 			level: null,
 			parent: null,
 		},
+		idAttribute: "code",
 	});
 });

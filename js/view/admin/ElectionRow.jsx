@@ -171,7 +171,7 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 				console.error("No selected area.");
 				return;
 			}
-			var area_code = this.refs.area.state.selected.code;
+			var area_code = parseInt(this.refs.area.state.selected.code);
 
 			var position = this.state.position || null;
 			
@@ -184,13 +184,14 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 			var dummy = {};
 			var party = dummy;
 			var official = dummy;
+			var created_party = false;
+			var created_official = false;
 
 			// Callback hell!!
 
 			var callback = function() {
 				if(official !== dummy && party !== dummy) {
-					var party_id = party ? party.id : null;
-					that.save(official.id, year, year_end, position, votes, area_code, party_id);
+					that.save(official, year, year_end, position, votes, area_code, party, created_party, created_official);
 				}
 			};
 
@@ -199,8 +200,9 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 				attributes: function(str) {
 					return {name: that.refs.party.state.value};
 				},
-				callback: function(item) {
+				callback: function(item, created) {
 					party = item;
+					created_party = created;
 					callback();
 				},
 			});
@@ -220,28 +222,29 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 					};
 				},
 				search: ["surname", "name"],
-				callback: function(item) {
+				callback: function(item, created) {
 					if(!item) {
 						console.error("No official.");
 						return;
 					}
 					official = item;
+					created_official = created;
 					callback();
 				},
 			});
 		},
 
-		save: function(official_id, year, year_end, position, votes, area_code, party_id) {
+		save: function(official, year, year_end, position, votes, area_code, party, created_party, created_official) {
 			var that = this;
 
 			var new_attributes = {
-				official_id: official_id,
+				official_id: official.id,
 				year: year,
 				year_end: year_end,
 				position: position,
 				votes: votes,
 				area_code: area_code,
-				party_id: party_id,
+				party_id: party ? party.id : null,
 			};
 
 			var patch = this.model().isNew()
@@ -258,6 +261,10 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 					wait: true,
 					success: function() {
 						that.setState({edit: false});
+					},
+					error: function() {
+						if(created_party) party.destroy();
+						if(created_official) official.destroy();
 					},
 				});
 			}
