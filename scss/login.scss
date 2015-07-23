@@ -1,0 +1,24 @@
+@import "common";
+
+#body {
+	background-color: $color-background-alt;
+	display: table;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+}
+
+.login-box {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.login-box > form {
+	margin-left: auto;
+	margin-right: auto; 
+	width: 20em;
+}
+
+.input {
+	width: 100%;
+}

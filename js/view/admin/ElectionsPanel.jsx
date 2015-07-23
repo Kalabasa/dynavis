@@ -15,7 +15,8 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 						</div>
 						<div className="pure-u-2-3 text-center pad">
 							<form onSubmit={this.handle_upload}>
-								<h6>Upload election records (csv)</h6>
+								<h6>Upload election records</h6>
+								<div className="label">CSV file</div>
 								<div><FileInput ref="file" type="file" /></div>
 								<input className="button button-primary" type="submit" value="Upload File" />
 							</form>

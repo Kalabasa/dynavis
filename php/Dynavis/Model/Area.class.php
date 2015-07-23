@@ -6,7 +6,14 @@ use \Dynavis\PSGC;
 class Area extends \Dynavis\Core\Entity {
 	const TABLE = "area";
 	const FIELDS = ["code", "name", "type", "parent_code", "mun_id", "bar_id"];
-	const PRIMARY_KEY = "code";
+
+	public static function get_by_code($code) {
+		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
+			"code" => $code,
+		]);
+		if(!$ret) return null;
+		return new Area((int) $ret[static::PRIMARY_KEY], false);
+	}
 
 	public static function get_by_municipality_code($id) {
 		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [

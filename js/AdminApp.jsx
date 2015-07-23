@@ -17,13 +17,27 @@ define(function(require){
 		};
 
 		this.router = new AdminRouter({bus: this.bus});
+		this.token.on("change", this.check_login, this);
 	};
 
 	AdminApp.prototype.start = function() {
+		if(!this.check_login()) return;
+
 		this.header = React.render(<Header title="Dashboard" bus={this.bus} />, document.getElementById("header"));
 		this.sidebar = React.render(<Sidebar bus={this.bus} />, document.getElementById("sidebar"));
 
 		Backbone.history.start();
+	};
+
+	AdminApp.prototype.check_login = function() {
+		if(!this.token.get_user()) {
+			React.unmountComponentAtNode(document.getElementById("header"));
+			React.unmountComponentAtNode(document.getElementById("sidebar"));
+			React.unmountComponentAtNode(document.getElementById("body"));
+			window.location.href = "login.html?n=" + encodeURIComponent(window.location.href);
+			return false
+		}
+		return true;
 	};
 
 	return AdminApp;

@@ -19,6 +19,7 @@ define(function(require){
 		};
 
 		this.router = new MainRouter({bus: this.bus});
+		this.token.on("change", this.check_login, this);
 	};
 
 	MainApp.prototype.start = function() {
@@ -26,6 +27,14 @@ define(function(require){
 		this.sidebar = React.render(<Sidebar bus={this.bus} />, document.getElementById("sidebar"));
 
 		Backbone.history.start();
+	};
+
+	MainApp.prototype.check_login = function() {
+		if(Backbone.history.getFragment() == "datasets" && !this.token.get_user()) {
+			this.router.navigate("", true);
+			return false;
+		}
+		return true;
 	};
 
 	return MainApp;

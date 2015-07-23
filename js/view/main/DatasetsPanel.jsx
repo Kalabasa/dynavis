@@ -25,7 +25,7 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 									<div className="pure-u-5-12">
 										<div className="pure-g">
 											<div className="pure-u-1 pad">
-												<div className="label">CSV File</div>
+												<div className="label">CSV file</div>
 												<div><FileInput ref="file" type="file" /></div>
 											</div>
 										</div>

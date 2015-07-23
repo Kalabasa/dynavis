@@ -6,9 +6,9 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 				return (
 					<div className="login clearfix">
 						<form onSubmit={this.handle_login}>
-							<input className="input" id="username" type="text" required />
-							<input className="input" id="password" type="password" required />
-							<input className="button-login pull-right button" type="submit" value="Login" />
+							<input className="input mar" id="username" type="text" placeholder="Username" required />
+							<input className="input mar" id="password" type="password" placeholder="Password" required />
+							<input className="pull-right button mar" type="submit" value="Login" />
 						</form>
 					</div>
 				);
@@ -16,7 +16,7 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 				return (
 					<div className="login clearfix">
 						<span className="login-text pull-left">Logged in as <span className="login-username">{this.model().get("username")}</span></span>
-						<button className="button-logout pull-right button" onClick={this.handle_logout}>Logout</button>
+						<button className="pull-right button" onClick={this.handle_logout}>Logout</button>
 					</div>
 				);
 			}

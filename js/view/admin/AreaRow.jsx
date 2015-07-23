@@ -35,7 +35,7 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 							</label>
 							<label className="pure-u-1-2 pad">
 								<div className="label">Code</div>
-								<input className="pure-u-1" type="text" valueLink={this.linkState("code")} readOnly={!this.model().isNew()} required />
+								<input className="pure-u-1" type="text" valueLink={this.linkState("code")} required />
 							</label>
 							<label className="pure-u-1-2 pad">
 								<div className="label">Type</div>
@@ -47,13 +47,13 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 								</select>
 							</label>
 							<label className="pure-u-1-2 pad">
-								<div className="label">Parent</div>
+								{/*<div className="label">Parent</div>
 								<TypeaheadInput className="pure-u-1"
 									for="Area"
 									ref="parent"
 									display={display}
 									model={parent}
-									required />
+									required />*/}
 							</label>
 						</div>
 						<div className="pure-g">
@@ -138,9 +138,9 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 			var level = this.state.level;
 
 			var parent_code = null;
-			if(this.refs.parent.state.selected) {
-				parent_code = this.refs.parent.state.selected.code;
-			}
+			// if(this.refs.parent.state.selected) {
+			// 	parent_code = this.refs.parent.state.selected.code;
+			// }
 
 			this.save(code, name, level, parent_code);
 		},
