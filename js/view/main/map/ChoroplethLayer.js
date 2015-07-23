@@ -133,7 +133,6 @@ define(["underscore", "jenks", "leaflet"], function(_, jenks, L) {
 							if(!dataset) return;
 							var datapoints = dataset.get_datapoints();
 							var value = datapoints.get_value(area_code, this._year);
-							if(value === null) return;
 							poly.variables.push({dataset: dataset, geojson: geojson, value: value});
 						}, this);
 						poly.setStyle(this.compute_poly_style(poly, false));
@@ -146,7 +145,7 @@ define(["underscore", "jenks", "leaflet"], function(_, jenks, L) {
 
 		compute_poly_style: function(poly, highlight) {
 			var style = null;
-			if(poly.variables.length) {
+			if(poly.variables.length && _.every(poly.variables, function(v) { return v.value !== null; })) {
 				style = _.defaults({
 					fillColor: this.get_color(poly.variables),
 				}, this._style_colored);

@@ -63,6 +63,9 @@ define(["react", "model/Dataset", "jsx!view/SearchControls", "jsx!view/PageContr
 							that.collection().fetch();
 							that.setState(that.getInitialState());
 						},
+						error: function() {
+							dataset.destroy();
+						},
 					});
 				},
 			});
