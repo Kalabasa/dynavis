@@ -12,7 +12,7 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 
 		render: function() {
 			if(this.state.query) {
-				var cancel_button = <input className="group-component button" type="button" onClick={this.handle_cancel} value="&times;" />;
+				var cancel_button = <button className="group-component button" type="button" onClick={this.handle_cancel}><i className="fa fa-close"/></button>;
 			}
 			return(
 				<div className={this.props.className}>
@@ -20,7 +20,7 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 						<form className="group pure-g pull-left" onSubmit={this.handle_search}>
 							<input className="group-component input pure-u-9-10" type="text" placeholder={this.state.query} valueLink={this.linkState("input")} />
 							{cancel_button}
-							<input className="group-component button pure-u-1-10" type="submit" value="Search" />
+							<button className="group-component button pure-u-1-10" type="submit"><i className="fa fa-search"/></button>
 						</form>
 						<PageControls className="pull-right" collection={this.collection()} />
 					</div>
@@ -30,7 +30,7 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 
 		set_query: function(query, options) {
 			this.collection().setParams(this.get_data(query));
-			this.collection().page(0);
+			this.collection().page(0, options);
 			this.setState({query: query});
 		},
 

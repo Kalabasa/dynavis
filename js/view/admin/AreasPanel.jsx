@@ -72,7 +72,7 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 			e.preventDefault();
 
 			var fd = new FormData();
-			var file = this.refs.file_psgc.getDOMNode().files[0];
+			var file = this.refs.file_psgc.get_input().files[0];
 			fd.append("file", file);
 
 			$.ajax({

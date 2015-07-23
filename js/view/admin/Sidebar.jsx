@@ -13,12 +13,12 @@ define(["react"], function(React) {
 			return (
 				<div>
 					<ul ref="menu" className="menu">
-						<li ref="elections"><a href="#elections">Elections</a></li>
-						<li ref="officials"><a href="#officials">Officials</a></li>
-						<li ref="families"><a href="#families">Families</a></li>
-						<li ref="areas"><a href="#areas">Areas</a></li>
-						<li ref="datasets"><a href="#datasets">Datasets</a></li>
-						<li ref="users"><a href="#users">Users</a></li>
+						<li ref="elections"><a href="#elections"><i className="fa fa-archive fa-fw"/>&emsp; Elections</a></li>
+						<li ref="officials"><a href="#officials"><i className="fa fa-male fa-fw"/>&emsp; Officials</a></li>
+						<li ref="families"><a href="#families"><i className="fa fa-tags fa-fw"/>&emsp; Families</a></li>
+						<li ref="areas"><a href="#areas"><i className="fa fa-map-marker fa-fw"/>&emsp; Areas</a></li>
+						<li ref="datasets"><a href="#datasets"><i className="fa fa-table fa-fw"/>&emsp; Datasets</a></li>
+						<li ref="users"><a href="#users"><i className="fa fa-users fa-fw"/>&emsp; Users</a></li>
 					</ul>
 				</div>
 			);

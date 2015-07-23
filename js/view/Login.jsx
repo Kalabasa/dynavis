@@ -7,7 +7,7 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 					<div className="login">
 						<div className="hider">
 							<span className="hider-handle">
-								<span className="login-text">login</span>
+								<span className="login-text"><i className="fa fa-user"/>&ensp; Login</span>
 							</span>
 							<span className="hider-content">
 								<form onSubmit={this.handle_login}>
@@ -31,7 +31,7 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 					<div className="login">
 						<div className="hider">
 							<span className="hider-handle">
-								<span className="login-text login-username">{this.model().get("username")}</span>
+								<span className="login-text login-username">{this.model().get("username")} &ensp;<i className="fa fa-user"/></span>
 							</span>
 							<span className="hider-content">
 								{admin_link}

@@ -23,7 +23,7 @@ define(["react", "react.backbone"], function(React) {
 							title="Previous page"
 							onClick={this.handle_prev}
 							disabled={page <= 0}>
-							&lt;
+							<i className="fa fa-caret-left"/>
 						</button>
 						<span className="pad">Page <input className="input" type="text" size="3" value={this.state.input} onChange={this.handle_change} /> of {pages}</span>
 						<button className="button"
@@ -31,7 +31,7 @@ define(["react", "react.backbone"], function(React) {
 							title="Next page"
 							onClick={this.handle_next}
 							disabled={page + 1 >= pages}>
-							&gt;
+							<i className="fa fa-caret-right"/>
 						</button>
 						<input className="hidden" type="submit" value="Go to page" />
 					</form>
