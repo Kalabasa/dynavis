@@ -181,7 +181,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 
 	.input {
 		width: 12em;
-		overflow-x: hidden;
+		overflow: hidden;
 	}
 	input[type=file] {
 		display: none;

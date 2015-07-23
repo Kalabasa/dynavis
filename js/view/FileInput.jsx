@@ -10,7 +10,7 @@ define(["react"], function(React) {
 		render: function() {
 			return (
 				<span className="file-wrapper">
-					<label className="group" for="file">
+					<label className="group">
 						<span className="group-component input" readOnly>{this.state.filename}</span>
 						<span className="group-component button">Browse</span>
 						<input ref="file" type="file" onChange={this.handle_change} {...this.props} />

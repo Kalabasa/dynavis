@@ -131,8 +131,8 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			svg_tags.append("text")
 				.attr("transform", function(tag) { return "translate(" + tag.x + "," + tag.y + ")"; })
 				.text(function(tag) { return tag.family.get("name"); })
-				.style("font-size", function(tag) { return (0.4 * tag.size) + "em"; })
-				.style("font-weight", "bold")
+				.style("font-size", function(tag) { return (0.8 * tag.size) + "em"; })
+				.style("font-weight", 900)
 				.style("stroke", "white")
 				.style("stroke-width", "1px");
 		},
