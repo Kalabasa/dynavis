@@ -1,5 +1,6 @@
 "use strict";
-define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/Name", "mixin/ClickToTopMixin", "react.backbone"], function(React, EditableName, TypeaheadInput, Name, ClickToTopMixin) {
+define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/Name", "mixin/ClickToTopMixin", "react.backbone"], function(React, SliderTransitionGroupChild, EditableName, TypeaheadInput, Name, ClickToTopMixin) {
+	var ReactTransitionGroup = React.addons.TransitionGroup;
 	return React.createBackboneClass({
  		mixins: [React.addons.LinkedStateMixin, ClickToTopMixin],
 
@@ -26,6 +27,7 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 				}
 				return (
 					<div className="edit data-row form">
+					<ReactTransitionGroup><SliderTransitionGroupChild key="edit">
 						<div className="pure-g">
 							<label className="pure-u-1-2 pad">
 								<div className="label">Name</div>
@@ -61,6 +63,7 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 								{cancel_button}
 							</div>
 						</div>
+					</SliderTransitionGroupChild></ReactTransitionGroup>
 					</div>
 				);
 			}else{
@@ -77,7 +80,8 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 					"barangay": "Barangay",
 				}[this.model().get("level")];
 				return (
-					<div className="data-row container-fluid">
+					<div className="data-row form">
+					<ReactTransitionGroup><SliderTransitionGroupChild key="display">
 						<div className="pure-g">
 							<div className="pure-u-5-6">
 								<div className="pure-g">
@@ -103,6 +107,7 @@ define(["react", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/N
 								<button className="pull-right button button-flat" onClick={this.handle_edit}>Edit</button>
 							</div>
 						</div>
+					</SliderTransitionGroupChild></ReactTransitionGroup>
 					</div>
 				);
 			}

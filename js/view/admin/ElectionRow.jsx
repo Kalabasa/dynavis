@@ -1,5 +1,6 @@
 "use strict";
-define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!view/TypeaheadInput", "jsx!view/OfficialName", "jsx!view/Name", "mixin/ClickToTopMixin", "react.backbone"], function(React, InstanceCache, OfficialSingle, Party, TypeaheadInput, OfficialName, Name, ClickToTopMixin) {
+define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!view/SliderTransitionGroupChild", "jsx!view/TypeaheadInput", "jsx!view/OfficialName", "jsx!view/Name", "mixin/ClickToTopMixin", "react.backbone"], function(React, InstanceCache, OfficialSingle, Party, SliderTransitionGroupChild, TypeaheadInput, OfficialName, Name, ClickToTopMixin) {
+	var ReactTransitionGroup = React.addons.TransitionGroup;
 	return React.createBackboneClass({
  		mixins: [React.addons.LinkedStateMixin, ClickToTopMixin],
  		
@@ -35,6 +36,7 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 				}
 				return (
 					<div className="edit data-row form">
+					<ReactTransitionGroup><SliderTransitionGroupChild key="edit">
 						<div className="pure-g">
 							<label className="pure-u-1-2 pad">
 								<div className="label">Official</div>
@@ -90,11 +92,13 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 								{cancel_button}
 							</div>
 						</div>
+					</SliderTransitionGroupChild></ReactTransitionGroup>
 					</div>
 				);
 			}else{
 				return (
-					<div className="data-row container-fluid">
+					<div className="data-row form">
+					<ReactTransitionGroup><SliderTransitionGroupChild key="display">
 						<div className="pure-g">
 							<div className="pure-u-5-6">
 								<div className="pure-g field-group">
@@ -131,6 +135,7 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 								<button className="pull-right button button-flat" onClick={this.handle_edit}>Edit</button>
 							</div>
 						</div>
+					</SliderTransitionGroupChild></ReactTransitionGroup>
 					</div>
 				);
 			}

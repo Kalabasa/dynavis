@@ -7,6 +7,7 @@ require.config({
 	paths: {
 		"backbone": "lib/backbone",
 		"backbone-pagec": "lib/backbone-pagec",
+		"jquery.bez": "lib/jquery.bez.min",
 		"bloodhound": "lib/bloodhound",
 		"bootstrap": "lib/bootstrap.min",
 		"config.map": "config.map",
@@ -33,6 +34,10 @@ require.config({
 		"backbone-pagec": {
 			deps: ["backbone"],
 			exports: "Backbone.PageableCollection"
+		},
+		"bez": {
+			deps: ["jquery"],
+			exports: "$.bez"
 		},
 		"bootstrap": { deps: ["jquery"], },
 		"jenks": { exports: "jenks" },

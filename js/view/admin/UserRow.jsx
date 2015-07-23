@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Toggle", "jsx!view/CollectionCount", "mixin/ClickToTopMixin", "react.backbone"], function(React, InstanceCache, DatasetCollection, Toggle, CollectionCount, ClickToTopMixin) {
+define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Toggle", "jsx!view/CollectionCount", "react.backbone"], function(React, InstanceCache, DatasetCollection, Toggle, CollectionCount) {
 	return React.createBackboneClass({
 		mixins: [ClickToTopMixin],
 

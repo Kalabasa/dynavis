@@ -1,5 +1,6 @@
 "use strict";
-define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialName", "jsx!view/OfficialName", "jsx!view/admin/OfficialFamilyList", "mixin/ClickToTopMixin", "react.backbone"], function(React, OfficialFamilyCollection, EditableOfficialName, OfficialName, OfficialFamilyList, ClickToTopMixin) {
+define(["react", "model/OfficialFamilyCollection", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableOfficialName", "jsx!view/OfficialName", "jsx!view/admin/OfficialFamilyList", "mixin/ClickToTopMixin", "react.backbone"], function(React, OfficialFamilyCollection, SliderTransitionGroupChild, EditableOfficialName, OfficialName, OfficialFamilyList, ClickToTopMixin) {
+	var ReactTransitionGroup = React.addons.TransitionGroup;
 	return React.createBackboneClass({
 		mixins: [ClickToTopMixin],
 
@@ -43,7 +44,9 @@ define(["react", "model/OfficialFamilyCollection", "jsx!view/EditableOfficialNam
 			}
 			return (
 				<div className={classes}>
+				<ReactTransitionGroup><SliderTransitionGroupChild key={classes}>
 					{fields}
+				</SliderTransitionGroupChild></ReactTransitionGroup>
 				</div>
 			);
 		},

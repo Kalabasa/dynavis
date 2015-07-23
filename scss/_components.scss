@@ -194,8 +194,16 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 	padding: 1em 22px;
 	margin: 0 8px 1px;
 
+	border-left: solid 0 $color-complement;
 	background-color: white;
 
+	transition: margin-left 0.3s $ease-swift,
+		margin-right 0.3s $ease-swift,
+		padding 0.4s $ease-swift,
+		margin-top 0.5s $ease-swift,
+		margin-bottom 0.5s $ease-swift,
+		border-left 0.4s $ease-swift;
+	@extend %floating-transitions;
 	@include drop-shadow(1);
 
 	.field-group {

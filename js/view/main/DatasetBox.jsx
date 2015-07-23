@@ -1,13 +1,11 @@
 "use strict";
-define(["react", "mixin/ClickToTopMixin", "react.backbone"], function(React, ClickToTopMixin) {
+define(["react", "react.backbone"], function(React) {
 	return React.createBackboneClass({
-		mixin: [ClickToTopMixin],
-
 		render: function() {
 			var username = this.model().get("username");
 			var url_datasets = "#users/" + username + "/datasets";
 			return (
-				<div className="data-row container-fluid">
+				<div className="data-row">
 					<div className="pure-g">
 						<div className="pure-u-5-6">
 							<div className="field text-large">{this.model().get("name")}</div>
