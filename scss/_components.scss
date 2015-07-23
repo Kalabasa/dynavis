@@ -37,17 +37,52 @@
 	.login {
 		float: right;
 		display: inline-block;
-		height: 100%;
-		padding: 15px;
+		padding: 0 15px;
+
+		input[type=text], input[type=password] {
+			width: 8em;
+		}
 
 		.login-text {
-			float: left;
-			line-height: 100%;
-
-			.login-username {
-				font-style: italic;
-			}
+			line-height: $header-height;
+			vertical-align: baseline;
 		}
+		.login-username {
+			font-weight: bold;
+		}
+
+		button {
+			margin: 22.5px 12px;
+		}
+		form {
+			margin: 15px 0;
+		}
+
+		.button-flat {
+			color: $color-text-primary-1 !important;
+		}
+	}
+}
+
+.hider {
+	white-space: nowrap;
+	.hider-handle {
+		float: left;
+		display: inline-block;
+		width: $header-height;
+		height: $header-height;
+		text-align: center;
+	}
+	.hider-content {
+		float:right;
+		display: inline-block;
+		max-width: 0;
+		overflow: hidden;
+		transition: max-width 0.8s ease-out 0.2s;
+	}
+	&:hover .hider-content {
+		max-width: 34em;
+		transition: max-width 0.8s ease-in;
 	}
 }
 

@@ -21,7 +21,7 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 			var user = token ? token.get_user() : null;
 			if(user) {
 				var datasets_pane = (
-					<div className="pane">
+					<div key="pane_datasets" className="pane">
 						<a className="button button-flat" href="#datasets">Manage datasets</a>
 					</div>
 				);
@@ -29,11 +29,11 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 			return (
 				<div>
 					{datasets_pane}
-					<ChoroplethSettingsPane bus={this.props.bus} />
-					<TagCloudSettingsPane bus={this.props.bus} />
-					<form className="group pane form" onSubmit={this.handle_submit}>
-						<input className="group-component" type="number" valueLink={this.linkState("year")} required />
-						<input className="group-component button-primary" type="submit" value="Go" />
+					<ChoroplethSettingsPane key="pane_choropleth" bus={this.props.bus} />
+					<TagCloudSettingsPane key="pane_tagcloud" bus={this.props.bus} />
+					<form key="pane_year" className="group pane pure-g form" onSubmit={this.handle_submit}>
+						<input className="group-component pure-u-2-3" type="number" valueLink={this.linkState("year")} required />
+						<input className="group-component pure-u-1-3 button-primary" type="submit" value="Go" />
 					</form>
 				</div>
 			);

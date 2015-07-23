@@ -260,13 +260,38 @@ h5, h6 {
   .header .login {
     float: right;
     display: inline-block;
-    height: 100%;
-    padding: 15px; }
+    padding: 0 15px; }
+    .header .login input[type=text], .header .login input[type=password] {
+      width: 8em; }
     .header .login .login-text {
-      float: left;
-      line-height: 100%; }
-      .header .login .login-text .login-username {
-        font-style: italic; }
+      line-height: 75px;
+      vertical-align: baseline; }
+    .header .login .login-username {
+      font-weight: bold; }
+    .header .login button {
+      margin: 22.5px 12px; }
+    .header .login form {
+      margin: 15px 0; }
+    .header .login .button-flat {
+      color: #ffffff !important; }
+
+.hider {
+  white-space: nowrap; }
+  .hider .hider-handle {
+    float: left;
+    display: inline-block;
+    width: 75px;
+    height: 75px;
+    text-align: center; }
+  .hider .hider-content {
+    float: right;
+    display: inline-block;
+    max-width: 0;
+    overflow: hidden;
+    transition: max-width 0.8s ease-out 0.2s; }
+  .hider:hover .hider-content {
+    max-width: 34em;
+    transition: max-width 0.8s ease-in; }
 
 .body-panel {
   padding: 40px; }
@@ -531,7 +556,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 .login-box > form {
   margin-left: auto;
   margin-right: auto;
-  width: 20em; }
+  width: 12em; }
 
 .input {
   width: 100%; }
