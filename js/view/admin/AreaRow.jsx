@@ -155,7 +155,7 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 				parent_code: parent_code,
 			};
 
-			var patch = this.model().isNew()
+			var patch = !this.model().has("id")
 				? new_attributes
 				: _.omit(new_attributes, function(value, key, object) {
 				return that.model().get(key) === value;
@@ -165,7 +165,7 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 				this.setState({edit: false});
 			}else{
 				this.model().save(patch, {
-					patch: !this.model().isNew(),
+					patch: this.model().has("id"),
 					wait: true,
 					success: function() {
 						that.setState({edit: false});

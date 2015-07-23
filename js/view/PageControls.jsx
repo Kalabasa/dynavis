@@ -13,35 +13,26 @@ define(["react", "react.backbone"], function(React) {
 		},
 
 		render: function() {
-			var page = this.collection().getPage();
-			var pages = this.collection().getTotalPages();
-			if(page > 1 || pages > 1) {
-				return (
-					<form className={this.props.className} onSubmit={this.handle_submit}>
-						<button className="button"
-							type="button"
-							title="Previous page"
-							onClick={this.handle_prev}
-							disabled={page <= 0}>
-							<i className="fa fa-caret-left"/>
-						</button>
-						<span className="pad">Page <input className="input" type="text" size="3" value={this.state.input} onChange={this.handle_change} /> of {pages}</span>
-						<button className="button"
-							type="button"
-							title="Next page"
-							onClick={this.handle_next}
-							disabled={page + 1 >= pages}>
-							<i className="fa fa-caret-right"/>
-						</button>
-						<input className="hidden" type="submit" value="Go to page" />
-					</form>
-				);
-			}else{
-				return(
-					<div className={this.props.className}>
-					</div>
-				);
-			}
+			return (
+				<form className={this.props.className} onSubmit={this.handle_submit}>
+					<button className="button"
+						type="button"
+						title="Previous page"
+						onClick={this.handle_prev}
+						disabled={page <= 0}>
+						<i className="fa fa-caret-left"/>
+					</button>
+					<span className="pad">Page <input className="input" type="text" size="3" value={this.state.input} onChange={this.handle_change} /> of {pages}</span>
+					<button className="button"
+						type="button"
+						title="Next page"
+						onClick={this.handle_next}
+						disabled={page + 1 >= pages}>
+						<i className="fa fa-caret-right"/>
+					</button>
+					<input className="hidden" type="submit" value="Go to page" />
+				</form>
+			);
 		},
 
 		on_load_page: function() {

@@ -410,7 +410,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
     background-color: #f8f8f8; }
   .data-row.edit {
     padding: 28px;
-    margin: 8px 0;
+    margin: 17px 0;
     border-radius: 2px;
     border-left: 4px solid #C50066;
     box-shadow: 0 2.5px 10px 0 rgba(0, 0, 0, 0.33333), 0 2.5px 5px -5px rgba(0, 0, 0, 0.4);

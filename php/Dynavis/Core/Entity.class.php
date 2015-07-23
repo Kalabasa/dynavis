@@ -72,6 +72,13 @@ abstract class Entity implements \JsonSerializable{
 		];
 	}
 
+	public static function delete_all() {
+		$ret = Database::get()->query("delete from " . static::TABLE);
+		if(!$ret){
+			throw new DataException("Error deleting entities from the database. " . get_called_class() . ":" . Database::get()->error()[2]);
+		}
+	}
+
 	public function save() {
 		if(isset($this->_id)) {
 			$this->update();
