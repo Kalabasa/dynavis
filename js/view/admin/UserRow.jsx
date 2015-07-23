@@ -1,8 +1,6 @@
 "use strict";
 define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Toggle", "jsx!view/CollectionCount", "react.backbone"], function(React, InstanceCache, DatasetCollection, Toggle, CollectionCount) {
 	return React.createBackboneClass({
-		mixins: [ClickToTopMixin],
-
 		render: function() {
 			var username = this.model().get("username");
 			var url_datasets = "#users/" + username + "/datasets";
