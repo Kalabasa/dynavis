@@ -15,7 +15,7 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 				var cancel_button = <input className="group-component button" type="button" onClick={this.handle_cancel} value="&times;" />;
 			}
 			return(
-				<div>
+				<div className={this.props.className}>
 					<div className="clearfix">
 						<form className="group pure-g pull-left" onSubmit={this.handle_search}>
 							<input className="group-component input pure-u-9-10" type="text" placeholder={this.state.query} valueLink={this.linkState("input")} />

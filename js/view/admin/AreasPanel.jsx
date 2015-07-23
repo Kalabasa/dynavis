@@ -1,23 +1,31 @@
 "use strict";
-define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/AreaRow", "mixin/ScrollToTopMixin", "react.backbone"], function(React, SearchControls, PageControls, AreaRow, ScrollToTopMixin) {
+define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/admin/AreaRow", "mixin/ScrollToTopMixin", "react.backbone"], function(React, FileInput, SearchControls, PageControls, PanelToolbar, AreaRow, ScrollToTopMixin) {
 	return React.createBackboneClass({
 		mixins: [ScrollToTopMixin],
 
 		render: function() {
 			return (
 				<div className="body-panel">
-					<form onSubmit={this.handle_upload}>
-						Upload PSGC list (csv) <input ref="file" type="file" />
-						<input className="button" type="submit" value="Upload" />
-					</form>
-					<SearchControls ref="searcher" collection={this.collection()} />
-					<button className="button" onClick={this.handle_add}>Add</button>
+					<PanelToolbar ref="toolbar" toggle_text="Add Data">
+						<div className="pure-u-1-3 text-center pad">
+							<h6>Add a single row</h6>
+							<button className="button" onClick={this.handle_add}>Add Row</button>
+						</div>
+						<div className="pure-u-2-3 text-center pad">
+							<form onSubmit={this.handle_upload}>
+								<h6>Upload PSGC table (csv)</h6>
+								<div><FileInput ref="file" type="file" /></div>
+								<input className="button button-primary" type="submit" value="Upload File" />
+							</form>
+						</div>
+					</PanelToolbar>
+					<SearchControls className="mar" ref="searcher" collection={this.collection()} />
 					<div>
 						{this.collection().map(function(area) {
 							return <AreaRow key={area.cid} model={area} />;
 						})}
 					</div>
-					<PageControls className="text-center" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
 				</div>
 			);
 		},
@@ -25,10 +33,12 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 		handle_add: function() {
 			var that = this;
 			if(this.refs.searcher.state.query === null && this.collection().getPage() === 0) {
+				this.refs.toolbar.close();
 				that.collection().add({}, {at: 0});
 			}else{
 				this.refs.searcher.set_query(null, {
 					complete: function() {
+						that.refs.toolbar.close();
 						that.collection().add({}, {at: 0});
 					},
 				});
@@ -50,6 +60,7 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 				contentType: false,
 				type: "POST",
 				success: function(data){
+					that.refs.toolbar.close();
 					that.collection().fetch();
 				},
 			});

@@ -1,5 +1,5 @@
 "use strict";
-define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/ElectionRow", "mixin/ScrollToTopMixin", "react.backbone"], function($, React, FileInput, SearchControls, PageControls, ElectionRow, ScrollToTopMixin) {
+define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/admin/ElectionRow", "mixin/ScrollToTopMixin", "react.backbone"], function($, React, FileInput, SearchControls, PageControls, PanelToolbar, ElectionRow, ScrollToTopMixin) {
 	return React.createBackboneClass({
 		mixins: [ScrollToTopMixin],
 
@@ -7,22 +7,20 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 			var that = this;
 			return (
 				<div className="body-panel">
-					<div className="panel-toolbar pure-g">
+					<PanelToolbar ref="toolbar" toggle_text="Add Data">
 						<div className="pure-u-1-3 text-center pad">
-							<h6>Add single row</h6>
+							<h6>Add a single row</h6>
 							<button className="button" onClick={this.handle_add}>Add Row</button>
 						</div>
 						<div className="pure-u-2-3 text-center pad">
 							<form onSubmit={this.handle_upload}>
 								<h6>Upload election records (csv)</h6>
-								<div>
-									<FileInput ref="file" type="file" />
-								</div>
+								<div><FileInput ref="file" type="file" /></div>
 								<input className="button button-primary" type="submit" value="Upload File" />
 							</form>
 						</div>
-					</div>
-					<SearchControls ref="searcher" collection={this.collection()} />
+					</PanelToolbar>
+					<SearchControls className="mar" ref="searcher" collection={this.collection()} />
 					<div>
 						{this.collection().map(function(election) {
 							return <ElectionRow
@@ -30,7 +28,7 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 								model={election} />;
 						})}
 					</div>
-					<PageControls className="text-center" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
 				</div>
 			);
 		},
@@ -38,10 +36,12 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 		handle_add: function() {
 			var that = this;
 			if(this.refs.searcher.state.query === null && this.collection().getPage() === 0) {
+				this.refs.toolbar.close();
 				that.collection().add({}, {at: 0});
 			}else{
 				this.refs.searcher.set_query(null, {
 					complete: function() {
+						that.refs.toolbar.close();
 						that.collection().add({}, {at: 0});
 					},
 				});
@@ -63,6 +63,7 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 				contentType: false,
 				type: "POST",
 				success: function(data){
+					that.refs.toolbar.close();
 					that.collection().fetch();
 				},
 			});

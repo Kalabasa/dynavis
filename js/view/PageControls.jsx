@@ -25,7 +25,7 @@ define(["react", "react.backbone"], function(React) {
 							disabled={page <= 0}>
 							&lt;
 						</button>
-						<span>Page <input className="input" type="text" size="3" value={this.state.input} onChange={this.handle_change} /> of {pages}</span>
+						<span className="pad">Page <input className="input" type="text" size="3" value={this.state.input} onChange={this.handle_change} /> of {pages}</span>
 						<button className="button"
 							type="button"
 							title="Next page"

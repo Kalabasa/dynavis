@@ -1,28 +1,33 @@
 "use strict";
-define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/main/DatasetBox", "mixin/ScrollToTopMixin", "react.backbone"], function(React, InstanceCache, SearchControls, PageControls, DatasetBox, ScrollToTopMixin) {
+define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/main/DatasetBox", "mixin/ScrollToTopMixin", "react.backbone"], function(React, InstanceCache, SearchControls, PageControls, PanelToolbar, DatasetBox, ScrollToTopMixin) {
 	return React.createBackboneClass({
 		mixins: [ScrollToTopMixin],
 
 		render: function() {
 			if(!this.collection().username) {
 				var generate_buttons = [
-					(<button className="button" onClick={this.indicator_generator.bind(this, "DYNSHA")}>Generate DYNSHA</button>),
-					(<button className="button" onClick={this.indicator_generator.bind(this, "DYNLAR")}>Generate DYNLAR</button>),
-					(<button className="button" onClick={this.indicator_generator.bind(this, "DYNHERF")}>Generate DYNHERF</button>),
-					(<button className="button" onClick={this.indicator_generator.bind(this, "LocalDynastySize")}>Generate LocalDynastySize</button>),
-					(<button className="button" onClick={this.indicator_generator.bind(this, "RecursiveDynastySize")}>Generate RecursiveDynastySize</button>),
+					(<button className="button" key="btn_DYNSHA" onClick={this.indicator_generator.bind(this, "DYNSHA")}>Generate DYNSHA</button>),
+					(<button className="button" key="btn_DYNLAR" onClick={this.indicator_generator.bind(this, "DYNLAR")}>Generate DYNLAR</button>),
+					(<button className="button" key="btn_DYNHERF" onClick={this.indicator_generator.bind(this, "DYNHERF")}>Generate DYNHERF</button>),
+					(<button className="button" key="btn_LocalDynastySize" onClick={this.indicator_generator.bind(this, "LocalDynastySize")}>Generate LocalDynastySize</button>),
+					(<button className="button" key="btn_RecursiveDynastySize" onClick={this.indicator_generator.bind(this, "RecursiveDynastySize")}>Generate RecursiveDynastySize</button>),
 				];
 			}
 			return (
 				<div className="body-panel">
-					<SearchControls collection={this.collection()} />
-					{generate_buttons}
+					<PanelToolbar ref="toolbar" toggle_text="Generate Data">
+						<div className="pure-u-1 text-center pad">
+							<h6>Generate datasets from election records</h6>
+							{generate_buttons}
+						</div>
+					</PanelToolbar>
+					<SearchControls className="mar" collection={this.collection()} />
 					<div>
 						{this.collection().map(function(dataset) {
 							return <DatasetBox key={dataset.cid} model={dataset} />;
 						})}
 					</div>
-					<PageControls className="text-center" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
 				</div>
 			);
 		},
@@ -55,6 +60,7 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 				processData: false,
 				dataType: "json",
 				success: function(data) {
+					that.refs.toolbar.close();
 					that.collection().fetch();
 				},
 			});
