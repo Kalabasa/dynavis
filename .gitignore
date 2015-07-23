@@ -3,3 +3,5 @@
 /scripts/scrape-elections.conf
 /.sass-cache/
 /css/*.map
+/css/main.css
+/css/admin.css
