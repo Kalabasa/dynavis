@@ -177,7 +177,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 .file-wrapper {
 	display: inline-block;
 	cursor: pointer;
-	margin: 4px;
+	margin: 4px 0;
 
 	.input {
 		width: 12em;
@@ -192,7 +192,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 	position: relative;
 
 	padding: 1em 22px;
-	margin: 0 8px 1px;
+	margin: 0 8px;
 
 	border-left: solid 0 $color-complement;
 	background-color: white;
@@ -206,22 +206,6 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 	@extend %floating-transitions;
 	@include drop-shadow(1);
 
-	.field-group {
-		line-height: 150%;
-		margin: 0.6em 0;
-	}
-	.label {
-		font-size: 90%;
-		padding-right: 0.3em;
-		color: lighten($color-text, 40%);
-	}
-	.field {
-		font-size: 90%;
-		&.text-large {
-			font-size: 110%;
-		}
-	}
-
 	.button {
 		background-color: $color-background;
 	}
@@ -233,6 +217,22 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 		border-left: 4px solid $color-complement;
 
 		@include drop-shadow(5);
+	}
+}
+
+.field-group {
+	line-height: 150%;
+	margin: 0.6em 0;
+}
+.label {
+	font-size: 90%;
+	padding-right: 0.3em;
+	color: lighten($color-text, 40%);
+}
+.field {
+	font-size: 90%;
+	&.text-large {
+		font-size: 110%;
 	}
 }
 

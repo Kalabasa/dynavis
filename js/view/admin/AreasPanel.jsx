@@ -1,5 +1,6 @@
 "use strict";
 define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/admin/AreaRow", "mixin/ScrollToTopMixin", "react.backbone"], function(React, FileInput, SearchControls, PageControls, PanelToolbar, AreaRow, ScrollToTopMixin) {
+	var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 	return React.createBackboneClass({
 		mixins: [ScrollToTopMixin],
 
@@ -20,11 +21,11 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 						</div>
 					</PanelToolbar>
 					<SearchControls className="mar" ref="searcher" collection={this.collection()} />
-					<div>
+					<ReactCSSTransitionGroup transitionName="slider">
 						{this.collection().map(function(area) {
 							return <AreaRow key={area.cid} model={area} />;
 						})}
-					</div>
+					</ReactCSSTransitionGroup>
 					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
 				</div>
 			);

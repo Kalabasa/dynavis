@@ -1,5 +1,6 @@
 "use strict";
-define(["react", "model/Dataset", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/main/DatasetBox", "react.backbone"], function(React, Dataset, SearchControls, PageControls, DatasetBox) {
+define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/main/DatasetBox", "react.backbone"], function(React, Dataset, FileInput, SearchControls, PageControls, PanelToolbar, DatasetBox) {
+	var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 	return React.createBackboneClass({
  		mixins: [React.addons.LinkedStateMixin],
 
@@ -13,21 +14,46 @@ define(["react", "model/Dataset", "jsx!view/SearchControls", "jsx!view/PageContr
 		render: function() {
 			return (
 				<div className="body-panel">
-					<a className="btn btn-link" href="#">Back</a>
-					<form onSubmit={this.handle_upload}>
-						Upload dataset
-						Name <input	className="input" ref="name" type="text" valueLink={this.linkState("name")} required />
-						Description <input	className="input" ref="description" type="text" valueLink={this.linkState("description")} />
-						File (csv) <input ref="file" type="file" />
-						<input className="button" type="submit" value="Upload" />
-					</form>
-					<SearchControls collection={this.collection()} />
-					<div>
+					<div className="clearfix">
+						<a className="pull-left button button-complement" href="#">Back</a>
+					</div>
+					<PanelToolbar ref="toolbar" toggle_text="Add Data">
+						<div className="pure-u-1 pad">
+							<form onSubmit={this.handle_upload}>
+								<h6>Upload dataset</h6>
+								<div className="pure-g">
+									<div className="pure-u-5-12">
+										<div className="pure-g">
+											<div className="pure-u-1 pad">
+												<div className="label">CSV File</div>
+												<div><FileInput ref="file" type="file" /></div>
+											</div>
+										</div>
+										<div className="pure-g">
+											<div className="pure-u-1 pad">
+												<div className="label">Name</div>
+												<input className="input" ref="name" type="text" valueLink={this.linkState("name")} required />
+											</div>
+										</div>
+									</div>
+									<div className="pure-u-5-12 pad">
+										<div className="label">Description</div>
+										<textarea className="input" ref="description" valueLink={this.linkState("description")} />
+									</div>
+									<div className="pure-u-1-6 pad">
+										<input className="button button-primary" type="submit" value="Upload" />
+									</div>
+								</div>
+							</form>
+						</div>
+					</PanelToolbar>
+					<SearchControls className="mar" collection={this.collection()} />
+					<ReactCSSTransitionGroup transitionName="slider">
 						{this.collection().map(function(dataset) {
 							return <DatasetBox key={dataset.cid} model={dataset} />;
 						})}
-					</div>
-					<PageControls className="text-center" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					</ReactCSSTransitionGroup>
+					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
 				</div>
 			);
 		},
@@ -42,7 +68,7 @@ define(["react", "model/Dataset", "jsx!view/SearchControls", "jsx!view/PageContr
 			}
 
 			var fd = new FormData();
-			var file = this.refs.file.getDOMNode().files[0];
+			var file = this.refs.file.get_input().files[0];
 			fd.append("file", file);
 
 			var dataset = new Dataset({

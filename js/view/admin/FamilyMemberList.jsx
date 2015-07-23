@@ -16,8 +16,8 @@ define(["react", "jsx!view/TypeaheadInput", "jsx!view/admin/FamilyMemberItem", "
 							return <FamilyMemberItem key={official.cid} model={official} onDelete={that.props.onDeleteMember} />;
 						})}
 						<form onSubmit={this.handle_submit}>
-							<div className="group pure-g">
-								<div className="group-component pure-u-9-10">
+							<div className="group">
+								<div className="group-component">
 									<TypeaheadInput className="input"
 										for="Official"
 										ref="input"
@@ -25,7 +25,7 @@ define(["react", "jsx!view/TypeaheadInput", "jsx!view/admin/FamilyMemberItem", "
 										collection={this.collection()}
 										required />
 								</div>
-								<input className="group-component pure-u-1-10 button" type="submit" value="Add" />
+								<input className="group-component button" type="submit" value="Add" />
 							</div>
 						</form>
 					</div>

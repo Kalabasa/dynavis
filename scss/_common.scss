@@ -79,16 +79,16 @@ a {
 }
 
 h1,h2 {
-	line-height: 180%;
+	line-height: 200%;
 	font-size: 160%;
 	font-weight: lighter;
 }
 h3,h4 {
-	line-height: 170%;
+	line-height: 190%;
 	font-size: 140%;
 }
 h5,h6 {
-	line-height: 160%;
+	line-height: 180%;
 	font-size: 120%;
 }
 
@@ -115,6 +115,23 @@ h5,h6 {
 }
 .mar {
 	margin: 0.5em;
+}
+
+.slider-enter {
+	top: -10px;
+	opacity: 0.01;
+	&.slider-enter-active {
+		top: 0;
+		opacity: 1;
+		transition: top 0.2s ease-out, opacity 0.3s ease;
+	}
+}
+.slider-leave {
+	opacity: 1;
+	&.slider-leave-active {
+		opacity: 0.01;
+		transition: opacity 0.2s ease;
+	}
 }
 
 @import "components";

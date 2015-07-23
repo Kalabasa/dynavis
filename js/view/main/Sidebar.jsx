@@ -12,10 +12,12 @@ define(["react", "jsx!view/main/ChoroplethSettingsPane", "jsx!view/main/TagCloud
 		render: function() {
 			return (
 				<div>
-					<div><a className="btn btn-link" href="#datasets">Manage datasets</a></div>
+					<div className="pane">
+						<a className="button button-flat" href="#datasets">Manage datasets</a>
+					</div>
 					<ChoroplethSettingsPane bus={this.props.bus} />
 					<TagCloudSettingsPane bus={this.props.bus} />
-					<form className="group form" onSubmit={this.handle_submit}>
+					<form className="group pane form" onSubmit={this.handle_submit}>
 						<input className="group-component" type="number" valueLink={this.linkState("year")} required />
 						<input className="group-component button-primary" type="submit" value="Go" />
 					</form>
