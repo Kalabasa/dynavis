@@ -114,7 +114,9 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			}
 			
 			$area_code = (int) $row[0];
-			if(!$area_code) {
+			try {
+				$area = Area::get_by_code($area_code);
+			}catch(\Dynavis\Core\NotFoundException $e) {
 				$area = Area::get_by_name($row[0]);
 				if(!$area) {
 					$why = $area_code ? "Invalid PSGC code. " : "Name not recognized. ";

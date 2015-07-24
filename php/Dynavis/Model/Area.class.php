@@ -310,7 +310,7 @@ class Area extends \Dynavis\Core\Entity {
 				$highest = $area_code;
 			}
 		}
-		return new Area($highest);
+		return static::get_by_code($highest);
 	}
 
 	/* area name normalization functions */
