@@ -8,7 +8,7 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 			return {
 				edit: this.model().isNew(),
 				code: this.format_code(this.model().get("code")),
-				level: this.model().get("level"),
+				level: this.model().get("level") || "barangay",
 			};
 		},
 

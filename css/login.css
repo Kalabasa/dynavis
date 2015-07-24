@@ -182,12 +182,12 @@ a {
     color: #157642; }
 
 h1, h2 {
-  line-height: 200%;
+  line-height: 180%;
   font-size: 160%;
   font-weight: lighter; }
 
 h3, h4 {
-  line-height: 190%;
+  line-height: 180%;
   font-size: 140%; }
 
 h5, h6 {
@@ -195,7 +195,8 @@ h5, h6 {
   font-size: 120%; }
 
 .text {
-  line-height: 2em;
+  line-height: 1.6em;
+  text-align: justify;
   font-family: "Roboto", sans-serif; }
 
 .text-large {
@@ -363,7 +364,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
     background-color: #1DA15A; }
   form input[type=button].button-complement:not(x), form input[type=submit].button-complement:not(x), form input[type=reset].button-complement:not(x), .button.button-complement:not(x) {
     color: #ffffff;
-    background-color: #C50066; }
+    background-color: #E20075; }
   form input[type=button]:active:not([disabled]):not([readonly]), form input[type=submit]:active:not([disabled]):not([readonly]), form input[type=reset]:active:not([disabled]):not([readonly]), .button:active:not([disabled]):not([readonly]) {
     top: -1px;
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.22222), 0 1px 2px -2px rgba(0, 0, 0, 0.4);
@@ -374,7 +375,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
     box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.125), 0 0px 0px 0px rgba(0, 0, 0, 0.4);
     z-index: 0; }
     form input[type=button].button-flat:not(x).button-complement, form input[type=submit].button-flat:not(x).button-complement, form input[type=reset].button-flat:not(x).button-complement, .button.button-flat:not(x).button-complement {
-      color: #C50066;
+      color: #E20075;
       background-color: transparent; }
     form input[type=button].button-flat:not(x):hover, form input[type=submit].button-flat:not(x):hover, form input[type=reset].button-flat:not(x):hover, .button.button-flat:not(x):hover {
       top: -1px;
@@ -403,7 +404,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
   position: relative;
   padding: 1em 22px;
   margin: 0 8px;
-  border-left: solid 0 #C50066;
+  border-left: solid 0 #E20075;
   background-color: white;
   transition: margin-left 0.3s cubic-bezier(0.2, 0, 0.1, 1), margin-right 0.3s cubic-bezier(0.2, 0, 0.1, 1), padding 0.4s cubic-bezier(0.2, 0, 0.1, 1), margin-top 0.5s cubic-bezier(0.2, 0, 0.1, 1), margin-bottom 0.5s cubic-bezier(0.2, 0, 0.1, 1), border-left 0.4s cubic-bezier(0.2, 0, 0.1, 1);
   box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.17647), 0 0.5px 1px -1px rgba(0, 0, 0, 0.4);
@@ -414,7 +415,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
     padding: 28px;
     margin: 17px 0;
     border-radius: 2px;
-    border-left: 4px solid #C50066;
+    border-left: 4px solid #E20075;
     box-shadow: 0 2.5px 10px 0 rgba(0, 0, 0, 0.33333), 0 2.5px 5px -5px rgba(0, 0, 0, 0.4);
     z-index: 5; }
 
@@ -455,7 +456,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
   border-radius: 2px;
   font-size: 0.8em;
   color: #192421;
-  background-color: #C7EDB5; }
+  background-color: #A8FF88; }
   .token:hover {
     top: -0.5px;
     box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.17647), 0 0.5px 1px -1px rgba(0, 0, 0, 0.4);
@@ -530,11 +531,11 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
       box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.17647), 0 0.5px 1px -1px rgba(0, 0, 0, 0.4);
       z-index: 1; }
     .toggle label input[type=checkbox]:not(:disabled):checked + .toggle-lever {
-      background-color: #C7EDB5; }
+      background-color: #A8FF88; }
     .toggle label input[type=checkbox]:not(:disabled):checked + .toggle-lever:after {
       background-color: #1DA15A; }
     .toggle label input[type=checkbox]:disabled + .toggle-lever {
-      background-color: #e7ede3; }
+      background-color: #d9f3d0; }
     .toggle label input[type=checkbox]:disabled + .toggle-lever:after {
       background-color: #a1bdae; }
 

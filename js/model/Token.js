@@ -43,7 +43,7 @@ define(["jquery", "localStorage", "backbone", "InstanceCache", "model/User"], fu
 		},
 
 		get_user_role: function() {
-			return this.get_user().get("role");
+			return this.get_user() ? this.get_user().get("role") : null;
 		},
 
 		login: function(username, password) {

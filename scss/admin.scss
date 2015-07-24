@@ -39,3 +39,49 @@
 		}
 	}
 }
+
+a.tile-container {
+	color: $color-text;
+}
+.tile-container {
+	padding: 6px;
+	text-decoration: none;
+
+	&.highlight .tile {
+		color: darken($color-complement, 10%);
+		background-color: white;
+		@include drop-shadow(3);
+	}
+	&.highlight:hover .tile {
+		color: $color-text-complement;
+		background-color: $color-complement;
+	}
+	&.faded .tile {
+		opacity: 0.4;
+	}
+	&:hover .tile {
+		opacity: 1;
+		color: $color-text-primary-1;
+		background-color: $color-primary-1;
+	}
+	.tile {
+		padding: 25px;
+		color: $color-text;
+		background-color: white;
+		
+		transition: all 0.1s ease-out;
+		transition-property: opacity, color, background-color;
+		@include drop-shadow(2);
+
+		h1 {
+			margin: 0px 0 30px;
+		}
+		.field {
+			opacity: 0.6;
+			margin: 4px 0;
+		}
+		p {
+			margin-top: 0.5em;
+		}
+	}
+}

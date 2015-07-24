@@ -101,7 +101,7 @@ $app->delete("/families/:id", $auth_admin, function ($id) { generic_delete_item(
 $app->delete("/families/:official_id/officials/:id", $auth_admin, "delete_family_official");
 $app->delete("/parties/:id", $auth_admin, function ($id) { generic_delete_item("Party", $id); } );
 $app->delete("/areas", $auth_admin, function () { generic_delete_all("Area"); } );
-$app->delete("/areas/:code", $auth_admin, function ($code) { generic_delete_item("Area", $code); } );
+$app->delete("/areas/:code", $auth_admin, "delete_area");
 $app->delete("/elections", $auth_admin, "delete_all_elections");
 $app->delete("/elections/:id", $auth_admin, function ($id) { generic_delete_item("Elect", $id); } );
 $app->delete("/users/:username", $auth_username_or_admin, "delete_user" );
@@ -699,6 +699,22 @@ function post_areas_file($file) {
 	Database::get()->pdo->commit();
 	$app->response->setStatus(201);
 	$app->response->headers->set("Location", $app->urlFor("areas"));
+}
+
+function delete_area($code) {
+	global $app;
+	try {
+		$area = Area::get_by_code((int) $code);
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+	try {
+		$area->delete();
+	}catch(DataException $e) {
+		$app->halt(400, $e->getMessage());
+	}
+
+	$app->response->setStatus(204);
 }
 
 

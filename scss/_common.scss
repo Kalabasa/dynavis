@@ -12,8 +12,8 @@ $color-text-alt: #bcbfb4;
 $color-background-alt: #1f1f1f;
 
 $color-primary-1: #1DA15A;
-$color-primary-2: #C7EDB5;
-$color-complement: #C50066;
+$color-primary-2: #A8FF88;
+$color-complement: #E20075;
 $color-text-primary-1: #ffffff;
 $color-text-primary-2: #192421;
 $color-text-complement: #ffffff;
@@ -80,12 +80,12 @@ a {
 }
 
 h1,h2 {
-	line-height: 200%;
+	line-height: 180%;
 	font-size: 160%;
 	font-weight: lighter;
 }
 h3,h4 {
-	line-height: 190%;
+	line-height: 180%;
 	font-size: 140%;
 }
 h5,h6 {
@@ -94,7 +94,8 @@ h5,h6 {
 }
 
 .text {
-	line-height: 2em;
+	line-height: 1.6em;
+	text-align: justify;
 	font-family: "Roboto", sans-serif;
 }
 

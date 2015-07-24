@@ -30,7 +30,6 @@ define(function(require){
 	};
 
 	AdminApp.prototype.check_login = function() {
-		console.log(this.token.get_user_role());
 		if(!this.token.get_user()) {
 			React.unmountComponentAtNode(document.getElementById("header"));
 			React.unmountComponentAtNode(document.getElementById("sidebar"));

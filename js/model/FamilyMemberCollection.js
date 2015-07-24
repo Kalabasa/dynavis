@@ -6,7 +6,7 @@ define(["jquery", "backbone", "model/Official"], function($, Backbone, Official)
 			this.family_id = options.family_id;
 		},
 		url: function() {
-			return "api.php/families/" + this.family_id + "/officials";
+			return "api.php/families/" + encodeURIComponent(this.family_id) + "/officials";
 		},
 		parse: function(data) {
 			return data.data;
