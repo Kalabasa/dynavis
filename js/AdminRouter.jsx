@@ -20,13 +20,20 @@ define(["backbone", "react", "InstanceCache"], function(Backbone, React, Instanc
 		},
 
 		routes: {
-			"": "users", // TODO: add home page?
+			"": "home",
 			"officials": "officials",
 			"families": "families",
 			"elections": "elections",
 			"areas": "areas",
 			"(users/:username/)datasets": "datasets",
 			"users": "users",
+		},
+		home: function() {
+			require([
+				"jsx!view/admin/HomePanel"
+			], function(HomePanel) {
+				React.render(<HomePanel />, document.getElementById("body"));
+			}.bind(this));
 		},
 		officials: function() {
 			require([

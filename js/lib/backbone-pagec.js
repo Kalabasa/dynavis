@@ -8,7 +8,8 @@ var Backbone = Backbone || {};
 
 		initialize: function(models, options) {
 			options = options || {};
-			this.params = options.params || null;
+			this.params = options.params || {};
+			this.params.reset = true;
 			this.per_page = options.per_page || this.per_page;
 			this.total = options.total || this.total;
 		},

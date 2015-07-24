@@ -1,6 +1,14 @@
 "use strict";
 define(["jquery", "react", "react.backbone"], function($, React) {
 	return React.createBackboneClass({
+		mixins: [React.addons.LinkedStateMixin],
+
+		getInitialState: function() {
+			return {
+				username: (location.search.split("username=")[1]||"").split("&")[0] || ""
+			};
+		},
+
 		onModelChange: function() {
 			if(this.props.onLogin && this.model().get_user()) {
 				this.props.onLogin();
@@ -12,17 +20,34 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 				<div className="login-box">
 					<form className="pure-g" onSubmit={this.handle_login}>
 						<div className="pure-u-1">
-							<input className="input" id="username" type="text" placeholder="Username" required />
+							<input className="input" id="username" type="text" placeholder="Username" valueLink={this.linkState("username")} required />
 						</div>
 						<div className="pure-u-1">
 							<input className="input" id="password" type="password" placeholder="Password" required />
 						</div>
 						<div className="pure-u-1">
+							<input className="pull-left button" type="button" onClick={this.handle_register} value="Register" />
 							<input className="pull-right button button-primary" type="submit" value="Login" />
 						</div>
 					</form>
 				</div>
 			);
+		},
+
+		handle_register: function() {
+			var $el = $(this.el());
+			var username = $el.find("#username").val();
+			var password = $el.find("#password").val();
+			$.ajax({
+				method: "POST",
+				url: "api.php/users",
+				data: JSON.stringify({username: username, password: password}),
+				processData: false,
+				dataType: "json",
+				success: function(data) {
+					this.model().login(username, password);
+				}.bind(this),
+			});
 		},
 
 		handle_login: function(e) {

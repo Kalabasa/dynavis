@@ -30,7 +30,19 @@ define(["jquery", "localStorage", "backbone", "InstanceCache", "model/User"], fu
 
 		get_user: function() {
 			if(!this.get("username") || this.isNew()) return null;
-			return InstanceCache.get("User", this.get("username"));
+			var user = InstanceCache.get_existing("User", this.get("username"));
+			if(!user) {
+				user = InstanceCache.get("User", this.get("username"));
+				user.fetch({
+					success: function() {
+						
+					}
+				});
+			}
+		},
+
+		get_user_role: function() {
+			this.get_user().get("role");
 		},
 
 		login: function(username, password) {

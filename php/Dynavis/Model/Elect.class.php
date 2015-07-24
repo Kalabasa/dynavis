@@ -140,7 +140,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 
 	private static function process_row($entry, $row) {
 		$surname = Database::normalize_string($entry["surname"]);
-		$name = preg_replace("/(^\.)|(\.$)/", " ", Database::normalize_string($entry["name"]));
+		$name = preg_replace("/[.,]/", " ", Database::normalize_string($entry["name"]));
 		$official = Official::get_by_name($surname, $name);
 		if(!$official) {
 			$official = new Official();

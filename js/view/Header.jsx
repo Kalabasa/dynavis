@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "InstanceCache", "jsx!view/Login"], function(React, InstanceCache, Login) {
+define(["react", "InstanceCache", "jsx!view/HeaderSession"], function(React, InstanceCache, HeaderSession) {
 	return React.createClass({
 		componentWillMount: function() {
 			this.props.bus.router.on("route", this.on_route);
@@ -28,7 +28,7 @@ define(["react", "InstanceCache", "jsx!view/Login"], function(React, InstanceCac
 						<h2 className="header-title">{this.state.title}</h2>
 						{subtitle}
 					</div>
-					<Login model={InstanceCache.get("Token", "session")} />
+					<HeaderSession model={InstanceCache.get("Token", "session")} />
 				</div>
 			);
 		},

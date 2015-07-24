@@ -35,7 +35,13 @@ define(function(require){
 			React.unmountComponentAtNode(document.getElementById("sidebar"));
 			React.unmountComponentAtNode(document.getElementById("body"));
 			window.location.href = "login.html?n=" + encodeURIComponent(window.location.href);
-			return false
+			return false;
+		}else if(this.token.get_user_role() != "admin") {
+			React.unmountComponentAtNode(document.getElementById("header"));
+			React.unmountComponentAtNode(document.getElementById("sidebar"));
+			React.unmountComponentAtNode(document.getElementById("body"));
+			window.location.href = "index.html";
+			return false;
 		}
 		return true;
 	};
