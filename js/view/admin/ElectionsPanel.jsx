@@ -14,7 +14,7 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 							<button className="button" onClick={this.handle_add}>Add Row</button>
 						</div>
 						<div className="pure-u-2-3 text-center pad">
-							<form onSubmit={this.handle_upload}>
+							<form ref="upload_form" onSubmit={this.handle_upload}>
 								<h6>Upload election records</h6>
 								<div className="label">CSV file</div>
 								<div><FileInput ref="file" type="file" /></div>
@@ -65,6 +65,7 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 				contentType: false,
 				type: "POST",
 				success: function(data){
+					React.findDOMNode(that.refs.upload_form).reset();
 					that.refs.toolbar.close();
 					that.collection().fetch();
 				},

@@ -19,7 +19,7 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 							<button className="button" onClick={this.handle_add}>Add Row</button>
 						</div>
 						<div className="pure-u-3-8 text-center pad">
-							<form onSubmit={this.handle_upload_psgc}>
+							<form ref="psgc_form" onSubmit={this.handle_upload_psgc}>
 								<h6>Upload PSGC table</h6>
 								<div className="label">CSV file</div>
 								<div><FileInput ref="file_psgc" type="file" /></div>
@@ -27,7 +27,7 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 							</form>
 						</div>
 						<div className="pure-u-3-8 text-center pad">
-							<form onSubmit={this.handle_upload_geojson}>
+							<form ref="geojson_form" onSubmit={this.handle_upload_geojson}>
 								<h6>Update geometry</h6>
 								<div className="label">GeoJSON</div>
 								<div><FileInput ref="file_geojson" type="file" /></div>
@@ -95,6 +95,7 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 				contentType: false,
 				type: "POST",
 				success: function(data){
+					React.findDOMNode(that.refs.psgc_form).reset();
 					that.refs.toolbar.close();
 					that.collection().fetch();
 				},
@@ -116,6 +117,8 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 				contentType: false,
 				type: "POST",
 				success: function(data){
+					React.findDOMNode(that.refs.geojson_form).reset();
+					that.refs.toolbar.close();
 				},
 			});
 		},
