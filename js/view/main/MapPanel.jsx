@@ -113,7 +113,7 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 			}else if(this.map.getZoom() >= 8) {
 				this.set_geojson("data/province.json");
 			}else{
-				this.set_geojson("api.php/geojson/region");
+				this.set_geojson("data/region.json");
 			}
 		},
 	});
