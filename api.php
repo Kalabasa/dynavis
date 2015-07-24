@@ -1277,7 +1277,7 @@ function post_token() {
 
 	$user = User::get_by_username($data["username"]);
 	if(is_null($user) || !$user->check_password($data["password"])) {
-		$app->halt(400, "Invalid username or password.");
+		$app->halt(401, "Invalid username or password.");
 	}
 
 	$token = new Token(["user" => $user]);

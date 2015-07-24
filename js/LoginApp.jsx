@@ -17,7 +17,7 @@ define(function(require){
 	};
 
 	MainApp.prototype.on_login = function() {
-		var target = (location.search.split("n=")[1]||"").split("&")[0] || "index.html";
+		var target = (location.search.split("n=")[1]||"").split("&")[0] || "index";
 		window.location.href = decodeURIComponent(target);
 	};
 

@@ -11,10 +11,10 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 
 		render: function() {
 			if(this.model().get_user()) {
-				if(!window.location.pathname.match(/^.*?\/admin\.html((\?|#).*)?$/) && this.model().get_user_role() == "admin") {
+				if(!window.location.pathname.match(/^.*?\/admin(\.html)?((\?|#).*)?$/) && this.model().get_user_role() == "admin") {
 					var admin_link = (
 						<span className="login-text">
-							<a className="button button-flat" href="admin.html">Admin</a>
+							<a className="button button-flat" href="admin">Admin</a>
 						</span>
 					);
 				}
@@ -45,7 +45,7 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 									<input className="button mar" type="submit" value="Login" />
 								</form>
 								<span className="login-text">
-									<a className="button button-flat" href={"login.html?username="+this.state.username} onClick={this.handle_register}>Register</a>
+									<a className="button button-flat" href={"login?username="+this.state.username} onClick={this.handle_register}>Register</a>
 								</span>
 							</span>
 						</div>

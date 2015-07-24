@@ -30,17 +30,18 @@ define(function(require){
 	};
 
 	AdminApp.prototype.check_login = function() {
+		console.log(this.token.get_user_role());
 		if(!this.token.get_user()) {
 			React.unmountComponentAtNode(document.getElementById("header"));
 			React.unmountComponentAtNode(document.getElementById("sidebar"));
 			React.unmountComponentAtNode(document.getElementById("body"));
-			window.location.href = "login.html?n=" + encodeURIComponent(window.location.href);
+			window.location.href = "login?n=" + encodeURIComponent(window.location.href);
 			return false;
-		}else if(this.token.get_user_role() != "admin") {
+		}else if(this.token.get_user_role() && this.token.get_user_role() != "admin") {
 			React.unmountComponentAtNode(document.getElementById("header"));
 			React.unmountComponentAtNode(document.getElementById("sidebar"));
 			React.unmountComponentAtNode(document.getElementById("body"));
-			window.location.href = "index.html";
+			window.location.href = "index";
 			return false;
 		}
 		return true;

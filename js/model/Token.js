@@ -35,14 +35,15 @@ define(["jquery", "localStorage", "backbone", "InstanceCache", "model/User"], fu
 				user = InstanceCache.get("User", this.get("username"));
 				user.fetch({
 					success: function() {
-						
-					}
+						this.trigger("change", this);
+					}.bind(this),
 				});
 			}
+			return user;
 		},
 
 		get_user_role: function() {
-			this.get_user().get("role");
+			return this.get_user().get("role");
 		},
 
 		login: function(username, password) {
