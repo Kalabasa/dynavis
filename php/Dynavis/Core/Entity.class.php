@@ -168,6 +168,9 @@ abstract class Entity implements \JsonSerializable{
 	private function insert() {
 		$insert_data = [];
 		foreach (static::FIELDS as $f) {
+			if(!property_exists($this, $f)) {
+				$this->$f = null;
+			}
 			$insert_data[$f] = $this->$f;
 		}
 

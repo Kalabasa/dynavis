@@ -218,7 +218,7 @@ function generic_get_list($class, $search_fields = null) {
 	);
 	$total = $result["total"];
 
-	$end = $start + $count;
+	$end = $start + count($list);
 	if($end > $total) $end = $total;
 
 	echo json_encode([
@@ -579,7 +579,7 @@ function get_areas() {
 	);
 	$total = $result["total"];
 
-	$end = $start + $count;
+	$end = $start + count($areas);
 	if($end > $total) $end = $total;
 
 	echo json_encode([
@@ -920,7 +920,7 @@ function get_datasets() {
 	);
 	$total = $result["total"];
 
-	$end = $start + $count;
+	$end = $start + count($areas);
 	if($end > $total) $end = $total;
 
 	echo json_encode([
@@ -950,8 +950,13 @@ function get_user_datasets($username) {
 	$type = $params["type"];
 	$datasets = $user->get_datasets($count, $start, $type);
 
+	$end = $start + count($areas);
+	if($end > $total) $end = $total;
+
 	echo json_encode([
 		"total" => $user->count_datasets($type),
+		"start" => $start,
+		"end" => $end,
 		"data" => $datasets,
 	]);
 }
