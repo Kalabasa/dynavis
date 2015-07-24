@@ -25,6 +25,7 @@ use \Dynavis\DataProcessor;
 ]);
 
 $app = new \Slim\Slim(["debug" => true]);
+
 $auth_admin = authenticator(["roles" => ["admin"]]);
 $auth_username = authenticator(["username_match" => true]);
 $auth_token = authenticator(["token_match" => true]);
@@ -55,6 +56,7 @@ $app->get("/users/:username/datasets/:id", "get_user_dataset");
 $app->get("/users/:username/datasets/:id/datapoints", "get_user_dataset_datapoints");
 $app->get("/datasets", "get_datasets" );
 $app->get("/tokens/:id", $auth_token, "get_token");
+$app->get("/geojson/:level", "get_geojson");
 
 
 //-----------------------------------------------------------------------------
@@ -1279,6 +1281,12 @@ function post_token() {
 
 
 // GeoJSON
+
+function get_geojson($level) {
+	global $app;
+	$app->response->setStatus(302);
+	$app->response->headers->set("Location", dirname($app->request->getRootUri()) . "/data/$level.json");
+}
 
 function post_geojson($level) {
 	global $app;

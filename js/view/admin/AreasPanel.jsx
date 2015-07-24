@@ -100,5 +100,24 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 				},
 			});
 		},
+
+		handle_upload_geojson: function(e) {
+			var that = this;
+			e.preventDefault();
+
+			var fd = new FormData();
+			var file = this.refs.file_geojson.get_input().files[0];
+			fd.append("file", file);
+
+			$.ajax({
+				url: "api.php/geojson/" + this.state.upload_level,
+				data: fd,
+				processData: false,
+				contentType: false,
+				type: "POST",
+				success: function(data){
+				},
+			});
+		},
 	});
 });

@@ -107,13 +107,13 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 
 		on_zoom: function() {
 			if(this.map.getZoom() >= 12) {
-				// this.set_geojson("json/Barangays.psgc.json");
+				// this.set_geojson("data/barangay.json");
 			}else if(this.map.getZoom() >= 10) {
-				this.set_geojson("json/MuniCities.psgc.json");
+				this.set_geojson("data/municipality.json");
 			}else if(this.map.getZoom() >= 8) {
-				this.set_geojson("json/Provinces.psgc.json");
+				this.set_geojson("data/province.json");
 			}else{
-				this.set_geojson("json/Regions.psgc.json");
+				this.set_geojson("api.php/geojson/region");
 			}
 		},
 	});

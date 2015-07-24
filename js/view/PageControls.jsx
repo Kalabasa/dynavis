@@ -13,6 +13,8 @@ define(["react", "react.backbone"], function(React) {
 		},
 
 		render: function() {
+			var page = this.collection().getPage();
+			var pages = this.collection().getTotalPages();
 			return (
 				<form className={this.props.className} onSubmit={this.handle_submit}>
 					<button className="button"
