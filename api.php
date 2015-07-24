@@ -102,7 +102,7 @@ $app->delete("/families/:official_id/officials/:id", $auth_admin, "delete_family
 $app->delete("/parties/:id", $auth_admin, function ($id) { generic_delete_item("Party", $id); } );
 $app->delete("/areas", $auth_admin, function () { generic_delete_all("Area"); } );
 $app->delete("/areas/:code", $auth_admin, function ($code) { generic_delete_item("Area", $code); } );
-$app->delete("/elections", $auth_admin, function () { generic_delete_all("Elect"); } );
+$app->delete("/elections", $auth_admin, "delete_all_elections");
 $app->delete("/elections/:id", $auth_admin, function ($id) { generic_delete_item("Elect", $id); } );
 $app->delete("/users/:username", $auth_username_or_admin, "delete_user" );
 $app->delete("/users/:username/datasets/:id", $auth_username_or_admin, "delete_user_dataset" );
@@ -768,6 +768,16 @@ function post_elections_file($file) {
 	Database::get()->pdo->commit();
 	$app->response->setStatus(201);
 	$app->response->headers->set("Location", $app->urlFor("officials"));
+}
+
+function delete_all_elections() { // Deletes EVERYTHING! except areas,datasets,etc
+	global $app;
+	Elect::delete_all();
+	Party::delete_all();
+	Database::get()->query("delete from " . Family::TABLE_FAMILY_MEMBERSHIP);
+	Official::delete_all();
+	Family::delete_all();
+	$app->response->setStatus(204);
 }
 
 

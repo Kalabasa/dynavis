@@ -7,7 +7,7 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 		render: function() {
 			var that = this;
 			return (
-				<div className="body-panel">
+				<div className="body-panel clearfix">
 					<PanelToolbar ref="toolbar" toggle_text="Add Data">
 						<div className="pure-u-1-3 text-center pad">
 							<h6>Add a single row</h6>
@@ -31,8 +31,21 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 						})}
 					</ReactCSSTransitionGroup>
 					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					<button className="pull-right button button-complement mar" onClick={this.handle_delete_all}>Delete All</button>
 				</div>
 			);
+		},
+
+		handle_delete_all: function() {
+			var that = this;
+			$.ajax({
+				url: this.collection().url,
+				type: "DELETE",
+				success: function(data){
+					that.refs.toolbar.open();
+					that.collection().fetch();
+				},
+			});
 		},
 
 		handle_add: function() {

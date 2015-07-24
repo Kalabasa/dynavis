@@ -139,11 +139,13 @@ class Elect extends \Dynavis\Core\RefEntity {
 	}
 
 	private static function process_row($entry, $row) {
-		$official = Official::get_by_name($entry["surname"], $entry["name"]);
+		$surname = Database::normalize_string($entry["surname"]);
+		$name = preg_replace("/(^\.)|(\.$)/", " ", Database::normalize_string($entry["name"]));
+		$official = Official::get_by_name($surname, $name);
 		if(!$official) {
 			$official = new Official();
-			$official->surname = $entry["surname"];
-			$official->name = $entry["name"];
+			$official->surname = $surname;
+			$official->name = $name;
 			$official->nickname = $entry["nickname"];
 			$official->save();
 		}
