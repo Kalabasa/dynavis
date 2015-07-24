@@ -1,1 +1,3 @@
 SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+php_value upload_max_filesize 64M
+php_value post_max_size 66M

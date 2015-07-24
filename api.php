@@ -21,6 +21,7 @@ use \Dynavis\DataProcessor;
 \Slim\Route::setDefaultConditions([
 	"id" => "\d+",
 	"code" => "\d{8,9}",
+	"level" => "region|province|municipality|barangay",
 ]);
 
 $app = new \Slim\Slim(["debug" => true]);
@@ -70,6 +71,7 @@ $app->post("/users", "post_user");
 $app->post("/users/:username/datasets", $auth_username, "post_user_dataset");
 $app->post("/users/:username/datasets/:id/datapoints", $auth_username, "post_user_dataset_datapoint");
 $app->post("/tokens", "post_token");
+$app->post("/geojson/:level", $auth_admin, "post_geojson");
 $app->post("/generate-indicator", $auth_admin, "generate_indicator");
 
 
@@ -1273,6 +1275,82 @@ function post_token() {
 
 	$app->response->setStatus(201);
 	echo json_encode($token);
+}
+
+
+// GeoJSON
+
+function post_geojson($level) {
+	global $app;
+
+	if(!isset($_FILES["file"])) {
+		$app->halt(400, "No file uploaded.");
+	}
+
+	$file = $_FILES["file"];
+	$error = $file["error"];
+	if($error != UPLOAD_ERR_OK) {
+		switch ($error) { 
+			case UPLOAD_ERR_INI_SIZE: 
+				$message = "The uploaded file exceeds the upload_max_filesize directive in php.ini"; 
+				break; 
+			case UPLOAD_ERR_FORM_SIZE: 
+				$message = "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"; 
+				break; 
+			case UPLOAD_ERR_PARTIAL: 
+				$message = "The uploaded file was only partially uploaded"; 
+				break; 
+			case UPLOAD_ERR_NO_FILE: 
+				$message = "No file was uploaded"; 
+				break; 
+			case UPLOAD_ERR_NO_TMP_DIR: 
+				$message = "Missing a temporary folder"; 
+				break; 
+			case UPLOAD_ERR_CANT_WRITE: 
+				$message = "Failed to write file to disk"; 
+				break; 
+			case UPLOAD_ERR_EXTENSION: 
+				$message = "File upload stopped by extension"; 
+				break; 
+
+			default: 
+				$message = "Unknown upload error"; 
+				break; 
+		} 
+		throw new \RuntimeException("File upload error. " . $message);
+	}
+
+	if(!is_uploaded_file($file["tmp_name"])) {
+		throw new \RuntimeException("Invalid file.");
+	}
+
+	$size = $file["size"];
+	if($size == 0) {
+		throw new DataException("No file or empty file was uploaded.");
+	}
+
+	$dir = "./data";
+	if(!is_dir($dir)) {
+		if(!mkdir($dir, 0775)) {
+			throw new \RuntimeException("Cannot create data directory.");
+		}
+	}
+	$dest = "$dir/$level.json";
+
+	// if(file_exists($dest)) {
+	// 	$i = 0;
+	// 	do{
+	// 		$i++;
+	// 		$m = "$dir/$level.json.$i.bak";
+	// 	}while(file_exists($m));
+	// 	rename($dest, $m);
+	// }
+
+	if(!copy($file["tmp_name"], $dest)) {
+		throw new \RuntimeException("Cannot save file!");
+	}
+
+	$app->response->setStatus(204);
 }
 
 
