@@ -12,10 +12,10 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 				<div className="login-box">
 					<form className="pure-g" onSubmit={this.handle_login}>
 						<div className="pure-u-1">
-							<input className="input" id="username" type="text" required />
+							<input className="input" id="username" type="text" placeholder="Username" required />
 						</div>
 						<div className="pure-u-1">
-							<input className="input" id="password" type="password" required />
+							<input className="input" id="password" type="password" placeholder="Password" required />
 						</div>
 						<div className="pure-u-1">
 							<input className="pull-right button button-primary" type="submit" value="Login" />
