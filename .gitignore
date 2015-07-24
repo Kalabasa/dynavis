@@ -1,7 +1,10 @@
 /js/config.map.js
 /php/db_config.include.php
 /scripts/scrape-elections.conf
+
 /.sass-cache/
 /css/*.map
 /css/main.css
 /css/admin.css
+
+/data/
