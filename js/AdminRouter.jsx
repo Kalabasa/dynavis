@@ -21,6 +21,7 @@ define(["backbone", "react", "InstanceCache"], function(Backbone, React, Instanc
 
 		routes: {
 			"": "home",
+			"home": "home",
 			"officials": "officials",
 			"families": "families",
 			"elections": "elections",

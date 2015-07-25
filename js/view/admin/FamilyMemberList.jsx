@@ -25,7 +25,7 @@ define(["react", "jsx!view/TypeaheadInput", "jsx!view/admin/FamilyMemberItem", "
 										collection={this.collection()}
 										required />
 								</div>
-								<input className="group-component button" type="submit" value="Add" />
+								<input className="group-component button" type="submit" value="Add Member" />
 							</div>
 						</form>
 					</div>

@@ -3,17 +3,20 @@ define(["underscore", "jquery", "react"], function(_, $, React) {
 	return React.createClass({
 		getInitialState: function() {
 			return {
-				elections: 0,
-				areas: 0,
-				officials: 0,
-				families: 0,
-				datasets: 0,
-				users: 0,
+				elections: 8,
+				areas: 8,
+				officials: 8,
+				families: 8,
+				datasets: 8,
+				users: 8,
 
-				region: 0,
-				province: 0,
-				municipality: 0,
-				barangay: 0,
+				region: 8,
+				province: 8,
+				municipality: 8,
+				barangay: 8,
+
+				area_datasets: 8,
+				tag_datasets: 8,
 			};
 		},
 
@@ -33,6 +36,9 @@ define(["underscore", "jquery", "react"], function(_, $, React) {
 			});
 			_.each(["region", "province", "municipality", "barangay"], function(x) {
 				$.get("api.php/areas", {level: x, count: 1}, create_callback(x), "json");
+			});
+			_.each(["area", "tag"], function(x) {
+				$.get("api.php/datasets", {type: x, count: 1}, create_callback(x + "_datasets"), "json");
 			});
 		},
 
@@ -55,7 +61,7 @@ define(["underscore", "jquery", "react"], function(_, $, React) {
 							<div className="pure-u-1-2 field">{this.state.province} provinces</div>
 							<div className="pure-u-1-2 field">{this.state.municipality} cities/municipalities</div>
 							<div className="pure-u-1-2 field">{this.state.barangay} barangays</div>
-							<p className="text">Update administrative subdivisions, PSGC, and GeoJSON</p>
+							<p className="text">Update administrative subdivisions, PSGC codes, and GeoJSON</p>
 						</div>
 					),
 				},
@@ -122,11 +128,22 @@ define(["underscore", "jquery", "react"], function(_, $, React) {
 			if(this.state.families == 0) {
 				message = message || {
 					title: "There are no officials currently assigned as members of any political family",
-					contents: "The system requires political family associations as input for data visualization.",
+					contents: "The system requires political family associations for the data visualization.",
 					action: "Add Families",
 					link: "families",
 				};
 				hide.push(_.findWhere(tiles, {name: "families"}));
+			}
+			if(this.state.tag_datasets == 0){
+				message = message || {
+					title: "There are currently no political dynasty indicators",
+					contents: "Political dynasty indicators are used as input for the data visualization. These indicators can be generated from the political family associations in the database.",
+					action: "Generate Indicators",
+					link: "datasets",
+				};
+				if(this.state.datasets == 0){
+					hide.push(_.findWhere(tiles, {name: "datasets"}));
+				}
 			}
 
 			if(message) {

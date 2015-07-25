@@ -8,7 +8,7 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 			var that = this;
 			return (
 				<div className="body-panel">
-					<button className="button" onClick={this.handle_add}>Add Row</button>
+					<button className="button mar" onClick={this.handle_add}>New Family</button>
 					<SearchControls ref="searcher" className="mar" collection={this.collection()} />
 					<ReactCSSTransitionGroup transitionName="slider">
 						{this.collection().map(function(family) {

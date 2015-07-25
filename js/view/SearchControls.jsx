@@ -11,16 +11,18 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 		},
 
 		render: function() {
+			var action_button = null;
 			if(this.state.query) {
-				var cancel_button = <button className="group-component button" type="button" onClick={this.handle_cancel}><i className="fa fa-close"/></button>;
+				action_button = <button type="reset" onClick={this.handle_cancel}><i className="fa fa-close"/></button>;
+			}else{
+				action_button = <button type="submit"><i className="fa fa-search"/></button>;
 			}
 			return(
 				<div className={this.props.className}>
 					<div className="clearfix">
-						<form className="group pure-g pull-left" onSubmit={this.handle_search}>
-							<input className="group-component input pure-u-9-10" type="text" placeholder={this.state.query} valueLink={this.linkState("input")} />
-							{cancel_button}
-							<button className="group-component button pure-u-1-10" type="submit"><i className="fa fa-search"/></button>
+						<form className="search-bar pure-g pull-left" onSubmit={this.handle_search}>
+							<input type="text" placeholder={this.state.query} valueLink={this.linkState("input")} />
+							{action_button}
 						</form>
 						<PageControls className="pull-right" collection={this.collection()} />
 					</div>
@@ -35,7 +37,7 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 		},
 
 		handle_cancel: function() {
-			this.setState({input: ""});
+			// this.setState({input: ""});
 			this.set_query(null);
 		},
 
