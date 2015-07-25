@@ -967,7 +967,7 @@ function get_user_datasets($username) {
 	$type = $params["type"];
 	$datasets = $user->get_datasets($count, $start, $type);
 
-	$end = $start + count($areas);
+	$end = $start + count($datasets);
 	if($end > $total) $end = $total;
 
 	echo json_encode([
