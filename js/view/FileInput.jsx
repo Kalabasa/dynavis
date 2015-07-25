@@ -11,7 +11,9 @@ define(["react"], function(React) {
 			return (
 				<span className="file-wrapper">
 					<label className="group">
-						<span className="group-component input" readOnly>{this.state.filename}</span>
+						<span className="group-component input" readOnly>
+							<div className="name">{this.state.filename}</div>
+						</span>
 						<span className="group-component button">Browse</span>
 						<input ref="file" type="file" onChange={this.handle_change} {...this.props} />
 					</label>

@@ -64,6 +64,7 @@ html,body {
 	font-size: 96%;
 }
 a {
+	text-decoration: none;
 	color: $color-primary-1;
 	&:link {
 		color: $color-primary-1;
@@ -72,6 +73,7 @@ a {
 		color: darken($color-primary-1, 10%);
 	}
 	&:hover {
+		text-decoration: underline;
 		color: lighten($color-primary-1, 20%);
 	}
 	&:active {
