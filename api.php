@@ -1416,8 +1416,16 @@ function generate_indicator() {
 	$indicator = $data["indicator"];
 	$description = $data["description"];
 
-	$data = DataProcessor::calculate_indicator($indicator);
-	$dataset_id = DataProcessor::save_dataset($data, $user->username, $indicator, $description);
+	try{
+		$data = DataProcessor::calculate_indicator($indicator);
+		if($data["result"]) {
+			$dataset_id = DataProcessor::save_dataset($data, $user->username, $indicator, $description);
+		}else{
+			$app->halt(403, "Unsuccessful. Make sure the necessary data is in-place, such as election records.");
+		}
+	}catch(DataException $e) {
+		$app->halt(403, "Unsuccessful. " . $e->getMessage());
+	}
 
 	$app->response->setStatus(201);
 	echo json_encode(["id" => $dataset_id]);

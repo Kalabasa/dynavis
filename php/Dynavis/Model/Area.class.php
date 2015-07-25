@@ -93,7 +93,7 @@ class Area extends \Dynavis\Core\Entity {
 				return new Elect((int) $item[Elect::PRIMARY_KEY], false);
 			},
 			Database::get()->select(Elect::TABLE, [
-				"[><]" . static::TABLE => ["area_code" => static::PRIMARY_KEY]
+				"[><]" . static::TABLE => ["area_code" => "code"]
 			], [
 				Elect::TABLE . "." . Elect::PRIMARY_KEY
 			],[
@@ -110,7 +110,7 @@ class Area extends \Dynavis\Core\Entity {
 			. " inner join " . Elect::TABLE
 				. " on " . Official::TABLE . "." . Official::PRIMARY_KEY . " = " . Elect::TABLE . ".official_id "
 			. " inner join " . static::TABLE
-				. " on " . Elect::TABLE . ".area_code = " . static::TABLE . "." . static::PRIMARY_KEY
+				. " on " . Elect::TABLE . ".area_code = " . static::TABLE . ".code "
 
 			. " where "
 				. static::TABLE . "." . static::PRIMARY_KEY . " = " . Database::get()->quote($this->get_id());
