@@ -33,16 +33,11 @@ class User extends \Dynavis\Core\Entity {
 			$where = ["AND" => array_merge($where, ["type" => $type])];
 		}
 
-		return array_map(
-			function ($item) {
-				return new Dataset((int) $item[Dataset::PRIMARY_KEY], false);
-			},
-			Database::get()->select(Dataset::TABLE, [
-				"[><]" . static::TABLE => ["user_id" => static::PRIMARY_KEY]
-			], [
-				Dataset::TABLE . "." . Dataset::PRIMARY_KEY
-			], $where)
-		);
+		return Database::get()->count(Dataset::TABLE, [
+			"[><]" . static::TABLE => ["user_id" => static::PRIMARY_KEY]
+		], [
+			Dataset::TABLE . "." . Dataset::PRIMARY_KEY
+		], $where);
 	}
 
 	public function get_datasets($count, $start, $type = null) {
