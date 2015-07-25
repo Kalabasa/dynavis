@@ -7,9 +7,9 @@ define(["underscore", "jenks", "leaflet"], function(_, jenks, L) {
 
 			this._style_neutral = {
 				weight: 2,
-				opacity: 0.2,
+				opacity: 0.4,
 				color: "#7f7f7f",
-				fillOpacity: 0.4,
+				fillOpacity: 0.2,
 				fillColor: "#c7c7c7",
 				className: "map-polygon visible",
 			};
