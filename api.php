@@ -54,7 +54,7 @@ $app->get("/users/:username", "get_user");
 $app->get("/users/:username/datasets", "get_user_datasets");
 $app->get("/users/:username/datasets/:id", "get_user_dataset");
 $app->get("/users/:username/datasets/:id/datapoints", "get_user_dataset_datapoints");
-$app->get("/datasets", "get_datasets" );
+$app->get("/datasets", "get_datasets");
 $app->get("/tokens/:id", $auth_token, "get_token");
 $app->get("/geojson/:level", "get_geojson");
 
@@ -63,7 +63,7 @@ $app->get("/geojson/:level", "get_geojson");
 // POST requests
 //-----------------------------------------------------------------------------
 
-$app->post("/officials", $auth_admin, "post_official" );
+$app->post("/officials", $auth_admin, "post_official");
 $app->post("/officials/:id/families", $auth_admin, "post_official_family");
 $app->post("/families", $auth_admin, function () { generic_post_item("Family", "families"); } );
 $app->post("/families/:id/officials", $auth_admin, "post_family_official");
@@ -85,11 +85,11 @@ $app->post("/generate-indicator", $auth_admin, "generate_indicator");
 $app->map("/officials/:id", $auth_admin, function ($id) { generic_put_item("Official", $id); } )->via("PUT", "PATCH");
 $app->map("/families/:id", $auth_admin, function ($id) { generic_put_item("Family", $id); } )->via("PUT", "PATCH");
 $app->map("/parties/:id", $auth_admin, function ($id) { generic_put_item("Party", $id); } )->via("PUT", "PATCH");
-$app->map("/areas/:code", $auth_admin, "put_area" )->via("PUT", "PATCH");
+$app->map("/areas/:code", $auth_admin, "put_area")->via("PUT", "PATCH");
 $app->map("/elections/:id", $auth_admin, function ($id) { generic_put_item("Elect", $id); } )->via("PUT", "PATCH");
-$app->map("/users/:username", $auth_username_or_admin, "put_user" )->via("PUT", "PATCH");
-$app->map("/users/:username/datasets/:id", $auth_username, "put_user_dataset" )->via("PUT", "PATCH");
-$app->map("/users/:username/datasets/:dataset_id/datapoints/:id", $auth_username, "put_user_dataset_datapoint" )->via("PUT", "PATCH");
+$app->map("/users/:username", $auth_username_or_admin, "put_user")->via("PUT", "PATCH");
+$app->map("/users/:username/datasets/:id", $auth_username, "put_user_dataset")->via("PUT", "PATCH");
+$app->map("/users/:username/datasets/:dataset_id/datapoints/:id", $auth_username, "put_user_dataset_datapoint")->via("PUT", "PATCH");
 
 
 //-----------------------------------------------------------------------------
@@ -105,9 +105,9 @@ $app->delete("/areas", $auth_admin, function () { generic_delete_all("Area"); } 
 $app->delete("/areas/:code", $auth_admin, "delete_area");
 $app->delete("/elections", $auth_admin, "delete_all_elections");
 $app->delete("/elections/:id", $auth_admin, function ($id) { generic_delete_item("Elect", $id); } );
-$app->delete("/users/:username", $auth_username_or_admin, "delete_user" );
-$app->delete("/users/:username/datasets/:id", $auth_username_or_admin, "delete_user_dataset" );
-$app->delete("/users/:username/datapoints/:id", $auth_username, "delete_user_dataset_datapoint" );
+$app->delete("/users/:username", $auth_username_or_admin, "delete_user");
+$app->delete("/users/:username/datasets/:id", $auth_username_or_admin, "delete_user_dataset");
+$app->delete("/users/:username/datapoints/:id", $auth_username, "delete_user_dataset_datapoint");
 $app->delete("/tokens/:id", $auth_token, function ($id) { generic_delete_item("Token", $id); } );
 
 $app->run();
