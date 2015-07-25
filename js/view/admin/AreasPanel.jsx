@@ -42,7 +42,7 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 						</div>
 					</PanelToolbar>
 					<SearchControls className="mar" ref="searcher" collection={this.collection()} />
-					<ReactCSSTransitionGroup transitionName="slider">
+					<ReactCSSTransitionGroup transitionName="fade">
 						{this.collection().map(function(area) {
 							return <AreaRow key={area.cid} model={area} />;
 						})}

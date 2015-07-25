@@ -8,7 +8,7 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 			return (
 				<div className="body-panel">
 					<SearchControls className="mar" collection={this.collection()} />
-					<ReactCSSTransitionGroup transitionName="slider">
+					<ReactCSSTransitionGroup transitionName="fade">
 						{this.collection().map(function(user) {
 							return <UserRow key={user.cid} model={user} />;
 						})}

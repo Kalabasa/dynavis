@@ -23,7 +23,7 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 						</div>
 					</PanelToolbar>
 					<SearchControls className="mar" ref="searcher" collection={this.collection()} />
-					<ReactCSSTransitionGroup transitionName="slider">
+					<ReactCSSTransitionGroup transitionName="fade">
 						{this.collection().map(function(election) {
 							return <ElectionRow
 								key={election.cid}

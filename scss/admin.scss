@@ -44,26 +44,11 @@ a.tile-container {
 	color: $color-text;
 }
 .tile-container {
+	@extend .fade-in;
+
 	padding: 6px;
 	text-decoration: none;
 
-	&.highlight .tile {
-		color: darken($color-complement, 10%);
-		background-color: white;
-		@include drop-shadow(3);
-	}
-	&.highlight:hover .tile {
-		color: $color-text-complement;
-		background-color: $color-complement;
-	}
-	&.faded .tile {
-		opacity: 0.4;
-	}
-	&:hover .tile {
-		opacity: 1;
-		color: $color-text-primary-1;
-		background-color: $color-primary-1;
-	}
 	.tile {
 		padding: 25px;
 		color: $color-text;
@@ -83,5 +68,35 @@ a.tile-container {
 		p {
 			margin-top: 0.5em;
 		}
+	}
+
+	&.highlight .tile {
+		color: darken($color-complement, 10%);
+		background-color: white;
+		@include drop-shadow(3);
+		.button {
+			transition: inherit;
+		}
+	}
+	&.highlight:hover .tile {
+		color: $color-text-complement;
+		background-color: $color-complement;
+
+		.button {
+			color: $color-primary-1;
+			background-color: white;
+		}
+	}
+	&.faded .tile {
+		opacity: 0.4;
+	}
+	&:hover .tile {
+		opacity: 1;
+		color: $color-text-primary-1;
+		background-color: $color-primary-1;
+	}
+
+	&:hover {
+		text-decoration: none;
 	}
 }

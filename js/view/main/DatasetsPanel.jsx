@@ -19,7 +19,7 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 					</div>
 					<PanelToolbar ref="toolbar" toggle_text="Add Data">
 						<div className="pure-u-1 pad">
-							<form onSubmit={this.handle_upload}>
+							<form ref="form" onSubmit={this.handle_upload}>
 								<h6>Upload dataset</h6>
 								<div className="pure-g">
 									<div className="pure-u-5-12">
@@ -48,7 +48,7 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 						</div>
 					</PanelToolbar>
 					<SearchControls className="mar" collection={this.collection()} />
-					<ReactCSSTransitionGroup transitionName="slider">
+					<ReactCSSTransitionGroup transitionName="fade">
 						{this.collection().map(function(dataset) {
 							return <DatasetBox key={dataset.cid} model={dataset} />;
 						})}
@@ -86,6 +86,8 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 						contentType: false,
 						type: "POST",
 						success: function(data){
+							React.findDOMNode(that.refs.form).reset();
+							that.refs.toolbar.close();
 							that.collection().fetch();
 							that.setState(that.getInitialState());
 						},

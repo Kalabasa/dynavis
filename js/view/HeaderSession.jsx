@@ -14,7 +14,7 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 				if(!window.location.pathname.match(/^.*?\/admin(\.html)?((\?|#).*)?$/) && this.model().get_user_role() == "admin") {
 					var admin_link = (
 						<span className="login-text">
-							<a className="button button-flat" href="admin">Admin</a>
+							<a className="button button-flat mar" href="admin">Admin</a>
 						</span>
 					);
 				}
@@ -26,7 +26,7 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 							</span>
 							<span className="hider-content">
 								{admin_link}
-								<button className="button" onClick={this.handle_logout}>Logout</button>
+								<button className="button mar" onClick={this.handle_logout}>Logout</button>
 							</span>
 						</div>
 					</div>

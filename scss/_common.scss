@@ -128,20 +128,33 @@ h5,h6 {
 	margin: 0.5em;
 }
 
-.slider-enter {
+.fade-enter {
 	top: -10px;
 	opacity: 0.01;
-	&.slider-enter-active {
+	&.fade-enter-active {
 		top: 0;
 		opacity: 1;
 		transition: top 0.2s ease-out, opacity 0.3s ease;
 	}
 }
-.slider-leave {
+.fade-leave {
 	opacity: 1;
-	&.slider-leave-active {
+	&.fade-leave-active {
 		opacity: 0.01;
 		transition: opacity 0.2s ease;
+	}
+}
+
+.fade-in {
+	animation: fade-in 0.2s ease;
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
 	}
 }
 
