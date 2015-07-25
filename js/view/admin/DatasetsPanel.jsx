@@ -9,7 +9,7 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 				var toolbar = (
 					<PanelToolbar ref="toolbar" toggle_text="Generate Data">
 						<div className="pure-u-1 text-center pad">
-							<h6>Generate datasets from election records</h6>
+							<h6>Generate political dynasty indicators</h6>
 							<button className="button"
 								key="btn_DYNSHA"
 								onClick={this.indicator_generator.bind(this, "DYNSHA")}>
@@ -25,15 +25,16 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 								onClick={this.indicator_generator.bind(this, "DYNHERF")}>
 								Generate DYNHERF
 							</button>
+							<br />
 							<button className="button"
 								key="btn_LocalDynastySize"
 								onClick={this.indicator_generator.bind(this, "LocalDynastySize")}>
-								Generate LocalDynastySize
+								Generate Local Dynasty Size
 							</button>
 							<button className="button"
 								key="btn_RecursiveDynastySize"
 								onClick={this.indicator_generator.bind(this, "RecursiveDynastySize")}>
-								Generate RecursiveDynastySize
+								Generate Recursive Dynasty Size
 							</button>
 						</div>
 					</PanelToolbar>
@@ -43,7 +44,7 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 				<div className="body-panel">
 					{toolbar}
 					<SearchControls className="mar" collection={this.collection()} />
-					<ReactCSSTransitionGroup transitionName="slider">
+					<ReactCSSTransitionGroup transitionName="fade">
 						{this.collection().map(function(dataset) {
 							return <DatasetBox key={dataset.cid} model={dataset} />;
 						})}

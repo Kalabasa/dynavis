@@ -7,7 +7,7 @@ define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Toggle", 
 			var datasets = new DatasetCollection(null, {username: username});
 			datasets.fetch({count: 1}); // FIXME: this is ugly, but... whatever, just need the datasets count
 			return (
-				<div className="data-row container-fluid">
+				<div className="data-row">
 					<div className="pure-g">
 						<div className="pure-u-1-4 field text-large">{this.model().get("username")}</div>
 						<div className="pure-u-1-4">

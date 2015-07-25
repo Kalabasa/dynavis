@@ -137,7 +137,7 @@ define(["underscore", "jquery", "react"], function(_, $, React) {
 			if(this.state.tag_datasets == 0){
 				message = message || {
 					title: "There are currently no political dynasty indicators",
-					contents: "Political dynasty indicators are used as input for the data visualization. These indicators can be generated from the political family associations in the database.",
+					contents: "Political dynasty indicators are used as input for the data visualization. These indicators are generated from the political family data stored in the database.",
 					action: "Generate Indicators",
 					link: "datasets",
 				};

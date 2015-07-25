@@ -374,7 +374,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 		content: "";
 		display: inline-block;
 		position: relative;
-		width: 40px;
+		width: 35px;
 		height: 15px;
 		background-color: darken($color-background, 10%);
 		border-radius: 15px;
@@ -395,14 +395,13 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 			transition: left 0.3s $ease-swift, background 0.3s ease-out;
 		}
 	}
-
 	input[type=checkbox] {
 		opacity: 0;
 		width: 0;
 		height: 0;
 
 		&:checked + .toggle-lever:after {
-			left: 24px;
+			left: 19px;
 		}
 		&:not(:disabled) {
 			& + .toggle-lever {	
