@@ -8,7 +8,8 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 			var that = this;
 			return (
 				<div className="body-panel">
-					<SearchControls className="mar" collection={this.collection()} />
+					<button className="button" onClick={this.handle_add}>Add Row</button>
+					<SearchControls ref="searcher" className="mar" collection={this.collection()} />
 					<ReactCSSTransitionGroup transitionName="slider">
 						{this.collection().map(function(family) {
 							return <FamilyBox key={family.cid} model={family} onDeleteMember={that.handle_delete_official} />;
@@ -17,6 +18,19 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
 				</div>
 			);
+		},
+
+		handle_add: function() {
+			var that = this;
+			if(this.refs.searcher.state.query === null && this.collection().getPage() === 0) {
+				this.collection().add({}, {at: 0});
+			}else{
+				this.refs.searcher.set_query(null, {
+					complete: function() {
+						that.collection().add({}, {at: 0});
+					},
+				});
+			}
 		},
 		
 		handle_delete_official: function() {

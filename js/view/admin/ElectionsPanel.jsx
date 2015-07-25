@@ -52,7 +52,7 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 			var that = this;
 			if(this.refs.searcher.state.query === null && this.collection().getPage() === 0) {
 				this.refs.toolbar.close();
-				that.collection().add({}, {at: 0});
+				this.collection().add({}, {at: 0});
 			}else{
 				this.refs.searcher.set_query(null, {
 					complete: function() {

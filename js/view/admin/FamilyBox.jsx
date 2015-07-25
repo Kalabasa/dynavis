@@ -12,12 +12,16 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/SliderTransitionGroup
 		},
 
 		componentWillMount: function() {
-			this.state.members.fetch();
-			this.state.members.on("remove", this.check_empty, this);
+			if(!this.model().isNew()) {
+				this.state.members.fetch();
+				this.state.members.on("remove", this.check_empty, this);
+			}
 		},
 
 		componentDidUnmount: function() {
-			this.state.members.off("remove", this.check_empty, this);
+			if(!this.model().isNew()) {
+				this.state.members.off("remove", this.check_empty, this);
+			}
 		},
 		
 		render: function() {
@@ -25,6 +29,9 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/SliderTransitionGroup
 			var fields = null;
 			if(this.model().isNew() || this.state.edit) {
 				classes += " edit";
+				if(!this.model().isNew()){
+					var cancel_button = <button className="pull-right button mar" onClick={this.handle_cancel}>Cancel</button>;
+				}
 				fields = [
 					(<div className="pure-g form pad">
 						<EditableName className="pure-u-1" ref="name" model={this.model()} />
@@ -33,7 +40,7 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/SliderTransitionGroup
 						<div className="pure-u-1">
 							<button className="pull-left button button-complement mar" onClick={this.handle_delete}>Delete</button>
 							<button className="pull-right button button-primary mar" onClick={this.handle_save}>Save</button>
-							<button className="pull-right button mar" onClick={this.handle_cancel}>Cancel</button>
+							{cancel_button}
 						</div>
 					</div>)
 				];

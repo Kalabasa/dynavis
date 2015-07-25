@@ -97,6 +97,11 @@ class User extends \Dynavis\Core\Entity {
 		return password_hash($password, PASSWORD_BCRYPT, ["salt" => $this->salt]);
 	}
 
+	public function save() {
+		if(static::count() == 0) $this->type = 1; // First user is admin
+		parent::save();
+	}
+
 	public function jsonSerialize() {
 		$data = parent::jsonSerialize();
 		$data["role"] = ["user", "admin"][$data["type"]];

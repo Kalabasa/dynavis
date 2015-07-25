@@ -65,6 +65,7 @@ $app->get("/geojson/:level", "get_geojson");
 
 $app->post("/officials", $auth_admin, "post_official" );
 $app->post("/officials/:id/families", $auth_admin, "post_official_family");
+$app->post("/families", $auth_admin, function () { generic_post_item("Family", "families"); } );
 $app->post("/families/:id/officials", $auth_admin, "post_family_official");
 $app->post("/parties", $auth_admin, function () { generic_post_item("Party", "parties"); } );
 $app->post("/areas", $auth_admin, "post_area");
