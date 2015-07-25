@@ -966,12 +966,13 @@ function get_user_datasets($username) {
 
 	$type = $params["type"];
 	$datasets = $user->get_datasets($count, $start, $type);
+	$total = $user->count_datasets($type);
 
 	$end = $start + count($datasets);
 	if($end > $total) $end = $total;
 
 	echo json_encode([
-		"total" => $user->count_datasets($type),
+		"total" => $total,
 		"start" => $start,
 		"end" => $end,
 		"data" => $datasets,
