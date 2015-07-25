@@ -20,7 +20,7 @@ define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Toggle", 
 							</label>
 						</div>
 						<div className="pure-u-1-4 clearfix">
-							<button className="pull-right button button-flat button-complement" onClick={this.handle_delete}>Delete</button>
+							<button className="pull-right button button-flat button-complement" disabled={this.user_in()} onClick={this.handle_delete}>Delete</button>
 						</div>
 					</div>
 				</div>
@@ -46,7 +46,9 @@ define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Toggle", 
 		},
 
 		handle_delete: function(e) {
-			this.model().destroy({wait: true});
+			if(!this.user_in()) {
+				this.model().destroy({wait: true});
+			}
 		},
 	});
 });

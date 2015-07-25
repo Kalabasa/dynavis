@@ -353,7 +353,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
   font-weight: bold;
   text-transform: uppercase; }
   form input[type=button][disabled], form input[type=button][readonly], form input[type=submit][disabled], form input[type=submit][readonly], form input[type=reset][disabled], form input[type=reset][readonly], .button[disabled], .button[readonly] {
-    opacity: 0.5;
+    opacity: 0.4;
     background-color: transparent; }
   form input[type=button]:active, form input[type=submit]:active, form input[type=reset]:active, .button:active {
     top: -0.5px;
@@ -375,9 +375,8 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
     box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.125), 0 0px 0px 0px rgba(0, 0, 0, 0.4);
     z-index: 0; }
     form input[type=button].button-flat:not(x).button-complement, form input[type=submit].button-flat:not(x).button-complement, form input[type=reset].button-flat:not(x).button-complement, .button.button-flat:not(x).button-complement {
-      color: #E20075;
-      background-color: transparent; }
-    form input[type=button].button-flat:not(x):hover, form input[type=submit].button-flat:not(x):hover, form input[type=reset].button-flat:not(x):hover, .button.button-flat:not(x):hover {
+      color: #E20075; }
+    form input[type=button].button-flat:not(x):not([disabled]):hover, form input[type=submit].button-flat:not(x):not([disabled]):hover, form input[type=reset].button-flat:not(x):not([disabled]):hover, .button.button-flat:not(x):not([disabled]):hover {
       top: -1px;
       box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.22222), 0 1px 2px -2px rgba(0, 0, 0, 0.4);
       z-index: 2; }

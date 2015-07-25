@@ -164,7 +164,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 	text-transform: uppercase;
 
 	&[disabled],&[readonly] {
-		opacity: 0.5;
+		opacity: 0.4;
 		background-color: transparent;
 	}
 	&:active {
@@ -188,10 +188,9 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 		background-color: transparent;
 		&.button-complement {
 			color: $color-complement;
-			background-color: transparent;
 		}
 		@include drop-shadow(0);
-		&:hover {
+		&:not([disabled]):hover {
 			top: -1px;
 			@include drop-shadow(2);
 		}
