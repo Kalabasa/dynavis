@@ -1417,13 +1417,16 @@ function generate_indicator() {
 	$description = $data["description"];
 
 	try{
-		$data = DataProcessor::calculate_indicator($indicator);
-		if($data["result"]) {
-			$dataset_id = DataProcessor::save_dataset($data, $user->username, $indicator, $description);
+		$result = DataProcessor::calculate_indicator($indicator);
+		if($result["result"]) {
+			$dataset_id = DataProcessor::save_dataset($result, $user->username, $indicator, $description);
 		}else{
-			$app->halt(403, "Unsuccessful. Make sure the necessary data is in-place, such as election records.");
+			$app->halt(403, "Unsuccessful. Make sure the necessary data is in-place, such as election records and complete area data.");
 		}
 	}catch(DataException $e) {
+		var_dump(Database::get()->log());
+		var_dump($result);
+		return;
 		$app->halt(403, "Unsuccessful. " . $e->getMessage());
 	}
 

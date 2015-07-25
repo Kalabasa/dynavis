@@ -15,6 +15,10 @@ class Area extends \Dynavis\Core\Entity {
 		return new Area((int) $ret[static::PRIMARY_KEY], false);
 	}
 
+	public static function has_code($code) {
+		return Database::get()->has(static::TABLE, ["code" => $code]);
+	}
+
 	public static function get_by_municipality_code($id) {
 		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
 			"mun_id" => $id,

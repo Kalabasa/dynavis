@@ -87,6 +87,7 @@ class DataProcessor {
 
 		for($t = $min_year; $t <= $max_year; $t++) {
 			$subresult = static::$calc_function($t);
+			if(!$subresult) return null;
 			foreach ($subresult as $s) {
 				$s["year"] = $t;
 				$result[] = $s;
@@ -152,15 +153,15 @@ class DataProcessor {
 		// Gets the share of each dynasty in an area -> Size
 		$subquery = 
 			" select "
-				. "area_code"
+				. " code "
 				. " , " . Family::TABLE . "." . Family::PRIMARY_KEY
 				. " , count( " . Family::TABLE . "." . Family::PRIMARY_KEY . ") AS Size "
-				. " , Total"
+				. " , Total "
 			. " from "
 				. " ( " . $subsubquery . " ) T "
 
 			. " inner join " . Elect::TABLE
-				. " on T.area_code = " . Elect::TABLE . ".area_code "
+				. " on T.code = " . Elect::TABLE . ".area_code "
 			. " inner join " . Official::TABLE
 				. " on " . Elect::TABLE . ".official_id = " . Official::TABLE . "." . Official::PRIMARY_KEY
 			. " left join " . FAMILY::TABLE_FAMILY_MEMBERSHIP
@@ -172,9 +173,9 @@ class DataProcessor {
 				. Elect::TABLE . ".year <= :year "
 				. " and " . Elect::TABLE . ".year_end > :year "
 			. " group by "
-				. "area_code"
+				. " code "
 				. " , " . Family::TABLE_FAMILY_MEMBERSHIP . ".family_id "
-			. " order by Size desc";
+			. " order by Size desc ";
 
 		// Gets the dynasty with the largest share in each area
 		// (this following query works because $subquery is ordered by Size descending)
@@ -212,14 +213,14 @@ class DataProcessor {
 		// Gets the share of each dynasty in an area -> Size
 		$subquery = 
 			" select "
-				. "area_code"
+				. " code "
 				. " , count( " . Family::TABLE . "." . Family::PRIMARY_KEY . ") AS Size "
-				. " , Total"
+				. " , Total "
 			. " from "
 				. " ( " . $subsubquery . " ) T "
 
 			. " inner join " . Elect::TABLE
-				. " on T.area_code = " . Elect::TABLE . ".area_code "
+				. " on T.code = " . Elect::TABLE . ".area_code "
 			. " inner join " . Official::TABLE
 				. " on " . Elect::TABLE . ".official_id = " . Official::TABLE . "." . Official::PRIMARY_KEY
 			. " left join " . FAMILY::TABLE_FAMILY_MEMBERSHIP
@@ -231,7 +232,7 @@ class DataProcessor {
 				. Elect::TABLE . ".year <= :year "
 				. " and " . Elect::TABLE . ".year_end > :year "
 			. " group by "
-				. "area_code "
+				. " code "
 				. " , " . Family::TABLE_FAMILY_MEMBERSHIP . ".family_id ";
 
 		// Computes the Herfindahl index
@@ -281,6 +282,8 @@ class DataProcessor {
 		// RecursiveDynastySize(a,f,t) = LocalDynastySize(a,f,t) + sum over s in S(a) [ RecursiveDynastySize(s,f,t) ]
 		$lds = static::calculate_localdynastysize($year);
 
+		$area_code_exists = [];
+
 		$rds_index = [];
 		foreach ($lds as $l) {
 			$area = (int) $l["code"];
@@ -301,6 +304,13 @@ class DataProcessor {
 
 				// TODO: use parent_code in the Area table first
 				$area = Area::extract_subcodes($area)["parent_code"];
+				if(!array_key_exists($area, $area_code_exists)) {
+					if(Area::has_code($area)) {
+						$area_code_exists[$area] = true;
+					}else{
+						break;
+					}
+				}
 			}
 		}
 
