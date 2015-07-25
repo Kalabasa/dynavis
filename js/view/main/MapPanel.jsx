@@ -49,6 +49,11 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 			this.tagcloud = new TagCloudLayer();
 			this.tagcloud.addTo(this.map);
 
+			this.labels = L.tileLayer("http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png");
+			this.labels.addTo(this.map);
+			this.map.getPanes().shadowPane.appendChild(this.labels.getContainer());
+			this.labels.getContainer().style.pointerEvents = "none";
+
 			this.map.on("zoomend", this.on_zoom);
 			this.on_zoom();
 		},
