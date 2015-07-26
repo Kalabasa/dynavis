@@ -51,9 +51,9 @@ define(["underscore", "react", "jsx!view/SliderTransitionGroupChild", "jsx!view/
 								<div className="field text pad">{this.model().get("description")}</div>
 							</div>
 							<div className="pure-u-1-6">
-								<button className="pull-right button button-flat" onClick={this.handle_edit}>Edit description</button>
+								<button className="pull-right button button-flat" onClick={this.handle_edit}>Edit</button>
 								<a href={"#datasets/" + this.model().get("username") + "/" + this.model().id}>
-									<button className="pull-right button button-flat">Update data</button>
+									<button className="pull-right button button-flat">Update Data</button>
 								</a>
 							</div>
 						</div>
