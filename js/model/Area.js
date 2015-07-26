@@ -14,11 +14,21 @@ define(["underscore", "backbone"], function(_, Backbone) {
 			return !this.has("id");
 		},
 
-		fetch: function(options) {
-			var id = this.get(this.idAttribute);
-			options = options || {};
-			options.url = options.url || this.urlRoot.replace(/[^\/]$/, "$&/") + encodeURIComponent(id);
-			Backbone.Model.prototype.fetch.call(this, options);
+		sync: function(method, model, options) {
+			var base = this.urlRoot.replace(/[^\/]$/, "$&/");
+
+			if(this.has("id") || method === "update" || method === "patch" || method === "delete") {
+				// use id url when writing
+				var id = this.get("id");
+				options = options || {};
+				options.url = options.url || base + "id/" + encodeURIComponent(id);
+			}else if(method === "read") {
+				// use code url when reading without id
+				var code = this.get("code");
+				options = options || {};
+				options.url = options.url || base + encodeURIComponent(code);
+			}
+			Backbone.Model.prototype.sync.call(this, method, model, options);
 		},
 	});
 });

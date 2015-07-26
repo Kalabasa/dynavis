@@ -46,8 +46,10 @@ $app->get("/parties", function () { generic_get_list("Party", ["name"]); } );
 $app->get("/parties/:id", function ($id) { generic_get_item("Party", $id); });
 $app->get("/parties/:id/elections", "get_party_elections");
 $app->get("/areas", "get_areas")->name("areas");
-$app->get("/areas/:code", "get_area");
-$app->get("/areas/:code/elections", "get_area_elections");
+$app->get("/areas/id/:id", "get_area");
+$app->get("/areas/:code", "code_to_id", "get_area");
+$app->get("/areas/id/:id/elections", "get_area_elections");
+$app->get("/areas/:code/elections", "code_to_id", "get_area_elections");
 $app->get("/elections", function () { generic_get_list("Elect", ["position"]); } );
 $app->get("/elections/:id", function ($id) { generic_get_item("Elect", $id); } );
 $app->get("/users", function () { generic_get_list("User", ["username"]); } );
@@ -87,7 +89,8 @@ $app->post("/generate-indicator", $auth_admin, "generate_indicator");
 $app->map("/officials/:id", $auth_admin, function ($id) { generic_put_item("Official", $id); } )->via("PUT", "PATCH");
 $app->map("/families/:id", $auth_admin, function ($id) { generic_put_item("Family", $id); } )->via("PUT", "PATCH");
 $app->map("/parties/:id", $auth_admin, function ($id) { generic_put_item("Party", $id); } )->via("PUT", "PATCH");
-$app->map("/areas/:code", $auth_admin, "put_area")->via("PUT", "PATCH");
+$app->map("/areas/id/:id", $auth_admin, "put_area")->via("PUT", "PATCH");
+$app->map("/areas/:code", $auth_admin, "code_to_id", "put_area")->via("PUT", "PATCH");
 $app->map("/elections/:id", $auth_admin, function ($id) { generic_put_item("Elect", $id); } )->via("PUT", "PATCH");
 $app->map("/users/:username", $auth_username_or_admin, "put_user")->via("PUT", "PATCH");
 $app->map("/users/:username/datasets/:id", $auth_username, "put_user_dataset")->via("PUT", "PATCH");
@@ -104,7 +107,8 @@ $app->delete("/families/:id", $auth_admin, function ($id) { generic_delete_item(
 $app->delete("/families/:official_id/officials/:id", $auth_admin, "delete_family_official");
 $app->delete("/parties/:id", $auth_admin, function ($id) { generic_delete_item("Party", $id); } );
 $app->delete("/areas", $auth_admin, function () { generic_delete_all("Area"); } );
-$app->delete("/areas/:code", $auth_admin, "delete_area");
+$app->delete("/areas/id/:id", $auth_admin, "delete_area");
+$app->delete("/areas/:code", "code_to_id", $auth_admin, "delete_area");
 $app->delete("/elections", $auth_admin, "delete_all_elections");
 $app->delete("/elections/:id", $auth_admin, function ($id) { generic_delete_item("Elect", $id); } );
 $app->delete("/users/:username", $auth_username_or_admin, "delete_user");
@@ -124,6 +128,18 @@ function defaults($params, $defaults){
 		$defaults[$key] = $value;
 	}
 	return $defaults;
+}
+
+function code_to_id($route) {
+	global $app;
+	$code = $route->getParams()["code"];
+	try {
+		$area = Area::get_by_code((int) $code);
+	}catch(NotFoundException $e) {
+		$app->halt(404, $e->getMessage());
+	}
+	$app->is_id_from_code = true;
+	$app->redirect($app->request->getRootUri() . preg_replace("/\d{8,9}$/", "id/" . $area->get_id(), $app->request->getResourceUri()));
 }
 
 function authenticator($options) {
@@ -593,20 +609,20 @@ function get_areas() {
 	]);
 }
 
-function get_area($code) {
+function get_area($id) {
 	global $app;
 	try {
-		$area = Area::get_by_code((int) $code);
+		$area = new Area((int) $id, $app->is_id_from_code);
 	}catch(NotFoundException $e) {
 		$app->halt(404);
 	}
 	echo json_encode($area);
 }
 
-function get_area_elections($code) {
+function get_area_elections($id) {
 	global $app;
 	try {
-		$area = Area::get_by_code((int) $code);
+		$area = new Area((int) $id, $app->is_id_from_code);
 	}catch(NotFoundException $e) {
 		$app->halt(404);
 	}
@@ -618,14 +634,14 @@ function get_area_elections($code) {
 	]);
 }
 
-function put_area($code) {
+function put_area($id) {
 	global $app;
 	$data = json_decode($app->request->getBody(), TRUE);
 	if(is_null($data)) {
 		$app->halt(400, "Malformed data.");
 	}
 
-	$area = Area::get_by_code((int) $code);
+	$area = new Area((int) $id, $app->is_id_from_code);
 	if(!$area) {
 		$app->halt(404);
 	}
@@ -704,10 +720,10 @@ function post_areas_file($file) {
 	$app->response->headers->set("Location", $app->urlFor("areas"));
 }
 
-function delete_area($code) {
+function delete_area($id) {
 	global $app;
 	try {
-		$area = Area::get_by_code((int) $code);
+		$area = new Area((int) $id);
 	}catch(NotFoundException $e) {
 		$app->halt(404);
 	}
