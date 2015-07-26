@@ -108,6 +108,9 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 
 		on_tag_dataset: function(e) {
 			this.tagcloud.set_dataset(e.dataset);
+
+			// TODO: move this to somewhere (tagcloud visibility listener?)
+			this.labels.getContainer().style.display = e.dataset ? "none" : "block";
 		},
 
 		on_zoom: function() {
