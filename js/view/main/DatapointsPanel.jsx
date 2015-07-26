@@ -15,7 +15,7 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 			return (
 				<div className="body-panel">
 					<div className="clearfix">
-						<a className="pull-left button button-complement" href="#datasets">Back</a>
+						<a className="pull-left button button-complement" href="#datasets">Back to Datasets</a>
 					</div>
 					<PanelToolbar ref="toolbar" toggle_text="Add Data">
 						<div className="pure-u-1-2 text-center pad">
@@ -60,11 +60,6 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 		handle_upload: function(e) {
 			var that = this;
 			e.preventDefault();
-
-			if(!this.state.name) {
-				console.error("No name");
-				return;
-			}
 
 			var fd = new FormData();
 			var file = this.refs.file.get_input().files[0];

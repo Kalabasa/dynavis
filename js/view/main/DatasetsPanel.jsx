@@ -15,7 +15,7 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 			return (
 				<div className="body-panel">
 					<div className="clearfix">
-						<a className="pull-left button button-complement" href="#">Back</a>
+						<a className="pull-left button button-complement" href="#">Back to Map</a>
 					</div>
 					<PanelToolbar ref="toolbar" toggle_text="Add Dataset">
 						<div className="pure-u-1 pad">
