@@ -45,7 +45,7 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 		},
 
 		handle_remove: function() {
-			that.select_dataset(null);
+			this.select_dataset(null);
 		},
 
 		select_dataset: function(dataset) {
