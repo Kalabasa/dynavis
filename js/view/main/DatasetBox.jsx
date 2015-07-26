@@ -52,7 +52,7 @@ define(["underscore", "react", "jsx!view/SliderTransitionGroupChild", "jsx!view/
 							</div>
 							<div className="pure-u-1-6">
 								<button className="pull-right button button-flat" onClick={this.handle_edit}>Edit</button>
-								<a href={"#datasets/" + this.model().id}>
+								<a href={"#datasets/" + this.model().get("username") + "/" + this.model().id}>
 									<button className="pull-right button button-flat">Update Data</button>
 								</a>
 							</div>
