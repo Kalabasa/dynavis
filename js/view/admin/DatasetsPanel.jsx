@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/main/DatasetBox", "mixin/ScrollToTopMixin", "react.backbone"], function(React, InstanceCache, SearchControls, PageControls, PanelToolbar, DatasetBox, ScrollToTopMixin) {
+define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/admin/DatasetBox", "mixin/ScrollToTopMixin", "react.backbone"], function(React, InstanceCache, SearchControls, PageControls, PanelToolbar, DatasetBox, ScrollToTopMixin) {
 	var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 	return React.createBackboneClass({
 		mixins: [ScrollToTopMixin],

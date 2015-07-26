@@ -158,8 +158,8 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 			var patch = !this.model().has("id")
 				? new_attributes
 				: _.omit(new_attributes, function(value, key, object) {
-				return that.model().get(key) === value;
-			});
+					return that.model().get(key) === value;
+				});
 			
 			if(_.isEmpty(patch)) {
 				this.setState({edit: false});

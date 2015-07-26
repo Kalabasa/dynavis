@@ -1,5 +1,5 @@
 "use strict";
-define(["underscore", "react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName", "mixin/ClickToTopMixin", "react.backbone"], function(_, React, SliderTransitionGroupChild, EditableName, ClickToTopMixin) {
+define(["underscore", "react", "InstanceCache", "jsx!view/SliderTransitionGroupChild", "jsx!view/Name", "jsx!view/TypeaheadInput", "mixin/ClickToTopMixin", "react.backbone"], function(_, React, InstanceCache, SliderTransitionGroupChild, Name, TypeaheadInput, ClickToTopMixin) {
 	var ReactTransitionGroup = React.addons.TransitionGroup;
 	return React.createBackboneClass({
  		mixins: [React.addons.LinkedStateMixin, ClickToTopMixin],
@@ -7,13 +7,18 @@ define(["underscore", "react", "jsx!view/SliderTransitionGroupChild", "jsx!view/
 		getInitialState: function() {
 			return {
 				edit: this.model().isNew(),
-				name: this.model().get("name"),
-				description: this.model().get("description"),
+				year: this.model().get("year"),
+				value: this.model().get("value"),
 			};
 		},
 
 		render: function() {
-			var fields = null;
+			var display = function(item) {
+				return item.name;
+			};
+			var area_code = parseInt(this.model().get("area_code"));
+			var area = InstanceCache.get("Area", area_code, true);
+
 			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){
 					var cancel_button = <button className="pull-right button mar" onClick={this.handle_cancel}>Cancel</button>;
@@ -22,13 +27,19 @@ define(["underscore", "react", "jsx!view/SliderTransitionGroupChild", "jsx!view/
 					<div className="edit data-row form">
 					<ReactTransitionGroup><SliderTransitionGroupChild key="edit">
 						<div className="pure-g">
-							<label className="pure-u-1 pad">
-								<div className="label">Name</div>
-								<EditableName className="pure-u-1" ref="name" model={this.model()} />
+							<label className="pure-u-1-3 pad">
+								<TypeaheadInput className="pure-u-1"
+									for="Area"
+									ref="area"
+									display={display}
+									model={area}
+									required />
 							</label>
-							<label className="pure-u-1 pad">
-								<div className="label">Description</div>
-								<input className="pure-u-1" type="text" valueLink={this.linkState("description")} required />
+							<label className="pure-u-1-3 pad">
+								<input className="pure-u-1" type="number" valueLink={this.linkState("year")} required />
+							</label>
+							<label className="pure-u-1-3 pad">
+								<input className="pure-u-1" type="number" valueLink={this.linkState("value")} required />
 							</label>
 						</div>
 						<div className="pure-g">
@@ -47,14 +58,18 @@ define(["underscore", "react", "jsx!view/SliderTransitionGroupChild", "jsx!view/
 					<ReactTransitionGroup><SliderTransitionGroupChild key="display">
 						<div className="pure-g">
 							<div className="pure-u-5-6">
-								<div className="field text-large pad">{this.model().get("name")}</div>
-								<div className="field text pad">{this.model().get("description")}</div>
+								<div className="pure-u-1-3">
+									<Name className="field pad" model={area} />
+								</div>
+								<div className="pure-u-1-3">
+									<span className="field pad">{this.model().get("year")}</span>
+								</div>
+								<div className="pure-u-1-3">
+									<span className="field pad">{this.model().get("value")}</span>
+								</div>
 							</div>
 							<div className="pure-u-1-6">
 								<button className="pull-right button button-flat" onClick={this.handle_edit}>Edit</button>
-								<a href={"#datasets/" + this.model().id}>
-									<button className="pull-right button button-flat">Update Data</button>
-								</a>
 							</div>
 						</div>
 					</SliderTransitionGroupChild></ReactTransitionGroup>
@@ -75,8 +90,9 @@ define(["underscore", "react", "jsx!view/SliderTransitionGroupChild", "jsx!view/
 			var that = this;
 
 			var new_attributes = {
-				name: this.state.name,
-				description: this.state.description,
+				year: parseInt(this.state.year),
+				area_code: this.refs.area.state.selected.code,
+				value: parseFloat(this.state.value),
 			};
 
 			var patch = this.model().isNew()

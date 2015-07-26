@@ -20,6 +20,7 @@ use \Dynavis\DataProcessor;
 
 \Slim\Route::setDefaultConditions([
 	"id" => "\d+",
+	"id_" => "\d+",
 	"code" => "\d{8,9}",
 	"level" => "region|province|municipality|barangay",
 ]);
@@ -54,6 +55,7 @@ $app->get("/users/:username", "get_user");
 $app->get("/users/:username/datasets", "get_user_datasets");
 $app->get("/users/:username/datasets/:id", "get_user_dataset");
 $app->get("/users/:username/datasets/:id/datapoints", "get_user_dataset_datapoints");
+$app->get("/users/:username/datasets/:id_/datapoints/:id", "get_user_dataset_datapoint");
 $app->get("/datasets", "get_datasets");
 $app->get("/tokens/:id", $auth_token, "get_token");
 $app->get("/geojson/:level", "get_geojson");
@@ -89,7 +91,7 @@ $app->map("/areas/:code", $auth_admin, "put_area")->via("PUT", "PATCH");
 $app->map("/elections/:id", $auth_admin, function ($id) { generic_put_item("Elect", $id); } )->via("PUT", "PATCH");
 $app->map("/users/:username", $auth_username_or_admin, "put_user")->via("PUT", "PATCH");
 $app->map("/users/:username/datasets/:id", $auth_username, "put_user_dataset")->via("PUT", "PATCH");
-$app->map("/users/:username/datasets/:dataset_id/datapoints/:id", $auth_username, "put_user_dataset_datapoint")->via("PUT", "PATCH");
+$app->map("/users/:username/datasets/:id_/datapoints/:id", $auth_username, "put_user_dataset_datapoint")->via("PUT", "PATCH");
 
 
 //-----------------------------------------------------------------------------
@@ -107,7 +109,7 @@ $app->delete("/elections", $auth_admin, "delete_all_elections");
 $app->delete("/elections/:id", $auth_admin, function ($id) { generic_delete_item("Elect", $id); } );
 $app->delete("/users/:username", $auth_username_or_admin, "delete_user");
 $app->delete("/users/:username/datasets/:id", $auth_username_or_admin, "delete_user_dataset");
-$app->delete("/users/:username/datapoints/:id", $auth_username, "delete_user_dataset_datapoint");
+$app->delete("/users/:username/datasets/:id_/datapoints/:id", $auth_username, "delete_user_dataset_datapoint");
 $app->delete("/tokens/:id", $auth_token, function ($id) { generic_delete_item("Token", $id); } );
 
 $app->run();
@@ -999,6 +1001,35 @@ function get_user_dataset($username, $dataset_id) {
 	echo json_encode($dataset);
 }
 
+function get_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
+	global $app;
+	$user = User::get_by_username($username);
+	if(!$user) {
+		$app->halt(404);
+	}
+
+	try {
+		$dataset = new Dataset((int) $dataset_id);
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+
+	if($dataset->user_id != $user->get_id()) {
+		$app->halt(404);
+	}
+	try {
+		$datapoint = new Datapoint((int) $datapoint_id);
+	}catch(NotFoundException $e) {
+		$app->halt(404);
+	}
+
+	if($datapoints->dataset_id != $dataset->get_id()) {
+		$app->halt(404);
+	}
+
+	echo json_encode($datapoint);
+}
+
 function get_user_dataset_datapoints($username, $dataset_id) {
 	global $app;
 	$user = User::get_by_username($username);
@@ -1213,6 +1244,8 @@ function put_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
 	}catch(DataException $e) {
 		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
+
+	echo json_encode($datapoint);
 }
 
 function delete_user_dataset($username, $dataset_id) {

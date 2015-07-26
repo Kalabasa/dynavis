@@ -5,10 +5,10 @@ define(["jquery", "react"], function($, React) {
 			return (
 				<span className="toggle">
 					<label>
-						Off
+						✘
 						<input type="checkbox" {...this.props} />
 						<span className="toggle-lever"></span>
-						On
+						✔
 					</label>
 				</span>
 			);

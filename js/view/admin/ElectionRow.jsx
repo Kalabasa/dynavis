@@ -250,8 +250,8 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 			var patch = this.model().isNew()
 				? new_attributes
 				: _.omit(new_attributes, function(value, key, object) {
-				return that.model().get(key) === value;
-			});
+					return that.model().get(key) === value;
+				});
 			
 			if(_.isEmpty(patch)) {
 				this.setState({edit: false});

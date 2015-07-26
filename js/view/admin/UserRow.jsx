@@ -1,17 +1,20 @@
 "use strict";
 define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Toggle", "jsx!view/CollectionCount", "react.backbone"], function(React, InstanceCache, DatasetCollection, Toggle, CollectionCount) {
 	return React.createBackboneClass({
+		componentWillMount: function() {
+			this.datasets = new DatasetCollection(null, {username: this.model().get("username")});
+			this.datasets.fetch({count: 1}); // FIXME: this is ugly, but... whatever, just need the datasets count
+		},
+
 		render: function() {
 			var username = this.model().get("username");
 			var url_datasets = "#users/" + username + "/datasets";
-			var datasets = new DatasetCollection(null, {username: username});
-			datasets.fetch({count: 1}); // FIXME: this is ugly, but... whatever, just need the datasets count
 			return (
 				<div className="data-row">
 					<div className="pure-g">
-						<div className="pure-u-1-4 field text-large">{this.model().get("username")}</div>
+						<div className="pure-u-1-4 field text-large">{username}</div>
 						<div className="pure-u-1-4">
-							<a href={url_datasets}><CollectionCount collection={datasets} /> Datasets</a>
+							<a href={url_datasets}><CollectionCount collection={this.datasets} /> Datasets</a>
 						</div>
 						<div className="pure-u-1-4">
 							<label>

@@ -16,6 +16,7 @@ define(["backbone", "react", "InstanceCache"], function(Backbone, React, Instanc
 		routes: {
 			"": "main",
 			"datasets": "datasets",
+			"datasets/:id": "datapoints",
 		},
 		main: function() {
 			var that = this;
@@ -39,6 +40,27 @@ define(["backbone", "react", "InstanceCache"], function(Backbone, React, Instanc
 				var dataset_collection = new DatasetCollection(null, {username: user.get("username")});
 				dataset_collection.fetch();
 				React.render(<DatasetsPanel collection={dataset_collection}/>, document.getElementById("body"));
+			});
+		},
+		datapoints: function(id) {
+			var that = this;
+			require([
+				"model/Dataset", "model/DatapointPageableCollection", "jsx!view/main/DatapointsPanel"
+			], function(Dataset, DatapointPageableCollection, DatapointsPanel) {
+				var token = InstanceCache.get("Token", "session");
+				var user = token ? token.get_user() : null;
+				if(!user) {
+					that.navigate("", true);
+					return;
+				}
+				var dataset = new Dataset({username: token.get("username"), id: id});
+				var datapoint_collection = new DatapointPageableCollection(null, {dataset: dataset});
+				dataset.fetch({
+					success: function(model) {
+						datapoint_collection.fetch();
+					},
+				});
+				React.render(<DatapointsPanel model={dataset} collection={datapoint_collection}/>, document.getElementById("body"));
 			});
 		},
 	});

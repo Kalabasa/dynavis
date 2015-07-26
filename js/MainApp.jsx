@@ -30,7 +30,7 @@ define(function(require){
 	};
 
 	MainApp.prototype.check_login = function() {
-		if(Backbone.history.getFragment() == "datasets" && !this.token.get_user()) {
+		if(Backbone.history.getFragment() !== "" && !this.token.get_user()) {
 			this.router.navigate("", true);
 			return false;
 		}
