@@ -203,7 +203,7 @@ define(["underscore", "jenks", "leaflet"], function(_, jenks, L) {
 				})
 				.map(function(p) { return parseFloat(p.get("value")); })
 				.value();
-			return jenks(data, n);
+			return jenks(data, n) || [dataset.get_datapoints().get_min_value(), dataset.get_datapoints().get_max_value()];
 		}, function(dataset, geojson, year, n) {
 			return dataset.get("id") + "|" + geojson.url + "|" + year + "|" + n;
 		}),

@@ -22,7 +22,7 @@ define(["react", "InstanceCache", "jsx!view/HeaderSession"], function(React, Ins
 			return (
 				<div className="clearfix">
 					<div id="logo">
-						name
+						<a href=".">name</a>
 					</div>
 					<div id="header-content">
 						<h2 className="header-title">{this.state.title}</h2>
