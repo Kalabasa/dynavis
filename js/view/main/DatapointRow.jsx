@@ -33,13 +33,14 @@ define(["underscore", "react", "InstanceCache", "jsx!view/SliderTransitionGroupC
 									ref="area"
 									display={display}
 									model={area}
+									placeholder="Area"
 									required />
 							</label>
 							<label className="pure-u-1-3 pad">
-								<input className="pure-u-1" type="number" valueLink={this.linkState("year")} required />
+								<input className="pure-u-1" type="number" placeholder="Year" valueLink={this.linkState("year")} required />
 							</label>
 							<label className="pure-u-1-3 pad">
-								<input className="pure-u-1" type="number" valueLink={this.linkState("value")} required />
+								<input className="pure-u-1" type="number" placeholder="Value" valueLink={this.linkState("value")} required />
 							</label>
 						</div>
 						<div className="pure-g">

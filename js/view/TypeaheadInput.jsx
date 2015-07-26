@@ -62,7 +62,7 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 
 		render: function() {
 			return (
-				<input className={this.props.className} type="text" ref="input" value={this.state.value} onChange={this.handle_change} required={this.props.required} />
+				<input className={this.props.className} type="text" ref="input" value={this.state.value} onChange={this.handle_change} placeholder={this.props.placeholder} required={this.props.required} />
 			);
 		},
 

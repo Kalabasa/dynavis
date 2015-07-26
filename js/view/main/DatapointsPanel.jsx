@@ -31,7 +31,7 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 							</form>
 						</div>
 					</PanelToolbar>
-					<SearchControls className="mar" collection={this.collection()} />
+					<SearchControls ref="searcher" className="mar" collection={this.collection()} />
 					<ReactCSSTransitionGroup transitionName="fade">
 						{this.collection().map(function(datapoint) {
 							return <DatapointRow key={datapoint.cid} model={datapoint} />;
