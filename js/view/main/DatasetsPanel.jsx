@@ -17,7 +17,7 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 					<div className="clearfix">
 						<a className="pull-left button button-complement" href="#">Back</a>
 					</div>
-					<PanelToolbar ref="toolbar" toggle_text="Add Data">
+					<PanelToolbar ref="toolbar" toggle_text="Add Dataset">
 						<div className="pure-u-1 pad">
 							<form ref="form" onSubmit={this.handle_upload}>
 								<h6>Upload dataset</h6>
