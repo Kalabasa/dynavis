@@ -53,7 +53,7 @@ class User extends \Dynavis\Core\Entity {
 				case "tag": $type = 1; break;
 				default: $app->halt(400, "Invalid type. " . $type);
 			}
-			$where = ["AND" => array_merge($where, ["type" => $type])];
+			$where = ["AND" => array_merge($where, [Dataset::TABLE . ".type" => $type])];
 		}
 
 		if($count != 0) {

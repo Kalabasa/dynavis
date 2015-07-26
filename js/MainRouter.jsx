@@ -37,7 +37,7 @@ define(["backbone", "react", "InstanceCache"], function(Backbone, React, Instanc
 					that.navigate("", true);
 					return;
 				}
-				var dataset_collection = new DatasetCollection(null, {username: user.get("username")});
+				var dataset_collection = new DatasetCollection(null, {type: "area", username: user.get("username")});
 				dataset_collection.fetch();
 				React.render(<DatasetsPanel collection={dataset_collection}/>, document.getElementById("body"));
 			});
