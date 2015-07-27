@@ -123,6 +123,9 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 			}else{
 				this.set_geojson("data/region.json");
 			}
+
+			// TODO: move this to somewhere into TagCloudLayer
+			this.tagcloud.minimum_size = 20 / this.map.getZoom();
 		},
 	});
 });

@@ -37,7 +37,7 @@ define(["react", "jsx!view/PageControls", "react.backbone"], function(React, Pag
 		},
 
 		handle_cancel: function() {
-			// this.setState({input: ""});
+			this.setState({input: ""});
 			this.set_query(null);
 		},
 

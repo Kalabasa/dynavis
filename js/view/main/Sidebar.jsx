@@ -31,9 +31,9 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 					{datasets_pane}
 					<ChoroplethSettingsPane key="pane_choropleth" bus={this.props.bus} />
 					<TagCloudSettingsPane key="pane_tagcloud" bus={this.props.bus} />
-					<form key="pane_year" className="group pane pure-g form" onSubmit={this.handle_submit}>
-						<input className="group-component pure-u-2-3" type="number" valueLink={this.linkState("year")} required />
-						<input className="group-component pure-u-1-3 button-primary" type="submit" value="Go" />
+					<form key="pane_year" className="pane pure-g form" onSubmit={this.handle_submit}>
+						<input className="pure-u-2-3" type="number" valueLink={this.linkState("year")} required />
+						<input className="pure-u-1-3 button-primary" type="submit" value="Go" />
 					</form>
 				</div>
 			);
