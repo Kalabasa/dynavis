@@ -9,6 +9,7 @@ class Token extends \Dynavis\Core\RefEntity {
 		"token",
 		"expiry",
 	];
+	const QUERY_FIELDS = null;
 
 	public function set($param) {
 		$user = $param["user"];
@@ -23,9 +24,9 @@ class Token extends \Dynavis\Core\RefEntity {
 	}
 
 	public static function get_by_token($token) {
-		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], ["token" => $token]);
-		if(!$ret) return null;
-		return new Token((int) $ret[static::PRIMARY_KEY], false);
+		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, ["token" => $token]);
+		if($ret === false) throw new \Dynavis\Core\NotFoundException("Token not found. $token");
+		return new Token((int) $ret, false);
 	}
 
 	public function get_user() {

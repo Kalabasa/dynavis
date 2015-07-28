@@ -36,13 +36,13 @@ $auth_username_or_admin = authenticator(["username_match" => true, "roles" => ["
 // GET requests
 //-----------------------------------------------------------------------------
 
-$app->get("/officials", function () { generic_get_list("Official", ["surname", "name", "nickname"]); } )->name("officials");
+$app->get("/officials", function () { generic_get_list("Official"); } )->name("officials");
 $app->get("/officials/:id", "get_official");
 $app->get("/officials/:id/families", "get_official_families");
-$app->get("/families", function () { generic_get_list("Family", ["name"]); } );
+$app->get("/families", function () { generic_get_list("Family"); } );
 $app->get("/families/:id", "get_family");
 $app->get("/families/:id/officials", "get_family_officials");
-$app->get("/parties", function () { generic_get_list("Party", ["name"]); } );
+$app->get("/parties", function () { generic_get_list("Party"); } );
 $app->get("/parties/:id", function ($id) { generic_get_item("Party", $id); });
 $app->get("/parties/:id/elections", "get_party_elections");
 $app->get("/areas", "get_areas")->name("areas");
@@ -50,9 +50,9 @@ $app->get("/areas/id/:id", "get_area");
 $app->get("/areas/:code", "code_to_id", "get_area");
 $app->get("/areas/id/:id/elections", "get_area_elections");
 $app->get("/areas/:code/elections", "code_to_id", "get_area_elections");
-$app->get("/elections", function () { generic_get_list("Elect", ["position"]); } );
+$app->get("/elections", function () { generic_get_list("Elect"); } );
 $app->get("/elections/:id", function ($id) { generic_get_item("Elect", $id); } );
-$app->get("/users", function () { generic_get_list("User", ["username"]); } );
+$app->get("/users", function () { generic_get_list("User"); } );
 $app->get("/users/:username", "get_user");
 $app->get("/users/:username/datasets", "get_user_datasets");
 $app->get("/users/:username/datasets/:id", "get_user_dataset");
@@ -191,7 +191,7 @@ function normalize_query($query_string) {
 
 // Generic
 
-function generic_get_list($class, $search_fields = null) {
+function generic_get_list($class) {
 	global $app;
 	$class = "\\Dynavis\\Model\\" . $class;
 
@@ -200,36 +200,25 @@ function generic_get_list($class, $search_fields = null) {
 		"start" => 0,
 		"q" => null,
 		"qnorm" => true,
-		"qindex" => false,
-		"qtypeahead" => false,
 	]);
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
 	if(!is_null($params["q"])) {
-		if(is_null($search_fields)) {
-			$search_fields = $class::FIELDS;
-		}
 		$query = $params["qnorm"]
 			? normalize_query($params["q"])
 			: [$params["q"]];
-		if($params["qindex"]) {
-			$search_fields = [$search_fields[0]];
-			$query = [$query[0] . "%"];
-		}elseif($params["qtypeahead"]) {
-			$query = [join(" ", $query) . "%"];
-		}
 	}
 
 	$result = isset($query)
-		? $class::query_items($count, $start, $query, $search_fields)
+		? $class::query_items($count, $start, $query)
 		: $class::list_items($count, $start);
 	if(!$result) {
 		$app->halt(400, "Invalid request parameters.");
 	}
 	$list = array_map(
 		function ($item) use ($class) {
-			return new $class((int) $item[$class::PRIMARY_KEY]);
+			return new $class((int) $item[$class::PRIMARY_KEY], false);
 		},
 		$result["data"]
 	);
@@ -559,8 +548,6 @@ function get_areas() {
 		"level" => null,
 		"q" => null,
 		"qnorm" => true,
-		"qindex" => false,
-		"qtypeahead" => false,
 	]);
 
 	$start = (int) $params["start"];
@@ -575,11 +562,6 @@ function get_areas() {
 		$query = $params["qnorm"]
 			? normalize_query($params["q"])
 			: [$params["q"]];
-		if($params["qindex"]) {
-			$query = [$query[0] . "%"];
-		}elseif($params["qtypeahead"]) {
-			$query = [join(" ", $query)];
-		}
 	}
 
 	$result = Area::list_areas($count, $start, $level, $query);
@@ -816,9 +798,10 @@ function delete_all_elections() { // Deletes EVERYTHING! except areas,datasets,e
 
 function get_user($username) {
 	global $app;
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
+	try {
+		$user = User::get_by_username($username);
+	}catch(NotFoundException $e) {
+		$app->halt(404, $e->getMessage());
 	}
 	echo json_encode($user);
 }
@@ -855,9 +838,10 @@ function put_user($username) {
 		$app->halt(400, "Malformed data.");
 	}
 
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
+	try {
+		$user = User::get_by_username($username);
+	}catch(NotFoundException $e) {
+		$app->halt(404, $e->getMessage());
 	}
 
 	if(array_key_exists("password", $data)) {
@@ -889,9 +873,10 @@ function put_user($username) {
 
 function delete_user($username) {
 	global $app;
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
+	try {
+		$user = User::get_by_username($username);
+	}catch(NotFoundException $e) {
+		$app->halt(404, $e->getMessage());
 	}
 
 	try {
@@ -973,9 +958,10 @@ function get_user_datasets($username) {
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
 
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
+	try {
+		$user = User::get_by_username($username);
+	}catch(NotFoundException $e) {
+		$app->halt(404, $e->getMessage());
 	}
 
 	$type = $params["type"];
@@ -995,15 +981,11 @@ function get_user_datasets($username) {
 
 function get_user_dataset($username, $dataset_id) {
 	global $app;
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
-	}
-
 	try {
+		$user = User::get_by_username($username);
 		$dataset = new Dataset((int) $dataset_id);
 	}catch(NotFoundException $e) {
-		$app->halt(404);
+		$app->halt(404, $e->getMessage());
 	}
 
 	if($dataset->user_id != $user->get_id()) {
@@ -1015,15 +997,11 @@ function get_user_dataset($username, $dataset_id) {
 
 function get_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
 	global $app;
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
-	}
-
 	try {
+		$user = User::get_by_username($username);
 		$dataset = new Dataset((int) $dataset_id);
 	}catch(NotFoundException $e) {
-		$app->halt(404);
+		$app->halt(404, $e->getMessage());
 	}
 
 	if($dataset->user_id != $user->get_id()) {
@@ -1044,27 +1022,27 @@ function get_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
 
 function get_user_dataset_datapoints($username, $dataset_id) {
 	global $app;
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
-	}
+	$params = defaults($app->request->get(), [
+		"count" => 0,
+		"start" => 0,
+		"type" => null,
+	]);
+
+	$start = (int) $params["start"];
+	$count = (int) $params["count"];
 
 	try {
+		$user = User::get_by_username($username);
 		$dataset = new Dataset((int) $dataset_id);
 	}catch(NotFoundException $e) {
-		$app->halt(404);
+		$app->halt(404, $e->getMessage());
 	}
 
 	if($dataset->user_id != $user->get_id()) {
 		$app->halt(404);
 	}
 
-	$datapoints = $dataset->get_points();
-
-	echo json_encode([
-		"total" => count($datapoints),
-		"data" => $datapoints,
-	]);
+	echo json_encode($dataset->get_points($count, $start));
 }
 
 function post_user_dataset($username) {
@@ -1078,9 +1056,10 @@ function post_user_dataset($username) {
 		$app->halt(400, "Incomplete data.");
 	}
 
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
+	try {
+		$user = User::get_by_username($username);
+	}catch(NotFoundException $e) {
+		$app->halt(404, $e->getMessage());
 	}
 
 	$dataset = new Dataset(["user" => $user]);
@@ -1112,15 +1091,11 @@ function post_user_dataset_datapoint($username, $dataset_id) {
 		$app->halt(400, "Malformed data.");
 	}
 
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
-	}
-
 	try {
+		$user = User::get_by_username($username);
 		$dataset = new Dataset((int) $dataset_id);
 	}catch(NotFoundException $e) {
-		$app->halt(404);
+		$app->halt(404, $e->getMessage());
 	}
 
 	if($dataset->user_id != $user->get_id()) {
@@ -1156,15 +1131,11 @@ function post_user_dataset_datapoint($username, $dataset_id) {
 function post_dataset_file($username, $dataset_id, $file) {
 	global $app;
 	
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
-	}
-
 	try {
+		$user = User::get_by_username($username);
 		$dataset = new Dataset((int) $dataset_id);
 	}catch(NotFoundException $e) {
-		$app->halt(404);
+		$app->halt(404, $e->getMessage());
 	}
 
 	Database::get()->pdo->beginTransaction();
@@ -1192,15 +1163,11 @@ function put_user_dataset($username, $dataset_id) {
 		$app->halt(400, "Malformed data.");
 	}
 
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
-	}
-
-	try{
+	try {
+		$user = User::get_by_username($username);
 		$dataset = new Dataset((int) $dataset_id);
 	}catch(NotFoundException $e) {
-		$app->halt(404);
+		$app->halt(404, $e->getMessage());
 	}
 
 	if($dataset->user_id != $user->get_id()) {
@@ -1227,22 +1194,15 @@ function put_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
 		$app->halt(400, "Malformed data.");
 	}
 
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
-	}
-
 	try{
+		$user = User::get_by_username($username);
 		$dataset = new Dataset((int) $dataset_id);
-		if($dataset->user_id != $user->get_id()) {
-			$app->halt(404);
-		}
 		$datapoint = new Datapoint((int) $datapoint_id);
-		if($datapoint->dataset_id != $dataset_id) {
+		if($dataset->user_id != $user->get_id() || $datapoint->dataset_id != $dataset_id) {
 			$app->halt(404);
 		}
 	}catch(NotFoundException $e) {
-		$app->halt(404);
+		$app->halt(404, $e->getMessage());
 	}
 
 	foreach ($data as $key => $value) {
@@ -1262,15 +1222,11 @@ function put_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
 
 function delete_user_dataset($username, $dataset_id) {
 	global $app;
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
-	}
-
-	try{
+	try {
+		$user = User::get_by_username($username);
 		$dataset = new Dataset((int) $dataset_id);
 	}catch(NotFoundException $e) {
-		$app->halt(404);
+		$app->halt(404, $e->getMessage());
 	}
 
 	if($dataset->user_id != $user->get_id()) {
@@ -1288,22 +1244,16 @@ function delete_user_dataset($username, $dataset_id) {
 
 function delete_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
 	global $app;
-	$user = User::get_by_username($username);
-	if(!$user) {
-		$app->halt(404);
-	}
 
 	try{
+		$user = User::get_by_username($username);
 		$dataset = new Dataset((int) $dataset_id);
-		if($dataset->user_id != $user->get_id()) {
-			$app->halt(404);
-		}
 		$datapoint = new Datapoint((int) $datapoint_id);
-		if($datapoint->dataset_id != $dataset_id) {
+		if($dataset->user_id != $user->get_id() || $datapoint->dataset_id != $dataset_id) {
 			$app->halt(404);
 		}
 	}catch(NotFoundException $e) {
-		$app->halt(404);
+		$app->halt(404, $e->getMessage());
 	}
 
 	try {
@@ -1454,9 +1404,10 @@ function generate_indicator() {
 		$app->halt(400, "Incomplete data.");
 	}
 
-	$user = User::get_by_username($data["username"]);
-	if(!$user) {
-		$app->halt(400, "Invalid username.");
+	try {
+		$user = User::get_by_username($data["username"]);
+	}catch(NotFoundException $e) {
+		$app->halt(400, $e->getMessage());
 	}
 	$indicator = $data["indicator"];
 	$description = $data["description"];

@@ -1,5 +1,6 @@
 <?php
 namespace Dynavis\Core;
+use \PDO;
 use \Dynavis\Database;
 
 abstract class Entity implements \JsonSerializable{
@@ -11,6 +12,9 @@ abstract class Entity implements \JsonSerializable{
 
 	// Name of primary key field
 	const PRIMARY_KEY = "id";
+
+	// Fields to query when searching
+	const QUERY_FIELDS = ["id"];
 
 	// ID of this entity
 	private $_id = null;
@@ -48,27 +52,59 @@ abstract class Entity implements \JsonSerializable{
 		];
 	}
 
-	public static function query_items($count, $start, $query, $fields) {
+	public static function query_items($count, $start, $query) {
 		if($count < 0 || $start < -1) return false;
 		if(!is_null($query) && empty($query)) return ["total" => 0, "data" => []];
 		
-		$uquery = array_unique($query);
-		$search = [];
-		foreach ($fields as $f) {
-			$search[$f . "[~]"] = $uquery;
+		$where = " 1 ";
+		if(is_null($query)) {
+			$uquery = [];
+		}else{
+			$search_clause = " 0 ";
+			$uquery = array_unique($query);
+			foreach (static::QUERY_FIELDS as $f) {
+				$field_conditions = " 1 ";
+				foreach ($uquery as $k => $v) {
+					$field_conditions .= " and $f like :query_$k";
+				}
+				$search_clause .= " or ($field_conditions) ";
+			}
+			$where .= " and ($search_clause) ";
 		}
-		$where = [
-			"OR" => $search
-		];
 
-		$total = Database::get()->count(static::TABLE, $where);
-		if($count != 0) {
-			$where["LIMIT"] = [(int) $start , (int) $count];
+		function bind($statement, $uquery) {
+			foreach ($uquery as $k => $v) {
+				$statement->bindValue(":query_$k", "%$v%", PDO::PARAM_STR);
+			}
 		}
+
+		$count_query = " select count(*) "
+			. " from " . static::TABLE
+			. " where $where ";
+
+		$count_st = Database::get()->pdo->prepare($count_query);
+		bind($count_st, $uquery);
+		$count_st->execute();
+		$total = (int) $count_st->fetch()[0];
+
+		$select_query = " select " . static::PRIMARY_KEY
+			. " from " . static::TABLE
+			. " where $where ";
+		if($count != 0) {
+			$select_query .= " limit :start , :count ";
+		}
+
+		$select_st = Database::get()->pdo->prepare($select_query);
+		bind($select_st, $uquery);
+		if($count != 0) {
+			$select_st->bindParam(":start", $start, PDO::PARAM_INT);
+			$select_st->bindParam(":count", $count, PDO::PARAM_INT);
+		}
+		$select_st->execute();
 
 		return [
 			"total" => $total,
-			"data" => Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where),
+			"data" => $select_st->fetchAll(),
 		];
 	}
 

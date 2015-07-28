@@ -1,5 +1,6 @@
 <?php
 namespace Dynavis\Model;
+use \PDO;
 use \Dynavis\Database;
 
 class Elect extends \Dynavis\Core\RefEntity {
@@ -13,6 +14,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		"area_code",
 		"party_id",
 	];
+	const QUERY_FIELDS = ["year", "position"];
 
 	public function set($param) {
 		$official = $param["official"];
@@ -29,6 +31,88 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$this->party_id = is_null($party) ? null : $party->get_id();
 	}
 
+	public static function list_items($count, $start) {
+		return static::query_items($count, $start);
+	}
+
+	public static function query_items($count, $start, $query = null) {
+		if($count < 0 || $start < -1) return false;
+		if(!is_null($query) && empty($query)) return ["total" => 0, "data" => []];
+
+		$classes = ["Elect", "Official", "Area", "Party"];
+		$joins = "";
+
+		$where = " 1 ";
+		if(is_null($query)) {
+			$uquery = null;
+		}else{
+			$joins = " inner join " . Official::TABLE
+					. " on " . static::TABLE . ".official_id = " . Official::TABLE . "." . Official::PRIMARY_KEY
+				. " inner join " . Area::TABLE
+					. " on " . static::TABLE . ".area_code = " . Area::TABLE . ".code "
+				." left join " . Party::TABLE
+					. " on " . static::TABLE . ".party_id = " . Party::TABLE . "." . Party::PRIMARY_KEY;
+
+			$search_clause = " 0 ";
+			$uquery = array_unique($query);
+			foreach ($classes as $class) {
+				$full_class = "\\Dynavis\\Model\\$class";
+				foreach ($full_class::QUERY_FIELDS as $f) {
+					$field_conditions = " 1 ";
+					foreach ($uquery as $k => $v) {
+						$field_conditions .= " and " . $full_class::TABLE . ".$f like :query_{$class}_{$f}_{$k}";
+					}
+					$search_clause .= " or ($field_conditions) ";
+				}
+			}
+			$where .= " and ($search_clause) ";
+		}
+
+		function bind($statement, $uquery, $classes) {
+			if(!is_null($uquery)) {
+				foreach ($classes as $class) {
+					$full_class = "\\Dynavis\\Model\\$class";
+					foreach ($full_class::QUERY_FIELDS as $f) {
+						foreach ($uquery as $k => $v) {
+							$statement->bindValue(":query_{$class}_{$f}_{$k}", "%$v%", PDO::PARAM_STR);
+						}
+					}
+				}
+			}
+		}
+
+		$count_query = " select count(*) "
+			. " from " . static::TABLE
+			. $joins
+			. " where $where ";
+
+		$count_st = Database::get()->pdo->prepare($count_query);
+		bind($count_st, $uquery, $classes);
+		$count_st->execute();
+		$total = (int) $count_st->fetch()[0];
+
+		$select_query = " select " . static::TABLE . "." . static::PRIMARY_KEY
+			. " from " . static::TABLE
+			. $joins
+			. " where $where ";
+		if($count != 0) {
+			$select_query .= " limit :start , :count ";
+		}
+
+		$select_st = Database::get()->pdo->prepare($select_query);
+		bind($select_st, $uquery, $classes);
+		if($count != 0) {
+			$select_st->bindParam(":start", $start, PDO::PARAM_INT);
+			$select_st->bindParam(":count", $count, PDO::PARAM_INT);
+		}
+		$select_st->execute();
+
+		return [
+			"total" => $total,
+			"data" => $select_st->fetchAll(),
+		];
+	}
+
 	public function save() {
 		if($this->year >= $this->year_end) {
 			throw new \Dynavis\Core\DataException("'year' must be less than 'year_end'.");
@@ -38,7 +122,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$this->position = $this->position && trim($this->position) ? Database::normalize_string($this->position) : null;
 
 		// Check for year-area-position overlaps
-		$conflicts = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], ["AND" => [
+		$conflicts = Database::get()->select(static::TABLE, static::PRIMARY_KEY, ["AND" => [
 			static::PRIMARY_KEY . "[!]" => $this->get_id(),
 			"year[<]" => $this->year_end,
 			"year_end[>]" => $this->year,
@@ -54,7 +138,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		}
 
 		// Official cannot be in two posts simultaneously
-		$official_overlaps = Database::get()->select(static::TABLE, [static::PRIMARY_KEY], ["AND" => [
+		$official_overlaps = Database::get()->select(static::TABLE, static::PRIMARY_KEY, ["AND" => [
 			static::PRIMARY_KEY . "[!]" => $this->get_id(),
 			"year[<]" => $this->year_end,
 			"year_end[>]" => $this->year,

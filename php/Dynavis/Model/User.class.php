@@ -10,13 +10,14 @@ class User extends \Dynavis\Core\Entity {
 		"type",
 		"salt",
 	];
+	const QUERY_FIELDS = ["username"];
 
 	public static function get_by_username($username) {
-		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
+		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, [
 			"username" => Database::normalize_string($username)
 		]);
-		if(!$ret) return null;
-		return new User((int) $ret[static::PRIMARY_KEY], false);
+		if($ret === false) throw new \Dynavis\Core\NotFoundException("Username not found. $username");
+		return new User((int) $ret, false);
 	}
 
 	public function count_datasets($type = null) {
@@ -35,9 +36,7 @@ class User extends \Dynavis\Core\Entity {
 
 		return Database::get()->count(Dataset::TABLE, [
 			"[><]" . static::TABLE => ["user_id" => static::PRIMARY_KEY]
-		], [
-			Dataset::TABLE . "." . Dataset::PRIMARY_KEY
-		], $where);
+		], Dataset::TABLE . "." . Dataset::PRIMARY_KEY, $where);
 	}
 
 	public function get_datasets($count, $start, $type = null) {
@@ -61,14 +60,12 @@ class User extends \Dynavis\Core\Entity {
 		}
 
 		return array_map(
-			function ($item) {
-				return new Dataset((int) $item[Dataset::PRIMARY_KEY], false);
+			function ($id) {
+				return new Dataset((int) $id, false);
 			},
 			Database::get()->select(Dataset::TABLE, [
 				"[><]" . static::TABLE => ["user_id" => static::PRIMARY_KEY]
-			], [
-				Dataset::TABLE . "." . Dataset::PRIMARY_KEY
-			], $where)
+			], Dataset::TABLE . "." . Dataset::PRIMARY_KEY, $where)
 		);
 	}
 

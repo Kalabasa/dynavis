@@ -5,15 +5,16 @@ use \Dynavis\Database;
 class Family extends \Dynavis\Core\Entity {
 	const TABLE = "family";
 	const FIELDS = ["name"];
+	const QUERY_FIELDS = ["name"];
 
 	const TABLE_FAMILY_MEMBERSHIP = "family_membership";
 
 	public static function get_by_name($name) {
-		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
+		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, [
 			"name" => Database::normalize_string($name),
 		]);
-		if(!$ret) return null;
-		return new Family((int) $ret[static::PRIMARY_KEY], false);
+		if($ret === false) throw new \Dynavis\Core\NotFoundException("Name not found. $name");
+		return new Family((int) $ret, false);
 	}
 
 	public function add_member($official) {
@@ -65,9 +66,7 @@ class Family extends \Dynavis\Core\Entity {
 		return Database::get()->count(Official::TABLE, [
 			"[><]" . static::TABLE_FAMILY_MEMBERSHIP => [Official::PRIMARY_KEY => "official_id"],
 			"[><]" . static::TABLE => [static::TABLE_FAMILY_MEMBERSHIP . ".family_id" => static::PRIMARY_KEY],
-		], [
-			Official::TABLE . "." . Official::PRIMARY_KEY
-		], [
+		], Official::TABLE . "." . Official::PRIMARY_KEY, [
 			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
 		]);
 	}

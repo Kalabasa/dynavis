@@ -37,7 +37,6 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 					var params = {
 						string: q,
 						limit: this.limit,
-						qtypeahead: true,
 					};
 					InstanceCache.search(that.props.for, params,
 						function(d) { sync(that.filter_search(d)); },

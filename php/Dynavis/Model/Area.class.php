@@ -1,18 +1,20 @@
 <?php
 namespace Dynavis\Model;
+use \PDO;
 use \Dynavis\Database;
 use \Dynavis\PSGC;
 
 class Area extends \Dynavis\Core\Entity {
 	const TABLE = "area";
 	const FIELDS = ["code", "name", "type", "parent_code", "mun_id", "bar_id"];
+	const QUERY_FIELDS = ["code", "name"];
 
 	public static function get_by_code($code) {
-		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
+		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, [
 			"code" => $code,
 		]);
-		if(!$ret) throw new \Dynavis\Core\NotFoundException("Code does not exist. " . $code);
-		return new Area((int) $ret[static::PRIMARY_KEY], false);
+		if($ret === false) throw new \Dynavis\Core\NotFoundException("Code does not exist. " . $code);
+		return new Area((int) $ret, false);
 	}
 
 	public static function has_code($code) {
@@ -20,19 +22,19 @@ class Area extends \Dynavis\Core\Entity {
 	}
 
 	public static function get_by_municipality_code($id) {
-		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
+		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, [
 			"mun_id" => $id,
 		]);
-		if(!$ret) return null;
-		return new Area((int) $ret[static::PRIMARY_KEY], false);
+		if($ret === false) throw new \Dynavis\Core\NotFoundException("Municipality not found. $id");
+		return new Area((int) $ret, false);
 	}
 
 	public static function get_by_barangay_code($id) {
-		$ret = Database::get()->get(static::TABLE, [static::PRIMARY_KEY], [
+		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, [
 			"bar_id" => $id,
 		]);
-		if(!$ret) return null;
-		return new Area((int) $ret[static::PRIMARY_KEY], false);
+		if($ret === false) throw new \Dynavis\Core\NotFoundException("Barangay not found. $id");
+		return new Area((int) $ret, false);
 	}
 
 	public static function list_areas($count, $start, $level = null, $query = null) {
@@ -48,22 +50,58 @@ class Area extends \Dynavis\Core\Entity {
 			default: return false; break;
 		}
 
-		$where = [];
+		$where = " 1 ";
 		if(!is_null($level)) {
-			$where["type"] = $type;
+			$where .= " and type = :type ";
 		}
-		if(!is_null($query)) {
-			$where = ["AND" => array_merge($where, ["name[~]" => array_unique($query)])];
+		if(is_null($query)) {
+			$uquery = [];
+		}else{
+			$search_clause = " 0 ";
+			$uquery = array_unique($query);
+			foreach (static::QUERY_FIELDS as $f) {
+				$field_conditions = " 1 ";
+				foreach ($uquery as $k => $v) {
+					$field_conditions .= " and $f like :query_$k";
+				}
+				$search_clause .= " or ($field_conditions) ";
+			}
+			$where .= " and ($search_clause) ";
 		}
 
-		$total = Database::get()->count(static::TABLE, $where);
-		if($count != 0) {
-			$where["LIMIT"] = [(int) $start , (int) $count];
+		$count_query = " select count(*) "
+			. " from " . static::TABLE
+			. " where $where ";
+
+		$count_st = Database::get()->pdo->prepare($count_query);
+		foreach ($uquery as $k => $v) {
+			$count_st->bindValue(":query_$k", "%$v%", PDO::PARAM_STR);
 		}
+		if(!is_null($level)) $count_st->bindParam(":type", $type, PDO::PARAM_INT);
+		$count_st->execute();
+		$total = (int) $count_st->fetch()[0];
+
+		$select_query = " select " . static::PRIMARY_KEY
+			. " from " . static::TABLE
+			. " where $where ";
+		if($count != 0) {
+			$select_query .= " limit :start , :count ";
+		}
+
+		$select_st = Database::get()->pdo->prepare($select_query);
+		foreach ($uquery as $k => $v) {
+			$select_st->bindValue(":query_$k", "%$v%", PDO::PARAM_STR);
+		}
+		if(!is_null($level)) $select_st->bindParam(":type", $type, PDO::PARAM_INT);
+		if($count != 0) {
+			$select_st->bindParam(":start", $start, PDO::PARAM_INT);
+			$select_st->bindParam(":count", $count, PDO::PARAM_INT);
+		}
+		$select_st->execute();
 
 		return [
 			"total" => $total,
-			"data" => Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where),
+			"data" => $select_st->fetchAll(),
 		];
 	}
 
@@ -93,14 +131,12 @@ class Area extends \Dynavis\Core\Entity {
 
 	public function get_elections() {
 		return array_map(
-			function ($item) {
-				return new Elect((int) $item[Elect::PRIMARY_KEY], false);
+			function ($id) {
+				return new Elect((int) $id, false);
 			},
 			Database::get()->select(Elect::TABLE, [
 				"[><]" . static::TABLE => ["area_code" => "code"]
-			], [
-				Elect::TABLE . "." . Elect::PRIMARY_KEY
-			],[
+			], Elect::TABLE . "." . Elect::PRIMARY_KEY,[
 				static::TABLE . "." . static::PRIMARY_KEY => $this->get_code()
 			])
 		);

@@ -6,6 +6,7 @@ use \Dynavis\PSGC;
 class Dataset extends \Dynavis\Core\RefEntity {
 	const TABLE = "dataset";
 	const FIELDS = ["user_id", "type", "name", "description"];
+	const QUERY_FIELDS = ["name", "description"];
 
 	public function set($param) {
 		$user = $param["user"];
@@ -47,21 +48,33 @@ class Dataset extends \Dynavis\Core\RefEntity {
 		];
 	}
 
-	public function get_points() {
+	public function get_points($count = 0, $start = 0) {
+		if($count < 0 || $start < -1) return false;
+
 		$this->load();
 		$class = [
 			"\\Dynavis\\Model\\Datapoint",
 			"\\Dynavis\\Model\\TagDatapoint"
 		][$this->type];
 
+		$join = [
+			"[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]
+		];
+
 		$fields = array_merge($class::FIELDS, [$class::TABLE . "." . $class::PRIMARY_KEY]);
 		unset($fields[0]);
-		
-		return Database::get()->select($class::TABLE, [
-			"[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]
-		], $fields,[
+
+		$where = [
 			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
-		]);
+		];
+		if($count != 0) {
+			$where["LIMIT"] = [(int) $start , (int) $count];
+		}
+		
+		return [
+			"total" => Database::get()->count($class::TABLE, $join, "*", $where),
+			"data" => Database::get()->select($class::TABLE, $join, $fields, $where)
+		];
 	}
 
 	public function jsonSerialize() {
