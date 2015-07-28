@@ -217,9 +217,7 @@ function generic_get_list($class, $search_fields = null) {
 			$search_fields = [$search_fields[0]];
 			$query = [$query[0] . "%"];
 		}elseif($params["qtypeahead"]) {
-			$query = array_map(function($str) {
-				return $str . "%";
-			}, $query);
+			$query = [join(" ", $query) . "%"];
 		}
 	}
 
@@ -580,9 +578,7 @@ function get_areas() {
 		if($params["qindex"]) {
 			$query = [$query[0] . "%"];
 		}elseif($params["qtypeahead"]) {
-			$query = array_map(function($str) {
-				return $str . "%";
-			}, $query);
+			$query = [join(" ", $query)];
 		}
 	}
 
@@ -1473,9 +1469,6 @@ function generate_indicator() {
 			$app->halt(403, "Unsuccessful. Make sure the necessary data is in-place, such as election records and complete area data.");
 		}
 	}catch(DataException $e) {
-		var_dump(Database::get()->log());
-		var_dump($result);
-		return;
 		$app->halt(403, "Unsuccessful. " . $e->getMessage());
 	}
 
