@@ -114,6 +114,8 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 		},
 
 		on_zoom: function() {
+			// TODO: OPTIMIZE GEOJSON LOADING
+			// MAYBE SPLIT GEOJSON BY TILE
 			if(this.map.getZoom() >= 12) {
 				// this.set_geojson("data/barangay.json");
 			}else if(this.map.getZoom() >= 10) {
@@ -125,7 +127,7 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 			}
 
 			// TODO: move this to somewhere into TagCloudLayer
-			this.tagcloud.minimum_size = 20 / this.map.getZoom();
+			this.tagcloud.minimum_size = 30 / this.map.getZoom();
 		},
 	});
 });
