@@ -42,6 +42,7 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 
 	var InstanceCache = function() {
 		this.model_paths = MODEL_PATHS;
+		this.active_list = [];
 		this.hash = {};
 		this.models = {};
 		this.hounds = {
@@ -55,6 +56,8 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 	InstanceCache.prototype.get = function(name, id, fetch) {
 		if(id !== id) return null; // for NaN
 		fetch = fetch || false;
+
+		this.remove_expired();
 		
 		if(this.hash[name]) {
 			if(this.hash[name][id]) {
@@ -73,6 +76,8 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 
 		if(fetch) instance.fetch();
 
+		this.set_active(name, id);
+
 		return instance;
 	};
 
@@ -84,6 +89,11 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 	InstanceCache.prototype.set = function(name, key, value) {
 		if(!this.hash[name]) this.hash[name] = {};
 		this.hash[name][key] = value;
+		this.set_active(name, key);
+	};
+
+	InstanceCache.prototype.delete = function(name, key) {
+		if(this.hash[name]) delete this.hash[name][key];
 	};
 
 	InstanceCache.prototype.search = function(name, query, callback, async) {
@@ -117,6 +127,34 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 		}
 
 		this.hounds[name].search(query, callback_sync, callback_async);
+	};
+
+	InstanceCache.prototype.set_active = function(name, key, time) {
+		if (typeof time === "undefined") time = 60000;
+
+		var obj = _.findWhere(this.active_list, {name: name, key: key});
+		if(obj) {
+			obj.expiry += time;
+		}else{
+			obj = {
+				name: name,
+				key: key,
+				expiry: Date.now() + time,
+			};
+			this.active_list.push(obj);
+		}
+	};
+
+	InstanceCache.prototype.remove_expired = function() {
+		var now = Date.now();
+		_.each(this.active_list, function(obj) {
+			if(obj.expiry < now) {
+				if(this.hash[obj.name]) delete this.hash[obj.name][obj.key];
+			}
+		}, this);
+		this.active_list = _.reject(this.active_list, function(obj) {
+			return obj.expiry < now;
+		});
 	};
 
 	return new InstanceCache();
