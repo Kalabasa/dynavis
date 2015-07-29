@@ -68,7 +68,7 @@ def main():
 			filepath = os.path.join(dirpath, str(tile[1]) + ".json")
 
 			mkdir_p(dirpath, 0775)
-			with os.fdopen(os.open(filepath, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0775), "w") as outfile:
+			with os.fdopen(os.open(filepath, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0664), "w") as outfile:
 				outfile.write(geojson.dumps(fc))
 
 # http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Python

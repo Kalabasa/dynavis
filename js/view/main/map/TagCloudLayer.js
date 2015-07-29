@@ -5,7 +5,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			L.LayerGroup.prototype.initialize.call(this, layers);
 			
 			this._year = new Date().getFullYear();
-			this._current_geojson = null;
+			this._geojson_number = 0;
 			this._dataset = null;
 			this._tags = [];
 
@@ -33,8 +33,11 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			this.construct_tags();
 		},
 
-		replace_geojson: function(geojson) {
-			this._current_geojson = geojson;
+		reset_geojson: function() {
+			this._geojson_number++;
+		},
+
+		add_geojson: function(geojson) {
 			this.update_minimum_size();
 			this.construct_tags();
 		},
@@ -52,18 +55,18 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 
 			// Add new tags
 			if(this._dataset) {
-				var geojson_layers = this._current_geojson.getLayers();
-				for (var i = 0; i < geojson_layers.length; i++) {
-					this.tag_poly(geojson_layers[i]);
+				var layers = LOL.getLayers();
+				for (var i = 0; i < layers.length; i++) {
+					this.tag_poly(layers[i]);
 				}
 			}
 		},
 
 		tag_poly: function(poly) {
 			poly.datapoints = [];
-			loop.call(this, poly, this._dataset.get_datapoints(), this._current_geojson);
-			function loop(poly, datapoints, geojson) {
-				if(this._current_geojson == geojson) {
+			loop.call(this, poly, this._dataset.get_datapoints(), this._geojson_number);
+			function loop(poly, datapoints, gjn) {
+				if(this._geojson_number == gjn) {
 					if(poly.getBounds().intersects(this.map.getBounds())) {
 						var bounds = poly.getBounds();
 						var top_left = bounds.getNorthWest();
@@ -88,7 +91,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 							});
 						}
 					}else{
-						setTimeout(loop.bind(this), 100, poly, datapoints, geojson);
+						setTimeout(loop.bind(this), 100, poly, datapoints, gjn);
 					}
 				}
 			}
@@ -138,19 +141,21 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 		},
 
 		update_minimum_size: function() {
-			if(this._dataset && this._current_geojson) {
-				this.minimum_size = this.calculate_minimum_size(this._dataset, this._current_geojson, this._year);
+			if(this._dataset) {
+				// FIXME: Get level from this._dataset
+				this.minimum_size = this.calculate_minimum_size(this._dataset, level, this._year);
 			}
 		},
 
-		calculate_minimum_size: _.memoize(function(dataset, geojson, year) {
+		calculate_minimum_size: _.memoize(function(dataset, level, year) {
 			year = year.toString();
 			
 			var area_codes = {};
-			var layers = geojson.getLayers();
-			for (var i = 0; i < layers.length; i++) {
-				area_codes[("0"+parseInt(layers[i].feature.properties.PSGC)).slice(-9)] = true;
-			}
+			// FIXME: GET AREAS From LEVEL
+			// var layers = geojson.getLayers();
+			// for (var i = 0; i < layers.length; i++) {
+			// 	area_codes[("0"+parseInt(layers[i].feature.properties.PSGC)).slice(-9)] = true;
+			// }
 
 			var data = dataset.get_datapoints().chain()
 				.filter(function(p) {
@@ -162,8 +167,8 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 				.sortBy()
 				.value();
 			return data[Math.floor(data.length * 0.95)];
-		}, function(dataset, geojson, year) {
-			return dataset.get("id") + "|" + geojson.url + "|" + year;
+		}, function(dataset, level, year) {
+			return dataset.get("id") + "|" + level + "|" + year;
 		}),
 	});
 });

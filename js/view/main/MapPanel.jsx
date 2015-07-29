@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view/main/map/TagCloudLayer"], function(React, L, config, ChoroplethLayer, TagCloudLayer) {
+define(["react", "underscore", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view/main/map/TagCloudLayer"], function(React, _, L, config, ChoroplethLayer, TagCloudLayer) {
 	return React.createClass({
 		getInitialState: function() {
 			return {
@@ -40,8 +40,8 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 				],
 			});
 
-			this.geoJson_cache = {};
-			this.current_geoJson = null;
+			this.geojson_cache = {};
+			this.geojson_added = {};
 
 			this.choropleth = new ChoroplethLayer();
 			this.choropleth.addTo(this.map);
@@ -54,42 +54,58 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 			this.map.getPanes().shadowPane.appendChild(this.labels.getContainer());
 			this.labels.getContainer().style.pointerEvents = "none";
 
-			this.map.on("zoomend", this.on_zoom);
-			this.on_zoom();
+			this.last_level = 0;
+			this.map.on("viewreset moveend zoomend", this.update_view);
+			this.update_view();
 		},
 
 		render: function() {
 			return <div className="map-panel"></div>;
 		},
 
-		set_geojson: function(geojson_url) {
-			var that = this;
-
-			if(this.geoJson_cache[geojson_url] === this.current_geoJson) {
-				return;
-			}
-
+		reset_geojson: function() {
+			this.choropleth.reset_geojson();
+			this.tagcloud.reset_geojson();
+			this.geojson_added = {};
 			this.selected = null;
+		},
 
-			if(this.geoJson_cache[geojson_url]) {
-				var geoJson = this.current_geoJson = this.geoJson_cache[geojson_url];
-				geoJson.url = geojson_url;
-				this.choropleth.replace_geojson(geoJson);
-				this.tagcloud.replace_geojson(geoJson);
+		add_geojson: function(geojson_url) {
+			if(this.geojson_added[geojson_url]) return;
+
+			if(this.geojson_cache[geojson_url]) {
+				var geojson = this.geojson_cache[geojson_url];
+				var hash = geojson.hash;
+				if(!this.geojson_added[hash]) {
+					this.geojson_added[hash] = true;
+					this.choropleth.add_geojson(geojson);
+					this.tagcloud.add_geojson(geojson);
+				}
 			}else{
 				var options = _.defaults(this.choropleth.geojson_options, {
 					onEachFeature: function(feature, layer) {
-						that.choropleth.on_feature(feature, layer);
-						that.tagcloud.on_feature(feature, layer);
-					}
+						this.choropleth.on_feature(feature, layer);
+						this.tagcloud.on_feature(feature, layer);
+					}.bind(this)
 				});
 				$.get(geojson_url).success(function(data) {
-					var geoJson = that.current_geoJson = that.geoJson_cache[geojson_url] = L.geoJson(data, options);
-					geoJson.url = geojson_url;
-					that.choropleth.replace_geojson(geoJson);
-					that.tagcloud.replace_geojson(geoJson);
-				});
+					if(this.geojson_added[geojson_url]) return;
+					if(typeof data === "object") {
+						var geojson = this.geojson_cache[geojson_url] = L.geoJson(data, options);
+						geojson.hash = this.hash_geojson(data);
+						this.add_geojson(geojson_url);
+					}
+					this.geojson_added[geojson_url] = true;
+				}.bind(this));
 			}
+		},
+
+		hash_geojson: function(geojson) {
+			var sum = 0;
+			_.each(geojson.features, function(feature) {
+				sum ^= parseInt(feature.properties.PSGC) | 0;
+			});
+			return sum;
 		},
 
 		on_update_settings: function(e) {
@@ -113,21 +129,49 @@ define(["react", "leaflet", "config.map", "view/main/map/ChoroplethLayer", "view
 			this.labels.getContainer().style.display = e.dataset ? "none" : "block";
 		},
 
-		on_zoom: function() {
-			// TODO: OPTIMIZE GEOJSON LOADING
-			// MAYBE SPLIT GEOJSON BY TILE
-			if(this.map.getZoom() >= 12) {
-				// this.set_geojson("data/barangay.json");
-			}else if(this.map.getZoom() >= 10) {
-				this.set_geojson("data/municipality.json");
-			}else if(this.map.getZoom() >= 8) {
-				this.set_geojson("data/province.json");
+		update_view: function() {
+			var zoom = this.map.getZoom();
+
+			var level;
+			if(zoom >= 12) {
+				level = "barangay";
+			}else if(zoom >= 10) {
+				level = "municipality";
+			}else if(zoom >= 8) {
+				level = "province";
 			}else{
-				this.set_geojson("data/region.json");
+				level = "region";
+			}
+
+			if(level != this.last_level) this.reset_geojson();
+			this.last_level = level;
+
+			var target_zoom = { // These zoom levels must match with the server
+				"region": 0,
+				"province": 8,
+				"municipality": 9,
+				"barangay": 10,
+			}[level];
+
+			var bounds = this.map.getBounds().pad(1);
+			var nw = bounds.getNorthWest();
+			var se = bounds.getSouthEast();
+
+			var nw_tile = {x: this.long2tile(nw.lng, target_zoom), y: this.lat2tile(nw.lat, target_zoom)};
+			var se_tile = {x: this.long2tile(se.lng, target_zoom), y: this.lat2tile(se.lat, target_zoom)};
+
+			for (var x = se_tile.x; x >= nw_tile.x; x--) {
+				for (var y = se_tile.y; y >= nw_tile.y; y--) {
+					var path = target_zoom + "/" + x + "/" + y;
+					this.add_geojson("api.php/geojson/" + level + "/" + path);
+				}
 			}
 
 			// TODO: move this to somewhere into TagCloudLayer
 			this.tagcloud.minimum_size = 30 / this.map.getZoom();
 		},
+
+		long2tile: function(lon,zoom) { return (Math.floor((lon+180)/360*Math.pow(2,zoom))); },
+		lat2tile: function(lat,zoom)  { return (Math.floor((1-Math.log(Math.tan(lat*Math.PI/180) + 1/Math.cos(lat*Math.PI/180))/Math.PI)/2 *Math.pow(2,zoom))); },
 	});
 });

@@ -23,6 +23,9 @@ use \Dynavis\DataProcessor;
 	"id_" => "\d+",
 	"code" => "\d{8,9}",
 	"level" => "region|province|municipality|barangay",
+	"zoom" => "\d+",
+	"x" => "\d+",
+	"y" => "\d+",
 ]);
 
 $app = new \Slim\Slim(["debug" => true]);
@@ -60,7 +63,7 @@ $app->get("/users/:username/datasets/:id/datapoints", "get_user_dataset_datapoin
 $app->get("/users/:username/datasets/:id_/datapoints/:id", "get_user_dataset_datapoint");
 $app->get("/datasets", "get_datasets");
 $app->get("/tokens/:id", $auth_token, "get_token");
-$app->get("/geojson/:level", "get_geojson");
+$app->get("/geojson/:level/:zoom/:x/:y", "get_geojson");
 
 
 //-----------------------------------------------------------------------------
@@ -1310,10 +1313,29 @@ function post_token() {
 
 // GeoJSON
 
-function get_geojson($level) {
+function get_geojson($level, $zoom, $x, $y) {
 	global $app;
-	$app->response->setStatus(302);
-	$app->response->headers->set("Location", dirname($app->request->getRootUri()) . "/data/$level.json");
+
+	$target_zoom = [ // These zoom levels must match with the client
+		"region" => 0,
+		"province" => 8,
+		"municipality" => 9,
+		"barangay" => 10,
+	][$level];
+
+	$s = pow(2, $target_zoom - $zoom);
+	$x = floor((int)$x * $s);
+	$y = floor((int)$y * $s);
+
+	$url = dirname($app->request->getRootUri()) . "/data/$level/$x/$y.json";
+	$path = __DIR__ . "/data/$level/$x/$y.json";
+
+	if(file_exists($path)) {
+		$app->response->setStatus(302);
+		$app->response->headers->set("Location", $url);
+	}else{
+		echo "null";
+	}
 }
 
 function post_geojson($level) {
@@ -1371,20 +1393,13 @@ function post_geojson($level) {
 			throw new \RuntimeException("Cannot create data directory.");
 		}
 	}
+
 	$dest = "$dir/$level.json";
-
-	// if(file_exists($dest)) {
-	// 	$i = 0;
-	// 	do{
-	// 		$i++;
-	// 		$m = "$dir/$level.json.$i.bak";
-	// 	}while(file_exists($m));
-	// 	rename($dest, $m);
-	// }
-
 	if(!copy($file["tmp_name"], $dest)) {
 		throw new \RuntimeException("Cannot save file!");
 	}
+
+	exec(escapeshellcmd("./scripts/process_geojson.py " . escapeshellarg($dest) . " " . escapeshellarg($level) . " &"));
 
 	$app->response->setStatus(204);
 }
