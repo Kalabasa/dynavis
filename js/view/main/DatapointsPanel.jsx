@@ -31,7 +31,8 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 							</form>
 						</div>
 					</PanelToolbar>
-					<SearchControls ref="searcher" className="mar" collection={this.collection()} />
+					{/*<SearchControls ref="searcher" className="mar" collection={this.collection()} />*/}
+					<PageControls className="text-center mar" collection={this.collection()} />
 					<ReactCSSTransitionGroup transitionName="fade">
 						{this.collection().map(function(datapoint) {
 							return <DatapointRow key={datapoint.cid} model={datapoint} />;
@@ -44,11 +45,17 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 
 		handle_add: function() {
 			var that = this;
-			if(this.refs.searcher.state.query === null && this.collection().getPage() === 0) {
+			if(/*this.refs.searcher.state.query === null && */this.collection().getPage() === 0) {
 				this.refs.toolbar.close();
 				this.collection().add({}, {at: 0});
 			}else{
-				this.refs.searcher.set_query(null, {
+				/*this.refs.searcher.set_query(null, {
+					complete: function() {
+						that.refs.toolbar.close();
+						that.collection().add({}, {at: 0});
+					},
+				});*/
+				this.collection().page(0, {
 					complete: function() {
 						that.refs.toolbar.close();
 						that.collection().add({}, {at: 0});
