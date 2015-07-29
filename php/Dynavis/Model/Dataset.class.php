@@ -67,12 +67,14 @@ class Dataset extends \Dynavis\Core\RefEntity {
 		$where = [
 			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
 		];
+
+		$total = Database::get()->count($class::TABLE, $join, "*", $where);
 		if($count != 0) {
 			$where["LIMIT"] = [(int) $start , (int) $count];
 		}
 		
 		return [
-			"total" => Database::get()->count($class::TABLE, $join, "*", $where),
+			"total" => $total,
 			"data" => Database::get()->select($class::TABLE, $join, $fields, $where)
 		];
 	}
