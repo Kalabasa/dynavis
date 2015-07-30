@@ -83,14 +83,14 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			poly.tags = [];
 			loop.call(this, poly, this._reset_number, true);
 			function loop(poly, rn, add) {
-				var intsersects = poly.getBounds().intersects(this.map.getBounds().pad(1));
+				var bounds = poly.getBounds();
+				var intsersects = bounds.intersects(this.map.getBounds().pad(1));
 				var datapoints = this._dataset.get_datapoints();
 				if(intsersects && this._reset_number == rn) {
 					if(add) {
 						add = false;
 
 						if(!poly.tags.length) { 
-							var bounds = poly.getBounds();
 							var top_left = bounds.getNorthWest();
 							var bottom_right = bounds.getSouthEast();
 
@@ -104,7 +104,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 								poly.tags.push({
 									"data": p,
 									"family": family,
-									"coords": L.latLng(lat, lng),
+									"coords": bounds.getCenter() || L.latLng(lat, lng),
 									"area": poly,
 								});
 							}
@@ -149,7 +149,6 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 
 			var filtered_tags = _.chain(this._tags)
 				.filter(function(tag) {
-					if(!bounds.contains(tag.coords)) return false;
 					var size = parseFloat(tag.data.get("value"));
 					if(size < this.minimum_size) return false;
 					tag.size = size;
@@ -161,6 +160,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 				.sortBy(function(tag) { return tag.size; })
 				.value();
 
+			var text_func = function(tag) { return tag.family.get("name"); };
 			var transform_func = function(tag) { return "translate(" + tag.x + "," + tag.y + ")"; };
 			var font_size_func = function(tag) { return Math.sqrt(0.8 * tag.size) + "em"; };
 
@@ -169,12 +169,12 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			var entered_tags = tags_data.enter().append("g");
 			entered_tags.append("text")
 					.attr("transform", transform_func)
-				.text(function(tag) { return tag.family.get("name"); })
+				.text(text_func)
 					.attr("class", "map-tag-stroke")
 					.style("font-size", font_size_func);
 			entered_tags.append("text")
 					.attr("transform", transform_func)
-				.text(function(tag) { return tag.family.get("name"); })
+				.text(text_func)
 					.attr("class", "map-tag")
 					.style("font-size", font_size_func)
 		},
