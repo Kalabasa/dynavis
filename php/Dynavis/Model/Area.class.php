@@ -81,7 +81,7 @@ class Area extends \Dynavis\Core\Entity {
 		$count_st->execute();
 		$total = (int) $count_st->fetch()[0];
 
-		$select_query = " select " . static::PRIMARY_KEY
+		$select_query = " select " . join(",", array_merge(static::FIELDS,  [static::PRIMARY_KEY]))
 			. " from " . static::TABLE
 			. " where $where ";
 		if($count != 0) {
@@ -130,13 +130,17 @@ class Area extends \Dynavis\Core\Entity {
 	}
 
 	public function get_elections() {
+		$fields = array_map(function($f) {
+			return Elect::TABLE . ".$f";
+		}, array_merge(Elect::FIELDS, [Elect::PRIMARY_KEY]));
+		
 		return array_map(
-			function ($id) {
-				return new Elect((int) $id, false);
+			function ($data) {
+				return new Elect($data, false);
 			},
 			Database::get()->select(Elect::TABLE, [
 				"[><]" . static::TABLE => ["area_code" => "code"]
-			], Elect::TABLE . "." . Elect::PRIMARY_KEY,[
+			], $fields, [
 				static::TABLE . "." . static::PRIMARY_KEY => $this->get_code()
 			])
 		);

@@ -91,7 +91,11 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$count_st->execute();
 		$total = (int) $count_st->fetch()[0];
 
-		$select_query = " select " . static::TABLE . "." . static::PRIMARY_KEY
+		$fields = array_map(function($f) {
+			return static::TABLE . ".$f";
+		}, array_merge(static::FIELDS, [static::PRIMARY_KEY]));
+
+		$select_query = " select " . join(",", $fields)
 			. " from " . static::TABLE
 			. $joins
 			. " where $where ";

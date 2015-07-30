@@ -29,8 +29,12 @@ class Family extends \Dynavis\Core\Entity {
 	}
 
 	public function get_members($year = False) {
+		$fields = array_map(function($f) {
+			return Official::TABLE . ".$f";
+		}, array_merge(Official::FIELDS, [Official::PRIMARY_KEY]));
+		
 		$query =
-			" select " . Official::TABLE . "." . Official::PRIMARY_KEY
+			" select " . join(",", $fields)
 			. " from " . Official::TABLE
 
 			. " inner join " . static::TABLE_FAMILY_MEMBERSHIP
@@ -55,8 +59,8 @@ class Family extends \Dynavis\Core\Entity {
 		}
 
 		return array_map(
-			function ($item) {
-				return new Official((int) $item[Official::PRIMARY_KEY], false);
+			function ($data) {
+				return new Official($data, false);
 			},
 			Database::get()->query($query)->fetchAll()
 		);

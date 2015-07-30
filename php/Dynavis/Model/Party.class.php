@@ -8,13 +8,17 @@ class Party extends \Dynavis\Core\Entity {
 	const QUERY_FIELDS = ["name"];
 
 	public function get_elections() {
+		$fields = array_map(function($f) {
+			return Elect::TABLE . ".$f";
+		}, array_merge(Elect::FIELDS, [Elect::PRIMARY_KEY]));
+		
 		return array_map(
-			function ($id) {
-				return new Elect((int) $id, false);
+			function ($data) {
+				return new Elect($data, false);
 			},
 			Database::get()->select(Elect::TABLE, [
 				"[><]" . static::TABLE => ["party_id" => static::PRIMARY_KEY]
-			],Elect::TABLE . "." . Elect::PRIMARY_KEY,[
+			], $fields, [
 				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
 			])
 		);

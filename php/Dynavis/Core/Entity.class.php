@@ -22,13 +22,25 @@ abstract class Entity implements \JsonSerializable{
 	// Actual data in the database; synchronized
 	private $_data = null;
 
-	public function __construct($id = null, $check = true) {
-		// Get the item data if id is given
-		if(isset($id)) {
-			if(!$check || static::has($id)) {
-				$this->_id = $id;
-			}else{
-				throw new NotFoundException("Entity ID is not in the database. " . get_class($this), 1);
+	public function __construct($id_or_data = null, $check = true) {
+		if(isset($id_or_data)) {
+			if(is_array($id_or_data)) { // assume assoc array
+				$this->_data = [];
+				foreach ($id_or_data as $k => $v) {
+					if(in_array($k, static::FIELDS, true)) {
+						$this->$k = $v;
+						if(!$check) $this->_data[$k] = $v;
+					}
+				}
+				if(!$check && isset($id_or_data[static::PRIMARY_KEY])) {
+					$this->_id = $id_or_data[static::PRIMARY_KEY];
+				}
+			}else{ // not data, then id
+				if(!$check || static::has($id_or_data)) {
+					$this->_id = $id_or_data;
+				}else{
+					throw new NotFoundException("Entity ID is not in the database. " . get_class($this), 1);
+				}
 			}
 		}else{
 			$this->_data = [];
@@ -48,7 +60,7 @@ abstract class Entity implements \JsonSerializable{
 		$limit = $count == 0 ? null : ["LIMIT" => [(int) $start , (int) $count]];
 		return [
 			"total" => static::count(),
-			"data" => Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $limit),
+			"data" => Database::get()->select(static::TABLE, array_merge(static::FIELDS, [static::PRIMARY_KEY]), $limit),
 		];
 	}
 
@@ -87,7 +99,7 @@ abstract class Entity implements \JsonSerializable{
 		$count_st->execute();
 		$total = (int) $count_st->fetch()[0];
 
-		$select_query = " select " . static::PRIMARY_KEY
+		$select_query = " select " . join(",", array_merge(static::FIELDS, [static::PRIMARY_KEY]))
 			. " from " . static::TABLE
 			. " where $where ";
 		if($count != 0) {

@@ -23,7 +23,7 @@ class DataProcessor {
 	public static function save_dataset($calc_data, $username, $name, $description) {
 		Database::get()->pdo->beginTransaction();
 
-		$dataset = new Dataset(["user" => User::get_by_username($username)]);
+		$dataset = new Dataset(null, ["user" => User::get_by_username($username)]);
 		$dataset->name = $name;
 		$dataset->description = $description;
 		$dataset->type = $calc_data["type"];

@@ -10,25 +10,33 @@ class Official extends \Dynavis\Core\Entity {
 	const TABLE_FAMILY_MEMBERSHIP = "family_membership";
 
 	public function get_families() {
+		$fields = array_map(function($f) {
+			return Family::TABLE . ".$f";
+		}, array_merge(Family::FIELDS, [Family::PRIMARY_KEY]));
+
 		return array_map(
-			function ($id) {
-				return new Family((int) $id, false);
+			function ($data) {
+				return new Family($data, false);
 			},
 			Database::get()->select(Family::TABLE, [
 				"[><]" . static::TABLE_FAMILY_MEMBERSHIP => [Family::PRIMARY_KEY => "family_id"],
 				"[><]" . static::TABLE => [static::TABLE_FAMILY_MEMBERSHIP . ".official_id" => static::PRIMARY_KEY],
-			], Family::TABLE . "." . Family::PRIMARY_KEY, [
+			], $fields, [
 				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
 			])
 		);
 	}
 
 	public function get_elections() {
+		$fields = array_map(function($f) {
+			return Elect::TABLE . ".$f";
+		}, array_merge(Elect::FIELDS, [Elect::PRIMARY_KEY]));
+		
 		return array_map(
-			function ($id) {
-				return new Elect((int) $id, false);
+			function ($data) {
+				return new Elect($data, false);
 			},
-			Database::get()->select(Elect::TABLE, Elect::TABLE . "." . Elect::PRIMARY_KEY, [
+			Database::get()->select(Elect::TABLE, $fields, [
 				Elect::TABLE . ".official_id" => $this->get_id()
 			])
 		);

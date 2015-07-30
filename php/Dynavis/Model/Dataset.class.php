@@ -44,7 +44,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 
 		return [
 			"total" => $total,
-			"data" => Database::get()->select(static::TABLE, [static::PRIMARY_KEY], $where),
+			"data" => Database::get()->select(static::TABLE, array_merge(static::FIELDS, [static::PRIMARY_KEY]), $where),
 		];
 	}
 

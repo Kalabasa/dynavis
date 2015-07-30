@@ -59,13 +59,17 @@ class User extends \Dynavis\Core\Entity {
 			$where["LIMIT"] = [(int) $start , (int) $count];
 		}
 
+		$fields = array_map(function($f) {
+			return Dataset::TABLE . ".$f";
+		}, array_merge(Dataset::FIELDS, [Dataset::PRIMARY_KEY]));
+
 		return array_map(
-			function ($id) {
-				return new Dataset((int) $id, false);
+			function ($data) {
+				return new Dataset($data, false);
 			},
 			Database::get()->select(Dataset::TABLE, [
 				"[><]" . static::TABLE => ["user_id" => static::PRIMARY_KEY]
-			], Dataset::TABLE . "." . Dataset::PRIMARY_KEY, $where)
+			], $fields, $where)
 		);
 	}
 

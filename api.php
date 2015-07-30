@@ -220,8 +220,8 @@ function generic_get_list($class) {
 		$app->halt(400, "Invalid request parameters.");
 	}
 	$list = array_map(
-		function ($item) use ($class) {
-			return new $class((int) $item[$class::PRIMARY_KEY], false);
+		function ($data) use ($class) {
+			return new $class($data, false);
 		},
 		$result["data"]
 	);
@@ -572,8 +572,8 @@ function get_areas() {
 		$app->halt(400, "Invalid request parameters.");
 	}
 	$areas = array_map(
-		function ($item) {
-			return new Area((int) $item[Area::PRIMARY_KEY], false);
+		function ($data) {
+			return new Area($data, false);
 		},
 		$result["data"]
 	);
@@ -902,8 +902,6 @@ function get_datasets() {
 		"type" => null,
 		"q" => null,
 		"qnorm" => true,
-		"qindex" => false,
-		"qtypeahead" => false,
 	]);
 
 	$start = (int) $params["start"];
@@ -918,13 +916,6 @@ function get_datasets() {
 		$query = $params["qnorm"]
 			? normalize_query($params["q"])
 			: [$params["q"]];
-		if($params["qindex"]) {
-			$query = [$query[0] . "%"];
-		}elseif($params["qtypeahead"]) {
-			$query = array_map(function($str) {
-				return $str . "%";
-			}, $query);
-		}
 	}
 
 	$result = Dataset::list_datasets($count, $start, $type, $query);
@@ -932,8 +923,8 @@ function get_datasets() {
 		$app->halt(400, "Invalid request parameters.");
 	}
 	$areas = array_map(
-		function ($item) {
-			return new Dataset((int) $item[Dataset::PRIMARY_KEY]);
+		function ($data) {
+			return new Dataset($data, false);
 		},
 		$result["data"]
 	);
