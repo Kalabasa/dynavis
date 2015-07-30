@@ -17,7 +17,7 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 			area_code = ("000000000" + area_code);
 			year = year.toString();
 
-			var match_start = area_code.substr(2-9,2) == "00" ? 0 : 2;
+			var match_start = area_code.substr(2-9,2) === "00" ? 0 : 2;
 			var area_code_match = area_code.substr(match_start-9);
 
 			return (single ? this.find : this.filter).call(this, function(p) {

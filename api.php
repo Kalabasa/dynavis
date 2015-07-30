@@ -1319,8 +1319,8 @@ function get_geojson($level, $zoom, $x, $y) {
 	$target_zoom = [ // These zoom levels must match with the client
 		"region" => 0,
 		"province" => 8,
-		"municipality" => 9,
-		"barangay" => 10,
+		"municipality" => 10,
+		"barangay" => 12,
 	][$level];
 
 	$s = pow(2, $target_zoom - $zoom);

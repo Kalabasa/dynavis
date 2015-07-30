@@ -12,6 +12,10 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			this.props.bus.main_settings.on("update", this.on_update_settings);
 			this.props.bus.choropleth_settings.on("dataset", this.on_area_dataset);
 			this.props.bus.tagcloud_settings.on("dataset", this.on_tag_dataset);
+
+			this._interval = setInterval(function() {
+				this.geojson_cache = {}; // clear cache once in a while
+			}.bind(this), 2 * 60 * 1000);
 		},
 
 		componentWillUnmount: function() {
@@ -19,6 +23,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			this.props.bus.choropleth_settings.off("dataset", this.on_area_dataset);
 			this.props.bus.tagcloud_settings.off("dataset", this.on_tag_dataset);
 			this.map = null;
+			clearInterval(this._interval);
 		},
 
 		componentDidMount: function() {
@@ -149,11 +154,11 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			var target_zoom = { // These zoom levels must match with the server
 				"region": 0,
 				"province": 8,
-				"municipality": 9,
-				"barangay": 10,
+				"municipality": 10,
+				"barangay": 12,
 			}[level];
 
-			var bounds = this.map.getBounds().pad(1);
+			var bounds = this.map.getBounds().pad(0.1);
 			var nw = bounds.getNorthWest();
 			var se = bounds.getSouthEast();
 

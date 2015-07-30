@@ -30,5 +30,18 @@ define(["underscore", "backbone"], function(_, Backbone) {
 			}
 			Backbone.Model.prototype.sync.call(this, method, model, options);
 		},
+	}, {
+		get_level: function(code) {
+			code = ("0"+code).slice(-9);
+			if(code.substr(6,3) !== "000") {
+				return "barangay";
+			}else if(code.substr(4,2) !== "00") {
+				return "municipality";
+			}else if(code.substr(2,2) !== "00") {
+				return "province";
+			}else{
+				return "region";
+			}
+		},
 	});
 });

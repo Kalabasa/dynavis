@@ -21,7 +21,7 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 			var user = token ? token.get_user() : null;
 			if(user) {
 				var datasets_pane = (
-					<div key="pane_datasets" className="pane">
+					<div key="pane_links" className="pane">
 						<a className="button button-flat" href="#datasets">Manage your datasets</a>
 					</div>
 				);
