@@ -7,9 +7,9 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 
 			this._style_neutral = {
 				weight: 2,
-				opacity: 0.4,
+				opacity: 0.6,
 				color: "#7f7f7f",
-				fillOpacity: 0.2,
+				fillOpacity: 0,
 				fillColor: "#c7c7c7",
 				className: "map-polygon visible",
 			};
@@ -17,11 +17,10 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 				weight: 3,
 				opacity: 1,
 				color: "#ffffff",
-				fillOpacity: 0.8,
+				fillOpacity: 1,
 			}, this._style_neutral);
 			this._style_highlight = {
-				weight: 4,
-				color: "#000000",
+				weight: 6,
 				opacity: 1,
 			};
 
@@ -114,7 +113,7 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 			poly.variables = [];
 			loop.call(this, poly, this._geojson_number, 0, true);
 			function loop(poly, gn, dn, add) {
-				var intersects = poly.getBounds().intersects(this.map.getBounds().pad(1));
+				var intersects = poly.getBounds().intersects(this.map.getBounds().pad(0.1));
 				if(intersects && this._geojson_number == gn) {
 					if(this._dataset_number != dn) {
 						dn = this._dataset_number;
