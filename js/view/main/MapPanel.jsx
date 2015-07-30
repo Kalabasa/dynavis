@@ -173,7 +173,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			}
 
 			// TODO: move this to somewhere into TagCloudLayer
-			this.tagcloud.minimum_size = 30 / this.map.getZoom();
+			this.tagcloud.minimum_size = 10 / this.map.getZoom();
 		},
 
 		long2tile: function(lon,zoom) { return (Math.floor((lon+180)/360*Math.pow(2,zoom))); },

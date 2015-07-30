@@ -10,7 +10,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			this._dataset = null;
 			this._tags = [];
 
-			this._redraw_callback = _.debounce(this.redraw.bind(this), 2000);
+			this._redraw_callback = _.debounce(this.redraw.bind(this), 600);
 
 			this.map = null;
 			this.minimum_size = 4;
@@ -21,7 +21,6 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			map.on("viewreset moveend", this.redraw.bind(this));
 
     		d3.select("#tag-cloud-overlay").remove();
-
 			d3.select(this.map.getPanes().overlayPane)
 				.append("svg")
 					.attr("id", "tag-cloud-overlay")
@@ -57,9 +56,10 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 
 			// Add new tags
 			if(this._dataset) {
+				var t = 0;
 				var layers = geojson.getLayers();
 				for (var i = 0; i < layers.length; i++) {
-					this.tag_poly(layers[i]);
+					setTimeout(this.tag_poly.bind(this), t += 10, layers[i]);
 				}
 			}
 		},
@@ -69,46 +69,58 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			this._tags = [];
 
 			if(this._dataset) {
+				var t = 0;
 				for (var i = this._geojson.length - 1; i >= 0; i--) {
 					var layers = this._geojson[i].getLayers();
 					for (var j = 0; j < layers.length; j++) {
-						this.tag_poly(layers[j]);
+						setTimeout(this.tag_poly.bind(this), t += 10, layers[j]);
 					}
 				}
 			}
 		},
 
 		tag_poly: function(poly) {
+			poly.tags = [];
 			loop.call(this, poly, this._reset_number, true);
 			function loop(poly, rn, add) {
-				var intsersects = poly.getBounds().intersects(this.map.getBounds().pad(0.1));
+				var intsersects = poly.getBounds().intersects(this.map.getBounds().pad(1));
 				var datapoints = this._dataset.get_datapoints();
 				if(intsersects && this._reset_number == rn) {
 					if(add) {
 						add = false;
 
-						var bounds = poly.getBounds();
-						var top_left = bounds.getNorthWest();
-						var bottom_right = bounds.getSouthEast();
+						if(!poly.tags.length) { 
+							var bounds = poly.getBounds();
+							var top_left = bounds.getNorthWest();
+							var bottom_right = bounds.getSouthEast();
 
-						var area_code = parseInt(poly.feature.properties.PSGC);
-						var datapoints = datapoints.find_datapoints(area_code, this._year);
-						for (var i = 0; i < datapoints.length; i++) {
-							var p = datapoints[i];
-							var family = InstanceCache.get("Family", p.get("family_id"));
-							family.fetch({
-								success: this._redraw_callback,
-								error: this._redraw_callback,
-							});
-							var lat = top_left.lat + (bottom_right.lat - top_left.lat) * Math.random();
-							var lng = top_left.lng + (bottom_right.lng - top_left.lng) * Math.random();
-							this._tags.push({
-								"data": p,
-								"family": family,
-								"coords": [lat, lng],
-								"area": poly,
-							});
+							var area_code = parseInt(poly.feature.properties.PSGC);
+							var datapoints = datapoints.find_datapoints(area_code, this._year);
+							for (var i = 0; i < datapoints.length; i++) {
+								var p = datapoints[i];
+								var family = InstanceCache.get("Family", p.get("family_id"));
+								var lat = top_left.lat + (bottom_right.lat - top_left.lat) * Math.random();
+								var lng = top_left.lng + (bottom_right.lng - top_left.lng) * Math.random();
+								poly.tags.push({
+									"data": p,
+									"family": family,
+									"coords": L.latLng(lat, lng),
+									"area": poly,
+								});
+							}
 						}
+
+						_.each(poly.tags, function(tag) {
+							this._tags.push(tag);
+							if(tag.family.get("name")) {
+								this._redraw_callback();
+							}else{
+								tag.family.fetch({
+									success: this._redraw_callback,
+									error: this._redraw_callback,
+								});
+							}
+						}.bind(this));
 					}
 				}else{
 					if(!add) {
@@ -125,42 +137,46 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 		},
 
 		redraw: function() {
-			var that = this;
-
 			var bounds = this.map.getBounds();
-			var tags = _.chain(this._tags)
-				.filter(function(tag) {
-					if(!bounds.contains(tag.coords)) return false;
-					var size = parseFloat(tag.data.get("value"));
-					if(size < this.minimum_size) return false;
-					tag.size = size;
-					var point = that.map.latLngToLayerPoint(tag.coords);
-					tag.x = point.x;
-					tag.y = point.y;
-					return true;
-				}, this)
-				.sortBy(function(tag) { return tag.size; })
-				.value();
-			
 			var top_left = this.map.latLngToLayerPoint(bounds.getNorthWest());
 			var svg = d3.select("#tag-cloud-overlay");
 			svg.style("width", this.map.getSize().x + "px")
 				.style("height", this.map.getSize().y + "px")
 				.style("margin-left", top_left.x + "px")
-				.style("margin-top", top_left.y + "px")
+				.style("margin-top", top_left.y + "px");
 			var g = d3.select("#tag-cloud-container");
-			g.attr("transform", "translate(" + (-top_left.x) + "," + (-top_left.y) + ")")
-			var svg_tags = g.selectAll("g").data(tags);
-			svg_tags.exit().remove();
-			svg_tags.enter().append("g")
-				.append("text")
-				.attr("transform", function(tag) { return "translate(" + tag.x + "," + tag.y + ")"; })
+			g.attr("transform", "translate(" + (-top_left.x) + "," + (-top_left.y) + ")");
+
+			var filtered_tags = _.chain(this._tags)
+				.filter(function(tag) {
+					if(!bounds.contains(tag.coords)) return false;
+					var size = parseFloat(tag.data.get("value"));
+					if(size < this.minimum_size) return false;
+					tag.size = size;
+					var point = this.map.latLngToLayerPoint(tag.coords);
+					tag.x = point.x;
+					tag.y = point.y;
+					return true;
+				}.bind(this), this)
+				.sortBy(function(tag) { return tag.size; })
+				.value();
+
+			var transform_func = function(tag) { return "translate(" + tag.x + "," + tag.y + ")"; };
+			var font_size_func = function(tag) { return Math.sqrt(0.8 * tag.size) + "em"; };
+
+			var tags_data = g.selectAll("g").data(filtered_tags);
+			tags_data.exit().remove();
+			var entered_tags = tags_data.enter().append("g");
+			entered_tags.append("text")
+					.attr("transform", transform_func)
 				.text(function(tag) { return tag.family.get("name"); })
-				.style("font-family", "Roboto")
-				.style("font-size", function(tag) { return Math.sqrt(0.9 * tag.size) + "em"; })
-				.style("font-weight", 900)
-				.style("stroke", "white")
-				.style("stroke-width", "1px");
+					.attr("class", "map-tag-stroke")
+					.style("font-size", font_size_func);
+			entered_tags.append("text")
+					.attr("transform", transform_func)
+				.text(function(tag) { return tag.family.get("name"); })
+					.attr("class", "map-tag")
+					.style("font-size", font_size_func)
 		},
 	});
 });

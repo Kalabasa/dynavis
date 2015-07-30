@@ -90,9 +90,7 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 			var t = 0;
 			var layers = geojson.getLayers();
 			for (var i = 0; i < layers.length; i++) {
-				setTimeout(function(l) { 
-					this.colorize_polygon(l);
-				}.bind(this), t += 10, layers[i]);
+				setTimeout(this.colorize_polygon.bind(this), t += 10, layers[i]);
 			}
 		},
 
@@ -102,9 +100,7 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 			for (var i = this._geojson.length - 1; i >= 0; i--) {
 				var layers = this._geojson[i].getLayers();
 				for (var j = 0; j < layers.length; j++) {
-					setTimeout(function(l) { 
-						this.colorize_polygon(l);
-					}.bind(this), t += 10, layers[j]);
+					setTimeout(this.colorize_polygon.bind(this), t += 10, layers[j]);
 				}
 			}
 		},
