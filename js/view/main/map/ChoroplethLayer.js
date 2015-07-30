@@ -6,18 +6,19 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 			var that = this;
 
 			this._style_neutral = {
-				weight: 2,
-				opacity: 0.6,
+				weight: 3,
+				opacity: 0.1,
 				color: "#7f7f7f",
 				fillOpacity: 0,
 				fillColor: "#c7c7c7",
 				className: "map-polygon visible",
 			};
 			this._style_colored = _.defaults({
-				weight: 3,
+				weight: 4,
 				opacity: 1,
 				color: "#ffffff",
 				fillOpacity: 1,
+				fillColor: "#dfdfdf",
 			}, this._style_neutral);
 			this._style_highlight = {
 				weight: 6,
@@ -25,7 +26,7 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 			};
 
 			this.geojson_options = {
-				smoothFactor: 3.0,
+				smoothFactor: 2.4,
 				style: this._style_neutral,
 			};
 
@@ -147,8 +148,13 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 		compute_polygon_style: function(poly, highlight) {
 			var style = null;
 			if(poly.variables.length && _.every(poly.variables, function(v) { return v.value !== null; })) {
+				var color = this.get_color(poly.variables);
+				var darker = _.mapObject(color, function(v) {
+					return Math.max(0, v - 64);
+				});
 				style = _.defaults({
-					fillColor: this.get_color(poly.variables),
+					color: "rgb("+Math.floor(darker.r)+","+Math.floor(darker.g)+","+Math.floor(darker.b)+")",
+					fillColor: "rgb("+Math.floor(color.r)+","+Math.floor(color.g)+","+Math.floor(color.b)+")",
 				}, this._style_colored);
 			}else{
 				style = this._style_neutral;
@@ -184,7 +190,7 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 					return Math.min(v, class_color[k]);
 				});
 			}, this);
-			return "rgb("+Math.floor(color.r)+","+Math.floor(color.g)+","+Math.floor(color.b)+")";
+			return color;
 		},
 
 		calculate_breaks: _.memoize(function(dataset, level, year, n) {
