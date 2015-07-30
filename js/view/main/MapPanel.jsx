@@ -158,7 +158,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 				"barangay": 12,
 			}[level];
 
-			var bounds = this.map.getBounds().pad(0.1);
+			var bounds = this.map.getBounds().pad(1);
 			var nw = bounds.getNorthWest();
 			var se = bounds.getSouthEast();
 

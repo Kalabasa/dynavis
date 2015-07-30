@@ -81,7 +81,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 		tag_poly: function(poly) {
 			loop.call(this, poly, this._reset_number, true);
 			function loop(poly, rn, add) {
-				var intsersects = poly.getBounds().intersects(this.map.getBounds().pad(0.1));
+				var intsersects = poly.getBounds().intersects(this.map.getBounds().pad(1));
 				var datapoints = this._dataset.get_datapoints();
 				if(intsersects && this._reset_number == rn) {
 					if(add) {

@@ -114,7 +114,7 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 			poly.variables = [];
 			loop.call(this, poly, this._geojson_number, 0, true);
 			function loop(poly, gn, dn, add) {
-				var intersects = poly.getBounds().intersects(this.map.getBounds().pad(0.1));
+				var intersects = poly.getBounds().intersects(this.map.getBounds().pad(1));
 				if(intersects && this._geojson_number == gn) {
 					if(this._dataset_number != dn) {
 						dn = this._dataset_number;
