@@ -1292,7 +1292,7 @@ function post_token() {
 		$app->halt(401, "Invalid username or password.");
 	}
 
-	$token = new Token(["user" => $user]);
+	$token = new Token(null, ["user" => $user]);
 	$token->save();
 
 	Token::cleanup();
