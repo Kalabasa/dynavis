@@ -1,8 +1,18 @@
 "use strict";
-define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName", "jsx!view/TypeaheadInput", "jsx!view/Name", "mixin/ClickToTopMixin", "react.backbone"], function(React, SliderTransitionGroupChild, EditableName, TypeaheadInput, Name, ClickToTopMixin) {
-	var ReactTransitionGroup = React.addons.TransitionGroup;
+define(function(require) {
+	var React = require("react", "react.backbone"),
+		SliderTransitionGroupChild = require("jsx!view/SliderTransitionGroupChild"),
+		EditableName = require("jsx!view/EditableName"),
+		TypeaheadInput = require("jsx!view/TypeaheadInput"),
+		Name = require("jsx!view/Name"),
+		ClickToTopMixin = require("mixin/ClickToTopMixin"),
+		Va = require("validator"),
+		ValidationMixin = require("mixin/ValidationMixin"),
+		ValidationMessages = require("jsx!view/ValidationMessages"),
+		ReactTransitionGroup = React.addons.TransitionGroup;
+
 	return React.createBackboneClass({
- 		mixins: [React.addons.LinkedStateMixin, ClickToTopMixin],
+ 		mixins: [React.addons.LinkedStateMixin, ValidationMixin, ClickToTopMixin],
 
 		getInitialState: function() {
 			return {
@@ -10,6 +20,34 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 				code: this.format_code(this.model().get("code")),
 				level: this.model().get("level") || "barangay",
 			};
+		},
+
+		getValidationSchema: function() {
+			return {
+				name: Va.lidator().required().string(),
+				code: Va.lidator().required().length(9).integerish(),
+				level: Va.lidator().required(),
+				// parent: Va.lidator().object(),
+			};
+		},
+		getObjectToValidate: function() {
+			return {
+				name: this.refs.name.state.name,
+				code: this.state.code,
+				level: this.state.level,
+				// parent: this.refs.parent.state.selected,
+			};
+		},
+		getValidationElementMap: function() {
+			return {
+				name: React.findDOMNode(this.refs.name),
+				code: React.findDOMNode(this.refs.code),
+				level: React.findDOMNode(this.refs.level),
+				// parent: React.findDOMNode(this.refs.parent),
+			};
+		},
+		validationCallback: function(key, valid, message) {
+			// React.findDOMNode(this.refs.save).disabled = !valid;
 		},
 
 		render: function() {
@@ -28,6 +66,7 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 				return (
 					<div className="edit data-row form">
 					<ReactTransitionGroup><SliderTransitionGroupChild key="edit">
+						<ValidationMessages validation={this.state.validation} />
 						<div className="pure-g">
 							<label className="pure-u-1-2 pad">
 								<div className="label">Name</div>
@@ -35,11 +74,11 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 							</label>
 							<label className="pure-u-1-2 pad">
 								<div className="label">Code</div>
-								<input className="pure-u-1" type="text" valueLink={this.linkState("code")} required />
+								<input ref="code" className="pure-u-1" type="text" valueLink={this.linkState("code")} required />
 							</label>
 							<label className="pure-u-1-2 pad">
 								<div className="label">Type</div>
-								<select className="pure-u-1" valueLink={this.linkState("level")} required>
+								<select ref="level" className="pure-u-1" valueLink={this.linkState("level")} required>
 									<option value="region">Region</option>
 									<option value="province">Province</option>
 									<option value="municipality">City/Municipality</option>
@@ -58,9 +97,9 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 						</div>
 						<div className="pure-g">
 							<div className="pure-u-1">
-								<button className="pull-left button button-complement mar" onClick={this.handle_delete}>Delete</button>
 								<button className="pull-right button button-primary mar" onClick={this.handle_save}>Save</button>
 								{cancel_button}
+								<button className="pull-left button button-complement mar" onClick={this.handle_delete}>Delete</button>
 							</div>
 						</div>
 					</SliderTransitionGroupChild></ReactTransitionGroup>
@@ -129,14 +168,10 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 		handle_save: function() {
 			var name = this.refs.name.state.name;
 
+			if(!this.validate()) return;
+
 			var code = parseInt(this.state.code);
-			if(this.state.code && isNaN(code) || this.state.code.length !== 9) {
-				console.error("Invalid code format.");
-				return;
-			}
-
 			var level = this.state.level;
-
 			var parent_code = null;
 			// if(this.refs.parent.state.selected) {
 			// 	parent_code = this.refs.parent.state.selected.code;
@@ -152,7 +187,7 @@ define(["react", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName",
 				code: code,
 				name: name,
 				level: level,
-				parent_code: parent_code,
+				// parent_code: parent_code,
 			};
 
 			var patch = !this.model().has("id")

@@ -1,8 +1,19 @@
 "use strict";
-define(["underscore", "react", "InstanceCache", "jsx!view/SliderTransitionGroupChild", "jsx!view/Name", "jsx!view/TypeaheadInput", "mixin/ClickToTopMixin", "react.backbone"], function(_, React, InstanceCache, SliderTransitionGroupChild, Name, TypeaheadInput, ClickToTopMixin) {
-	var ReactTransitionGroup = React.addons.TransitionGroup;
+define(function(require) {
+	var _ = require("underscore"),
+		React = require("react", "react.backbone"),
+		InstanceCache = require("InstanceCache"),
+		SliderTransitionGroupChild = require("jsx!view/SliderTransitionGroupChild"),
+		Name = require("jsx!view/Name"),
+		TypeaheadInput = require("jsx!view/TypeaheadInput"),
+		ClickToTopMixin = require("mixin/ClickToTopMixin"),
+		Va = require("validator"),
+		ValidationMixin = require("mixin/ValidationMixin"),
+		ValidationMessages = require("jsx!view/ValidationMessages"),
+		ReactTransitionGroup = React.addons.TransitionGroup;
+
 	return React.createBackboneClass({
- 		mixins: [React.addons.LinkedStateMixin, ClickToTopMixin],
+ 		mixins: [React.addons.LinkedStateMixin, ValidationMixin, ClickToTopMixin],
 
 		getInitialState: function() {
 			return {
@@ -10,6 +21,31 @@ define(["underscore", "react", "InstanceCache", "jsx!view/SliderTransitionGroupC
 				year: this.model().get("year"),
 				value: this.model().get("value"),
 			};
+		},
+
+		getValidationSchema: function() {
+			return {
+				area: Va.lidator().required().object();
+				year: Va.lidator().required().integerish(),
+				value: Va.lidator().required().floatish(),
+			};
+		},
+		getObjectToValidate: function() {
+			return {
+				area: this.refs.area.state.selected,
+				year: this.state.year,
+				value: this.state.value,
+			};
+		},
+		getValidationElementMap: function() {
+			return {
+				area: React.findDOMNode(this.refs.area),
+				year: React.findDOMNode(this.refs.year),
+				value: React.findDOMNode(this.refs.value),
+			};
+		},
+		validationCallback: function(key, valid, message) {
+			// React.findDOMNode(this.refs.save).disabled = !valid;
 		},
 
 		render: function() {
@@ -37,10 +73,10 @@ define(["underscore", "react", "InstanceCache", "jsx!view/SliderTransitionGroupC
 									required />
 							</label>
 							<label className="pure-u-1-3 pad">
-								<input className="pure-u-1" type="number" placeholder="Year" valueLink={this.linkState("year")} required />
+								<input ref="year" className="pure-u-1" type="number" placeholder="Year" valueLink={this.linkState("year")} required />
 							</label>
 							<label className="pure-u-1-3 pad">
-								<input className="pure-u-1" type="number" placeholder="Value" valueLink={this.linkState("value")} required />
+								<input ref="value" className="pure-u-1" type="number" placeholder="Value" valueLink={this.linkState("value")} required />
 							</label>
 						</div>
 						<div className="pure-g">
@@ -84,11 +120,14 @@ define(["underscore", "react", "InstanceCache", "jsx!view/SliderTransitionGroupC
 		},
 
 		handle_cancel: function() {
+			this.resetValidation();
 			this.setState({edit: false});
 		},
 
 		handle_save: function() {
 			var that = this;
+
+			if(!this.validate()) return;
 
 			var new_attributes = {
 				year: parseInt(this.state.year),
