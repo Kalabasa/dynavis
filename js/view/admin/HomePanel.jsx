@@ -107,7 +107,7 @@ define(["underscore", "jquery", "react"], function(_, $, React) {
 			var hide = [];
 			if(this.state.areas == 0) {
 				message = message || {
-					title: "There is currently no area data in the database",
+					title: "There are currently no area data in the database",
 					contents: "The system requires a list of all administrative subdivisions of the Philippines along with corresponding PSGC codes and geographical boundary geometries.",
 					action: "Add Data",
 					link: "areas",
