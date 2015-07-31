@@ -1,14 +1,44 @@
 "use strict";
-define(["react", "model/FamilyMemberCollection", "jsx!view/SliderTransitionGroupChild", "jsx!view/EditableName", "jsx!view/Name", "jsx!view/admin/FamilyMemberList", "mixin/ClickToTopMixin", "react.backbone"], function(React, FamilyMemberCollection, SliderTransitionGroupChild, EditableName, Name, FamilyMemberList, ClickToTopMixin) {
-	var ReactTransitionGroup = React.addons.TransitionGroup;
+define(function(require) {
+	var React = require("react", "react.backbone"),
+		FamilyMemberCollection = require("model/FamilyMemberCollection"),
+		SliderTransitionGroupChild = require("jsx!view/SliderTransitionGroupChild"),
+		EditableName = require("jsx!view/EditableName"),
+		Name = require("jsx!view/Name"),
+		FamilyMemberList = require("jsx!view/admin/FamilyMemberList"),
+		ClickToTopMixin = require("mixin/ClickToTopMixin"),
+		Va = require("validator"),
+		ValidationMixin = require("mixin/ValidationMixin"),
+		ValidationMessages = require("jsx!view/ValidationMessages"),
+		ReactTransitionGroup = React.addons.TransitionGroup;
+
 	return React.createBackboneClass({
-		mixins: [ClickToTopMixin],
+		mixins: [ValidationMixin, ClickToTopMixin],
 
 		getInitialState: function() {
 			return {
 				edit: this.model().isNew(),
 				members: new FamilyMemberCollection(null, {family_id: this.model().id}),
 			};
+		},
+
+		getValidationSchema: function() {
+			return {
+				name: Va.lidator().required().string(),
+			};
+		},
+		getObjectToValidate: function() {
+			return {
+				name: this.refs.name.state.name,
+			};
+		},
+		getValidationElementMap: function() {
+			return {
+				name: React.findDOMNode(this.refs.name),
+			};
+		},
+		validationCallback: function(key, valid, message) {
+			// React.findDOMNode(this.refs.save).disabled = !valid;
 		},
 
 		componentWillMount: function() {
@@ -30,20 +60,23 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/SliderTransitionGroup
 			if(this.model().isNew() || this.state.edit) {
 				classes += " edit";
 				if(!this.model().isNew()){
-					var cancel_button = <button className="pull-right button mar" onClick={this.handle_cancel}>Cancel</button>;
+					var cancel_button = <button className="pull-right button mar" type="reset" onClick={this.handle_cancel}>Cancel</button>;
 				}
-				fields = [
-					(<div className="pure-g form pad">
-						<EditableName className="pure-u-1" ref="name" model={this.model()} />
-					</div>),
-					(<div className="pure-g">
-						<div className="pure-u-1">
-							<button className="pull-left button button-complement mar" onClick={this.handle_delete}>Delete</button>
-							<button className="pull-right button button-primary mar" onClick={this.handle_save}>Save</button>
-							{cancel_button}
+				fields = (
+					<form onSubmit={this.handle_save}>
+						<ValidationMessages validation={this.state.validation} />
+						<div className="pure-g form pad">
+							<EditableName className="pure-u-1" ref="name" model={this.model()} autoFocus />
 						</div>
-					</div>)
-				];
+						<div className="pure-g">
+							<div className="pure-u-1">
+								<button ref="save" className="pull-right button button-primary mar" type="submit">Save</button>
+								{cancel_button}
+								<button className="pull-left button button-complement mar" type="button" onClick={this.handle_delete}>Delete</button>
+							</div>
+						</div>
+					</form>
+				);
 			}else{
 				fields = [
 					(<div className="pure-g">
@@ -75,12 +108,16 @@ define(["react", "model/FamilyMemberCollection", "jsx!view/SliderTransitionGroup
 		},
 
 		handle_cancel: function() {
+			this.resetValidation();
 			this.setState({edit: false});
 		},
 
-		handle_save: function() {
-			var that = this;
+		handle_save: function(e) {
+			e.preventDefault();
 
+			if(!this.validate()) return;
+
+			var that = this;
 			var new_name = this.refs.name.state.name;
 			if(!this.model().isNew() && this.model().get("name") === new_name) {
 				this.setState({edit: false});
