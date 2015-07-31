@@ -25,7 +25,7 @@ define(function(require) {
 
 		getValidationSchema: function() {
 			return {
-				area: Va.lidator().required().object();
+				area: Va.lidator().required().object(),
 				year: Va.lidator().required().integerish(),
 				value: Va.lidator().required().floatish(),
 			};
