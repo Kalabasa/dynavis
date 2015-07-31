@@ -78,6 +78,14 @@ define(["underscore"], function(_) {
 		};
 		return this._end();
 	};
+	Va.Node.prototype.object = function() {
+		this.getErrorMsg = function(obj) {
+			if(obj === null) return null;
+			if(typeof obj !== "object") return "must be an object";
+			return null;
+		};
+		return this._end();
+	};
 	Va.Node.prototype.string = function(minLen, maxLen) {
 		minLen = minLen || 0;
 		maxLen = maxLen || Infinity;
