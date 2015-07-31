@@ -450,3 +450,41 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 .modal-content {
 	border-radius: 3px;
 }
+
+#notifications-container {
+	pointer-events: none;
+	
+	z-index: 10;
+	position: absolute;
+	right: 0;
+	top: $header-height;
+	bottom: 0;
+	overflow: hidden;
+	
+	margin: 1em 2em;
+
+	.notification {
+		pointer-events: auto;
+
+		float: right;
+		display: inline-block;
+		margin: 0.4em;
+		padding: 1.1em;
+		border-radius: 2px;
+
+		font-size: 110%;
+
+		color: $color-text-alt;
+		background-color: $color-background-alt;
+		@include drop-shadow(8);
+
+		transition: color 0.3s linear, background-color 0.3s linear;
+	}
+
+	.notification-error {
+		color: white;
+		background-color: darkred;
+	}
+	.notification-success {
+	}
+}

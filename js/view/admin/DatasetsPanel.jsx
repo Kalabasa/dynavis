@@ -1,6 +1,16 @@
 "use strict";
-define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/admin/DatasetBox", "mixin/ScrollToTopMixin", "react.backbone"], function(React, InstanceCache, SearchControls, PageControls, PanelToolbar, DatasetBox, ScrollToTopMixin) {
-	var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+define(function(require) {
+	var React = require("react", "react.backbone"),
+		InstanceCache = require("InstanceCache"),
+		FileInput = require("jsx!view/FileInput"),
+		SearchControls = require("jsx!view/SearchControls"),
+		PageControls = require("jsx!view/PageControls"),
+		PanelToolbar = require("jsx!view/PanelToolbar"),
+		DatasetBox = require("jsx!view/admin/DatasetBox"),
+		ScrollToTopMixin = require("mixin/ScrollToTopMixin"),
+		Notification = require("jsx!view/Notification"),
+		ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+
 	return React.createBackboneClass({
 		mixins: [ScrollToTopMixin],
 
@@ -85,6 +95,8 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 				description: descriptions[indicator] + " Generated on " + new Date(),
 			};
 
+			var notif = Notification.open(<span>Generating {indicator} variable...&ensp;<i className="fa fa-circle-o-notch fa-spin"/></span>, 0);
+
 			$.ajax({
 				method: "POST",
 				url: "api.php/generate-indicator",
@@ -94,6 +106,10 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 				success: function(data) {
 					that.refs.toolbar.close();
 					that.collection().fetch();
+					Notification.replace(notif, <span>{indicator} variable generated &ensp;<i className="fa fa-check-circle"/></span>, null, "success");
+				},
+				error: function(xhr) {
+					Notification.replace(notif, <span>Generate error: {xhr.responseText} &ensp;<i className="fa fa-exclamation-circle"/></span>, null, "error");
 				},
 			});
 		},

@@ -1,6 +1,16 @@
 "use strict";
-define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/admin/ElectionRow", "mixin/ScrollToTopMixin", "react.backbone"], function($, React, FileInput, SearchControls, PageControls, PanelToolbar, ElectionRow, ScrollToTopMixin) {
-	var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+define(function(require) {
+	var $ = require("jquery"),
+		React = require("react", "react.backbone"),
+		FileInput = require("jsx!view/FileInput"),
+		SearchControls = require("jsx!view/SearchControls"),
+		PageControls = require("jsx!view/PageControls"),
+		PanelToolbar = require("jsx!view/PanelToolbar"),
+		ElectionRow = require("jsx!view/admin/ElectionRow"),
+		ScrollToTopMixin = require("mixin/ScrollToTopMixin"),
+		Notification = require("jsx!view/Notification"),
+		ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+
 	return React.createBackboneClass({
 		mixins: [ScrollToTopMixin],
 
@@ -52,12 +62,17 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 
 		handle_delete_all: function() {
 			var that = this;
+			var notif = Notification.open(<span>Deleting all election records and related data...&ensp;<i className="fa fa-circle-o-notch fa-spin"/></span>, 0);
 			$.ajax({
 				url: this.collection().url,
 				type: "DELETE",
 				success: function(data){
 					that.refs.toolbar.open();
 					that.collection().fetch();
+					Notification.replace(notif, <span>All election records and related data deleted &ensp;<i className="fa fa-check-circle"/></span>, null, "success");
+				},
+				error: function(xhr) {
+					Notification.replace(notif, <span>Delete error: {xhr.responseText} &ensp;<i className="fa fa-exclamation-circle"/></span>, null, "error");
 				},
 			});
 		},
@@ -85,6 +100,8 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 			var file = this.refs.file.get_input().files[0];
 			fd.append("file", file);
 
+			var notif = Notification.open(<span>Uploading...&ensp;<i className="fa fa-circle-o-notch fa-spin"/></span>, 0);
+
 			$.ajax({
 				url: this.collection().url,
 				data: fd,
@@ -95,6 +112,10 @@ define(["jquery", "react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx
 					React.findDOMNode(that.refs.upload_form).reset();
 					that.refs.toolbar.close();
 					that.collection().fetch();
+					Notification.replace(notif, <span>Election records uploaded &ensp;<i className="fa fa-check-circle"/></span>, null, "success");
+				},
+				error: function(xhr) {
+					Notification.replace(notif, <span>Upload error: {xhr.responseText} &ensp;<i className="fa fa-exclamation-circle"/></span>, null, "error");
 				},
 			});
 		},

@@ -1,6 +1,15 @@
 "use strict";
-define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/admin/AreaRow", "mixin/ScrollToTopMixin", "react.backbone"], function(React, FileInput, SearchControls, PageControls, PanelToolbar, AreaRow, ScrollToTopMixin) {
-	var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+define(function(require) {
+	var React = require("react", "react.backbone"),
+		FileInput = require("jsx!view/FileInput"),
+		SearchControls = require("jsx!view/SearchControls"),
+		PageControls = require("jsx!view/PageControls"),
+		PanelToolbar = require("jsx!view/PanelToolbar"),
+		AreaRow = require("jsx!view/admin/AreaRow"),
+		ScrollToTopMixin = require("mixin/ScrollToTopMixin"),
+		Notification = require("jsx!view/Notification"),
+		ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+
 	return React.createBackboneClass({
 		mixins: [React.addons.LinkedStateMixin, ScrollToTopMixin],
 
@@ -69,12 +78,17 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 
 		handle_delete_all: function() {
 			var that = this;
+			var notif = Notification.open(<span>Deleting all areas...&ensp;<i className="fa fa-circle-o-notch fa-spin"/></span>, 0);
 			$.ajax({
 				url: this.collection().url,
 				type: "DELETE",
 				success: function(data){
 					that.refs.toolbar.open();
 					that.collection().fetch();
+					Notification.replace(notif, <span>All areas deleted &ensp;<i className="fa fa-check-circle"/></span>, null, "success");
+				},
+				error: function(xhr) {
+					Notification.replace(notif, <span>Delete error: {xhr.responseText} &ensp;<i className="fa fa-exclamation-circle"/></span>, null, "error");
 				},
 			});
 		},
@@ -102,6 +116,8 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 			var file = this.refs.file_psgc.get_input().files[0];
 			fd.append("file", file);
 
+			var notif = Notification.open(<span>Uploading...&ensp;<i className="fa fa-circle-o-notch fa-spin"/></span>, 0);
+
 			$.ajax({
 				url: this.collection().url,
 				data: fd,
@@ -112,6 +128,10 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 					React.findDOMNode(that.refs.psgc_form).reset();
 					that.refs.toolbar.close();
 					that.collection().fetch();
+					Notification.replace(notif, <span>PSGC file uploaded &ensp;<i className="fa fa-check-circle"/></span>, null, "success");
+				},
+				error: function(xhr) {
+					Notification.replace(notif, <span>Upload error: {xhr.responseText} &ensp;<i className="fa fa-exclamation-circle"/></span>, null, "error");
 				},
 			});
 		},
@@ -124,6 +144,8 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 			var file = this.refs.file_geojson.get_input().files[0];
 			fd.append("file", file);
 
+			var notif = Notification.open(<span>Updating...&ensp;<i className="fa fa-circle-o-notch fa-spin"/></span>, 0);
+
 			$.ajax({
 				url: "api.php/geojson/" + this.state.upload_level,
 				data: fd,
@@ -133,6 +155,10 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 				success: function(data){
 					React.findDOMNode(that.refs.geojson_form).reset();
 					that.refs.toolbar.close();
+					Notification.replace(notif, <span>GeoJSON updated &ensp;<i className="fa fa-check-circle"/></span>, null, "success");
+				},
+				error: function(xhr) {
+					Notification.replace(notif, <span>Update error: {xhr.responseText} &ensp;<i className="fa fa-exclamation-circle"/></span>, null, "error");
 				},
 			});
 		},

@@ -1,6 +1,15 @@
 "use strict";
-define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/main/DatasetBox", "react.backbone"], function(React, Dataset, FileInput, SearchControls, PageControls, PanelToolbar, DatasetBox) {
-	var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+define(function(require) {
+	var React = require("react", "react.backbone"),
+		Dataset = require("model/Dataset"),
+		FileInput = require("jsx!view/FileInput"),
+		SearchControls = require("jsx!view/SearchControls"),
+		PageControls = require("jsx!view/PageControls"),
+		PanelToolbar = require("jsx!view/PanelToolbar"),
+		DatasetBox = require("jsx!view/main/DatasetBox"),
+		Notification = require("jsx!view/Notification"),
+		ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+
 	return React.createBackboneClass({
  		mixins: [React.addons.LinkedStateMixin],
 
@@ -48,7 +57,7 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 									</div>
 									<div className="pure-u-5-12 pad">
 										<div className="label">Description</div>
-										<textarea className="input" ref="description" valueLink={this.linkState("description")} />
+										<textarea className="input" ref="description" valueLink={this.linkState("description")} required />
 									</div>
 									<div className="pure-u-1-6 pad">
 										<input className="button button-primary" type="submit" value="Upload" />
@@ -91,8 +100,12 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 				type: "area",
 				description: this.state.description,
 			});
+
+			var notif = Notification.open(<span>Uploading dataset...&ensp;<i className="fa fa-circle-o-notch fa-spin"/></span>, 0);
+
 			dataset.save(null, {
 				success: function() {
+					Notification.replace(notif, <span>Uploading datapoints...&ensp;<i className="fa fa-circle-o-notch fa-spin"/></span>);
 					$.ajax({
 						url: dataset.url() + "/datapoints",
 						data: fd,
@@ -104,11 +117,16 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 							that.refs.toolbar.close();
 							that.collection().fetch();
 							that.setState(that.getInitialState());
+							Notification.replace(notif, <span>Dataset uploaded &ensp;<i className="fa fa-check-circle"/></span>, null, "success");
 						},
-						error: function() {
+						error: function(xhr) {
 							dataset.destroy();
+							Notification.replace(notif, <span>Datapoints upload error: {xhr.responseText} &ensp;<i className="fa fa-exclamation-circle"/></span>, null, "error");
 						},
 					});
+				},
+				error: function(m,r,o) {
+					Notification.replace(notif, <span>Dataset upload error: {r.responseText} &ensp;<i className="fa fa-exclamation-circle"/></span>, null, "error");
 				},
 			});
 		},
