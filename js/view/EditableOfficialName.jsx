@@ -17,7 +17,7 @@ define(["react", "react.backbone"], function(React) {
 				<span className={this.props.className}>
 					<label className="pure-u-1 pad">
 						<div className="label">Surname</div>
-						<input className="pure-u-1" type="text" valueLink={this.linkState("surname")} required />
+						<input className="pure-u-1" type="text" valueLink={this.linkState("surname")} required autoFocus={this.props.autoFocus} />
 					</label>
 					<label className="pure-u-1 pad">
 						<div className="label">Name</div>
