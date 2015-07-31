@@ -4,6 +4,9 @@ $sidebar-width: 175px;
 .header {
 	color: $color-text-primary-1;
 	background-color: $color-primary-1;
+	#logo {
+		width: $sidebar-width;
+	}
 }
 .sidebar {
 	width: $sidebar-width;

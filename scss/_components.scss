@@ -96,7 +96,7 @@
 }
 
 .body-panel {
-	padding: 40px;
+	padding: 40px 15%;
 }
 
 .pane {
@@ -151,6 +151,10 @@
 	font-family: "Roboto", sans-serif;
 	color: $color-text;
 	background-color: white;
+
+	&.validation-error, .validation-error & {
+		border: solid 1px red;
+	}
 
 	@extend %floating-transitions;
 	&:not(.button-flat):not([disabled]):not([readonly]) {
