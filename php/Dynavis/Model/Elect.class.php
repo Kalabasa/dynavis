@@ -125,22 +125,6 @@ class Elect extends \Dynavis\Core\RefEntity {
 		// normalize strings
 		$this->position = $this->position && trim($this->position) ? Database::normalize_string($this->position) : null;
 
-		// Check for year-area-position overlaps
-		$conflicts = Database::get()->select(static::TABLE, static::PRIMARY_KEY, ["AND" => [
-			static::PRIMARY_KEY . "[!]" => $this->get_id(),
-			"year[<]" => $this->year_end,
-			"year_end[>]" => $this->year,
-			"position" => $this->position,
-			"area_code" => $this->area_code,
-		]]);
-
-		if(count($conflicts)) {
-			throw new \Dynavis\Core\DataException("Conflict with other election records: "
-				. join(", ", array_map(function($item) {
-					return $item[static::PRIMARY_KEY];
-				}, $conflicts)));
-		}
-
 		// Official cannot be in two posts simultaneously
 		$official_overlaps = Database::get()->select(static::TABLE, static::PRIMARY_KEY, ["AND" => [
 			static::PRIMARY_KEY . "[!]" => $this->get_id(),
@@ -152,8 +136,8 @@ class Elect extends \Dynavis\Core\RefEntity {
 		if(count($official_overlaps)) {
 			throw new \Dynavis\Core\DataException("No official can be in two posts simultaneously."
 				. " Official ID: " . $this->official_id
-				. " Conflicts: " . join(", ", array_map(function($item) {
-					return $item[static::PRIMARY_KEY];
+				. " Conflicts: " . join(", ", array_map(function($id) {
+					return $id;
 				}, $official_overlaps)));
 		}
 
@@ -271,8 +255,9 @@ class Elect extends \Dynavis\Core\RefEntity {
 
 		$party = null;
 		if(!empty($entry["party"]) && $entry["party"] !== "IND") { // IND = coding for independent
-			$party = Party::get_by_name($entry["party"]);
-			if(!$party) {
+			try{
+				$party = Party::get_by_name($entry["party"]);
+			}catch(\Dynavis\Core\NotFoundException $e) {
 				$party = new Party();
 				$party->name = $entry["party"];
 				$party->save();
