@@ -100,7 +100,9 @@ define(["underscore"], function(_) {
 		};
 		return this._end();
 	};
-	Va.Node.prototype.integerish = function() {
+	Va.Node.prototype.integerish = function(min, max) {
+		min = min || 0;
+		max = max || Infinity;
 		this.getErrorMsg = function(obj) {
 			// http://stackoverflow.com/a/14794066
 			var msg = "must be an integer";
@@ -109,6 +111,10 @@ define(["underscore"], function(_) {
 			if (isNaN(obj)) return msg;
 			x = parseFloat(obj);
 			if((x | 0) !== x) return msg;
+			var clauses = [];
+			if(min > 0) clauses.push("at least " + min);
+			if(max < Infinity) clauses.push("not greater than " + max);
+			if(x < min || x > max) return "must be " + clauses.join(" but ");
 			return null;
 		};
 		return this._end();
