@@ -24,6 +24,7 @@ require.config({
 		"text": "lib/text",
 		"typeahead": "lib/typeahead.jquery",
 		"underscore": "lib/underscore-min",
+		"validator": "lib/validator",
 	},
 
 	shim : {
