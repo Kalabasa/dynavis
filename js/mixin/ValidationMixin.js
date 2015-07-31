@@ -52,7 +52,8 @@ define(["underscore", "validator"], function(_, Va) {
 			if(typeof this.getValidationElementMap === "function") {
 				var element = this.getValidationElementMap()[key];
 				if(element) {
-					$(element)[valid?"removeClass":"addClass"]("validation-error");
+					if(valid) $(element).removeClass("validation-error");
+					else $(element).addClass("validation-error");
 				}
 			}
 		},
