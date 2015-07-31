@@ -105,7 +105,7 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 							patch: true,
 							wait: true,
 							success: function(model) {
-								options.callback(model.toJSON(), true);
+								options.callback(model, true);
 							},
 							error: function() {
 								console.error("Error model.save");
