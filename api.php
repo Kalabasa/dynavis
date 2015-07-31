@@ -1056,7 +1056,7 @@ function post_user_dataset($username) {
 		$app->halt(404, $e->getMessage());
 	}
 
-	$dataset = new Dataset(["user" => $user]);
+	$dataset = new Dataset(null, ["user" => $user]);
 	$dataset->name = $data["name"];
 	$dataset->type = [
 		"area" => 0,
