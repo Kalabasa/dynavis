@@ -7,13 +7,21 @@ define(["jquery", "react", "jquery.bez"], function($, React) {
 		},
 
 		componentWillEnter: function(done) {
-			$(React.findDOMNode(this)).hide().animate({
+			var $el = $(React.findDOMNode(this));
+			var $buttons = $el.find("input[type=button],input[type=submit],input[type=reset],button");
+			$buttons.prop("disabled", true);
+			$el.hide().animate({
 				height: "toggle", opacity: "toggle",
-			}, 600, ease_swift, done);
+			}, 600, ease_swift, function(){
+				$buttons.prop("disabled", false);
+				done();
+			});
 		},
 
 		componentWillLeave: function(done) {
-			$(React.findDOMNode(this)).animate({
+			var $el = $(React.findDOMNode(this));
+			$el.find("input[type=button],input[type=submit],input[type=reset],button").prop("disabled", true);
+			$el.animate({
 				height: 0, opacity: 0,
 			}, 600, ease_swift, done);
 		},
