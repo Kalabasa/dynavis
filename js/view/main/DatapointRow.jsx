@@ -62,6 +62,7 @@ define(function(require) {
 				return (
 					<div className="edit data-row form">
 					<ReactTransitionGroup><SliderTransitionGroupChild key="edit">
+						<ValidationMessages validation={this.state.validation} />
 						<div className="pure-g">
 							<label className="pure-u-1-3 pad">
 								<TypeaheadInput className="pure-u-1"
@@ -81,9 +82,9 @@ define(function(require) {
 						</div>
 						<div className="pure-g">
 							<div className="pure-u-1">
-								<button className="pull-left button button-complement mar" onClick={this.handle_delete}>Delete</button>
 								<button className="pull-right button button-primary mar" onClick={this.handle_save}>Save</button>
 								{cancel_button}
+								<button className="pull-left button button-complement mar" onClick={this.handle_delete}>Delete</button>
 							</div>
 						</div>
 					</SliderTransitionGroupChild></ReactTransitionGroup>
