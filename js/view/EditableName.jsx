@@ -11,7 +11,7 @@ define(["react", "react.backbone"], function(React) {
 
 		render: function() {
 			return (
-				<input className={this.props.className} type="text" valueLink={this.linkState("name")} required />
+				<input type="text" valueLink={this.linkState("name")} {...this.props} />
 			);
 		},
 	});
