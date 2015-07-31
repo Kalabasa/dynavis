@@ -753,7 +753,7 @@ function post_election() {
 		$app->halt(400, "Invalid party ID.");
 	}
 
-	$elect = new Elect([
+	$elect = new Elect(null, [
 		"official" => $official,
 		"area" => $area,
 		"party" => $party,
