@@ -7,7 +7,7 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 		render: function() {
 			if(!this.collection().username) {
 				var toolbar = (
-					<PanelToolbar ref="toolbar" toggle_text="Generate Data">
+					<PanelToolbar ref="toolbar" toggle_text="Generate Dataset">
 						<div className="pure-u-1 text-center pad">
 							<h6>Generate political dynasty indicators</h6>
 							<button className="button"
@@ -43,13 +43,23 @@ define(["react", "InstanceCache", "jsx!view/SearchControls", "jsx!view/PageContr
 			return (
 				<div className="body-panel">
 					{toolbar}
-					<SearchControls className="mar" collection={this.collection()} />
-					<ReactCSSTransitionGroup transitionName="fade">
-						{this.collection().map(function(dataset) {
-							return <DatasetBox key={dataset.cid} model={dataset} />;
-						})}
-					</ReactCSSTransitionGroup>
-					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					{this.collection().size() ?
+					<div>
+						<SearchControls className="mar" collection={this.collection()} />
+						<ReactCSSTransitionGroup transitionName="fade">
+							{this.collection().map(function(dataset) {
+								return <DatasetBox key={dataset.cid} model={dataset} />;
+							})}
+						</ReactCSSTransitionGroup>
+						<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					</div>
+					:
+					<div className="text-center">
+						<h1 className="transparent">No Datasets Yet</h1>
+						<p className="text text-center">User-uploaded datasets go here.</p>
+						<p className="text text-center">The system can also generate datasets based on election records and dynasty data.</p>
+					</div>
+					}
 				</div>
 			);
 		},

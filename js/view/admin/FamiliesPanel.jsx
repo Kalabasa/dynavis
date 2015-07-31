@@ -9,20 +9,29 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 			return (
 				<div className="body-panel">
 					<button className="button button-primary mar" onClick={this.handle_add}>New Family</button>
-					<SearchControls ref="searcher" className="mar" collection={this.collection()} />
-					<ReactCSSTransitionGroup transitionName="fade">
-						{this.collection().map(function(family) {
-							return <FamilyBox key={family.cid} model={family} onDeleteMember={that.handle_delete_official} />;
-						})}
-					</ReactCSSTransitionGroup>
-					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					{this.collection().size() ?
+					<div>
+						<SearchControls ref="searcher" className="mar" collection={this.collection()} />
+						<ReactCSSTransitionGroup transitionName="fade">
+							{this.collection().map(function(family) {
+								return <FamilyBox key={family.cid} model={family} onDeleteMember={that.handle_delete_official} />;
+							})}
+						</ReactCSSTransitionGroup>
+						<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					</div>
+					:
+					<div className="text-center">
+						<h1 className="transparent">No Families Yet</h1>
+						<p className="text text-center">Add families using the New Family button</p>
+					</div>
+					}
 				</div>
 			);
 		},
 
 		handle_add: function() {
 			var that = this;
-			if(this.refs.searcher.state.query === null && this.collection().getPage() === 0) {
+			if(!this.collection().size() || this.refs.searcher.state.query === null && this.collection().getPage() === 0) {
 				this.collection().add({}, {at: 0});
 			}else{
 				this.refs.searcher.set_query(null, {

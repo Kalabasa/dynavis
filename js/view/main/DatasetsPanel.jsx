@@ -11,6 +11,16 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
  			};
  		},
 
+		componentDidMount: function() {
+			this.onModelChange();
+		},
+		onModelChange: function() {
+			if(!this.collection().size()) {
+				this.refs.toolbar.open();
+			}
+			this.forceUpdate();
+		},
+
 		render: function() {
 			return (
 				<div className="body-panel">
@@ -47,13 +57,17 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 							</form>
 						</div>
 					</PanelToolbar>
-					<SearchControls className="mar" collection={this.collection()} />
-					<ReactCSSTransitionGroup transitionName="fade">
-						{this.collection().map(function(dataset) {
-							return <DatasetBox key={dataset.cid} model={dataset} />;
-						})}
-					</ReactCSSTransitionGroup>
-					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					{this.collection().size() ?
+					<div>
+						<SearchControls className="mar" collection={this.collection()} />
+						<ReactCSSTransitionGroup transitionName="fade">
+							{this.collection().map(function(dataset) {
+								return <DatasetBox key={dataset.cid} model={dataset} />;
+							})}
+						</ReactCSSTransitionGroup>
+						<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					</div>
+					: null}
 				</div>
 			);
 		},

@@ -10,6 +10,16 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 			};
 		},
 
+		componentDidMount: function() {
+			this.onModelChange();
+		},
+		onModelChange: function() {
+			if(!this.collection().size()) {
+				this.refs.toolbar.open();
+			}
+			this.forceUpdate();
+		},
+
 		render: function() {
 			return (
 				<div className="body-panel clearfix">
@@ -41,14 +51,18 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 							</form>
 						</div>
 					</PanelToolbar>
-					<SearchControls className="mar" ref="searcher" collection={this.collection()} />
-					<ReactCSSTransitionGroup transitionName="fade">
-						{this.collection().map(function(area) {
-							return <AreaRow key={area.cid} model={area} />;
-						})}
-					</ReactCSSTransitionGroup>
-					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
-					<button className="pull-right button button-complement mar" onClick={this.handle_delete_all}>Delete All</button>
+					{this.collection().size() ?
+					<div>
+						<SearchControls className="mar" ref="searcher" collection={this.collection()} />
+						<ReactCSSTransitionGroup transitionName="fade">
+							{this.collection().map(function(area) {
+								return <AreaRow key={area.cid} model={area} />;
+							})}
+						</ReactCSSTransitionGroup>
+						<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+						<button className="pull-right button button-complement mar" onClick={this.handle_delete_all}>Delete All</button>
+					</div>
+					: null}
 				</div>
 			);
 		},
@@ -67,7 +81,7 @@ define(["react", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/Page
 
 		handle_add: function() {
 			var that = this;
-			if(this.refs.searcher.state.query === null && this.collection().getPage() === 0) {
+			if(!this.collection().size() || this.refs.searcher.state.query === null && this.collection().getPage() === 0) {
 				this.refs.toolbar.close();
 				this.collection().add({}, {at: 0});
 			}else{
