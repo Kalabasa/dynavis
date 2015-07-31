@@ -12,10 +12,12 @@ define(["react", "InstanceCache", "model/Dataset", "jsx!view/HeaderSession"], fu
 		getInitialState: function() {
 			return {
 				title: this.props.title,
+				subtitle: null,
 			};
 		},
 
 		render: function() {
+			document.title = (this.state.title ? (this.state.title + (this.state.subtitle ? (" " + this.state.subtitle) : "") + " - ") : "") + "DynastyMap";
 			if(this.state.subtitle) {
 				var subtitle = <h3 className="header-subtitle">{this.state.subtitle}</h3>
 			}
