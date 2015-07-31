@@ -107,14 +107,41 @@ define(["underscore"], function(_) {
 			// http://stackoverflow.com/a/14794066
 			var msg = "must be an integer";
 			if(obj === null) return null;
-			var x;
 			if (isNaN(obj)) return msg;
-			x = parseFloat(obj);
+			var x = parseFloat(obj);
 			if((x | 0) !== x) return msg;
 			var clauses = [];
 			if(min > 0) clauses.push("at least " + min);
 			if(max < Infinity) clauses.push("not greater than " + max);
 			if(x < min || x > max) return "must be " + clauses.join(" but ");
+			return null;
+		};
+		return this._end();
+	};
+	Va.Node.prototype.floatish = function(min, max) {
+		min = min || 0;
+		max = max || Infinity;
+		this.getErrorMsg = function(obj) {
+			// http://stackoverflow.com/a/14794066
+			if(obj === null) return null;
+			var x = parseFloat(obj);
+			if (isNaN(x)) return "must be a number";
+			var clauses = [];
+			if(min > 0) clauses.push("at least " + min);
+			if(max < Infinity) clauses.push("not greater than " + max);
+			if(x < min || x > max) return "must be " + clauses.join(" but ");
+			return null;
+		};
+		return this._end();
+	};
+	Va.Node.prototype.length = function(a, b) {
+		this.getErrorMsg = function(obj) {
+			var len = obj.length;
+			if(typeof a !== "undefined" && typeof b !== "undefined")
+				if(len < a || len > b) return "length must be between " + a + " and " + b;
+			if(typeof a !== "undefined")
+				if(len !== a) return "must be " + a + " long";
+			if(len == 0) return "must not be empty";
 			return null;
 		};
 		return this._end();
