@@ -101,11 +101,11 @@ define(function(require) {
 				description: this.state.description,
 			});
 
-			var notif = Notification.open(<span>Uploading dataset...&ensp;<i className="fa fa-circle-o-notch fa-spin"/></span>, 0);
+			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading dataset...</span>, 0);
 
 			dataset.save(null, {
 				success: function() {
-					Notification.replace(notif, <span>Uploading datapoints...&ensp;<i className="fa fa-circle-o-notch fa-spin"/></span>);
+					Notification.replace(notif, <span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading datapoints...</span>);
 					$.ajax({
 						url: dataset.url() + "/datapoints",
 						data: fd,
@@ -117,16 +117,16 @@ define(function(require) {
 							that.refs.toolbar.close();
 							that.collection().fetch();
 							that.setState(that.getInitialState());
-							Notification.replace(notif, <span>Dataset uploaded &ensp;<i className="fa fa-check-circle"/></span>, null, "success");
+							Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Dataset uploaded</span>, null, "success");
 						},
 						error: function(xhr) {
 							dataset.destroy();
-							Notification.replace(notif, <span>Datapoints upload error: {xhr.responseText} &ensp;<i className="fa fa-exclamation-circle"/></span>, null, "error");
+							Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Datapoints upload error: {xhr.responseText}</span>, null, "error");
 						},
 					});
 				},
 				error: function(m,r,o) {
-					Notification.replace(notif, <span>Dataset upload error: {r.responseText} &ensp;<i className="fa fa-exclamation-circle"/></span>, null, "error");
+					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Dataset upload error: {r.responseText}</span>, null, "error");
 				},
 			});
 		},

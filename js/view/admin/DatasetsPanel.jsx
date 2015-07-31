@@ -95,7 +95,7 @@ define(function(require) {
 				description: descriptions[indicator] + " Generated on " + new Date(),
 			};
 
-			var notif = Notification.open(<span>Generating {indicator} variable...&ensp;<i className="fa fa-circle-o-notch fa-spin"/></span>, 0);
+			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Generating {indicator} variable...</span>, 0);
 
 			$.ajax({
 				method: "POST",
@@ -106,10 +106,10 @@ define(function(require) {
 				success: function(data) {
 					that.refs.toolbar.close();
 					that.collection().fetch();
-					Notification.replace(notif, <span>{indicator} variable generated &ensp;<i className="fa fa-check-circle"/></span>, null, "success");
+					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;{indicator} variable generated</span>, null, "success");
 				},
 				error: function(xhr) {
-					Notification.replace(notif, <span>Generate error: {xhr.responseText} &ensp;<i className="fa fa-exclamation-circle"/></span>, null, "error");
+					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Generate error: {xhr.responseText}</span>, null, "error");
 				},
 			});
 		},

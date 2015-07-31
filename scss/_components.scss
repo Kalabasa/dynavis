@@ -468,10 +468,12 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 
 		float: right;
 		display: inline-block;
+		width: 300px;
 		margin: 0.4em;
-		padding: 1.1em;
+		padding: 1.2em;
 		border-radius: 2px;
 
+		line-height: 140%;
 		font-size: 110%;
 
 		color: $color-text-alt;
