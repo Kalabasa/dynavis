@@ -1423,7 +1423,7 @@ function generate_indicator() {
 		if($result["result"]) {
 			$dataset_id = DataProcessor::save_dataset($result, $user->username, $indicator, $description);
 		}else{
-			$app->halt(403, "Unsuccessful. Make sure the necessary data is in-place, such as election records and complete area data.");
+			$app->halt(403, "Unsuccessful. Make sure the necessary data, such as election records, political dynasty associations, and complete area data, is in-place.");
 		}
 	}catch(DataException $e) {
 		$app->halt(403, "Unsuccessful. " . $e->getMessage());
