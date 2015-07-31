@@ -13,7 +13,7 @@ define(["react"], function(React) {
 			return (
 				<div>
 					<ul ref="menu" className="menu">
-						<li ref="home"><a href="#home"><i className="fa fa-home fa-fw"/>&emsp; Home</a></li>
+						<li ref="home"><a href="#"><i className="fa fa-home fa-fw"/>&emsp; Home</a></li>
 						<li ref="elections"><a href="#elections"><i className="fa fa-archive fa-fw"/>&emsp; Elections</a></li>
 						<li ref="officials"><a href="#officials"><i className="fa fa-male fa-fw"/>&emsp; Officials</a></li>
 						<li ref="families"><a href="#families"><i className="fa fa-tags fa-fw"/>&emsp; Families</a></li>

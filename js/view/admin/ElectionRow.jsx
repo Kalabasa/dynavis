@@ -159,7 +159,7 @@ define(["react", "InstanceCache", "model/OfficialSingle", "model/Party", "jsx!vi
 			var year = parseInt(this.state.year);
 			var year_end = parseInt(this.state.year_end);
 			if(isNaN(year) || isNaN(year_end)) {
-				console.error("Invalid year format.")
+				console.error("Invalid year format.");
 				return;
 			}
 			if(year > year_end) {

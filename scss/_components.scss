@@ -9,6 +9,13 @@
 	#logo {
 		display: inline-block;
 		width: $sidebar-width;
+		height: $header-height;
+
+		a {
+			display: inline-block;
+			width: inherit;
+			height: inherit;
+		}
 	}
 
 	#header-content {
@@ -80,11 +87,11 @@
 		display: inline-block;
 		max-width: 0;
 		overflow: hidden;
-		transition: max-width 0.8s ease-out 0.2s;
+		transition: max-width 0.6s ease-out 0.2s;
 	}
 	&:hover .hider-content {
 		max-width: 34em;
-		transition: max-width 0.6s ease-in;
+		transition: max-width 0.4s ease-in;
 	}
 }
 
@@ -248,13 +255,14 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 	border-left: solid 0 $color-complement;
 	background-color: white;
 
+	@extend %floating-transitions;
 	transition: margin-left 0.3s $ease-swift,
 		margin-right 0.3s $ease-swift,
 		padding 0.4s $ease-swift,
 		margin-top 0.5s $ease-swift,
 		margin-bottom 0.5s $ease-swift,
-		border-left 0.4s $ease-swift;
-	@extend %floating-transitions;
+		border-left 0.4s $ease-swift,
+		box-shadow 0.4s $ease-swift;
 	@include drop-shadow(1);
 
 	.button {
