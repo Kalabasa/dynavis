@@ -91,6 +91,6 @@ class Official extends \Dynavis\Core\Entity {
 			"name" => Database::normalize_string($name),
 		]]);
 		if(!$ret) return null;
-		return new Official((int) $ret[static::PRIMARY_KEY], false);
+		return new Official((int) $ret, false);
 	}
 }
