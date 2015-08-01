@@ -1,11 +1,14 @@
 "use strict";
-define(["jquery", "react", "react.backbone"], function($, React) {
+define(function(require) {
+	var $ = require("jquery"),
+		React = require("react.backbone"),
+		Notification = require("jsx!view/Notification");
+
 	return React.createBackboneClass({
 		mixins: [React.addons.LinkedStateMixin],
 
 		getInitialState: function() {
 			return {
-				error: "",
 				username: (location.search.split("username=")[1]||"").split("&")[0] || "",
 			};
 		},
@@ -51,6 +54,9 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 				success: function(data) {
 					this.model().login(username, password);
 				}.bind(this),
+				error: function(xhr) {
+					Notification.open(<span><i className="fa fa-exclamation-circle"/>&ensp;Registration error: {xhr.responseText}</span>, null, "error");
+				},
 			});
 		},
 
@@ -59,7 +65,9 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 			var $el = $(this.el());
 			var username = $el.find("#username").val();
 			var password = $el.find("#password").val();
-			this.model().login(username, password);
+			this.model().login(username, password, null, function(xhr) {
+				Notification.open(<span><i className="fa fa-exclamation-circle"/>&ensp;Login error: {xhr.responseText}</span>, null, "error");
+			});
 		},
 
 		handle_logout: function(e) {

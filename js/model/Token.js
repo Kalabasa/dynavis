@@ -46,7 +46,7 @@ define(["jquery", "localStorage", "backbone", "InstanceCache", "model/User"], fu
 			return this.get_user() ? this.get_user().get("role") : null;
 		},
 
-		login: function(username, password) {
+		login: function(username, password, success, error) {
 			var that = this;
 			$.ajax({
 				method: "POST",
@@ -61,9 +61,10 @@ define(["jquery", "localStorage", "backbone", "InstanceCache", "model/User"], fu
 					that.set(data);
 					that.fetch();
 					localStorage.setItem("dynavis_token", JSON.stringify(data), data.expiry);
+					if(success) success(data);
 				},
-				error: function() {
-					console.error("Error login");
+				error: function(xhr) {
+					if(error) error(xhr);
 				},
 			});
 		},

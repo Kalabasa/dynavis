@@ -1,6 +1,7 @@
 "use strict";
 define(function(require){
-	var React = require("react"),
+	var Backbone = require("backbone"),
+		React = require("react"),
 		Events = require("minivents"),
 		Token = require("model/Token"),
 		InstanceCache = require("InstanceCache"),
