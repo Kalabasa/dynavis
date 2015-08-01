@@ -1423,16 +1423,11 @@ function generate_indicator() {
 	$description = $data["description"];
 
 	try{
-		$result = DataProcessor::calculate_indicator($indicator);
-		if($result["result"]) {
-			$dataset_id = DataProcessor::save_dataset($result, $user->username, $indicator, $description);
-		}else{
-			$app->halt(403, "Unsuccessful. Make sure the necessary data, such as election records, political dynasty associations, and complete area data, are in-place.");
-		}
+		$dataset = DataProcessor::generate_indicator($indicator, $description, $user);
 	}catch(DataException $e) {
-		$app->halt(403, "Unsuccessful. " . $e->getMessage());
+		$app->halt(403, "Unsuccessful. Make sure the necessary data, such as election records, political dynasty associations, and complete area data, are in-place. " . $e->getMessage());
 	}
 
 	$app->response->setStatus(201);
-	echo json_encode(["id" => $dataset_id]);
+	echo json_encode($dataset);
 }

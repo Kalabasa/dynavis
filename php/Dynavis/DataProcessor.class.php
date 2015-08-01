@@ -20,33 +20,7 @@ class DataProcessor {
 		"RecursiveDynastySize" => ["calculate_recursivedynastysize", ["code", "id"]],
 	];
 
-	public static function save_dataset($calc_data, $username, $name, $description) {
-		Database::get()->pdo->beginTransaction();
-
-		$dataset = new Dataset(null, ["user" => User::get_by_username($username)]);
-		$dataset->name = $name;
-		$dataset->description = $description;
-		$dataset->type = $calc_data["type"];
-		$dataset->save();
-
-		$result = $calc_data["result"];
-		$min_year = $calc_data["min_year"];
-		$max_year = $calc_data["max_year"];
-		$insert_data = [];
-		$variables = static::INDICATORS[$name][1];
-
-		foreach ($result as $row) {
-			$a = [
-				$dataset->get_id(),
-				$row["year"],
-			];
-			foreach ($variables as $v) {
-				$a[] = $row[$v];
-			}
-			$a[] = $row[$name];
-			$insert_data[] = $a;
-		}
-
+	private static function save_partial($dataset, $insert_data) {
 		$values_string = "(" . join("),(", array_map(
 			function ($row) {
 				return join(",", array_map(
@@ -69,37 +43,55 @@ class DataProcessor {
 			Database::get()->pdo->rollBack();
 			throw new \Dynavis\Core\DataException("Cannot insert into database. " . Database::get()->error()[2]);
 		}
-
-		Database::get()->pdo->commit();
-
-		return $dataset->get_id();
 	}
 
-	public static function calculate_indicator($name) {
+	public static function generate_indicator($name, $description, $user) {
 		$p = static::INDICATORS[$name];
 		$calc_function = $p[0];
 		$variables = $p[1];
 
+		Database::get()->pdo->beginTransaction();
+
+		$dataset = new Dataset(null, ["user" => $user]);
+		$dataset->name = $name;
+		$dataset->description = $description;
+		$dataset->type = count($variables) - 1; // FIXME: Dangerous!
+		$dataset->save();
+
+		$did = $dataset->get_id();
 		$min_year = Database::get()->min(Elect::TABLE, "year");
 		$max_year = Database::get()->max(Elect::TABLE, "year_end") - 1;
 
-		$result = [];
+		$insert_data = [];
+		$count = 0;
 
 		for($t = $min_year; $t <= $max_year; $t++) {
 			$subresult = static::$calc_function($t);
 			if(!$subresult) return null;
-			foreach ($subresult as $s) {
-				$s["year"] = $t;
-				$result[] = $s;
+			foreach ($subresult as $result_row) {
+				$insert_row = [
+					$did,
+					$t,
+				];
+				foreach ($variables as $v) {
+					$insert_row[] = $result_row[$v];
+				}
+				$insert_row[] = $result_row[$name];
+
+				$insert_data[] = $insert_row;
+				if($count++ > 1000) {
+					static::save_partial($dataset, $insert_data);
+					$insert_data = [];
+					$count = 0;
+				}
 			}
 		}
 
-		return [
-			"min_year" => $min_year,
-			"max_year" => $max_year,
-			"type" => count($variables) - 1, // FIXME: DANGEROUS!
-			"result" => $result,
-		];
+		static::save_partial($dataset, $insert_data);
+
+		Database::get()->pdo->commit();
+
+		return $dataset;
 	}
 
 	private static function calculate_dynsha($year) {
