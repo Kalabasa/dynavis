@@ -147,8 +147,8 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 		compute_polygon_style: function(poly, highlight) {
 			var style = null;
 
-			var colored = _.every(poly.variables, function(v) {
-				return !v || v.value !== null;
+			var colored = _.some(poly.variables, function(v) {
+				return v && v.value !== null;
 			})
 			&& _.every(this.datasets, function(d) {
 				return _.some(poly.variables, function(v) {
