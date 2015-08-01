@@ -55,7 +55,6 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 
 	InstanceCache.prototype.get = function(name, id, fetch) {
 		if(id !== id) return null; // for NaN
-		fetch = fetch || false;
 
 		this.remove_expired();
 		
