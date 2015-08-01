@@ -119,11 +119,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		},
 
 		on_area_dataset: function(e) {
-			var datasets = [];
-			if(e.dataset1) {
-				datasets.push(e.dataset1);
-				if(e.dataset2) datasets.push(e.dataset2);
-			}
+			var datasets = [e.dataset1, e.dataset2];
 			this.choropleth.set_dataset(datasets);
 		},
 

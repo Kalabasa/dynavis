@@ -119,10 +119,13 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 							var level = Area.get_level(area_code);
 							poly.variables = [];
 							_.each(this._datasets, function(dataset) {
-								if(!dataset) return;
-								var datapoints = dataset.get_datapoints();
-								var value = datapoints.get_value(area_code, this._year);
-								poly.variables.push({dataset: dataset, level: level, value: value});
+								if(dataset) {
+									var datapoints = dataset.get_datapoints();
+									var value = datapoints.get_value(area_code, this._year);
+									poly.variables.push({dataset: dataset, level: level, value: value});
+								}else{
+									poly.variables.push(null);
+								}
 							}, this);
 						}
 						poly.setStyle(this.compute_polygon_style(poly, false));
@@ -143,7 +146,17 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 
 		compute_polygon_style: function(poly, highlight) {
 			var style = null;
-			if(poly.variables.length && _.every(poly.variables, function(v) { return v.value !== null; })) {
+
+			var colored = _.every(poly.variables, function(v) {
+				return !v || v.value !== null;
+			})
+			&& _.every(this.datasets, function(d) {
+				return _.some(poly.variables, function(v) {
+					return d == v.dataset;
+				});
+			});
+
+			if(colored) {
 				var color = this.get_color(poly.variables);
 				var darker = _.mapObject(color, function(v) {
 					return Math.max(0, v - 64);
@@ -170,6 +183,7 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 			];
 			var color = {r:255,g:255,b:255};
 			_.each(variables, function(variable, i) {
+				if(!variable) return;
 				var scale = scales[i];
 				var value = variable.value;
 				var classes = this.calculate_breaks(variable.dataset, variable.level, this._year, scale.length);

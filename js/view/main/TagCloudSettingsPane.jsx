@@ -23,12 +23,19 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 		},
 
 		render: function() {
+			var text = "Select Dataset";
+			var close_button = null;
+			if(this.state.dataset) {
+				text = this.state.dataset.get("name");
+				close_button = <button className="button button-complement button-flat button-close" onClick={this.handle_remove}>&times;</button>;
+			}
+			var button = <div><button className="button" onClick={this.handle_select}>{text}</button>{close_button}</div>;
 			return (
 				<div className="pane">
-					Tag Cloud
-					Dataset: {this.state.dataset ? this.state.dataset.get("name") : null}
-					<button className="button button-complement button-flat button-close" onClick={this.handle_remove}>&times;</button>
-					<button className="button" onClick={this.handle_select}>Select dataset</button>
+					<h6 className="pane-header">Tag Cloud Settings</h6>
+					<div className="pane-content">
+						{button}
+					</div>
 				</div>
 			);
 		},

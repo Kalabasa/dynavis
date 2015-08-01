@@ -99,8 +99,18 @@
 	padding: 40px 12%;
 }
 
+#sidebar {
+	padding: 20px 0;
+}
 .pane {
-	padding: 20px;
+	.pane-header {
+		color: $color-text;
+		background-color: $color-background;
+		padding: 6px 20px;
+	}
+	.pane-content {
+		padding: 10px 20px;
+	}
 }
 
 .panel-toolbar {

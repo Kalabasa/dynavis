@@ -27,22 +27,25 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 		},
 
 		render: function() {
+			var datasets_list = [];
+			var datasets = [this.state.dataset1, this.state.dataset2];
+			for (var i = 0; i < datasets.length; i++) {
+				var dataset = datasets[i];
+				var text = "Select Dataset";
+				var close_button = null;
+				if(dataset) {
+					text = dataset.get("name");
+					close_button = <button className="button button-complement button-flat button-close" onClick={this.remove_handler(i+1)}>&times;</button>;
+				}
+				datasets_list.push(
+					<div><button className="button" onClick={this.select_handler(i+1)}>{text}</button>{close_button}</div>
+				);
+			}
 			return (
 				<div className="pane">
-					Choropleth
-					<div>
-						<div>
-							Dataset 1: {this.state.dataset1 ? this.state.dataset1.get("name") : null}
-							<button className="button button-complement button-flat button-close" onClick={this.remove_handler(1)}>&times;</button>
-						</div>
-						<button className="button" onClick={this.select_handler(1)}>Select dataset</button>
-					</div>
-					<div>
-						<div>
-							Dataset 2: {this.state.dataset2 ? this.state.dataset2.get("name") : null}
-							<button className="button button-complement button-flat button-close" onClick={this.remove_handler(2)}>&times;</button>
-						</div>
-						<button className="button" onClick={this.select_handler(2)}>Select dataset</button>
+					<h6 className="pane-header">Choropleth Settings</h6>
+					<div className="pane-content">
+						{datasets_list}
 					</div>
 				</div>
 			);
