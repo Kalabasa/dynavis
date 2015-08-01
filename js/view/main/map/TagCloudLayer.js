@@ -10,7 +10,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			this._dataset = null;
 			this._tags = [];
 
-			this._redraw_callback = _.debounce(this.redraw.bind(this), 600);
+			this._redraw_callback = _.debounce(this.redraw.bind(this), 300);
 
 			this.map = null;
 			this.minimum_size = 4;
@@ -18,16 +18,17 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 
 		onAdd: function (map) {
 			this.map = map;
-			map.on("viewreset moveend", this.redraw.bind(this));
+			map.on("viewreset zoomend moveend", this.redraw.bind(this));
 
     		d3.select("#tag-cloud-overlay").remove();
-			d3.select(this.map.getPanes().overlayPane)
+			d3.select(this.map.getPanes().shadowPane)
 				.append("svg")
 					.attr("id", "tag-cloud-overlay")
 					.style("pointer-events", "none")
-					.attr("class", "leaflet-zoom-hide")
+					.style("position", "absolute")
 				.append("g")
-					.attr("id", "tag-cloud-container");
+					.attr("id", "tag-cloud-container")
+					.attr("class", "leaflet-zoom-hide");
 
 			L.LayerGroup.prototype.onAdd.call(this, map);
 		},
@@ -102,25 +103,18 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 								var lat = top_left.lat + (bottom_right.lat - top_left.lat) * Math.random();
 								var lng = top_left.lng + (bottom_right.lng - top_left.lng) * Math.random();
 								poly.tags.push({
+									"area": poly,
 									"data": p,
 									"family": family,
 									"coords": bounds.getCenter() || L.latLng(lat, lng),
-									"area": poly,
 								});
 							}
 						}
 
 						_.each(poly.tags, function(tag) {
 							this._tags.push(tag);
-							if(tag.family.get("name")) {
-								this._redraw_callback();
-							}else{
-								tag.family.fetch({
-									success: this._redraw_callback,
-									error: this._redraw_callback,
-								});
-							}
 						}.bind(this));
+						this._redraw_callback();
 					}
 				}else{
 					if(!add) {
@@ -138,12 +132,13 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 
 		redraw: function() {
 			var bounds = this.map.getBounds();
+			var size = this.map.getSize();
 			var top_left = this.map.latLngToLayerPoint(bounds.getNorthWest());
 			var svg = d3.select("#tag-cloud-overlay");
-			svg.style("width", this.map.getSize().x + "px")
-				.style("height", this.map.getSize().y + "px")
-				.style("margin-left", top_left.x + "px")
-				.style("margin-top", top_left.y + "px");
+			svg.style("width", size.x + "px")
+				.style("height", size.y + "px")
+				.style("left", top_left.x + "px")
+				.style("top", top_left.y + "px");
 			var g = d3.select("#tag-cloud-container");
 			g.attr("transform", "translate(" + (-top_left.x) + "," + (-top_left.y) + ")");
 
@@ -156,25 +151,38 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 					tag.x = point.x;
 					tag.y = point.y;
 					return true;
-				}.bind(this), this)
+				}, this)
+				.each(function(tag) {
+					if(!tag.family.has("name")) {
+						tag.family.fetch({success: function() {
+							this._redraw_callback();
+						}.bind(this)});
+					}
+				}, this)
 				.sortBy(function(tag) { return tag.size; })
 				.value();
 
-			var text_func = function(tag) { return tag.family.get("name"); };
+			var text_func = function(tag) {
+				if(tag.family.has("name")) return tag.family.get("name");
+				return "-"; // TODO: spinner
+			};
 			var transform_func = function(tag) { return "translate(" + tag.x + "," + tag.y + ")"; };
 			var font_size_func = function(tag) { return Math.sqrt(0.8 * tag.size) + "em"; };
 
 			var tags_data = g.selectAll("g").data(filtered_tags);
-			tags_data.exit().remove();
-			var entered_tags = tags_data.enter().append("g");
+			tags_data.exit().remove(); // remove exiting data
+			tags_data.selectAll("text") // update positions and text
+				.attr("transform", transform_func)
+				.text(text_func);
+			var entered_tags = tags_data.enter().append("g"); // add entering data
 			entered_tags.append("text")
+					.text(text_func)
 					.attr("transform", transform_func)
-				.text(text_func)
 					.attr("class", "map-tag-stroke")
 					.style("font-size", font_size_func);
 			entered_tags.append("text")
+					.text(text_func)
 					.attr("transform", transform_func)
-				.text(text_func)
 					.attr("class", "map-tag")
 					.style("font-size", font_size_func)
 		},
