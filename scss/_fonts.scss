@@ -1,0 +1,71 @@
+@font-face {
+	font-family: "Roboto";
+	src: url("../fonts/Roboto/Roboto-Regular.ttf");
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Roboto";
+	src: url("../fonts/Roboto/Roboto-Bold.ttf");
+	font-weight: 700;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Roboto";
+	src: url("../fonts/Roboto/Roboto-Italic.ttf");
+	font-weight: 400;
+	font-style: italic;
+}
+@font-face {
+	font-family: "Roboto";
+	src: url("../fonts/Roboto/Roboto-BoldItalic.ttf");
+	font-weight: 700;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: "Roboto Condensed";
+	src: url("../fonts/Roboto_Condensed/RobotoCondensed-Regular.ttf");
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Roboto Condensed";
+	src: url("../fonts/Roboto_Condensed/RobotoCondensed-Bold.ttf");
+	font-weight: 700;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Roboto Condensed";
+	src: url("../fonts/Roboto_Condensed/RobotoCondensed-Italic.ttf");
+	font-weight: 400;
+	font-style: italic;
+}
+@font-face {
+	font-family: "Roboto Condensed";
+	src: url("../fonts/Roboto_Condensed/RobotoCondensed-BoldItalic.ttf");
+	font-weight: 700;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: "Roboto Slab";
+	src: url("../fonts/Roboto_Slab/RobotoSlab-Regular.ttf");
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Roboto Slab";
+	src: url("../fonts/Roboto_Slab/RobotoSlab-Bold.ttf");
+	font-weight: 700;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Roboto Slab";
+	src: url("../fonts/Roboto_Slab/RobotoSlab-Light.ttf");
+	font-weight: 300;
+	font-style: normal;
+}
+
+@import url(http://fonts.googleapis.com/css?family=Roboto+Condensed:400italic,700italic,400,700|Roboto+Slab:300,700,400|Roboto:400italic,700italic,700,400);
+@import "font-awesome.min.css";
