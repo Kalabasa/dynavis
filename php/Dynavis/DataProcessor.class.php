@@ -46,6 +46,9 @@ class DataProcessor {
 	}
 
 	public static function generate_indicator($name, $description, $user) {
+		// Intensive data processing ahead, set a longer time limit
+		set_time_limit(120); // 2 minutes
+
 		$p = static::INDICATORS[$name];
 		$calc_function = $p[0];
 		$variables = $p[1];
@@ -67,7 +70,6 @@ class DataProcessor {
 
 		for($t = $min_year; $t <= $max_year; $t++) {
 			$subresult = static::$calc_function($t);
-			if(!$subresult) return null;
 			foreach ($subresult as $result_row) {
 				$insert_row = [
 					$did,
