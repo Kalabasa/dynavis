@@ -46,7 +46,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			});
 
 			this.geojson_cache = {};
-			this.geojson_added = {};
+			this.hash_added = {};
 
 			this.choropleth = new ChoroplethLayer();
 			this.choropleth.addTo(this.map);
@@ -71,18 +71,16 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		reset_geojson: function() {
 			this.choropleth.reset_geojson();
 			this.tagcloud.reset_geojson();
-			this.geojson_added = {};
+			this.hash_added = {};
 			this.selected = null;
 		},
 
 		add_geojson: function(geojson_url) {
-			if(this.geojson_added[geojson_url]) return;
-
 			if(this.geojson_cache[geojson_url]) {
 				var geojson = this.geojson_cache[geojson_url];
 				var hash = geojson.hash;
-				if(!this.geojson_added[hash]) {
-					this.geojson_added[hash] = true;
+				if(!this.hash_added[hash]) {
+					this.hash_added[hash] = true;
 					this.choropleth.add_geojson(geojson);
 					this.tagcloud.add_geojson(geojson);
 				}
@@ -94,13 +92,11 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 					}.bind(this)
 				});
 				$.get(geojson_url).success(function(data) {
-					if(this.geojson_added[geojson_url]) return;
 					if(typeof data === "object") {
 						var geojson = this.geojson_cache[geojson_url] = L.geoJson(data, options);
 						geojson.hash = this.hash_geojson(data);
 						this.add_geojson(geojson_url);
 					}
-					this.geojson_added[geojson_url] = true;
 				}.bind(this));
 			}
 		},
@@ -108,7 +104,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		hash_geojson: function(geojson) {
 			var sum = 0;
 			_.each(geojson.features, function(feature) {
-				sum ^= parseInt(feature.properties.PSGC) | 0;
+				sum = (sum << 1) ^ (parseInt(feature.properties.PSGC) | 0);
 			});
 			return sum;
 		},
