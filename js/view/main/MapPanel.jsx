@@ -15,7 +15,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 
 			this._interval = setInterval(function() {
 				this.geojson_cache = {}; // clear cache once in a while
-			}.bind(this), 2 * 60 * 1000);
+			}.bind(this), 6 * 60 * 1000); // 6 minutes
 		},
 
 		componentWillUnmount: function() {
