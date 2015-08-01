@@ -14,8 +14,9 @@ try {
 	foreach ($officials["data"] as $o) {
 		print "$i/$total\n"; $i++;
 		$official = new Official((int) $o["id"], false);
-		$family = Family::get_by_name($official->surname);
-		if(!$family) {
+		try {
+			$family = Family::get_by_name($official->surname);
+		}catch(\Dynavis\Core\NotFoundException $e) {
 			$family = new Family();
 			$family->name = $official->surname;
 			$family->save();
