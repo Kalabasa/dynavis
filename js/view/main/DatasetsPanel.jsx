@@ -105,7 +105,7 @@ define(function(require) {
 
 			dataset.save(null, {
 				success: function() {
-					Notification.replace(notif, <span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading data...</span>);
+					Notification.replace(notif, <span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading data...</span>, 0);
 					$.ajax({
 						url: dataset.url() + "/datapoints",
 						data: fd,
