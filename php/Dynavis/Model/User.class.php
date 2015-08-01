@@ -90,7 +90,7 @@ class User extends \Dynavis\Core\Entity {
 
 	private function hash_password($password) {
 		$this->load();
-		return password_hash($password, PASSWORD_BCRYPT, ["salt" => $this->salt]);
+		return password_hash($password . substr($this->salt,4,4), PASSWORD_BCRYPT, ["salt" => $this->salt]);
 	}
 
 	public function save() {

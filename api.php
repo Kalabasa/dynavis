@@ -1287,8 +1287,12 @@ function post_token() {
 		$app->halt(400, "Incomplete data.");
 	}
 
-	$user = User::get_by_username($data["username"]);
-	if(is_null($user) || !$user->check_password($data["password"])) {
+	try{
+		$user = User::get_by_username($data["username"]);
+	}catch(NotFoundException $e) {
+		$app->halt(401, "Invalid username or password.");
+	}
+	if(!$user->check_password($data["password"])) {
 		$app->halt(401, "Invalid username or password.");
 	}
 
