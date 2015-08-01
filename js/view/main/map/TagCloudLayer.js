@@ -159,7 +159,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 								this._redraw_callback();
 							}.bind(this)});
 						}
-					}.bind(this), Math.floor(i / 15) * 2000, tag, i);
+					}.bind(this), Math.floor(i / 30) * 1000, tag, i);
 				}, this)
 				.sortBy(function(tag) { return tag.size; })
 				.value();
