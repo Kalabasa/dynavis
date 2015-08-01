@@ -167,6 +167,7 @@
 	}
 }
 form input[type=button], form input[type=submit], form input[type=reset], .button {
+	cursor: pointer;
 	padding: 0.8em;
 	font-family: "Roboto", sans-serif;
 	font-size: 80%;
@@ -457,11 +458,10 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 	z-index: 10;
 	position: absolute;
 	right: 0;
-	top: $header-height;
 	bottom: 0;
 	overflow: hidden;
 	
-	margin: 1em 2em;
+	padding: 1em 2em;
 
 	.notification {
 		pointer-events: auto;
@@ -470,7 +470,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 		float: right;
 		display: inline-block;
 		width: 300px;
-		margin: 0.4em;
+		margin: 1.5em;
 		padding: 1.2em;
 		border-radius: 2px;
 
