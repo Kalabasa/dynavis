@@ -10,7 +10,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			this._dataset = null;
 			this._tags = [];
 
-			this._redraw_callback = _.debounce(this.redraw.bind(this), 300);
+			this._redraw_callback = _.debounce(this.redraw.bind(this), 200);
 
 			this.map = null;
 			this.minimum_size = 4;
@@ -18,7 +18,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 
 		onAdd: function (map) {
 			this.map = map;
-			map.on("viewreset zoomend moveend", this.redraw.bind(this));
+			map.on("viewreset move", _.throttle(this.redraw.bind(this), 100));
 
     		d3.select("#tag-cloud-overlay").remove();
 			d3.select(this.map.getPanes().shadowPane)
@@ -152,12 +152,14 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 					tag.y = point.y;
 					return true;
 				}, this)
-				.each(function(tag) {
-					if(!tag.family.has("name")) {
-						tag.family.fetch({success: function() {
-							this._redraw_callback();
-						}.bind(this)});
-					}
+				.each(function(tag, i) {
+					_.delay(function(tag, i) {
+						if(!tag.family.has("name")) {
+							tag.family.fetch({success: function() {
+								this._redraw_callback();
+							}.bind(this)});
+						}
+					}.bind(this), Math.floor(i / 15) * 2000, tag, i);
 				}, this)
 				.sortBy(function(tag) { return tag.size; })
 				.value();
@@ -170,11 +172,12 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			var font_size_func = function(tag) { return Math.sqrt(0.8 * tag.size) + "em"; };
 
 			var tags_data = g.selectAll("g").data(filtered_tags);
-			tags_data.exit().remove(); // remove exiting data
-			tags_data.selectAll("text") // update positions and text
+			tags_data.exit().remove(); // remove exiting tag
+			tags_data.selectAll("text") // update tag
+				.text(text_func)
 				.attr("transform", transform_func)
-				.text(text_func);
-			var entered_tags = tags_data.enter().append("g"); // add entering data
+				.style("font-size", font_size_func);
+			var entered_tags = tags_data.enter().append("g"); // add entering tag
 			entered_tags.append("text")
 					.text(text_func)
 					.attr("transform", transform_func)
