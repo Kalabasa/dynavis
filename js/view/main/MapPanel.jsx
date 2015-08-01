@@ -99,6 +99,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 						var geojson = this.geojson_cache[geojson_url] = L.geoJson(data, options);
 						geojson.hash = this.hash_geojson(data);
 						this.add_geojson(geojson_url);
+						this.geojson_added[geojson.hash] = true;
 					}
 					this.geojson_added[geojson_url] = true;
 				}.bind(this));
