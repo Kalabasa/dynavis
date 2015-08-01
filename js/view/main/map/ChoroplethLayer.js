@@ -72,6 +72,7 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 					var area_name = feature.properties.NAME || feature.properties.NAME_3 || feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.NAME_0 || feature.properties.PROVINCE || feature.properties.REGION || feature.properties.PSGC;
 					var info = "";
 					_.each(layer.variables, function(variable) {
+						if(!variable) return;
 						info += "<p> " + _.escape(variable.dataset.get("name")) + " (" + that._year + ") = " + (variable.value == null ? "no data" : variable.value.toFixed(2)) + "</p>";
 					});
 					that.map.openPopup("<div><h3>" + _.escape(area_name) + "</h3>" + info + "</div>", e.latlng);
