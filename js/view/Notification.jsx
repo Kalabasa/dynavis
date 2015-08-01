@@ -6,10 +6,8 @@ define(["underscore", "jquery", "react"], function(_, $, React) {
 				<div className="notifications-container">
 					{this.props.notifications.map(function(notif) {
 						return (
-							<div key={notif.key}>
-								<span className={"notification notification-" + notif.type} onClick={notif.close.bind(notif)}>
-									{notif.contents}
-								</span>
+							<div key={notif.key} className={"notification notification-" + notif.type} onClick={notif.close.bind(notif)}>
+								{notif.contents}
 							</div>
 						);
 					})}

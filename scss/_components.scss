@@ -461,16 +461,15 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 	bottom: 0;
 	overflow: hidden;
 	
-	padding: 1em 2em;
+	padding: 2em;
 
 	.notification {
 		pointer-events: auto;
 		cursor: pointer;
 
-		float: right;
-		display: inline-block;
+		display: block;
 		width: 300px;
-		margin: 1.5em;
+		margin: 1em;
 		padding: 1.2em;
 		border-radius: 2px;
 
