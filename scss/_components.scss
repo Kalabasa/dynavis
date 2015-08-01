@@ -478,7 +478,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 		font-size: 110%;
 
 		color: $color-text-alt;
-		background-color: $color-background-alt;
+		background-color: rgba($color-background-alt, 0.8);
 		@include drop-shadow(8);
 
 		transition: color 0.3s linear, background-color 0.3s linear;
@@ -489,7 +489,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 
 	.notification-error {
 		color: white;
-		background-color: darkred;
+		background-color: rgba(darkred, 0.8);
 	}
 	.notification-success {
 	}
