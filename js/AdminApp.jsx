@@ -34,13 +34,13 @@ define(function(require){
 			React.unmountComponentAtNode(document.getElementById("header"));
 			React.unmountComponentAtNode(document.getElementById("sidebar"));
 			React.unmountComponentAtNode(document.getElementById("body"));
-			window.location.href = "login?n=" + encodeURIComponent(window.location.href);
+			window.location.href = "login?n=admin" + encodeURIComponent(window.location.hash);
 			return false;
 		}else if(this.token.get_user_role() && this.token.get_user_role() != "admin") {
 			React.unmountComponentAtNode(document.getElementById("header"));
 			React.unmountComponentAtNode(document.getElementById("sidebar"));
 			React.unmountComponentAtNode(document.getElementById("body"));
-			window.location.href = "index";
+			window.location.href = ".";
 			return false;
 		}
 		return true;

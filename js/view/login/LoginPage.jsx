@@ -5,7 +5,8 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 
 		getInitialState: function() {
 			return {
-				username: (location.search.split("username=")[1]||"").split("&")[0] || ""
+				error: "",
+				username: (location.search.split("username=")[1]||"").split("&")[0] || "",
 			};
 		},
 
@@ -18,6 +19,9 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 		render: function() {
 			return (
 				<div className="login-box">
+					<div className="pure-g">
+						<a className="pure-u-1" href=".">Logo</a>
+					</div>
 					<form className="pure-g" onSubmit={this.handle_login}>
 						<div className="pure-u-1">
 							<input className="input" id="username" type="text" placeholder="Username" valueLink={this.linkState("username")} required />
