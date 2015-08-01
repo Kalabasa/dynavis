@@ -131,6 +131,9 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		},
 
 		update_view: function() {
+			// TODO: move this to somewhere into TagCloudLayer
+			this.tagcloud.minimum_size = 10 / this.map.getZoom();
+
 			var zoom = this.map.getZoom();
 
 			var level;
@@ -167,9 +170,6 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 					this.add_geojson("api.php/geojson/" + level + "/" + path);
 				}
 			}
-
-			// TODO: move this to somewhere into TagCloudLayer
-			this.tagcloud.minimum_size = 10 / this.map.getZoom();
 		},
 
 		long2tile: function(lon,zoom) { return (Math.floor((lon+180)/360*Math.pow(2,zoom))); },
