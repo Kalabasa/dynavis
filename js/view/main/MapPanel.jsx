@@ -132,7 +132,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 
 		update_view: function() {
 			// TODO: move this to somewhere into TagCloudLayer
-			this.tagcloud.minimum_size = 10 / this.map.getZoom();
+			this.tagcloud.minimum_size = 16 / this.map.getZoom();
 
 			var zoom = this.map.getZoom();
 
