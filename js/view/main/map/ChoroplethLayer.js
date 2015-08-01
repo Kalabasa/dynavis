@@ -1,9 +1,11 @@
 "use strict";
-define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, Area) {
+define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 	return L.LayerGroup.extend({
-		initialize: function(layers) {
-			L.LayerGroup.prototype.initialize.call(this, layers);
+		initialize: function(bus) {
+			L.LayerGroup.prototype.initialize.call(this);
 			var that = this;
+
+			this.bus = bus;
 
 			this._style_neutral = {
 				weight: 3,
@@ -30,15 +32,16 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 				style: this._style_neutral,
 			};
 
-			this._year = new Date().getFullYear();
 			this._geojson_number = 0;
 			this._geojson = [];
 			this._dataset_number = 0;
 			this._datasets = [];
-			this._classes = [];
 
 			this.map = null;
 			this.selected = null;
+
+			this.bus.choropleth_data.on("update", this.on_data.bind(this));
+			this.bus.map_settings.on("update", this.on_map_settings.bind(this));
 		},
 
 		onAdd: function (map) {
@@ -46,13 +49,12 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 			L.LayerGroup.prototype.onAdd.call(this, map);
 		},
 
-		set_year: function(year) {
-			this._year = year;
-			this.reset_polygons();
+		on_map_settings: function(settings) {
+			if(settings.level) this.reset_geojson();
 		},
 
-		set_dataset: function(datasets) {
-			this._datasets = datasets;
+		on_data: function(data) {
+			this._datasets = data;
 			this.reset_polygons();
 		},
 
@@ -73,7 +75,7 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 					var info = "";
 					_.each(layer.variables, function(variable) {
 						if(!variable) return;
-						info += "<p> " + _.escape(variable.dataset.get("name")) + " (" + that._year + ") = " + (variable.value == null ? "no data" : variable.value.toFixed(2)) + "</p>";
+						info += "<p> " + _.escape(variable.dataset.name) + " (" + that._year + ") = " + (variable.value == null ? "no data" : variable.value.toFixed(2)) + "</p>";
 					});
 					that.map.openPopup("<div><h3>" + _.escape(area_name) + "</h3>" + info + "</div>", e.latlng);
 				},
@@ -115,20 +117,22 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 				if(intersects && this._geojson_number == gn) {
 					if(this._dataset_number != dn) {
 						dn = this._dataset_number;
-						if(this._datasets.length) {
-							var area_code = parseInt(poly.feature.properties.PSGC);
-							var level = Area.get_level(area_code);
-							poly.variables = [];
-							_.each(this._datasets, function(dataset) {
-								if(dataset) {
-									var datapoints = dataset.get_datapoints();
-									var value = datapoints.get_value(area_code, this._year);
-									poly.variables.push({dataset: dataset, level: level, value: value});
-								}else{
-									poly.variables.push(null);
+						var area_code = parseInt(poly.feature.properties.PSGC);
+						var level = Area.get_level(area_code);
+						poly.variables = [];
+						_.each(this._datasets, function(dataset) {
+							if(dataset) {
+								var value = null;
+								var filtered = this.filter_datapoints(dataset.datapoints, area_code);
+								if(filtered.length) {
+									value = parseFloat(filtered[0].get("value"));
+									if(isNaN(value)) value = null;
 								}
-							}, this);
-						}
+								poly.variables.push({dataset: dataset, level: level, value: value});
+							}else{
+								poly.variables.push(null);
+							}
+						}, this);
 						poly.setStyle(this.compute_polygon_style(poly, false));
 					}
 					if(add) {
@@ -145,15 +149,22 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 			}
 		},
 
+		filter_datapoints: function(datapoints, area_code) {
+			area_code = ("000000000" + area_code);
+			var match_start = area_code.substr(2-9,2) === "00" ? 0 : 2;
+			var area_code_match = area_code.substr(match_start-9);
+			return _.filter(datapoints, function(p) {
+				return ("0"+p.get("area_code")).substr(match_start-9) == area_code_match;
+			});
+		},
+
 		compute_polygon_style: function(poly, highlight) {
 			var style = null;
 
-			var colored = _.some(poly.variables, function(v) {
-				return v && v.value !== null;
-			})
-			&& _.every(this.datasets, function(d) {
+			var colored = _.some(this._datasets) && _.every(this._datasets, function(d) {
+				if(!d) return true;
 				return _.some(poly.variables, function(v) {
-					return d == v.dataset;
+					return v && d == v.dataset && v.value !== null;
 				});
 			});
 
@@ -182,13 +193,17 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 				[{r:254,g:235,b:226},{r:251,g:180,b:185},{r:247,g:104,b:161},{r:174,g:1,b:126}],
 				[{r:255,g:255,b:204},{r:194,g:230,b:153},{r:120,g:198,b:121},{r:35,g:132,b:67}],
 			];
+			var black = {r:30, g:30, b:30};
 			var color = {r:255,g:255,b:255};
 			_.each(variables, function(variable, i) {
 				if(!variable) return;
-				var scale = scales[i];
 				var value = variable.value;
-				var classes = this.calculate_breaks(variable.dataset, variable.level, this._year, scale.length);
-				var class_color = null;
+				if(!value) return;
+				var scale = scales[i];
+				var classes = variable.dataset.classes;
+				if(scale.length + 1 !== classes.length) return;
+
+				var class_color = black;
 				for (var i = 1; i < classes.length; i++) {
 					var min = classes[i - 1];
 					var max = classes[i];
@@ -203,21 +218,5 @@ define(["underscore", "jenks", "leaflet", "model/Area"], function(_, jenks, L, A
 			}, this);
 			return color;
 		},
-
-		calculate_breaks: _.memoize(function(dataset, level, year, n) {
-			year = year.toString();
-
-			var data = dataset.get_datapoints().chain()
-				.filter(function(p) {
-					return p.get("year") == year
-						&& p.get("value") !== null
-						&& Area.get_level(p.get("area_code")) == level;
-				})
-				.map(function(p) { return parseFloat(p.get("value")); })
-				.value();
-			return jenks(data, n) || [dataset.get_datapoints().get_min_value(), dataset.get_datapoints().get_max_value()];
-		}, function(dataset, level, year, n) {
-			return dataset.get("id") + "|" + level + "|" + year + "|" + n;
-		}),
 	});
 });

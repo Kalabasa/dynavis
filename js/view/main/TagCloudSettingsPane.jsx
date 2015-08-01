@@ -9,10 +9,11 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 
 		componentWillUpdate: function(nextProps, nextState) {
 			var callback = function() {
-				this.props.bus.tagcloud_settings.emit("dataset", {
+				this.props.bus.tagcloud_settings.emit("update", {
 					dataset: nextState.dataset,
 				});
 			}.bind(this);
+
 			if(!nextState.dataset || nextState.dataset.get_datapoints().size()){
 				callback();
 			}else{

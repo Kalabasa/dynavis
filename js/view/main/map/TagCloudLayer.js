@@ -1,10 +1,11 @@
 "use strict";
 define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, InstanceCache) {
 	return L.LayerGroup.extend({
-		initialize: function(layers) {
-			L.LayerGroup.prototype.initialize.call(this, layers);
+		initialize: function(bus) {
+			L.LayerGroup.prototype.initialize.call(this);
+
+			this.bus = bus;
 			
-			this._year = new Date().getFullYear();
 			this._reset_number = 0;
 			this._geojson = [];
 			this._dataset = null;
@@ -14,6 +15,9 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 
 			this.map = null;
 			this.minimum_size = 4;
+
+			this.bus.tagcloud_data.on("update", this.on_data.bind(this));
+			this.bus.map_settings.on("update", this.on_map_settings.bind(this));
 		},
 
 		onAdd: function (map) {
@@ -33,14 +37,20 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			L.LayerGroup.prototype.onAdd.call(this, map);
 		},
 
-		set_year: function(year) {
-			this._year = year;
+		on_map_settings: function(settings) {
+			if(settings.level) this.reset_geojson();
+			if(settings.zoom) this.calculate_minimum_size();
+		},
+
+		on_data: function(data) {
+			this._dataset = data;
+			this.calculate_minimum_size();
 			this.reset_tags();
 		},
 
-		set_dataset: function(dataset) {
-			this._dataset = dataset;
-			this.reset_tags();
+		calculate_minimum_size: function() {
+			this.minimum_size = 15 / this.map.getZoom();
+			if(this._dataset) this.minimum_size = Math.max(this.minimum_size, this._dataset.classes[2]);
 		},
 
 		on_feature: function(feature, layer) {
@@ -86,7 +96,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			function loop(poly, rn, add) {
 				var bounds = poly.getBounds();
 				var intsersects = bounds.intersects(this.map.getBounds().pad(1));
-				var datapoints = this._dataset.get_datapoints();
+				var datapoints = this._dataset.datapoints;
 				if(intsersects && this._reset_number == rn) {
 					if(add) {
 						add = false;
@@ -96,7 +106,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 							var bottom_right = bounds.getSouthEast();
 
 							var area_code = parseInt(poly.feature.properties.PSGC);
-							var datapoints = datapoints.find_datapoints(area_code, this._year);
+							var datapoints = this.filter_datapoints(datapoints, area_code);
 							for (var i = 0; i < datapoints.length; i++) {
 								var p = datapoints[i];
 								var family = InstanceCache.get("Family", p.get("family_id"));
@@ -130,6 +140,15 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			}
 		},
 
+		filter_datapoints: function(datapoints, area_code) {
+			area_code = ("000000000" + area_code);
+			var match_start = area_code.substr(2-9,2) === "00" ? 0 : 2;
+			var area_code_match = area_code.substr(match_start-9);
+			return _.filter(datapoints, function(p) {
+				return ("0"+p.get("area_code")).substr(match_start-9) == area_code_match;
+			});
+		},
+
 		redraw: function() {
 			var bounds = this.map.getBounds();
 			var size = this.map.getSize();
@@ -153,13 +172,9 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 					return true;
 				}, this)
 				.each(function(tag, i) {
-					_.delay(function(tag, i) {
-						if(!tag.family.has("name")) {
-							tag.family.fetch({success: function() {
-								this._redraw_callback();
-							}.bind(this)});
-						}
-					}.bind(this), Math.floor(i / 30) * 1000, tag, i);
+					if(!tag.family.has("name")) {
+						this.family_fetch_enqueue(tag.family);
+					}
 				}, this)
 				.sortBy(function(tag) { return tag.size; })
 				.value();
@@ -188,6 +203,34 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 					.attr("transform", transform_func)
 					.attr("class", "map-tag")
 					.style("font-size", font_size_func)
+		},
+
+		family_fetch_enqueue: function(family) {
+			this.fetch_queue = this.fetch_queue || [];
+
+			if(family.has("name")) return;
+			this.fetch_queue.push({model: family, options: {success: function() {
+				this._redraw_callback();
+			}.bind(this)}});
+
+			if(this.fetch_queue.length == 1) {
+				dequeue(this.fetch_queue);
+			}
+
+			function dequeue(queue) {
+				if(!queue.length) return;
+				var next = queue.shift();
+				next.model.fetch({
+					success: function(m,r,o) {
+						if(next.options.success) next.options.success(m,r,o);
+						dequeue(queue);
+					},
+					error: function(m,r,o) {
+						if(next.options.error) next.options.error(m,r,o);
+						dequeue(queue);
+					}
+				});
+			}
 		},
 	});
 });

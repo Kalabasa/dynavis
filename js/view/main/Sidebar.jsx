@@ -14,6 +14,8 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 			token.on("change", function() {
 				this.forceUpdate();
 			}, this);
+
+			this.handle_submit();
 		},
 
 		render: function() {
@@ -44,7 +46,7 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 		},
 
 		handle_submit: function(e) {
-			e.preventDefault();
+			if(e) e.preventDefault();
 			this.props.bus.main_settings.emit("update", {
 				year: parseInt(this.state.year),
 			});

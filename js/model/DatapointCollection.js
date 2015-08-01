@@ -12,28 +12,6 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 			return data.data;
 		},
 
-		find_datapoints: function(area_code, year, single) {
-			single = single || false;
-			area_code = ("000000000" + area_code);
-			year = year.toString();
-
-			var match_start = area_code.substr(2-9,2) === "00" ? 0 : 2;
-			var area_code_match = area_code.substr(match_start-9);
-
-			return (single ? this.find : this.filter).call(this, function(p) {
-				return p.get("year") == year
-					&& ("0"+p.get("area_code")).substr(match_start-9) == area_code_match;
-			});
-		},
-
-		get_value: function(area_code, year) {
-			var datapoint = this.find_datapoints(area_code, year, true);
-			if(!datapoint) return null;
-			
-			var value = parseFloat(datapoint.get("value"));
-			return isNaN(value) ? null : value;
-		},
-
 		get_max_value: function() {
 			if(this.max_value === undefined) {
 				var max = -Infinity;

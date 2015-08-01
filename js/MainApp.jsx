@@ -7,17 +7,27 @@ define(function(require){
 		InstanceCache = require("InstanceCache"),
 		MainRouter = require("jsx!MainRouter"),
 		Header = require("jsx!view/Header"),
-		Sidebar = require("jsx!view/main/Sidebar");
+		Sidebar = require("jsx!view/main/Sidebar"),
+		ChoroplethDataProcessor = require("ChoroplethDataProcessor"),
+		TagCloudDataProcessor = require("TagCloudDataProcessor");
 
 	var MainApp = function() {
 		this.token = new Token();
 		InstanceCache.set("Token", "session", this.token);
 		this.bus = {
 			router: new Events(),
+			
+			map_settings: new Events(),
 			main_settings: new Events(),
 			choropleth_settings: new Events(),
 			tagcloud_settings: new Events(),
+			
+			choropleth_data: new Events(),
+			tagcloud_data: new Events(),
 		};
+
+		new ChoroplethDataProcessor(this.bus);
+		new TagCloudDataProcessor(this.bus);
 
 		this.router = new MainRouter({bus: this.bus});
 		this.token.on("change", this.check_login, this);

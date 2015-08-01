@@ -9,19 +9,15 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		},
 
 		componentWillMount: function() {
-			this.props.bus.main_settings.on("update", this.on_update_settings);
-			this.props.bus.choropleth_settings.on("dataset", this.on_area_dataset);
-			this.props.bus.tagcloud_settings.on("dataset", this.on_tag_dataset);
-
+			this.props.bus.tagcloud_data.on("update", this.on_tagcloud_data);
 			this._interval = setInterval(function() {
 				this.geojson_cache = {}; // clear cache once in a while
 			}.bind(this), 6 * 60 * 1000); // 6 minutes
 		},
 
 		componentWillUnmount: function() {
-			this.props.bus.main_settings.off("update", this.on_update_settings);
-			this.props.bus.choropleth_settings.off("dataset", this.on_area_dataset);
-			this.props.bus.tagcloud_settings.off("dataset", this.on_tag_dataset);
+			this.props.bus.choropleth_data.off("update");
+			this.props.bus.tagcloud_data.off("update");
 			this.map = null;
 			clearInterval(this._interval);
 		},
@@ -48,10 +44,10 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			this.geojson_cache = {};
 			this.hash_added = {};
 
-			this.choropleth = new ChoroplethLayer();
+			this.choropleth = new ChoroplethLayer(this.props.bus);
 			this.choropleth.addTo(this.map);
 
-			this.tagcloud = new TagCloudLayer();
+			this.tagcloud = new TagCloudLayer(this.props.bus);
 			this.tagcloud.addTo(this.map);
 
 			this.labels = L.tileLayer("http://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png");
@@ -59,7 +55,6 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			this.map.getPanes().shadowPane.appendChild(this.labels.getContainer());
 			this.labels.getContainer().style.pointerEvents = "none";
 
-			this.last_level = 0;
 			this.map.on("viewreset moveend zoomend", this.update_view);
 			this.update_view();
 		},
@@ -68,9 +63,8 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			return <div className="map-panel"></div>;
 		},
 
-		reset_geojson: function() {
-			this.choropleth.reset_geojson();
-			this.tagcloud.reset_geojson();
+		reset_geojson: function(level) {
+			this.props.bus.map_settings.emit("update", {level: level});
 			this.hash_added = {};
 			this.selected = null;
 		},
@@ -113,28 +107,14 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			return sum;
 		},
 
-		on_update_settings: function(e) {
-			this.choropleth.set_year(e.year);
-			this.tagcloud.set_year(e.year);
-		},
-
-		on_area_dataset: function(e) {
-			var datasets = [e.dataset1, e.dataset2];
-			this.choropleth.set_dataset(datasets);
-		},
-
-		on_tag_dataset: function(e) {
-			this.tagcloud.set_dataset(e.dataset);
-
-			// TODO: move this to somewhere (tagcloud visibility listener?)
-			this.labels.getContainer().style.display = e.dataset ? "none" : "block";
+		on_tagcloud_data: function(data) {
+			this.labels.getContainer().style.display = data ? "none" : "block";
 		},
 
 		update_view: function() {
-			// TODO: move this to somewhere into TagCloudLayer
-			this.tagcloud.minimum_size = 16 / this.map.getZoom();
-
 			var zoom = this.map.getZoom();
+			if(zoom != this.last_zoom) this.props.bus.map_settings.emit("update", {zoom: zoom});
+			this.last_zoom = zoom;
 
 			var level;
 			if(zoom >= 12) {
@@ -147,7 +127,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 				level = "region";
 			}
 
-			if(level != this.last_level) this.reset_geojson();
+			if(level != this.last_level) this.reset_geojson(level);
 			this.last_level = level;
 
 			var target_zoom = { // These zoom levels must match with the server
