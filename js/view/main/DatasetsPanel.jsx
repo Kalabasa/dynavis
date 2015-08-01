@@ -101,11 +101,11 @@ define(function(require) {
 				description: this.state.description,
 			});
 
-			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading dataset...</span>, 0);
+			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading metadata...</span>, 0);
 
 			dataset.save(null, {
 				success: function() {
-					Notification.replace(notif, <span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading datapoints...</span>);
+					Notification.replace(notif, <span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading data...</span>);
 					$.ajax({
 						url: dataset.url() + "/datapoints",
 						data: fd,
