@@ -26,17 +26,26 @@ define(["underscore", "jenks", "model/Area", "ChoroplethDataProcessor"], functio
 
 	TCDP.prototype.update = _.debounce(function() {
 		if(!this.year || !this.level || !this.dataset) return;
-		var dataset = this.dataset ? this.process(this.dataset) : null;
-		this.bus.tagcloud_data.emit("update", dataset);
+
+		var callback = function(){
+			var processed = this.dataset ? this.process(this.dataset) : null;
+			this.bus.tagcloud_data.emit("update", processed);
+		}.bind(this);
+
+		if(this.dataset.get_datapoints(this.year).size()){
+			callback();
+		}else{
+			this.dataset.get_datapoints(this.year).fetch({
+				success: callback
+			});
+		}
 	}, 0);
 
 	TCDP.prototype.process = function(dataset) {
-		var year = this.year.toString();
 		return {
 			name: dataset.get("name"),
-			datapoints: dataset.get_datapoints().filter(function(p) {
-				return p.get("year") == year;
-			}),
+			year: this.year,
+			datapoints: dataset.get_datapoints(this.year),
 			classes: this.calculate_breaks(dataset, this.level, this.year, 3),
 		};
 	};

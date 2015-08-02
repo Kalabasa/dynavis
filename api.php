@@ -26,6 +26,7 @@ use \Dynavis\DataProcessor;
 	"zoom" => "\d+",
 	"x" => "\d+",
 	"y" => "\d+",
+	"year" => "\d+",
 ]);
 
 $app = new \Slim\Slim(["debug" => true]);
@@ -59,7 +60,7 @@ $app->get("/users", function () { generic_get_list("User"); } );
 $app->get("/users/:username", "get_user");
 $app->get("/users/:username/datasets", "get_user_datasets");
 $app->get("/users/:username/datasets/:id", "get_user_dataset");
-$app->get("/users/:username/datasets/:id/datapoints", "get_user_dataset_datapoints");
+$app->get("/users/:username/datasets/:id/datapoints/:year", "get_user_dataset_datapoints");
 $app->get("/users/:username/datasets/:id_/datapoints/:id", "get_user_dataset_datapoint");
 $app->get("/datasets", "get_datasets");
 $app->get("/tokens/:id", $auth_token, "get_token");
@@ -1014,7 +1015,7 @@ function get_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
 	echo json_encode($datapoint);
 }
 
-function get_user_dataset_datapoints($username, $dataset_id) {
+function get_user_dataset_datapoints($username, $dataset_id, $year) {
 	global $app;
 	$params = defaults($app->request->get(), [
 		"count" => 0,
@@ -1024,6 +1025,7 @@ function get_user_dataset_datapoints($username, $dataset_id) {
 
 	$start = (int) $params["start"];
 	$count = (int) $params["count"];
+	$year = (int) $year;
 
 	try {
 		$user = User::get_by_username($username);
@@ -1036,7 +1038,7 @@ function get_user_dataset_datapoints($username, $dataset_id) {
 		$app->halt(404);
 	}
 
-	echo json_encode($dataset->get_points($count, $start));
+	echo json_encode($dataset->get_points($year, $count, $start));
 }
 
 function post_user_dataset($username) {

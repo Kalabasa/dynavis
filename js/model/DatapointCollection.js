@@ -4,9 +4,10 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 		model: Datapoint,
 		initialize: function(models, options) {
 			this.dataset = options.dataset;
+			this.year = options.year;
 		},
 		url: function() {
-			return this.dataset.url() + "/datapoints";
+			return this.dataset.url() + "/datapoints/" + this.year;
 		},
 		parse: function(data) {
 			return data.data;

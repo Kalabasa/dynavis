@@ -48,7 +48,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 		];
 	}
 
-	public function get_points($count = 0, $start = 0) {
+	public function get_points($year, $count = 0, $start = 0) {
 		if($count < 0 || $start < -1) return false;
 
 		$this->load();
@@ -64,9 +64,10 @@ class Dataset extends \Dynavis\Core\RefEntity {
 		$fields = array_merge($class::FIELDS, [$class::TABLE . "." . $class::PRIMARY_KEY]);
 		unset($fields[0]);
 
-		$where = [
-			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
-		];
+		$where = ["AND" => [
+			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id(),
+			$class::TABLE . ".year" => $year,
+		]];
 
 		$total = Database::get()->count($class::TABLE, $join, "*", $where);
 		if($count != 0) {

@@ -30,7 +30,7 @@ define(["react", "InstanceCache", "model/Dataset", "jsx!view/HeaderSession"], fu
 						<h2 className="header-title">{this.state.title}</h2>
 						{subtitle}
 					</div>
-					<HeaderSession model={InstanceCache.get("Token", "session")} />
+					<HeaderSession model={InstanceCache.get_existing("Token", "session")} />
 				</div>
 			);
 		},

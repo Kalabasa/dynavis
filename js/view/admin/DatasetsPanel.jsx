@@ -85,7 +85,7 @@ define(function(require) {
 				"RecursiveDynastySize": "Number of members of each dynasty in each local government unit including members in subdivisions.",
 			};
 
-			var token = InstanceCache.get("Token", "session");
+			var token = InstanceCache.get_existing("Token", "session");
 			var user = token ? token.get_user() : null;
 			if(!user) return;
 

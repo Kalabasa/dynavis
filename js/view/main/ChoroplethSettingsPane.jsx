@@ -9,21 +9,9 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 		},
 
 		componentWillUpdate: function(nextProps, nextState) {
-			var callback = _.after(2, function() {
-				this.props.bus.choropleth_settings.emit("update", {
-					dataset1: nextState.dataset1,
-					dataset2: nextState.dataset2,
-				});
-			}).bind(this);
-			
-			_.each([nextState.dataset1, nextState.dataset2], function(dataset) {
-				if(!dataset || dataset.get_datapoints().size()){
-					callback();
-				}else{
-					dataset.get_datapoints().fetch({
-						success: callback
-					});
-				}
+			this.props.bus.choropleth_settings.emit("update", {
+				dataset1: nextState.dataset1,
+				dataset2: nextState.dataset2,
 			});
 		},
 

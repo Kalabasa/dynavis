@@ -75,7 +75,7 @@ define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 					var info = "";
 					_.each(layer.variables, function(variable) {
 						if(!variable) return;
-						info += "<p> " + _.escape(variable.dataset.name) + " (" + that._year + ") = " + (variable.value == null ? "no data" : variable.value.toFixed(2)) + "</p>";
+						info += "<p> " + _.escape(variable.dataset.name) + " (" + variable.dataset.year + ") = " + (variable.value == null ? "no data" : variable.value.toFixed(2)) + "</p>";
 					});
 					that.map.openPopup("<div><h3>" + _.escape(area_name) + "</h3>" + info + "</div>", e.latlng);
 				},
@@ -153,7 +153,7 @@ define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 			area_code = ("000000000" + area_code);
 			var match_start = area_code.substr(2-9,2) === "00" ? 0 : 2;
 			var area_code_match = area_code.substr(match_start-9);
-			return _.filter(datapoints, function(p) {
+			return datapoints.filter(function(p) {
 				return ("0"+p.get("area_code")).substr(match_start-9) == area_code_match;
 			});
 		},
@@ -193,7 +193,7 @@ define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 				[{r:254,g:235,b:226},{r:251,g:180,b:185},{r:247,g:104,b:161},{r:174,g:1,b:126}],
 				[{r:255,g:255,b:204},{r:194,g:230,b:153},{r:120,g:198,b:121},{r:35,g:132,b:67}],
 			];
-			var black = {r:30, g:30, b:30};
+			var black = {r:20, g:20, b:20};
 			var color = {r:255,g:255,b:255};
 			_.each(variables, function(variable, i) {
 				if(!variable) return;

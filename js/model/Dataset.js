@@ -11,17 +11,24 @@ define(["require", "backbone", "InstanceCache", "model/DatapointCollection"], fu
 			description: null,
 		},
 
-		get_datapoints: function() {
+		get_datapoints: function(year) {
 			if(!InstanceCache) InstanceCache = require("InstanceCache");
-			if(!this.datapoints) {
+
+			if(!this.datapoints) this.datapoints = {};
+			var datapoints = this.datapoints[year];
+
+			if(!datapoints) {
 				var name = "DatapointCollection";
-				this.datapoints = InstanceCache.get_existing(name, this.id);
+				var key = this.id + "." + year;
+				datapoints = InstanceCache.get_existing(name, key);
 			}
-			if(!this.datapoints) {
-				this.datapoints = new DatapointCollection(null, {dataset: this});
-				InstanceCache.set(name, this.id, this.datapoints);
+			if(!datapoints) {
+				datapoints = new DatapointCollection(null, {dataset: this, year: year});
+				InstanceCache.set(name, key, this.datapoints);
 			}
-			return this.datapoints;
+			
+			this.datapoints[year] = datapoints;
+			return datapoints;
 		},
 	});
 });

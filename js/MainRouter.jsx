@@ -31,7 +31,7 @@ define(["backbone", "react", "InstanceCache"], function(Backbone, React, Instanc
 			require([
 				"model/DatasetCollection", "jsx!view/main/DatasetsPanel"
 			], function(DatasetCollection, DatasetsPanel) {
-				var token = InstanceCache.get("Token", "session");
+				var token = InstanceCache.get_existing("Token", "session");
 				var user = token ? token.get_user() : null;
 				if(!user) {
 					that.navigate("", true);
@@ -47,7 +47,7 @@ define(["backbone", "react", "InstanceCache"], function(Backbone, React, Instanc
 			require([
 				"model/Dataset", "model/DatapointPageableCollection", "jsx!view/main/DatapointsPanel"
 			], function(Dataset, DatapointPageableCollection, DatapointsPanel) {
-				var token = InstanceCache.get("Token", "session");
+				var token = InstanceCache.get_existing("Token", "session");
 				var user = token ? token.get_user() : null;
 				if(!user) {
 					that.navigate("", true);

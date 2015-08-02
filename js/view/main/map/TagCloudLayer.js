@@ -144,7 +144,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			area_code = ("000000000" + area_code);
 			var match_start = area_code.substr(2-9,2) === "00" ? 0 : 2;
 			var area_code_match = area_code.substr(match_start-9);
-			return _.filter(datapoints, function(p) {
+			return datapoints.filter(function(p) {
 				return ("0"+p.get("area_code")).substr(match_start-9) == area_code_match;
 			});
 		},

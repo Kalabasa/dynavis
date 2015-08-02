@@ -29,10 +29,12 @@ define(["jquery", "localStorage", "backbone", "InstanceCache", "model/User"], fu
 		},
 
 		get_user: function() {
-			if(!this.get("username") || this.isNew()) return null;
-			var user = InstanceCache.get_existing("User", this.get("username"));
+			var username = this.get("username");
+			if(!username || this.isNew()) return null;
+			
+			var user = InstanceCache.get_existing("User", username);
 			if(!user) {
-				user = InstanceCache.get("User", this.get("username"));
+				user = InstanceCache.get("User", username);
 				user.fetch({
 					success: function() {
 						this.trigger("change", this);

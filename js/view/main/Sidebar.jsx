@@ -10,16 +10,16 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 		},
 
 		componentWillMount: function() {
-			var token = InstanceCache.get("Token", "session");
+			var token = InstanceCache.get_existing("Token", "session");
 			token.on("change", function() {
 				this.forceUpdate();
 			}, this);
-
+			console.log("REMOUD");
 			this.handle_submit();
 		},
 
 		render: function() {
-			var token = InstanceCache.get("Token", "session");
+			var token = InstanceCache.get_existing("Token", "session");
 			var user = token ? token.get_user() : null;
 			if(user) {
 				var datasets_pane = (
