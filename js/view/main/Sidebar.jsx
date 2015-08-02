@@ -14,7 +14,6 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 			token.on("change", function() {
 				this.forceUpdate();
 			}, this);
-			console.log("REMOUD");
 			this.handle_submit();
 		},
 

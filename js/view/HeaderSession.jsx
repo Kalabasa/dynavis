@@ -22,7 +22,8 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 					<div className="session">
 						<div className="hider">
 							<span className="hider-handle">
-								<span className="login-text login-username"><i className="fa fa-user"/>&ensp; {this.model().get("username")}</span>
+								<span className="login-text"><i className="fa fa-user"/></span>
+								<span className="login-text login-username">&ensp; {this.model().get("username")}</span>
 							</span>
 							<span className="hider-content">
 								{admin_link}
@@ -36,7 +37,8 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 					<div className="session">
 						<div className="hider">
 							<span className="hider-handle">
-								<span className="login-text"><i className="fa fa-user"/>&ensp; Login</span>
+								<span className="login-text"><i className="fa fa-user"/></span>
+								<span className="login-text hider-handle-toggle">&ensp; Login</span>
 							</span>
 							<span className="hider-content">
 								<form onSubmit={this.handle_login}>

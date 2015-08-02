@@ -76,21 +76,38 @@
 .hider {
 	white-space: nowrap;
 	.hider-handle {
-		float: left;
+		float: right;
 		display: inline-block;
-		width: $header-height;
+		padding: 0 8px;
+		// width: $header-height;
 		height: $header-height;
 		text-align: center;
+
+		span {
+			float: left;
+		}
 	}
+	.hider-handle-toggle {
+		max-width: $header-height;
+		overflow: hidden;
+		transition: max-width 0.6s ease-out 0.4s;
+	}
+	&:hover .hider-handle-toggle {
+		max-width: 0;
+		transition: max-width 0.4s ease-in;
+	}
+
 	.hider-content {
-		float:right;
+		float: left;
 		display: inline-block;
+		padding: 0;
 		max-width: 0;
 		overflow: hidden;
-		transition: max-width 0.6s ease-out 0.2s;
+		transition: max-width 0.6s ease-out 0.2s, padding 0.8s ease-out;
 	}
 	&:hover .hider-content {
 		max-width: 34em;
+		padding: 0 8px;
 		transition: max-width 0.4s ease-in;
 	}
 }
