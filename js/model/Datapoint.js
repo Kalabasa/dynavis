@@ -9,7 +9,6 @@ define(["backbone"], function(Backbone) {
 			value: null,
 		},
 		parse: function(r,o) {
-			console.log(r);
 			return {
 				dataset_id: parseInt(r.dataset_id, 10),
 				year: parseInt(r.year, 10),
