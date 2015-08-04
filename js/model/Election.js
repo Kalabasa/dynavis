@@ -13,6 +13,7 @@ define(["backbone"], function(Backbone) {
 		},
 		parse: function(r,o) {
 			return {
+				id: parseInt(r.id, 10),
 				official_id: parseInt(r.official_id, 10),
 				year: parseInt(r.year, 10),
 				year_end: parseInt(r.year_end, 10),

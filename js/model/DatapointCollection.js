@@ -7,7 +7,7 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 			this.year = options.year;
 		},
 		url: function() {
-			return this.dataset.url() + "/datapoints/" + this.year;
+			return this.dataset.url() + "/datapoints";
 		},
 		parse: function(data) {
 			return data.data;
@@ -38,6 +38,13 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 				}, Infinity);
 			}
 			return this.min_value;
+		},
+
+		fetch: function(options) {
+			options = options || {};
+			options.data = options.data || {}
+			if(options.data.year === undefined) options.data.year = this.year;
+			return Backbone.Collection.prototype.fetch.call(this, options);
 		},
 	});
 });

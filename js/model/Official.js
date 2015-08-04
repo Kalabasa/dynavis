@@ -6,6 +6,14 @@ define(["backbone"], function(Backbone) {
 			name: null,
 			nickname: null,
 		},
+		parse: function(r,o) {
+			return {
+				id: parseInt(r.id, 10),
+				surname: r.surname,
+				name: r.name,
+				nickname: r.nickname,
+			};
+		},
 
 		get_full_name: function() {
 			if(!this.get("surname") || !this.get("name")) return null;

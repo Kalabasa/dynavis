@@ -10,6 +10,7 @@ define(["backbone"], function(Backbone) {
 		},
 		parse: function(r,o) {
 			return {
+				id: r.id,
 				dataset_id: r.dataset_id
 					? parseInt(r.dataset_id, 10)
 					: (this.collection && this.collection.dataset

@@ -10,6 +10,14 @@ define(["require", "backbone", "InstanceCache", "model/DatapointCollection"], fu
 			name: null,
 			description: null,
 		},
+		parse: function(r,o) {
+			return {
+				id: parseInt(r.id, 10),
+				type: r.type,
+				name: r.name,
+				description: r.description,
+			};
+		},
 
 		get_datapoints: function(year) {
 			if(!InstanceCache) InstanceCache = require("InstanceCache");
