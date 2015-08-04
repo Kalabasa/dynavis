@@ -38,7 +38,7 @@ define(function(require) {
 			}
 			return (
 				<div className="pane">
-					<h6 className="pane-header">Choropleth Settings</h6>
+					<h6 className="pane-header">Choropleth Layer</h6>
 					<div className="pane-content">
 						{datasets_list}
 						<ChoroplethLegend ref="legend" bus={this.props.bus}/>

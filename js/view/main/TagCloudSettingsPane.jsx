@@ -23,7 +23,7 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 			var button = <div><button className="button" onClick={this.handle_select}>{text}</button>{close_button}</div>;
 			return (
 				<div className="pane">
-					<h6 className="pane-header">Tag Cloud Settings</h6>
+					<h6 className="pane-header">Tag Cloud Layer</h6>
 					<div className="pane-content">
 						{button}
 					</div>
