@@ -46,6 +46,8 @@ define(["underscore", "jenks", "model/Area", "ChoroplethDataProcessor"], functio
 			.filter(function(p) {
 				return Area.get_level(p.get("area_code")) == this.level;
 			}, this);
+		if(!datapoints.length) return null;
+		
 		return {
 			name: dataset.get("name"),
 			year: this.year,

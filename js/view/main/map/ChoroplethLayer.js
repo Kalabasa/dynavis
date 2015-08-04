@@ -208,7 +208,7 @@ define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 					}
 				};
 				color = _.mapObject(color, function(v,k) {
-					return Math.min(v, class_color[k]);
+					return Math.ceil(v * class_color[k] / 255);
 				});
 			}, this);
 			return color;

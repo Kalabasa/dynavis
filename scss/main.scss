@@ -45,9 +45,60 @@
 	stroke: #BFBFBF;
 	stroke-width: 1px;
 }
-.histogram-class-color {
-}
 .histogram-label {
 	fill: black;
+	font-size: 80%;
 	font-weight: bold;
+	writing-mode: tb;
+	text-anchor: start;
+	dominant-baseline: central;
+	&:first-child {
+		dominant-baseline: ideographic;
+	}
+	&:last-child {
+		dominant-baseline: text-before-edge;
+	}
+}
+.histogram-title {
+	fill: black;
+	font-weight: lighter;
+	text-anchor: middle;
+	dominant-baseline: ideographic;
+}
+
+.scatterplot-point {
+	fill: #ffffff;
+}
+.scatterplot-point-shadow {
+	fill: #000000;
+	opacity: 0.3;
+	transform: translate(0,0.5px);
+}
+.scatterplot-label {
+	fill: black;
+	font-size: 80%;
+	font-weight: bold;
+	dominant-baseline: central;
+	&:first-child {
+		dominant-baseline: ideographic;
+	}
+	&:last-child {
+		dominant-baseline: text-before-edge;
+	}
+}
+.scatterplot-label-x {
+	writing-mode: tb;
+	text-anchor: start;
+}
+.scatterplot-label-y {
+	text-anchor: end;
+}
+.scatterplot-title {
+	fill: black;
+	font-weight: lighter;
+	text-anchor: middle;
+}
+.scatterplot-title-y {
+	writing-mode: tb;
+	dominant-baseline: ideographic;
 }

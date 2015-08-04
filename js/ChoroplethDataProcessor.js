@@ -47,19 +47,22 @@ define(["underscore", "jenks", "model/Area"], function(_, jenks, Area) {
 	}, 0);
 
 	CDP.prototype.process = function(dataset, i) {
-		var scales = [
-			[{r:254,g:235,b:226},{r:251,g:180,b:185},{r:247,g:104,b:161},{r:174,g:1,b:126}],
-			[{r:255,g:255,b:204},{r:194,g:230,b:153},{r:120,g:198,b:121},{r:35,g:132,b:67}],
-		];
 		var datapoints = dataset.get_datapoints(this.year)
 			.filter(function(p) {
 				return Area.get_level(p.get("area_code")) == this.level;
 			}, this);
+		if(!datapoints.length) return null;
+		
+		var scales = [
+			[{r:254,g:235,b:226},{r:251,g:180,b:185},{r:247,g:104,b:161},{r:174,g:1,b:126}],
+			[{r:255,g:255,b:204},{r:194,g:230,b:153},{r:120,g:198,b:121},{r:35,g:132,b:67}],
+		];
+
 		return {
 			name: dataset.get("name"),
 			year: this.year,
 			datapoints: datapoints,
-			classes: datapoints.length ? this.calculate_breaks(datapoints, 4, dataset, this.level, this.year) : null,
+			classes: this.calculate_breaks(datapoints, 4, dataset, this.level, this.year),
 			color_scale: scales[i],
 		};
 	};
