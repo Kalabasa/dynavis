@@ -125,8 +125,7 @@ define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 								var value = null;
 								var filtered = this.filter_datapoints(dataset.datapoints, area_code);
 								if(filtered.length) {
-									value = parseFloat(filtered[0].get("value"));
-									if(isNaN(value)) value = null;
+									value = filtered[0].get("value");
 								}
 								poly.variables.push({dataset: dataset, level: level, value: value});
 							}else{

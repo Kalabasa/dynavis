@@ -86,13 +86,13 @@ define(function(require) {
 				return item.surname + ", " + item.name;
 			};
 
-			var official_id = parseInt(this.model().get("official_id"));
-			var area_code = parseInt(this.model().get("area_code"));
-			var party_id = parseInt(this.model().get("party_id"));
+			var official_id = this.model().get("official_id");
+			var area_code = this.model().get("area_code");
+			var party_id = this.model().get("party_id");
 
-			var official = isNaN(official_id) ? null : InstanceCache.get("Official", official_id, true);
-			var area = isNaN(area_code) ? null : InstanceCache.get("Area", area_code, true);
-			var party = isNaN(party_id) ? null : InstanceCache.get("Party", party_id, true);
+			var official = official_id ? null : InstanceCache.get("Official", official_id, true);
+			var area = area_code ? null : InstanceCache.get("Area", area_code, true);
+			var party = party_id ? null : InstanceCache.get("Party", party_id, true);
 
 			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){

@@ -6,9 +6,15 @@ define(["underscore", "backbone"], function(_, Backbone) {
 			code: null,
 			name: null,
 			level: null,
-			parent_code: null,
 		},
 		idAttribute: "code",
+		parse: function(r,o) {
+			return {
+				code: parseInt(r.code, 10),
+				name: r.name,
+				level: r.level,
+			}
+		},
 
 		isNew: function() {
 			return !this.has("id");

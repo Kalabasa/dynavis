@@ -1,5 +1,11 @@
 "use strict";
-define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/DatasetChooser"], function(React, DatasetCollection, Modal, DatasetChooser) {
+define(function(require) {
+	var React = require("react"),
+		DatasetCollection = require("model/DatasetCollection"),
+		Modal = require("jsx!view/Modal"),
+		DatasetChooser = require("jsx!view/main/DatasetChooser"),
+		ChoroplethLegend = require("jsx!view/main/ChoroplethLegend");
+
 	return React.createClass({
 		getInitialState: function() {
 			return {
@@ -35,11 +41,7 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 					<h6 className="pane-header">Choropleth Settings</h6>
 					<div className="pane-content">
 						{datasets_list}
-						<div ref="graphics">
-							Color legend,
-							Histogram,
-							Scatterplot,
-						</div>
+						<ChoroplethLegend ref="legend" bus={this.props.bus}/>
 					</div>
 				</div>
 			);

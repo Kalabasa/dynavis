@@ -6,7 +6,7 @@ use \Dynavis\PSGC;
 
 class Area extends \Dynavis\Core\Entity {
 	const TABLE = "area";
-	const FIELDS = ["code", "name", "type", "parent_code", "mun_id", "bar_id"];
+	const FIELDS = ["code", "name", "type"];
 	const QUERY_FIELDS = ["code", "name"];
 
 	public static function get_by_code($code) {
@@ -19,22 +19,6 @@ class Area extends \Dynavis\Core\Entity {
 
 	public static function has_code($code) {
 		return Database::get()->has(static::TABLE, ["code" => $code]);
-	}
-
-	public static function get_by_municipality_code($id) {
-		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, [
-			"mun_id" => $id,
-		]);
-		if($ret === false) throw new \Dynavis\Core\NotFoundException("Municipality not found. $id");
-		return new Area((int) $ret, false);
-	}
-
-	public static function get_by_barangay_code($id) {
-		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, [
-			"bar_id" => $id,
-		]);
-		if($ret === false) throw new \Dynavis\Core\NotFoundException("Barangay not found. $id");
-		return new Area((int) $ret, false);
 	}
 
 	public static function list_areas($count, $start, $level = null, $query = null) {
@@ -123,12 +107,6 @@ class Area extends \Dynavis\Core\Entity {
 		return Database::get()->count(static::TABLE, $where);
 	}
 
-	public function get_parent() {
-		$this->load();
-		if(is_null($this->parent_code)) return null;
-		return new Area($this->parent_code, false);
-	}
-
 	public function get_elections() {
 		$fields = array_map(function($f) {
 			return Elect::TABLE . ".$f";
@@ -192,10 +170,6 @@ class Area extends \Dynavis\Core\Entity {
 			throw new \Dynavis\Core\DataException("Empty name.");
 		}
 
-		// Calculate sub-codes
-		$this->bar_id = $this->code % 10000000;
-		$this->mun_id = floor($this->bar_id / 1000);
-
 		parent::save();
 	}
 
@@ -255,7 +229,7 @@ class Area extends \Dynavis\Core\Entity {
 			$insert_data
 		)) . ")";
 
-		$ret = Database::get()->query("replace into " . static::TABLE . " (code,name,type,parent_code,mun_id,bar_id) values " . $values_string);
+		$ret = Database::get()->query("replace into " . static::TABLE . " (code,name,type) values " . $values_string);
 
 		if(!$ret) {
 			throw new \Dynavis\Core\DataException("Error adding file data to database.");
@@ -266,14 +240,10 @@ class Area extends \Dynavis\Core\Entity {
 
 	private static function process_row($entry, $row) {
 		$code = (int) $entry["code"];
-		$subcodes = static::extract_subcodes($code);
 		return [
 			$code,
 			Database::normalize_string($entry["name"]),
 			static::extract_level($code),
-			null,
-			$subcodes["mun_id"],
-			$subcodes["bar_id"],
 		];
 	}
 

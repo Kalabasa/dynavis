@@ -27,7 +27,6 @@ define(function(require) {
 				name: Va.lidator().required().string(),
 				code: Va.lidator().required().length(9).integerish(),
 				level: Va.lidator().required(),
-				// parent: Va.lidator().object(),
 			};
 		},
 		getObjectToValidate: function() {
@@ -35,7 +34,6 @@ define(function(require) {
 				name: this.refs.name.state.name,
 				code: this.state.code,
 				level: this.state.level,
-				// parent: this.refs.parent.state.selected,
 			};
 		},
 		getValidationElementMap: function() {
@@ -43,7 +41,6 @@ define(function(require) {
 				name: React.findDOMNode(this.refs.name),
 				code: React.findDOMNode(this.refs.code),
 				level: React.findDOMNode(this.refs.level),
-				// parent: React.findDOMNode(this.refs.parent),
 			};
 		},
 		validationCallback: function(key, valid, message) {
@@ -54,9 +51,6 @@ define(function(require) {
 			var display = function(item) {
 				return item.name;
 			};
-
-			var parent_code = parseInt(this.model().get("parent_code"));
-			var parent = isNaN(parent_code) ? null : InstanceCache.get("Area", parent_code, true);
 
 			var fields = null;
 			if(this.model().isNew() || this.state.edit) {
@@ -85,15 +79,6 @@ define(function(require) {
 									<option value="barangay">Barangay</option>
 								</select>
 							</label>
-							<label className="pure-u-1-2 pad">
-								{/*<div className="label">Parent</div>
-								<TypeaheadInput className="pure-u-1"
-									for="Area"
-									ref="parent"
-									display={display}
-									model={parent}
-									required />*/}
-							</label>
 						</div>
 						<div className="pure-g">
 							<div className="pure-u-1">
@@ -106,12 +91,6 @@ define(function(require) {
 					</div>
 				);
 			}else{
-				if(parent) {
-					var parent_field = [
-						(<span className="pure-u-1-4 label">Parent</span>),
-						(<Name className="pure-u-3-4 field" model={parent} />)
-					];
-				}
 				var type = {
 					"region": "Region",
 					"province": "Province",
@@ -137,9 +116,6 @@ define(function(require) {
 										<span className="pure-u-1-4 label">PSGC</span>
 										<span className="pure-u-3-4 field">{this.format_code(this.model().get("code"))}</span>
 									</div>
-									<div className="pure-u-1-3 field-group">
-										{parent_field}
-									</div>
 								</div>
 							</div>
 							<div className="pure-u-1-6">
@@ -154,7 +130,7 @@ define(function(require) {
 
 		format_code: function(code) {
 			if(!code) return null;
-			return ("00" + code).slice(-9);
+			return ("0" + code).slice(-9);
 		},
 
 		handle_edit: function() {
@@ -172,22 +148,17 @@ define(function(require) {
 
 			var code = parseInt(this.state.code);
 			var level = this.state.level;
-			var parent_code = null;
-			// if(this.refs.parent.state.selected) {
-			// 	parent_code = this.refs.parent.state.selected.code;
-			// }
 
-			this.save(code, name, level, parent_code);
+			this.save(code, name, level);
 		},
 
-		save: function(code, name, level, parent_code) {
+		save: function(code, name, level) {
 			var that = this;
 
 			var new_attributes = {
 				code: code,
 				name: name,
 				level: level,
-				// parent_code: parent_code,
 			};
 
 			var patch = !this.model().has("id")

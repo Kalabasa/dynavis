@@ -8,5 +8,15 @@ define(["backbone"], function(Backbone) {
 			family_id: null,
 			value: null,
 		},
+		parse: function(r,o) {
+			console.log(r);
+			return {
+				dataset_id: parseInt(r.dataset_id, 10),
+				year: parseInt(r.year, 10),
+				area_code: parseInt(r.area_code, 10),
+				family_id: r.family_id ? parseInt(r.family_id, 10) : null,
+				value: r.value ? parseFloat(r.value) : null,
+			};
+		},
 	});
 });

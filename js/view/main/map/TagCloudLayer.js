@@ -163,7 +163,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 
 			var filtered_tags = _.chain(this._tags)
 				.filter(function(tag) {
-					var size = parseFloat(tag.data.get("value"));
+					var size = tag.data.get("value");
 					if(size < this.minimum_size) return false;
 					tag.size = size;
 					var point = this.map.latLngToLayerPoint(tag.coords);

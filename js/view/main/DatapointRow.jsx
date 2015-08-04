@@ -52,8 +52,8 @@ define(function(require) {
 			var display = function(item) {
 				return item.name;
 			};
-			var area_code = parseInt(this.model().get("area_code"));
-			var area = InstanceCache.get("Area", area_code, true);
+			var area_code = this.model().get("area_code");
+			var area = area_code ? InstanceCache.get("Area", area_code, true) : null;
 
 			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){
