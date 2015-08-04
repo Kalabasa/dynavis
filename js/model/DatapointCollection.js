@@ -15,7 +15,7 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 
 		get_max_value: function() {
 			if(this.max_value === undefined) {
-				this.max_value = this.reduce(function(p,max){
+				this.max_value = this.reduce(function(max,p){
 					var value = p.get("value");
 					if(value !== null && value > max) {
 						return value;
@@ -28,7 +28,7 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 		},
 		get_min_value: function() {
 			if(this.min_value === undefined) {
-				this.min_value = this.reduce(function(p,min){
+				this.min_value = this.reduce(function(min,p){
 					var value = p.get("value");
 					if(value !== null && value < min) {
 						return value;
