@@ -83,7 +83,7 @@ define(function(require) {
 							<div className="pure-u-1-6">
 								<button className="pull-right button button-flat" onClick={this.handle_edit}>Edit</button>
 								<a href={"#datasets/" + this.model().get("username") + "/" + this.model().id}>
-									<button className="pull-right button button-flat">Update Data</button>
+									<button className="pull-right button button-flat">Update</button>
 								</a>
 							</div>
 						</div>
