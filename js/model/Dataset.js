@@ -13,6 +13,7 @@ define(["require", "backbone", "InstanceCache", "model/DatapointCollection"], fu
 		parse: function(r,o) {
 			return {
 				id: parseInt(r.id, 10),
+				username: r.username,
 				type: r.type,
 				name: r.name,
 				description: r.description,
