@@ -10,7 +10,11 @@ define(["backbone"], function(Backbone) {
 		},
 		parse: function(r,o) {
 			return {
-				dataset_id: parseInt(r.dataset_id, 10),
+				dataset_id: r.dataset_id
+					? parseInt(r.dataset_id, 10)
+					: (this.collection && this.collection.dataset
+						? parseInt(this.collection.dataset.id)
+						: null),
 				year: parseInt(r.year, 10),
 				area_code: parseInt(r.area_code, 10),
 				family_id: r.family_id ? parseInt(r.family_id, 10) : null,

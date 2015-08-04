@@ -42,11 +42,15 @@ define(["underscore", "jenks", "model/Area", "ChoroplethDataProcessor"], functio
 	}, 0);
 
 	TCDP.prototype.process = function(dataset) {
+		var datapoints = dataset.get_datapoints(this.year)
+			.filter(function(p) {
+				return Area.get_level(p.get("area_code")) == this.level;
+			}, this);
 		return {
 			name: dataset.get("name"),
 			year: this.year,
-			datapoints: dataset.get_datapoints(this.year),
-			classes: this.calculate_breaks(dataset, this.level, this.year, 3),
+			datapoints: datapoints,
+			classes: datapoints.length ? this.calculate_breaks(datapoints, 3, dataset, this.level, this.year) : null,
 		};
 	};
 

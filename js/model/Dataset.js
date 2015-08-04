@@ -24,7 +24,7 @@ define(["require", "backbone", "InstanceCache", "model/DatapointCollection"], fu
 			}
 			if(!datapoints) {
 				datapoints = new DatapointCollection(null, {dataset: this, year: year});
-				InstanceCache.set(name, key, this.datapoints);
+				InstanceCache.set(name, key, datapoints);
 			}
 			
 			this.datapoints[year] = datapoints;

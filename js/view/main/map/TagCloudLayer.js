@@ -1,5 +1,5 @@
 "use strict";
-define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, InstanceCache) {
+define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/ChoroplethLayer"], function(_, d3, L, InstanceCache, ChoroplethLayer) {
 	return L.LayerGroup.extend({
 		initialize: function(bus) {
 			L.LayerGroup.prototype.initialize.call(this);
@@ -140,14 +140,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache"], function(_, d3, L, Inst
 			}
 		},
 
-		filter_datapoints: function(datapoints, area_code) {
-			area_code = ("000000000" + area_code);
-			var match_start = area_code.substr(2-9,2) === "00" ? 0 : 2;
-			var area_code_match = area_code.substr(match_start-9);
-			return datapoints.filter(function(p) {
-				return ("0"+p.get("area_code")).substr(match_start-9) == area_code_match;
-			});
-		},
+		filter_datapoints: ChoroplethLayer.prototype.filter_datapoints,
 
 		redraw: function() {
 			var bounds = this.map.getBounds();

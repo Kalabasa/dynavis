@@ -1143,13 +1143,7 @@ function post_dataset_file($username, $dataset_id, $file) {
 	}
 	Database::get()->pdo->commit();
 
-	$datapoints = $dataset->get_points();
-
 	$app->response->setStatus(201);
-	echo json_encode([
-		"total" => count($datapoints),
-		"data" => $datapoints,
-	]);
 }
 
 function put_user_dataset($username, $dataset_id) {

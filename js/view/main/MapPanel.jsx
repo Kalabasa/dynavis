@@ -9,14 +9,13 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		},
 
 		componentWillMount: function() {
-			this.props.bus.tagcloud_data.on("update", this.on_tagcloud_data);
 			this._interval = setInterval(function() {
 				this.geojson_cache = {}; // clear cache once in a while
 			}.bind(this), 6 * 60 * 1000); // 6 minutes
 		},
 
 		componentWillUnmount: function() {
-			this.props.bus.choropleth_data.off("update");
+			this.map.off("viewreset moveend zoomend", this.update_view);
 			this.props.bus.tagcloud_data.off("update");
 			this.map = null;
 			clearInterval(this._interval);
@@ -56,7 +55,10 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			this.labels.getContainer().style.pointerEvents = "none";
 
 			this.map.on("viewreset moveend zoomend", this.update_view);
+			this.reset_geojson();
 			this.update_view();
+			
+			this.props.bus.tagcloud_data.on("update", this.on_tagcloud_data);
 		},
 
 		render: function() {

@@ -35,7 +35,7 @@ define(["underscore", "backbone", "model/Datapoint"], function(_, Backbone, Data
 					}else{
 						return min;
 					}
-				}, -Infinity);
+				}, Infinity);
 			}
 			return this.min_value;
 		},

@@ -149,7 +149,7 @@ define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 		},
 
 		filter_datapoints: function(datapoints, area_code) {
-			area_code = ("000000000" + area_code);
+			area_code = ("0" + area_code);
 			var match_start = area_code.substr(2-9,2) === "00" ? 0 : 2;
 			var area_code_match = area_code.substr(match_start-9);
 			return datapoints.filter(function(p) {
@@ -188,17 +188,13 @@ define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 		},
 
 		get_color: function(variables) {
-			var scales = [
-				[{r:254,g:235,b:226},{r:251,g:180,b:185},{r:247,g:104,b:161},{r:174,g:1,b:126}],
-				[{r:255,g:255,b:204},{r:194,g:230,b:153},{r:120,g:198,b:121},{r:35,g:132,b:67}],
-			];
 			var black = {r:20, g:20, b:20};
 			var color = {r:255,g:255,b:255};
 			_.each(variables, function(variable, i) {
 				if(!variable) return;
 				var value = variable.value;
 				if(!value) return;
-				var scale = scales[i];
+				var scale = variable.dataset.color_scale;
 				var classes = variable.dataset.classes;
 				if(scale.length + 1 !== classes.length) return;
 
