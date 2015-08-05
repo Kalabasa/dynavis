@@ -104,7 +104,7 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 				this.props.bus.main_settings.emit("update", {year: this.state.min_year});
 			}
 
-			var delay = 1600;
+			var delay = 2000; // TODO: wait for server before continuing
 			setTimeout(step.bind(this), delay);
 
 			function step() {
