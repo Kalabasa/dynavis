@@ -9,7 +9,7 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 			return (
 				<div className="body-panel">
 					<button className="button button-primary mar" onClick={this.handle_add}>New Family</button>
-					{this.collection().size() ?
+					{!this.empty_data() ?
 					<div>
 						<SearchControls ref="searcher" className="mar" collection={this.collection()} />
 						<ReactCSSTransitionGroup transitionName="fade">
@@ -27,6 +27,10 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 					}
 				</div>
 			);
+		},
+
+		empty_data: function() {
+			return !this.collection().size() && (!this.refs.searcher || this.refs.searcher.state.query === null) && this.collection().getPage() === 0;
 		},
 
 		handle_add: function() {

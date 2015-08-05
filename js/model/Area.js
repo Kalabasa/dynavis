@@ -10,6 +10,7 @@ define(["underscore", "backbone"], function(_, Backbone) {
 		idAttribute: "code",
 		parse: function(r,o) {
 			return {
+				id: parseInt(r.id, 10),
 				code: parseInt(r.code, 10),
 				name: r.name,
 				level: r.level,

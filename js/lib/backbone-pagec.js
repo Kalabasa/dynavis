@@ -21,6 +21,9 @@ var Backbone = Backbone || {};
 			return Math.ceil(this.total/this.per_page);
 		},
 
+		resetParams: function() {
+			this.params = {};
+		},
 		setParams: function(params) {
 			this.params = params;
 		},

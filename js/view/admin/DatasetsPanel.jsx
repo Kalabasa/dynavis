@@ -53,9 +53,9 @@ define(function(require) {
 			return (
 				<div className="body-panel">
 					{toolbar}
-					{this.collection().size() ?
+					{!this.empty_data() ?
 					<div>
-						<SearchControls className="mar" collection={this.collection()} />
+						<SearchControls ref="searcher" className="mar" collection={this.collection()} />
 						<ReactCSSTransitionGroup transitionName="fade">
 							{this.collection().map(function(dataset) {
 								return <DatasetBox key={dataset.cid} model={dataset} />;
@@ -72,6 +72,10 @@ define(function(require) {
 					}
 				</div>
 			);
+		},
+
+		empty_data: function() {
+			return !this.collection().size() && (!this.refs.searcher || this.refs.searcher.state.query === null) && this.collection().getPage() === 0;
 		},
 
 		indicator_generator: function(indicator) {

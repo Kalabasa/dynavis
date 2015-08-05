@@ -23,8 +23,10 @@ define(function(require) {
 			this.onModelChange();
 		},
 		onModelChange: function() {
-			if(!this.collection().size()) {
+			if(this.empty_data()) {
 				this.refs.toolbar.open();
+			}else{
+				this.refs.toolbar.close();
 			}
 			this.forceUpdate();
 		},
@@ -60,7 +62,7 @@ define(function(require) {
 							</form>
 						</div>
 					</PanelToolbar>
-					{this.collection().size() ?
+					{!this.empty_data() ?
 					<div>
 						<SearchControls className="mar" ref="searcher" collection={this.collection()} />
 						<ReactCSSTransitionGroup transitionName="fade">
@@ -74,6 +76,10 @@ define(function(require) {
 					: null}
 				</div>
 			);
+		},
+
+		empty_data: function() {
+			return !this.collection().size() && (!this.refs.searcher || this.refs.searcher.state.query === null) && this.collection().getPage() === 0;
 		},
 
 		handle_delete_all: function() {

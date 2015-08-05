@@ -8,9 +8,9 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 			var that = this;
 			return (
 				<div className="body-panel">
-					{this.collection().size() ?
+					{!this.empty_data() ?
 					<div>
-						<SearchControls className="mar" collection={this.collection()} />
+						<SearchControls className="mar" ref="searcher" collection={this.collection()} />
 						<ReactCSSTransitionGroup transitionName="fade">
 							{this.collection().map(function(official) {
 								return <OfficialRow key={official.cid} model={official} />;
@@ -26,6 +26,10 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 					}
 				</div>
 			);
+		},
+
+		empty_data: function() {
+			return !this.collection().size() && (!this.refs.searcher || this.refs.searcher.state.query === null) && this.collection().getPage() === 0;
 		},
 	});
 });

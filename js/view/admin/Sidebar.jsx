@@ -1,7 +1,7 @@
 "use strict";
 define(["react"], function(React) {
 	return React.createClass({
-		componentWillMount: function() {
+		componentDidMount: function() {
 			this.props.bus.router.on("route", this.on_route);
 		},
 

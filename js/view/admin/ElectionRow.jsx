@@ -90,9 +90,9 @@ define(function(require) {
 			var area_code = this.model().get("area_code");
 			var party_id = this.model().get("party_id");
 
-			var official = official_id ? null : InstanceCache.get("Official", official_id, true);
-			var area = area_code ? null : InstanceCache.get("Area", area_code, true);
-			var party = party_id ? null : InstanceCache.get("Party", party_id, true);
+			var official = official_id ? InstanceCache.get("Official", official_id, true) : null;
+			var area = area_code ? InstanceCache.get("Area", area_code, true) : null;
+			var party = party_id ? InstanceCache.get("Party", party_id, true) : null;
 
 			if(this.model().isNew() || this.state.edit) {
 				if(!this.model().isNew()){
