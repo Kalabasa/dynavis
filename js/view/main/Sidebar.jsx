@@ -43,8 +43,8 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 			var datasets = _.filter(this.choropleth_data.concat(this.tagcloud_data));
 			if(_.isEmpty(datasets)) return;
 
-			var min_year = _.min(datasets, function(d){ return d.get("min_year"); }).get("min_year");
-			var max_year = _.max(datasets, function(d){ return d.get("max_year"); }).get("max_year");
+			var min_year = _.max(datasets, function(d){ return d.get("min_year"); }).get("min_year");
+			var max_year = _.min(datasets, function(d){ return d.get("max_year"); }).get("max_year");
 			this.setState({year: max_year, min_year: min_year, max_year: max_year});
 			this.props.bus.main_settings.emit("update", {year: max_year});
 		},

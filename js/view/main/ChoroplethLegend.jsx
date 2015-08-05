@@ -253,8 +253,10 @@ define(function(require) {
 				s = "";
 			}else if(abs >= 0.01) {
 				return n.toFixed(2);
+			}else if(abs > 0){
+				return n.toExponential(1);
 			}else{
-				return n.toExponential(2);
+				return "0";
 			}
 
 			if((abs*m) % 1 < 0.1) return Math.round(n*m) + s;
