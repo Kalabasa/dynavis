@@ -112,19 +112,22 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 						if(!poly.tags.length) { 
 							var top_left = bounds.getNorthWest();
 							var bottom_right = bounds.getSouthEast();
+							var top = bounds.getNorth();
+							var bottom = bounds.getSouth();
+							var center = bounds.getCenter();
 
 							var area_code = parseInt(poly.feature.properties.PSGC);
-							var datapoints = this.filter_datapoints(datapoints, area_code);
+							var datapoints = this.filter_datapoints(datapoints, area_code, this.minimum_size);
 							for (var i = 0; i < datapoints.length; i++) {
 								var p = datapoints[i];
 								var family = InstanceCache.get("Family", p.get("family_id"));
-								var lat = top_left.lat + (bottom_right.lat - top_left.lat) * Math.random();
-								var lng = top_left.lng + (bottom_right.lng - top_left.lng) * Math.random();
+								var lat = top*0.75 + bottom*0.25 + (bottom - top)*0.5 * ((i + 0.5) / datapoints.length);
+								var lng = center.lng;
 								poly.tags.push({
 									"area": poly,
 									"data": p,
 									"family": family,
-									"coords": bounds.getCenter() || L.latLng(lat, lng),
+									"coords": L.latLng(lat, lng),
 								});
 							}
 						}
@@ -148,7 +151,14 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			}
 		},
 
-		filter_datapoints: ChoroplethLayer.prototype.filter_datapoints,
+		filter_datapoints: function(datapoints, area_code, minimum_size) {
+			area_code = ("0" + area_code);
+			var match_start = area_code.substr(2-9,2) === "00" ? 0 : 2;
+			var area_code_match = area_code.substr(match_start-9);
+			return datapoints.filter(function(p) {
+				return p.get("value") >= minimum_size && ("0"+p.get("area_code")).substr(match_start-9) == area_code_match;
+			});
+		},
 
 		redraw: function() {
 			var bounds = this.map.getBounds();
@@ -164,9 +174,8 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 
 			var filtered_tags = _.chain(this._tags)
 				.filter(function(tag) {
-					var size = tag.data.get("value");
-					if(size < this.minimum_size) return false;
-					tag.size = size;
+					tag.size = tag.data.get("value");
+					if(tag.size < this.minimum_size) return false;
 					var point = this.map.latLngToLayerPoint(tag.coords);
 					tag.x = point.x;
 					tag.y = point.y;
@@ -182,7 +191,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 
 			var text_func = function(tag) {
 				if(tag.family.has("name")) return tag.family.get("name");
-				return "-"; // TODO: spinner
+				return "..."; // TODO: spinner
 			};
 			var transform_func = function(tag) { return "translate(" + tag.x + "," + tag.y + ")"; };
 			var font_size_func = function(tag) { return Math.sqrt(0.8 * tag.size) + "em"; };
