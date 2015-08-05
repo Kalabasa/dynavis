@@ -9,13 +9,10 @@ define(function(require) {
 			return {data: [null, null]};
 		},
 
-		componentWillMount: function() {
-			this.props.bus.choropleth_data.on("update", this.update);
-		},
-
 		componentDidMount: function() {
 			this.width = $(React.findDOMNode(this).parentElement).width();
 			this.height = this.width;
+			this.props.bus.choropleth_data.on("update", this.update);
 		},
 
 		componentWillUnmount: function() {
@@ -24,7 +21,8 @@ define(function(require) {
 
 		render: function() {
 			var margin = 5;
-			var legend_width = this.width - margin * 2, legend_height = 0;
+			var legend_width = this.width ? this.width - margin * 2 : 0;
+			var legend_height = 0;
 
 			if(_.every(this.state.data, function(d){ return d && d.datapoints.length; })) {
 				legend_height = this.width - margin * 2;

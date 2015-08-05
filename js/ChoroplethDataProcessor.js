@@ -60,6 +60,8 @@ define(["underscore", "jenks", "model/Area"], function(_, jenks, Area) {
 
 		return {
 			name: dataset.get("name"),
+			min_year: dataset.get("min_year"),
+			max_year: dataset.get("max_year"),
 			year: this.year,
 			datapoints: datapoints,
 			classes: this.calculate_breaks(datapoints, 4, dataset, this.level, this.year),

@@ -40,8 +40,16 @@ define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 			this.map = null;
 			this.selected = null;
 
-			this.bus.choropleth_data.on("update", this.on_data.bind(this));
-			this.bus.map_settings.on("update", this.on_map_settings.bind(this));
+			this.on_data = this.on_data.bind(this);
+			this.on_map_settings = this.on_map_settings.bind(this);
+
+			this.bus.choropleth_data.on("update", this.on_data);
+			this.bus.map_settings.on("update", this.on_map_settings);
+		},
+
+		destruct: function() {
+			this.bus.choropleth_data.off("update", this.on_data);
+			this.bus.map_settings.off("update", this.on_map_settings);
 		},
 
 		onAdd: function (map) {

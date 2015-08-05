@@ -14,6 +14,10 @@ define(function(require) {
 			};
 		},
 
+		shouldComponentUpdate: function(nextProps, nextState) {
+			return nextState.dataset1 !== this.state.dataset1 || nextState.dataset2 !== this.state.dataset2;
+		},
+
 		componentWillUpdate: function(nextProps, nextState) {
 			this.props.bus.choropleth_settings.emit("update", {
 				dataset1: nextState.dataset1,

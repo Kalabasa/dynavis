@@ -50,6 +50,8 @@ define(["underscore", "jenks", "model/Area", "ChoroplethDataProcessor"], functio
 		
 		return {
 			name: dataset.get("name"),
+			min_year: dataset.get("min_year"),
+			max_year: dataset.get("max_year"),
 			year: this.year,
 			datapoints: datapoints,
 			classes: datapoints.length ? this.calculate_breaks(datapoints, 3, dataset, this.level, this.year) : null,

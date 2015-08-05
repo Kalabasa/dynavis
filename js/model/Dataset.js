@@ -9,6 +9,8 @@ define(["require", "backbone", "InstanceCache", "model/DatapointCollection"], fu
 			type: null,
 			name: null,
 			description: null,
+			min_year: null,
+			max_year: null,
 		},
 		parse: function(r,o) {
 			return {
@@ -17,6 +19,8 @@ define(["require", "backbone", "InstanceCache", "model/DatapointCollection"], fu
 				type: r.type,
 				name: r.name,
 				description: r.description,
+				min_year: r.min_year ? parseInt(r.min_year, 10) : null,
+				max_year: r.max_year ? parseInt(r.max_year, 10) : null,
 			};
 		},
 

@@ -68,6 +68,9 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id(),
 		];
 
+		$min_year = Database::get()->min($class::TABLE, $join, $class::TABLE . ".year", $where);
+		$max_year = Database::get()->max($class::TABLE, $join, $class::TABLE . ".year", $where);
+
 		if(!is_null($year)) {
 			$where = ["AND" => array_merge($where, [$class::TABLE . ".year" => $year])];
 		}
@@ -85,9 +88,21 @@ class Dataset extends \Dynavis\Core\RefEntity {
 
 	public function jsonSerialize() {
 		$data = parent::jsonSerialize();
+
 		$data["username"] = (new User((int) $data["user_id"], false))->username;
 		unset($data["user_id"]);
+
+		$class = [
+			"\\Dynavis\\Model\\Datapoint",
+			"\\Dynavis\\Model\\TagDatapoint"
+		][$data["type"]];
+		$join = ["[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]];
+		$where = [static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()];
+		$data["min_year"] = Database::get()->min($class::TABLE, $join, $class::TABLE . ".year", $where);
+		$data["max_year"] = Database::get()->max($class::TABLE, $join, $class::TABLE . ".year", $where);
+
 		$data["type"] = ["area", "tag"][$data["type"]];
+
 		return $data;
 	}
 	

@@ -7,6 +7,10 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 			};
 		},
 
+		shouldComponentUpdate: function(nextProps, nextState) {
+			return nextState.dataset !== this.state.dataset;
+		},
+
 		componentWillUpdate: function(nextProps, nextState) {
 			this.props.bus.tagcloud_settings.emit("update", {
 				dataset: nextState.dataset,

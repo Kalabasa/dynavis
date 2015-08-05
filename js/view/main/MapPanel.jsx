@@ -15,10 +15,15 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		},
 
 		componentWillUnmount: function() {
-			this.map.off("viewreset moveend zoomend", this.update_view);
-			this.props.bus.tagcloud_data.off("update");
-			this.map = null;
 			clearInterval(this._interval);
+			
+			this.choropleth.destruct();
+			this.tagcloud.destruct();
+
+			this.map.off("viewreset moveend zoomend", this.update_view);
+			this.map = null;
+
+			this.props.bus.tagcloud_data.off("update", this.on_tagcloud_data);
 		},
 
 		componentDidMount: function() {

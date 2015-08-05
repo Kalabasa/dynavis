@@ -16,8 +16,16 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			this.map = null;
 			this.minimum_size = 4;
 
-			this.bus.tagcloud_data.on("update", this.on_data.bind(this));
-			this.bus.map_settings.on("update", this.on_map_settings.bind(this));
+			this.on_data = this.on_data.bind(this);
+			this.on_map_settings = this.on_map_settings.bind(this);
+
+			this.bus.tagcloud_data.on("update", this.on_data);
+			this.bus.map_settings.on("update", this.on_map_settings);
+		},
+
+		destruct: function() {
+			this.bus.tagcloud_data.off("update", this.on_data);
+			this.bus.map_settings.off("update", this.on_map_settings);
 		},
 
 		onAdd: function (map) {
