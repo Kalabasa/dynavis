@@ -23,7 +23,7 @@ define(function(require) {
 			return (
 				<div className="login-box">
 					<div className="pure-g">
-						<a className="pure-u-1" href=".">Logo</a>
+						<a className="pure-u-1" href=".">DynastyMap</a>
 					</div>
 					<form className="pure-g" onSubmit={this.handle_login}>
 						<div className="pure-u-1">
