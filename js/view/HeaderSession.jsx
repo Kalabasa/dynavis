@@ -1,5 +1,5 @@
 "use strict";
-define(["jquery", "react", "react.backbone"], function($, React) {
+define(["jquery", "react", "InstanceCache", "react.backbone"], function($, React, InstanceCache) {
 	return React.createBackboneClass({
 		mixins: [React.addons.LinkedStateMixin],
 
@@ -10,7 +10,8 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 		},
 
 		render: function() {
-			if(this.model().get_user()) {
+			var user = this.model() ? this.model().get_user() : null;
+			if(user) {
 				if(!window.location.pathname.match(/^.*?\/admin(\.html)?((\?|#).*)?$/) && this.model().get_user_role() == "admin") {
 					var admin_link = (
 						<span className="login-text">
@@ -23,7 +24,7 @@ define(["jquery", "react", "react.backbone"], function($, React) {
 						<div className="hider">
 							<span className="hider-handle">
 								<span className="login-text"><i className="fa fa-user"/></span>
-								<span className="login-text login-username">&ensp; {this.model().get("username")}</span>
+								<span className="login-text login-username">&ensp; {user.get("username")}</span>
 							</span>
 							<span className="hider-content">
 								{admin_link}

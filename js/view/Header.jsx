@@ -21,16 +21,17 @@ define(["react", "InstanceCache", "model/Dataset", "jsx!view/HeaderSession"], fu
 			if(this.state.subtitle) {
 				var subtitle = <h3 className="header-subtitle">{this.state.subtitle}</h3>
 			}
+			var token = InstanceCache.get_existing("Token", "session");
 			return (
 				<div className="clearfix">
 					<div id="logo">
-						<a href=".">name</a>
+						<a href=".">DynastyMap</a>
 					</div>
 					<div id="header-content">
 						<h2 className="header-title">{this.state.title}</h2>
 						{subtitle}
 					</div>
-					<HeaderSession model={InstanceCache.get_existing("Token", "session")} />
+					<HeaderSession model={token}/>
 				</div>
 			);
 		},
