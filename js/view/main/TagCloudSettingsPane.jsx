@@ -1,16 +1,18 @@
 "use strict";
-define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/DatasetChooser"], function(React, DatasetCollection, Modal, DatasetChooser) {
+define(function(require) {
+	var React = require("react"),
+		DatasetCollection = require("model/DatasetCollection"),
+		Modal = require("jsx!view/Modal"),
+		DatasetChooser = require("jsx!view/main/DatasetChooser"),
+		TagCloudLegend = require("jsx!view/main/TagCloudLegend");
+
 	return React.createClass({
 		getInitialState: function() {
 			return {
 				dataset: null,
 			};
 		},
-
-		shouldComponentUpdate: function(nextProps, nextState) {
-			return nextState.dataset !== this.state.dataset;
-		},
-
+		
 		componentWillUpdate: function(nextProps, nextState) {
 			this.props.bus.tagcloud_settings.emit("update", {
 				dataset: nextState.dataset,
@@ -30,6 +32,7 @@ define(["react", "model/DatasetCollection", "jsx!view/Modal", "jsx!view/main/Dat
 					<h6 className="pane-header">Tag Cloud Layer</h6>
 					<div className="pane-content">
 						{button}
+						<TagCloudLegend bus={this.props.bus}/>
 					</div>
 				</div>
 			);

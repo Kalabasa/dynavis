@@ -54,7 +54,7 @@ define(["underscore", "jenks", "model/Area", "ChoroplethDataProcessor"], functio
 			max_year: dataset.get("max_year"),
 			year: this.year,
 			datapoints: datapoints,
-			classes: datapoints.length ? this.calculate_breaks(datapoints, 3, dataset, this.level, this.year) : null,
+			classes: this.calculate_breaks(datapoints, 3, dataset, this.level, this.year),
 		};
 	};
 

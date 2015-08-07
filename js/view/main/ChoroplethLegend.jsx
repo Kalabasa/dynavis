@@ -11,7 +11,6 @@ define(function(require) {
 
 		componentDidMount: function() {
 			this.width = $(React.findDOMNode(this).parentElement).width();
-			this.height = this.width;
 			this.props.bus.choropleth_data.on("update", this.update);
 		},
 
@@ -24,8 +23,8 @@ define(function(require) {
 			var legend_width = this.width ? this.width - margin * 2 : 0;
 			var legend_height = 0;
 
-			if(_.every(this.state.data, function(d){ return d && d.datapoints.length; })) {
-				legend_height = this.width - margin * 2;
+			if(_.every(this.state.data)) {
+				legend_height = legend_width;
 
 				var data_x = this.state.data[0];
 				var data_y = this.state.data[1];
@@ -137,8 +136,8 @@ define(function(require) {
 				);
 			}else{
 				var index = _.findIndex(this.state.data);
-				if(index >= 0 && this.state.data[index].datapoints.length) {
-					legend_height = this.height/2;
+				if(index >= 0) {
+					legend_height = legend_width / 2;
 
 					var dataset = this.state.data[index];
 
@@ -205,6 +204,7 @@ define(function(require) {
 					);
 				}
 			}
+
 			return <svg width={legend_width + margin * 2} height={legend_height + margin * 2}>{g}</svg>;
 		},
 

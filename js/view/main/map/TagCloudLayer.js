@@ -95,6 +95,8 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 						setTimeout(this.tag_poly.bind(this), t += 10, layers[j]);
 					}
 				}
+			}else{
+				this._redraw_callback();
 			}
 		},
 
