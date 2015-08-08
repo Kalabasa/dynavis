@@ -21,7 +21,7 @@ define(["underscore", "jenks", "model/Area", "ChoroplethDataProcessor"], functio
 	};
 
 	TCDP.prototype.update = _.debounce(function() {
-		if(!this.year || !this.level || !this.dataset) return;
+		if(!this.year || !this.level) return;
 
 		var callback = function(){
 			var processed = this.dataset ? this.process(this.dataset) : null;
