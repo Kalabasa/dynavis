@@ -17,15 +17,15 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			this.minimum_size = 4;
 
 			this.on_data = this.on_data.bind(this);
-			this.on_map_settings = this.on_map_settings.bind(this);
+			this.on_main_settings = this.on_main_settings.bind(this);
 
 			this.bus.tagcloud_data.on("update", this.on_data);
-			this.bus.map_settings.on("update", this.on_map_settings);
+			this.bus.main_settings.on("update", this.on_main_settings);
 		},
 
 		destruct: function() {
 			this.bus.tagcloud_data.off("update", this.on_data);
-			this.bus.map_settings.off("update", this.on_map_settings);
+			this.bus.main_settings.off("update", this.on_main_settings);
 		},
 
 		onAdd: function (map) {
@@ -45,7 +45,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			L.LayerGroup.prototype.onAdd.call(this, map);
 		},
 
-		on_map_settings: function(settings) {
+		on_main_settings: function(settings) {
 			if(settings.level) this.reset_geojson();
 			if(settings.zoom) this.calculate_minimum_size();
 		},
