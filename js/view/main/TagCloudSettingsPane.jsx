@@ -45,6 +45,8 @@ define(function(require) {
 			that.modal = Modal.open("Select dataset", (
 				<DatasetChooser collection={dataset_collection} onSelect={function(dataset) {
 					that.select_dataset(dataset);
+					that.modal.close();
+					that.modal = null;
 				}}/>
 			));
 		},
@@ -55,7 +57,6 @@ define(function(require) {
 
 		select_dataset: function(dataset) {
 			this.setState({dataset: dataset});
-			this.modal.close();
 		},
 	});
 });

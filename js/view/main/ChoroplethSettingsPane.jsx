@@ -67,6 +67,7 @@ define(function(require) {
 					<DatasetChooser collection={dataset_collection} onSelect={function(dataset) {
 						that.select_dataset(i, dataset);
 						that.modal.close();
+						that.modal = null;
 					}}/>
 				));
 			};
