@@ -48,6 +48,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			this.geojson_cache = {};
 			this.url_added = {};
 			this.hash_added = {};
+			this.ajax_requests = [];
 
 			this.choropleth = new ChoroplethLayer(this.props.bus);
 			this.choropleth.addTo(this.map);
@@ -78,6 +79,8 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			this.hash_added = {};
 			this.choropleth.reset_geojson();
 			this.tagcloud.reset_geojson();
+			_.each(this.ajax_requests, function(r){ r.abort(); });
+			this.ajax_requests = [];
 		},
 
 		add_geojson: function(geojson_url) {
@@ -89,12 +92,12 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 						this.hash_added[hash] = true;
 						this.choropleth.add_geojson(geojson);
 						this.tagcloud.add_geojson(geojson);
-					}x
+					}
 				}
 			}else{
 				if(this.url_added[geojson_url]) return;
 				this.url_added[geojson_url] = true;
-				$.get(geojson_url)
+				var request = $.get(geojson_url)
 					.success(function(data) {
 						this.url_added[geojson_url] = true;
 						if(typeof data === "object") {
@@ -111,6 +114,8 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 					.fail(function(){
 						this.url_added[geojson_url] = false;
 					}.bind(this));
+
+				this.ajax_requests.push(request);
 			}
 		},
 
