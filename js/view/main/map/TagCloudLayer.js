@@ -130,8 +130,8 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 								var lat = top*0.75 + bottom*0.25 + (bottom - top)*0.5 * ((i + 0.5) / datapoints.length);
 								var lng = center.lng;
 								poly.tags.push({
-									poly: poly,
 									data: p,
+									area_code: area_code,
 									family: family,
 									coords: L.latLng(lat, lng),
 								});
@@ -188,7 +188,13 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 				.map(function(tag) {
 					var point = this.map.latLngToLayerPoint(tag.coords);
 					if(!tag.family.has("name")) this.family_fetch_enqueue(tag.family);
-					return {key: tag.data.cid, x: point.x, y: point.y, size: tag.data.get("value"), family: tag.family};
+					return {
+						key: tag.area_code + "|" + tag.family.id,
+						x: point.x,
+						y: point.y,
+						size: tag.data.get("value"),
+						family: tag.family,
+					};
 				}, this)
 				.sortBy(function(tag) { return tag.size; })
 				.value();

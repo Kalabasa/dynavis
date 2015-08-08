@@ -77,8 +77,6 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		reset_geojson: function(level) {
 			this.url_added = {};
 			this.hash_added = {};
-			this.choropleth.reset_geojson();
-			this.tagcloud.reset_geojson();
 			_.each(this.ajax_requests, function(r){ r.abort(); });
 			this.ajax_requests = [];
 		},
