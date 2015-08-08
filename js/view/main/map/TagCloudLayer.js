@@ -111,12 +111,11 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			function loop(poly, rn, add) {
 				var bounds = poly.getBounds();
 				var intersects = bounds.pad(10).intersects(this.map.getBounds());
-				var datapoints = this._dataset.datapoints;
 				if(intersects && this._reset_number == rn) {
 					if(add) {
 						add = false;
 
-						if(!poly.tags.length) { 
+						if(!poly.tags.length && this._dataset) {
 							var top_left = bounds.getNorthWest();
 							var bottom_right = bounds.getSouthEast();
 							var top = bounds.getNorth();
@@ -124,7 +123,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 							var center = bounds.getCenter();
 
 							var area_code = parseInt(poly.feature.properties.PSGC);
-							var datapoints = this.filter_datapoints(datapoints, area_code, this.minimum_size);
+							var datapoints = this.filter_datapoints(this._dataset.datapoints, area_code, this.minimum_size);
 							for (var i = 0; i < datapoints.length; i++) {
 								var p = datapoints[i];
 								var family = InstanceCache.get("Family", p.get("family_id"));
