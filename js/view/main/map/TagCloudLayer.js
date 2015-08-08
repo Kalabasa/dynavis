@@ -89,7 +89,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 				for (var i = this._geojson.length - 1; i >= 0; i--) {
 					var layers = this._geojson[i].getLayers();
 					for (var j = 0; j < layers.length; j++) {
-						setTimeout(this.tag_poly.bind(this), t += 10, layers[j]);
+						setTimeout(this.tag_poly.bind(this), t += 1, layers[j]);
 					}
 				}
 			}else{

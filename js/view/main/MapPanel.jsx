@@ -23,6 +23,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			this.map = null;
 
 			this.props.bus.tagcloud_data.off("update", this.on_tagcloud_data);
+			this.props.bus.main_settings.off("update", this.on_main_settings);
 		},
 
 		componentDidMount: function() {
@@ -45,6 +46,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			});
 
 			this.geojson_cache = {};
+			this.url_added = {};
 			this.hash_added = {};
 
 			this.choropleth = new ChoroplethLayer(this.props.bus);
@@ -58,11 +60,13 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			this.map.getPanes().shadowPane.appendChild(this.labels.getContainer());
 			this.labels.getContainer().style.pointerEvents = "none";
 
-			this.map.on("viewreset moveend zoomend", this.update_view);
-			this.reset_geojson();
+			this.last_level = "region";
+			this.target_zoom = 0;
 			this.update_view();
 			
+			this.map.on("viewreset moveend zoomend", this.update_view);
 			this.props.bus.tagcloud_data.on("update", this.on_tagcloud_data);
+			this.props.bus.main_settings.on("update", this.on_main_settings);
 		},
 
 		render: function() {
@@ -70,7 +74,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		},
 
 		reset_geojson: function(level) {
-			this.props.bus.main_settings.emit("update", {level: level});
+			this.url_added = {};
 			this.hash_added = {};
 		},
 
@@ -86,18 +90,25 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 					}x
 				}
 			}else{
-				var options = _.defaults(this.choropleth.geojson_options, {
-					onEachFeature: this.on_each_feature
-				});
-				$.get(geojson_url).success(function(data) {
-					if(typeof data === "object") {
-						var geojson = this.geojson_cache[geojson_url] = L.geoJson(data, options);
-						geojson.hash = this.hash_geojson(data);
-						this.add_geojson(geojson_url);
-					}else{
-						this.geojson_cache[geojson_url] = true;
-					}
-				}.bind(this));
+				if(this.url_added[geojson_url]) return;
+				this.url_added[geojson_url] = true;
+				$.get(geojson_url)
+					.success(function(data) {
+						this.url_added[geojson_url] = true;
+						if(typeof data === "object") {
+							var options = _.defaults(this.choropleth.geojson_options, {
+								onEachFeature: this.on_each_feature
+							});
+							var geojson = this.geojson_cache[geojson_url] = L.geoJson(data, options);
+							geojson.hash = this.hash_geojson(data);
+							this.add_geojson(geojson_url);
+						}else{
+							this.geojson_cache[geojson_url] = true;
+						}
+					}.bind(this))
+					.fail(function(){
+						this.url_added[geojson_url] = false;
+					}.bind(this));
 			}
 		},
 
@@ -151,28 +162,50 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 				level = "region";
 			}
 
+			var bounds = this.map.getBounds().pad(0.4);
+			var nw = bounds.getNorthWest();
+			var se = bounds.getSouthEast();
+
+			var nw_tile = {x: this.long2tile(nw.lng, this.target_zoom), y: this.lat2tile(nw.lat, this.target_zoom)};
+			var se_tile = {x: this.long2tile(se.lng, this.target_zoom), y: this.lat2tile(se.lat, this.target_zoom)};
+
+			var t = 0;
+			for (var x = se_tile.x; x >= nw_tile.x; x--) {
+				for (var y = se_tile.y; y >= nw_tile.y; y--) {
+					var path = this.target_zoom + "/" + x + "/" + y;
+					setTimeout(this.add_geojson.bind(this), t += 100, "api.php/geojson/" + this.last_level + "/" + path);
+				}
+			}
+		},
+
+		on_main_settings: function(settings) {
+			if(!settings.level) return;
+
+			var level = settings.level;
 			if(level != this.last_level) this.reset_geojson(level);
 			this.last_level = level;
 
-			var target_zoom = { // These zoom levels must match with the server
+			this.target_zoom = { // These zoom levels must match with the server
 				"region": 0,
 				"province": 8,
 				"municipality": 10,
 				"barangay": 12,
 			}[level];
 
-			var bounds = this.map.getBounds().pad(0.4);
-			var nw = bounds.getNorthWest();
-			var se = bounds.getSouthEast();
+			var visual_zoom = {
+				"region": 6,
+				"province": 8,
+				"municipality": 10,
+				"barangay": 12,
+			}[level];
 
-			var nw_tile = {x: this.long2tile(nw.lng, target_zoom), y: this.lat2tile(nw.lat, target_zoom)};
-			var se_tile = {x: this.long2tile(se.lng, target_zoom), y: this.lat2tile(se.lat, target_zoom)};
+			this.map.options.minZoom = visual_zoom - 3;
+			this.map.options.maxZoom = visual_zoom + 3;
 
-			for (var x = se_tile.x; x >= nw_tile.x; x--) {
-				for (var y = se_tile.y; y >= nw_tile.y; y--) {
-					var path = target_zoom + "/" + x + "/" + y;
-					this.add_geojson("api.php/geojson/" + level + "/" + path);
-				}
+			if(this.map.getZoom() !== visual_zoom) {
+				this.map.setZoom(visual_zoom);
+			}else{
+				this.update_view();
 			}
 		},
 

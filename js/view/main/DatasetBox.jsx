@@ -139,7 +139,7 @@ define(function(require) {
 				wait: true,
 				success: function(){
 					Notification.replace(notif, <span><i className="fa fa-trash"/>&ensp;{name} deleted</span>);
-				}
+				},
 				error: function(xhr) {
 					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {xhr.responseText}</span>, null, "error");
 				},
