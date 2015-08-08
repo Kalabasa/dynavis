@@ -6,16 +6,12 @@ define(["underscore", "jenks", "model/Area"], function(_, jenks, Area) {
 		this.level = null;
 		this.year = null;
 
-		this.bus.map_settings.on("update", this.update_map.bind(this));
 		this.bus.main_settings.on("update", this.update_main.bind(this));
 		this.bus.choropleth_settings.on("update", this.update_dataset.bind(this));
 	};
 
-	CDP.prototype.update_map = function(settings) {
-		if(settings.level) this.level = settings.level;
-		this.update();
-	};
 	CDP.prototype.update_main = function(settings) {
+		if(settings.level) this.level = settings.level;
 		if(settings.year) this.year = settings.year;
 		this.update();
 	};

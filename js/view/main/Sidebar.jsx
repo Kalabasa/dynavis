@@ -29,7 +29,7 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 			this.props.bus.tagcloud_settings.on("update", this.update_tagcloud_settings);
 
 			this.props.bus.main_settings.emit("update", {year: this.state.year});
-		},g
+		},
 
 		componentWillUnmount: function() {
 			this.props.bus.choropleth_settings.off("update", this.update_choropleth_settings);
