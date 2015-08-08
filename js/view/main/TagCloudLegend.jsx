@@ -35,15 +35,16 @@ define(function(require) {
 						{_.map(_.range(0, l2max), function(i) {
 							var n = Math.ceil(Math.pow(2, i));
 							return (
-								<g transform={"translate(0,"+(i*step)+")"}>
+								<g key={i} transform={"translate(0,"+(i*step)+")"}>
 									<text
-										className="map-tag"
+										className="map-tag tagcloud-legend"
 										x={20} y={10}
 										textAnchor="end"
 										fontSize={font_size_func(n)}>
 										A
 									</text>
 									<text
+										className="tagcloud-legend"
 										x={40} y={10}
 										textAnchor="start">
 										{"size " + n}

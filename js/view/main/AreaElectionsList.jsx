@@ -29,13 +29,14 @@ define(function(require){
 					.filter(function(e){
 						return e.get("year") == this.state.year || e.get("year") < this.state.year && this.state.year < e.get("year_end");
 					}, this)
-					.map(function(e) {
+					.map(function(e, i) {
 						var official = InstanceCache.get("Official", e.get("official_id"), true);
 						var families = new OfficialFamilyCollection(null, {official_id: official.id});
 						families.fetch();
 						return (
-							<li className="area-elections-item">
-								<OfficialName model={official}/>
+							<li key={official.cid} className="area-elections-item">
+								<span className="pure-u-1-12 number">{(i+1) + "."}</span>
+								<OfficialName className="pure-u-11-12" model={official}/>
 							</li>
 						);
 					}, this)
@@ -43,7 +44,7 @@ define(function(require){
 			}
 			return (
 				<div className="area-elections-list">
-					<h6 className="title">Elected Officials</h6>
+					<h4 className="title">Elected Officials</h4>
 					<ol>{list}</ol>
 				</div>
 			);

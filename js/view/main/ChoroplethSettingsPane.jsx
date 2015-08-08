@@ -37,7 +37,7 @@ define(function(require) {
 					close_button = <button className="button button-complement button-flat button-close" onClick={this.remove_handler(i+1)}>&times;</button>;
 				}
 				datasets_list.push(
-					<div><button className="button" onClick={this.select_handler(i+1)}>{text}</button>{close_button}</div>
+					<div key={i}><button className="button" onClick={this.select_handler(i+1)}>{text}</button>{close_button}</div>
 				);
 			}
 			return (

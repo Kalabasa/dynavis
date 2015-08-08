@@ -24,7 +24,7 @@ $ease-swift: cubic-bezier(0.2, 0, 0.1, 1);
 
 * { box-sizing: border-box }
 
-body { margin: 0 }
+html,body { margin: 0; }
 .layout-row, .layout-col { overflow: hidden; position: absolute; }
 .layout-row { left: 0; right: 0; }
 .layout-col { top: 0; bottom: 0; }

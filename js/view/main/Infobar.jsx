@@ -20,12 +20,14 @@ define(function(require) {
 		componentDidMount: function() {
 			this.props.bus.router.on("route", this.on_route);
 			this.props.bus.main_settings.on("select", this.on_select);
+			this.props.bus.main_settings.on("update", this.on_main_settings);
 			this.props.bus.choropleth_data.on("update", this.on_choropleth_data);
 		},
 
 		componentWillUnmount: function() {
 			this.props.bus.router.off("route", this.on_route);
 			this.props.bus.main_settings.off("select", this.on_select);
+			this.props.bus.main_settings.off("update", this.on_main_settings);
 			this.props.bus.choropleth_data.off("update", this.on_choropleth_data);
 		},
 
@@ -37,20 +39,20 @@ define(function(require) {
 				elections.fetch();
 
 				var area_bar = [
-					(<h3 className="inline"><Name model={area}/></h3>),
-					(<span>{_.map(_.filter(this.state.data), function(d) {
+					(<h3 key="title" className="inline"><Name model={area}/></h3>),
+					(<span key="variables">{_.map(_.filter(this.state.data), function(d) {
 						var datapoints = this.filter_datapoints(d.datapoints, area.get("code"));
 						if(datapoints.length) {
 							var value = datapoints[0].get("value");
 							return (
-								<span title={value}>
+								<span key={d.id} title={value}>
 									<span>{d.name}</span>
 									<span>{numf.format(value)}</span>
 								</span>
 							);
 						}else{
 							return (
-								<span>
+								<span key={d.id}>
 									<span>{d.name}</span>
 									<span>No Data</span>
 								</span>
@@ -91,10 +93,25 @@ define(function(require) {
 		},
 
 		on_select: function(selected) {
-			this.setState({selected: selected});
-			if(selected) {
-				this.show();
+			if(this.state.selected && selected && this.state.selected.area_code == selected.area_code) {
+				if(this.is_hidden()) this.show();
+			}else{
+				this.setState({selected: null});
+				if(selected) {
+					if(this.is_hidden()) {
+						this.show();
+						setTimeout(function() {
+							this.setState({selected: selected});
+						}.bind(this), 400);
+					}else{
+						this.setState({selected: selected});
+					}
+				}
 			}
+		},
+
+		on_main_settings: function(settings) {
+			if(settings.year) this.forceUpdate();
 		},
 
 		on_choropleth_data: function(data) {
@@ -107,7 +124,7 @@ define(function(require) {
 
 		handle_close: function() {
 			this.hide();
-			setTimeout(this.state.selected.on_close, 200);
+			setTimeout(this.state.selected.on_close, 400);
 		},
 
 		show: function() {
@@ -116,6 +133,10 @@ define(function(require) {
 
 		hide: function() {
 			$(React.findDOMNode(this).parentNode).removeClass("show");
+		},
+
+		is_hidden: function() {
+			return !$(React.findDOMNode(this).parentNode).hasClass("show");
 		},
 	});
 });

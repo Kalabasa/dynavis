@@ -76,6 +76,8 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		reset_geojson: function(level) {
 			this.url_added = {};
 			this.hash_added = {};
+			this.choropleth.reset_geojson();
+			this.tagcloud.reset_geojson();
 		},
 
 		add_geojson: function(geojson_url) {
@@ -173,7 +175,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			for (var x = se_tile.x; x >= nw_tile.x; x--) {
 				for (var y = se_tile.y; y >= nw_tile.y; y--) {
 					var path = this.target_zoom + "/" + x + "/" + y;
-					setTimeout(this.add_geojson.bind(this), t += 100, "api.php/geojson/" + this.last_level + "/" + path);
+					setTimeout(this.add_geojson, t += 100, "api.php/geojson/" + this.last_level + "/" + path);
 				}
 			}
 		},

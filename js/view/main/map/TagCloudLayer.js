@@ -57,7 +57,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 		},
 
 		calculate_minimum_size: function() {
-			this.minimum_size = 15 / this.map.getZoom();
+			this.minimum_size = 10 / this.map.getZoom();
 			if(this._dataset) this.minimum_size = Math.max(this.minimum_size, this._dataset.classes[2]);
 		},
 
@@ -140,9 +140,11 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 					if(!add) {
 						add = true;
 
+						console.log("b", this._tags);
 						this._tags = _.reject(this._tags, function(tag) {
 							return tag.area == poly;
 						});
+						console.log(this._tags);
 						this._redraw_callback();
 					}
 				}

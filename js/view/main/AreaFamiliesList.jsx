@@ -44,17 +44,20 @@ define(function(require){
 		render: function() {
 			return (
 				<div className="area-families-list">
-					<h6 className="title">Local Families</h6>
+					<h4 className="title">Local Families</h4>
 					<ol>
 						{_.chain(this.state.families)
 							.groupBy(function(f){ return f.id; })
 							.pairs()
 							.sortBy(function(p){ return -p[1].length; })
-							.map(function(p){
+							.map(function(p, i){
 								return (
-									<li className="area-families-item">
-										<Name className="pure-u-1-2 name" key={p[0]} model={p[1][0]}/>
-										<span className="pure-u-1-2 count">{p[1].length + " officials"}</span>
+									<li key={p[0]} className="area-families-item">
+										<span className="pure-u-1-6 number">{(i+1) + "."}</span>
+										<span className="pure-u-5-6">
+											<Name className="pure-u-1-2 name" model={p[1][0]}/>
+											<span className="pure-u-1-2 count">{p[1].length + " officials"}</span>
+										</span>
 									</li>
 								);
 							})

@@ -15,18 +15,18 @@ $infobar-height: 50%;
 	background-color: $color-background;
 }
 .infobar {
-	bottom: -$infobar-height;
+	bottom: 0;
 	left: $sidebar-width;
-	height: $infobar-height;
+	height: 0;
 	z-index: 50;
 
 	background-color: white;
 	box-shadow: 0 0 4px 0 rgba(0,0,0,0.4);
-	transition: bottom 0.2s ease-in;
+	transition: height 0.4s ease-in;
 }
 .infobar.show {
-	bottom: 0;
-	transition: bottom 0.6s $ease-swift;
+	height: $infobar-height;
+	transition: height 0.6s $ease-swift;
 }
 
 .infobar .infobar-title {
@@ -40,7 +40,7 @@ $infobar-height: 50%;
 	}
 }
 .infobar .infobar-content {
-	padding: 22px;
+	padding: 12px 22px;
 }
 
 .map-panel {
@@ -134,17 +134,26 @@ $infobar-height: 50%;
 	dominant-baseline: ideographic;
 }
 
-.area-elections-list {
-	padding: 0.1em;
+.tagcloud-legend {
+	dominant-baseline: central;
+}
+
+.area-elections-list,.area-families-list {
+	list-style: none;
 
 	.title {
-		font-weight: bold;
+		// font-weight: bold;
+	}
+}
+.area-elections-item,.area-families-item {
+	margin: 0.8em 0;
+	.number {
+		padding-right: 0.5em;
+		text-align: right;
+		opacity: 0.4;
 	}
 }
 .area-elections-item {
-	list-style: decimal;
-	margin: 0.7em 2em;
-
 	.surname {
 		font-weight: bold;
 	}
@@ -152,18 +161,7 @@ $infobar-height: 50%;
 		opacity: 0.5;
 	}
 }
-
-.area-families-list {
-	padding: 0.1em;
-
-	.title {
-		font-weight: bold;
-	}
-}
 .area-families-item {
-	list-style: decimal;
-	margin: 0.7em 2em;
-
 	.name {
 	}
 	.count {
