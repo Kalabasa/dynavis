@@ -142,7 +142,7 @@ function code_to_id($route) {
 		$app->halt(404, $e->getMessage());
 	}
 	$app->is_id_from_code = true;
-	$app->redirect($app->request->getRootUri() . preg_replace("/\d{8,9}$/", "id/" . $area->get_id(), $app->request->getResourceUri()));
+	$app->redirect($app->request->getRootUri() . preg_replace("/(?=\/)?\d{8,9}(?=\/)?/", "id/" . $area->get_id(), $app->request->getResourceUri()));
 }
 
 function authenticator($options) {
@@ -593,7 +593,7 @@ function get_areas() {
 function get_area($id) {
 	global $app;
 	try {
-		$area = new Area((int) $id, $app->is_id_from_code);
+		$area = new Area((int) $id, !$app->is_id_from_code);
 	}catch(NotFoundException $e) {
 		$app->halt(404);
 	}
@@ -603,7 +603,7 @@ function get_area($id) {
 function get_area_elections($id) {
 	global $app;
 	try {
-		$area = new Area((int) $id, $app->is_id_from_code);
+		$area = new Area((int) $id, !$app->is_id_from_code);
 	}catch(NotFoundException $e) {
 		$app->halt(404);
 	}
@@ -622,7 +622,7 @@ function put_area($id) {
 		$app->halt(400, "Malformed data.");
 	}
 
-	$area = new Area((int) $id, $app->is_id_from_code);
+	$area = new Area((int) $id, !$app->is_id_from_code);
 	if(!$area) {
 		$app->halt(404);
 	}

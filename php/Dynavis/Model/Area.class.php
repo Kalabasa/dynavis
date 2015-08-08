@@ -119,14 +119,18 @@ class Area extends \Dynavis\Core\Entity {
 			Database::get()->select(Elect::TABLE, [
 				"[><]" . static::TABLE => ["area_code" => "code"]
 			], $fields, [
-				static::TABLE . "." . static::PRIMARY_KEY => $this->get_code()
+				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
 			])
 		);
 	}
 
 	public function get_officials($year = False) {
+		$fields = array_map(function($f) {
+			return Official::TABLE . ".$f";
+		}, array_merge(Official::FIELDS, [Official::PRIMARY_KEY]));
+
 		$query =
-			" select distinct " . Official::TABLE . "." . Official::PRIMARY_KEY
+			" select " . join(",", $fields)
 			. " from " . Official::TABLE
 
 			. " inner join " . Elect::TABLE
@@ -143,8 +147,8 @@ class Area extends \Dynavis\Core\Entity {
 		}
 
 		return array_map(
-			function ($item) {
-				return new Official((int) $item[Official::PRIMARY_KEY], false);
+			function ($data) {
+				return new Official($data, false);
 			},
 			Database::get()->query($query)->fetchAll()
 		);
