@@ -3,6 +3,7 @@ define(["underscore", "backbone"], function(_, Backbone) {
 	return Backbone.Model.extend({
 		urlRoot: "api.php/areas",
 		defaults: {
+			id: null,
 			code: null,
 			name: null,
 			level: null,

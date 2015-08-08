@@ -35,12 +35,12 @@ $sidebar-width: 250px;
 
 .header {
 	height: $header-height;
-	z-index: 2;
+	z-index: 200;
 }
 .sidebar {
 	width: $sidebar-width;
 	top: $header-height;
-	z-index: 1;
+	z-index: 100;
 }
 .body {
 	top: $header-height;

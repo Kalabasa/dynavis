@@ -61,9 +61,6 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			if(this._dataset) this.minimum_size = Math.max(this.minimum_size, this._dataset.classes[2]);
 		},
 
-		on_feature: function(feature, layer) {
-		},
-
 		reset_geojson: function() {
 			this._reset_number++;
 			this._geojson = [];

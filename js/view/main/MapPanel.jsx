@@ -3,7 +3,6 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 	return React.createClass({
 		getInitialState: function() {
 			return {
-				selected: null,
 				year: 2013,
 			}
 		},
@@ -38,7 +37,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 				zoom: 6,
 				layers: [tile_layer],
 				minZoom: 5,
-				maxZoom: 14,
+				maxZoom: 16,
 				maxBounds: [
 					[-1, 109],
 					[27, 135]
@@ -73,7 +72,6 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		reset_geojson: function(level) {
 			this.props.bus.map_settings.emit("update", {level: level});
 			this.hash_added = {};
-			this.selected = null;
 		},
 
 		add_geojson: function(geojson_url) {
@@ -89,10 +87,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 				}
 			}else{
 				var options = _.defaults(this.choropleth.geojson_options, {
-					onEachFeature: function(feature, layer) {
-						this.choropleth.on_feature(feature, layer);
-						this.tagcloud.on_feature(feature, layer);
-					}.bind(this)
+					onEachFeature: this.on_each_feature
 				});
 				$.get(geojson_url).success(function(data) {
 					if(typeof data === "object") {
@@ -103,6 +98,28 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 						this.geojson_cache[geojson_url] = true;
 					}
 				}.bind(this));
+			}
+		},
+
+		on_each_feature: function(feature, layer) {
+			layer.on({
+				click: function(e) {
+					this.select(feature, layer);
+				}.bind(this),
+			});
+		},
+
+		select: function(feature, layer) {
+			if(feature && layer) {
+				this.props.bus.map_settings.emit("select", {
+					area_code: parseInt(feature.properties.PSGC, 10),
+					layer: layer,
+					on_close: function() {
+						this.select(null, null);
+					}.bind(this),
+				});
+			}else{
+				this.props.bus.map_settings.emit("select", null);
 			}
 		},
 

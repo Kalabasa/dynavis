@@ -6,7 +6,7 @@ var MODEL_PATHS = {
 	"Family": "model/FamilySingle",
 	"Area": "model/Area",
 	"Party": "model/Party",
-	"Election": "model/Election",
+	"Election": "model/ElectionSingle",
 	"Dataset": "model/Dataset",
 	"User": "model/User",
 	"Token": "model/Token",

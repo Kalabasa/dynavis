@@ -8,6 +8,7 @@ define(function(require){
 		MainRouter = require("jsx!MainRouter"),
 		Header = require("jsx!view/Header"),
 		Sidebar = require("jsx!view/main/Sidebar"),
+		Infobar = require("jsx!view/main/Infobar"),
 		ChoroplethDataProcessor = require("ChoroplethDataProcessor"),
 		TagCloudDataProcessor = require("TagCloudDataProcessor");
 
@@ -36,6 +37,7 @@ define(function(require){
 	MainApp.prototype.start = function() {
 		this.header = React.render(<Header title="" bus={this.bus} />, document.getElementById("header"));
 		this.sidebar = React.render(<Sidebar bus={this.bus} />, document.getElementById("sidebar"));
+		this.infobar = React.render(<Infobar bus={this.bus} />, document.getElementById("infobar"));
 
 		Backbone.history.start();
 	};

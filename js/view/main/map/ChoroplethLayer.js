@@ -38,18 +38,21 @@ define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 			this._datasets = [];
 
 			this.map = null;
-			this.selected = null;
+			this.selected_layer = null;
 
 			this.on_data = this.on_data.bind(this);
 			this.on_map_settings = this.on_map_settings.bind(this);
+			this.on_select = this.on_select.bind(this);
 
 			this.bus.choropleth_data.on("update", this.on_data);
 			this.bus.map_settings.on("update", this.on_map_settings);
+			this.bus.map_settings.on("select", this.on_select);
 		},
 
 		destruct: function() {
 			this.bus.choropleth_data.off("update", this.on_data);
 			this.bus.map_settings.off("update", this.on_map_settings);
+			this.bus.map_settings.off("select", this.on_select);
 		},
 
 		onAdd: function (map) {
@@ -66,28 +69,16 @@ define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 			this.reset_polygons();
 		},
 
-		on_feature: function(feature, layer) {
-			var that = this;
-			layer.variables = [];
-			layer.on({
-				click: function(e) {
-					if(that.selected) {
-						that.selected.setStyle(that.compute_polygon_style(that.selected, false));
-					}
-					that.selected = layer;
-					layer.setStyle(that.compute_polygon_style(layer, true));
-					layer.bringToFront();
-
-					// TODO: Use React view in the popup
-					var area_name = feature.properties.NAME || feature.properties.NAME_3 || feature.properties.NAME_2 || feature.properties.NAME_1 || feature.properties.NAME_0 || feature.properties.PROVINCE || feature.properties.REGION || feature.properties.PSGC;
-					var info = "";
-					_.each(layer.variables, function(variable) {
-						if(!variable) return;
-						info += "<p> " + _.escape(variable.dataset.name) + " (" + variable.dataset.year + ") = " + (variable.value == null ? "no data" : variable.value.toFixed(2)) + "</p>";
-					});
-					that.map.openPopup("<div><h3>" + _.escape(area_name) + "</h3>" + info + "</div>", e.latlng);
-				},
-			});
+		on_select: function(selected) {
+			if(this.selected_layer) {
+				this.selected_layer.setStyle(this.compute_polygon_style(this.selected_layer, false));
+			}
+			if(selected) {
+				var layer = selected.layer;
+				this.selected_layer = layer;
+				layer.setStyle(this.compute_polygon_style(layer, true));
+				layer.bringToFront();
+			}
 		},
 
 		reset_geojson: function() {

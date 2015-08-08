@@ -1,7 +1,6 @@
 "use strict";
 define(["backbone"], function(Backbone) {
 	return Backbone.Model.extend({
-		urlRoot: "api.php/elections",
 		defaults: {
 			official_id: null,
 			year: null,
