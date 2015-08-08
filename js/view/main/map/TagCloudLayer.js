@@ -148,7 +148,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 						this._redraw_callback();
 					}
 				}
-				if(this._reset_number == rn) setTimeout(loop.bind(this), 1000, poly, datapoints, rn, add);
+				if(this._reset_number == rn) setTimeout(loop.bind(this), 1000, poly, rn, add);
 			}
 		},
 

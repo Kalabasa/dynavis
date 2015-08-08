@@ -99,7 +99,7 @@ define(function(require) {
 									var cy = data_y.color_scale[j];
 									var c = this.constructor.combine_colors(cx, cy);
 
-									return <rect
+									return <rect key={j}
 										className="scatterplot-class-color"
 										x={Math.floor(x)} y={Math.floor(y)} width={Math.ceil(w)} height={Math.ceil(h)}
 										fill={"rgb("+c.r+","+c.g+","+c.b+")"}/>;
@@ -107,19 +107,19 @@ define(function(require) {
 							}, this)}
 						</g>
 						<g id="scatterplot-point-shadows">
-							{_.map(scatterplot_points, function(point) { // shadows
+							{_.map(scatterplot_points, function(point, i) { // shadows
 								var x = scatterplot_margin + scatterplot_width * (point.x - min_x) / range_x;
 								var y = scatterplot_height * (1 - (point.y - min_y) / range_y);
-								return <circle
+								return <circle key={i}
 									className="scatterplot-point-shadow"
 									cx={x} cy={y} r={4}/>
 							}, this)}
 						</g>
 						<g id="scatterplot-points">
-							{_.map(scatterplot_points, function(point) {
+							{_.map(scatterplot_points, function(point, i) {
 								var x = scatterplot_margin + scatterplot_width * (point.x - min_x) / range_x;
 								var y = scatterplot_height * (1 - (point.y - min_y) / range_y);
-								return <circle
+								return <circle key={i}
 									className="scatterplot-point"
 									cx={x} cy={y} r={3}/>
 							}, this)}
@@ -127,7 +127,7 @@ define(function(require) {
 						<g id="scatterplot-labels-x" transform={"translate("+scatterplot_margin+","+scatterplot_height+")"}>
 							{_.map(data_x.classes, function(c,i) {
 								var x = scatterplot_width * (c - min_x) / range_x;
-								return <text
+								return <text key={i}
 									className="scatterplot-label scatterplot-label-x"
 									x={x} y={0}>
 									{numf.format(c)}
@@ -140,7 +140,7 @@ define(function(require) {
 						<g id="scatterplot-labels-y" transform={"translate("+scatterplot_margin+","+0+")"}>
 							{_.map(data_y.classes, function(c,i) {
 								var y = scatterplot_height * (1 - (c - min_y) / range_y);
-								return <text
+								return <text key={i}
 									className="scatterplot-label scatterplot-label-y"
 									x={0} y={y}>
 									{numf.format(c)}
@@ -187,7 +187,7 @@ define(function(require) {
 									var count = m[1];
 									var w = histogram_width / bins;
 									var h = histogram_height * (count - min_count) / (max_count - min_count);
-									return <rect
+									return <rect key={m}
 										className="histogram-bar"
 										x={Math.floor(w * bin)} y={histogram_height - h}
 										width={Math.ceil(w)} height={h} />;
@@ -199,7 +199,7 @@ define(function(require) {
 									var x = legend_width * (c - min) / range;
 									var w = legend_width * (dataset.classes[i+1] - c) / range;
 									var c = dataset.color_scale[i];
-									return <rect
+									return <rect key={i}
 										className="histogram-class-color"
 										x={x} width={w} height={bar_height}
 										fill={"rgb("+c.r+","+c.g+","+c.b+")"}/>;
@@ -208,7 +208,7 @@ define(function(require) {
 							<g id="histogram-labels" transform={"translate("+0+","+histogram_height+")"}>
 								{_.map(dataset.classes, function(c,i) {
 									var x = legend_width * (c - min) / (max - min);
-									return <text
+									return <text key={i}
 										className="histogram-label"
 										x={x} y={bar_height}>
 										{numf.format(c)}

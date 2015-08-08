@@ -124,7 +124,7 @@ define(function(require) {
 
 		handle_close: function() {
 			this.hide();
-			setTimeout(this.state.selected.on_close, 400);
+			if(this.state.selected) setTimeout(this.state.selected.on_close, 400);
 		},
 
 		show: function() {
