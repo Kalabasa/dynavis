@@ -238,9 +238,9 @@ define(function(require) {
 				if(official !== dummy && party !== dummy) {
 					var area = that.refs.area.state.selected;
 					var position = that.state.position || null;
-					var year = parseInt(that.state.year);
-					var year_end = parseInt(that.state.year_end);
-					var votes = parseInt(that.state.votes);
+					var year = parseInt(that.state.year, 10);
+					var year_end = parseInt(that.state.year_end, 10);
+					var votes = parseInt(that.state.votes, 10);
 					that.save(official, year, year_end, position, votes, area, party, created_party, created_official);
 				}
 			};

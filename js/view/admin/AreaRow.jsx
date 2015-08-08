@@ -146,7 +146,7 @@ define(function(require) {
 
 			if(!this.validate()) return;
 
-			var code = parseInt(this.state.code);
+			var code = parseInt(this.state.code, 10);
 			var level = this.state.level;
 
 			this.save(code, name, level);

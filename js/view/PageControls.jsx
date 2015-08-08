@@ -47,7 +47,7 @@ define(["react", "react.backbone"], function(React) {
 
 		handle_submit: function(e) {
 			e.preventDefault();
-			var new_page = parseInt(this.state.input);
+			var new_page = parseInt(this.state.input, 10);
 			if(isNaN(new_page)) {
 				this.setState({input: this.collection().getPage() + 1});
 			}else{

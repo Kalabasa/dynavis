@@ -117,7 +117,7 @@ define(["underscore", "leaflet", "model/Area", "jsx!view/main/ChoroplethLegend"]
 				if(intersects && this._geojson_number == gn) {
 					if(this._dataset_number != dn) {
 						dn = this._dataset_number;
-						var area_code = parseInt(poly.feature.properties.PSGC);
+						var area_code = parseInt(poly.feature.properties.PSGC, 10);
 						var level = Area.get_level(area_code);
 						poly.variables = [];
 						_.each(this._datasets, function(dataset) {
@@ -153,7 +153,7 @@ define(["underscore", "leaflet", "model/Area", "jsx!view/main/ChoroplethLegend"]
 			var match_start = area_code.substr(2-9,2) === "00" ? 0 : 2;
 			var area_code_match = area_code.substr(match_start-9);
 			return datapoints.filter(function(p) {
-				return ("0"+p.get("area_code")).substr(match_start-9) == area_code_match;
+				return ("0"+p.get("area_code")).substr(match_start-9) === area_code_match;
 			});
 		},
 

@@ -131,7 +131,7 @@ define(function(require) {
 			if(!this.validate()) return;
 
 			var new_attributes = {
-				year: parseInt(this.state.year),
+				year: parseInt(this.state.year, 10),
 				area_code: this.refs.area.state.selected.code,
 				value: parseFloat(this.state.value),
 			};

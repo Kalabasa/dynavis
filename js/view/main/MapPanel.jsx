@@ -142,7 +142,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		hash_geojson: function(geojson) {
 			var sum = 0;
 			_.each(geojson.features, function(feature) {
-				sum = (sum << 1) ^ (parseInt(feature.properties.PSGC) | 0);
+				sum = (sum << 1) ^ (parseInt(feature.properties.PSGC, 10) | 0);
 			});
 			return sum;
 		},

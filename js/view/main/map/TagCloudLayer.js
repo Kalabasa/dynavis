@@ -122,7 +122,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 							var bottom = bounds.getSouth();
 							var center = bounds.getCenter();
 
-							var area_code = parseInt(poly.feature.properties.PSGC);
+							var area_code = parseInt(poly.feature.properties.PSGC, 10);
 							var datapoints = this.filter_datapoints(this._dataset.datapoints, area_code, this.minimum_size);
 							for (var i = 0; i < datapoints.length; i++) {
 								var p = datapoints[i];
@@ -156,7 +156,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			var match_start = area_code.substr(2-9,2) === "00" ? 0 : 2;
 			var area_code_match = area_code.substr(match_start-9);
 			return datapoints.filter(function(p) {
-				return p.get("value") >= minimum_size && ("0"+p.get("area_code")).substr(match_start-9) == area_code_match;
+				return p.get("value") >= minimum_size && ("0"+p.get("area_code")).substr(match_start-9) === area_code_match;
 			});
 		},
 
@@ -207,20 +207,22 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			var font_size_func = function(tag) { return Math.sqrt(0.8 * tag.size) + "em"; };
 
 			var tags_data = g.selectAll("g").data(filtered_tags, function(tag){ return tag.key; });
-			tags_data.exit().remove(); // remove exiting tag
 
-			tags_data.selectAll("text") // update tag
-				.text(text_func)
-				.attr("transform", transform_func)
-				.style("font-size", font_size_func);
+			var entered_tags = tags_data.enter().append("g"); // add new tags
+			entered_tags.append("text").attr("class", "map-tag-stroke").style("opacity", 0);
+			entered_tags.append("text").attr("class", "map-tag").style("opacity", 0);
 
-			var entered_tags = tags_data.enter().append("g"); // add entering tag
-			entered_tags.append("text").attr("class", "map-tag-stroke");
-			entered_tags.append("text").attr("class", "map-tag");
-			entered_tags.selectAll("text")
+			tags_data.selectAll("text") // update tags
 				.text(text_func)
+				.style("font-size", font_size_func)
 				.attr("transform", transform_func)
-				.style("font-size", font_size_func);
+				.transition().duration(400)
+				.style("opacity", 1);
+
+			tags_data.exit() // remove old tags
+				.transition().duration(300)
+				.style("opacity", 0)
+				.remove();
 		},
 
 		family_fetch_enqueue: function(family) {

@@ -60,7 +60,7 @@ define(["react", "InstanceCache", "model/Dataset", "jsx!view/HeaderSession"], fu
 				this.set_subtitle("uploaded by " + e.params[0]);
 			}
 			if(e.route === "datapoints" && e.params[0] && e.params[1]) {
-				var id = parseInt(e.params[1]);
+				var id = parseInt(e.params[1], 10);
 				var dataset = InstanceCache.get_existing("Dataset", id)
 					|| new Dataset({id: id, username: e.params[0]});
 				dataset.fetch({

@@ -14,7 +14,7 @@ define(["backbone"], function(Backbone) {
 				dataset_id: r.dataset_id
 					? parseInt(r.dataset_id, 10)
 					: (this.collection && this.collection.dataset
-						? parseInt(this.collection.dataset.id)
+						? parseInt(this.collection.dataset.id, 10)
 						: null),
 				year: parseInt(r.year, 10),
 				area_code: parseInt(r.area_code, 10),
