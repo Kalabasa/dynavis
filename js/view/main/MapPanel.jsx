@@ -201,8 +201,8 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 				"barangay": {target: 12, min: 11, max: 16},
 			}[level];
 
-			this.map.options.minZoom = visual_zoom.max;
-			this.map.options.maxZoom = visual_zoom.min;
+			this.map.options.minZoom = visual_zoom.min;
+			this.map.options.maxZoom = visual_zoom.max;
 
 			if(this.map.getZoom() !== visual_zoom.target) {
 				this.map.setZoom(visual_zoom.target);
