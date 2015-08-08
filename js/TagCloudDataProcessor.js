@@ -28,7 +28,7 @@ define(["underscore", "jenks", "model/Area", "ChoroplethDataProcessor"], functio
 			this.bus.tagcloud_data.emit("update", processed);
 		}.bind(this);
 
-		if(this.dataset.get_datapoints(this.year).size()){
+		if(!this.dataset || this.dataset.get_datapoints(this.year).size()){
 			callback();
 		}else{
 			this.dataset.get_datapoints(this.year).fetch({
