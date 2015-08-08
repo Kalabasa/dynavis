@@ -40,19 +40,19 @@ define(function(require) {
 
 				var area_bar = [
 					(<h3 key="title" className="inline"><Name model={area}/></h3>),
-					(<span key="variables">{_.map(_.filter(this.state.data), function(d) {
+					(<span key="variables">{_.map(_.filter(this.state.data), function(d, i) {
 						var datapoints = this.filter_datapoints(d.datapoints, area.get("code"));
 						if(datapoints.length) {
 							var value = datapoints[0].get("value");
 							return (
-								<span key={d.id} title={value}>
+								<span key={i} title={value}>
 									<span>{d.name}</span>
 									<span>{numf.format(value)}</span>
 								</span>
 							);
 						}else{
 							return (
-								<span key={d.id}>
+								<span key={i}>
 									<span>{d.name}</span>
 									<span>No Data</span>
 								</span>
