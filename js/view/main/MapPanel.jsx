@@ -70,7 +70,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 		},
 
 		reset_geojson: function(level) {
-			this.props.bus.map_settings.emit("update", {level: level});
+			this.props.bus.main_settings.emit("update", {level: level});
 			this.hash_added = {};
 		},
 
@@ -111,7 +111,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 
 		select: function(feature, layer) {
 			if(feature && layer) {
-				this.props.bus.map_settings.emit("select", {
+				this.props.bus.main_settings.emit("select", {
 					area_code: parseInt(feature.properties.PSGC, 10),
 					layer: layer,
 					on_close: function() {
@@ -119,7 +119,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 					}.bind(this),
 				});
 			}else{
-				this.props.bus.map_settings.emit("select", null);
+				this.props.bus.main_settings.emit("select", null);
 			}
 		},
 
@@ -137,7 +137,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 
 		update_view: function() {
 			var zoom = this.map.getZoom();
-			if(zoom != this.last_zoom) this.props.bus.map_settings.emit("update", {zoom: zoom});
+			if(zoom != this.last_zoom) this.props.bus.main_settings.emit("update", {zoom: zoom});
 			this.last_zoom = zoom;
 
 			var level;

@@ -16,12 +16,12 @@ define(function(require) {
 
 		componentDidMount: function() {
 			this.props.bus.router.on("route", this.on_route);
-			this.props.bus.map_settings.on("select", this.on_select);
+			this.props.bus.main_settings.on("select", this.on_select);
 		},
 
 		componentWillUnmount: function() {
 			this.props.bus.router.off("route", this.on_route);
-			this.props.bus.map_settings.off("select", this.on_select);
+			this.props.bus.main_settings.off("select", this.on_select);
 		},
 
 		render: function() {
@@ -35,7 +35,7 @@ define(function(require) {
 				<div className="pure-g">
 					<div className="pure-u-4-5">
 						<h3><Name model={area}/></h3>
-						<AreaElectionsList collection={elections}/>
+						<AreaElectionsList bus={this.props.bus} collection={elections}/>
 					</div>
 					<div className="pure-u-1-5">
 						<button className="pull-right button button-flat button-close" onClick={this.handle_close}>&times;</button>
