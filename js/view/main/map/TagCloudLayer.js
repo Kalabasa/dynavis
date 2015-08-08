@@ -82,7 +82,6 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 
 		reset_tags: function() {
 			this._reset_number++;
-			// this.remove_tags();
 
 			if(this._dataset) {
 				var t = 0;
@@ -93,6 +92,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 					}
 				}
 			}else{
+				this.remove_tags();
 				this._redraw_callback();
 			}
 		},
