@@ -93,7 +93,7 @@ define(["underscore", "leaflet", "model/Area", "jsx!view/main/ChoroplethLegend"]
 			var layers = geojson.getLayers();
 			for (var i = 0; i < layers.length; i++) {
 				layers[i].variables = [];
-				setTimeout(this.colorize_polygon.bind(this), t += 10, layers[i]);
+				setTimeout(this.colorize_polygon.bind(this), t += 10, layers[i], this._geojson_number);
 			}
 		},
 
@@ -103,15 +103,15 @@ define(["underscore", "leaflet", "model/Area", "jsx!view/main/ChoroplethLegend"]
 			for (var i = this._geojson.length - 1; i >= 0; i--) {
 				var layers = this._geojson[i].getLayers();
 				for (var j = 0; j < layers.length; j++) {
-					setTimeout(this.colorize_polygon.bind(this), t += 10, layers[j]);
+					setTimeout(this.colorize_polygon.bind(this), t += 10, layers[j], this._geojson_number);
 				}
 			}
 		},
 
 		// Sets polygon style based on the dataset
-		colorize_polygon: function(poly){
+		colorize_polygon: function(poly, gn){
 			poly.variables = [];
-			loop.call(this, poly, this._geojson_number, 0, true);
+			loop.call(this, poly, gn, 0, true);
 			function loop(poly, gn, dn, add) {
 				var intersects = poly.getBounds().pad(10).intersects(this.map.getBounds());
 				if(intersects && this._geojson_number == gn) {

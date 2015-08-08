@@ -75,21 +75,21 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			for (var i = 0; i < layers.length; i++) {
 				layers[i].tags = [];
 				if(this._dataset) {
-					setTimeout(this.tag_poly.bind(this), t += 10, layers[i]);
+					setTimeout(this.tag_poly.bind(this), t += 10, layers[i], this._reset_number);
 				}
 			}
 		},
 
 		reset_tags: function() {
 			this._reset_number++;
-			this.remove_tags();
+			// this.remove_tags();
 
 			if(this._dataset) {
 				var t = 0;
 				for (var i = this._geojson.length - 1; i >= 0; i--) {
 					var layers = this._geojson[i].getLayers();
 					for (var j = 0; j < layers.length; j++) {
-						setTimeout(this.tag_poly.bind(this), t += 1, layers[j]);
+						setTimeout(this.tag_poly.bind(this), t += 10, layers[j], this._reset_number);
 					}
 				}
 			}else{
@@ -106,8 +106,8 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			}
 		},
 
-		tag_poly: function(poly) {
-			loop.call(this, poly, this._reset_number, true);
+		tag_poly: function(poly, rn) {
+			loop.call(this, poly, rn, true);
 			function loop(poly, rn, add) {
 				var bounds = poly.getBounds();
 				var intersects = bounds.pad(10).intersects(this.map.getBounds());
@@ -202,22 +202,20 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			var font_size_func = function(tag) { return Math.sqrt(0.8 * tag.size) + "em"; };
 
 			var tags_data = g.selectAll("g").data(filtered_tags, function(tag){ return tag.key; });
+			tags_data.exit().remove(); // remove exiting tag
+
 			tags_data.selectAll("text") // update tag
 				.text(text_func)
 				.attr("transform", transform_func)
 				.style("font-size", font_size_func);
-			tags_data.exit().remove(); // remove exiting tag
+
 			var entered_tags = tags_data.enter().append("g"); // add entering tag
-			entered_tags.append("text")
-					.text(text_func)
-					.attr("transform", transform_func)
-					.attr("class", "map-tag-stroke")
-					.style("font-size", font_size_func);
-			entered_tags.append("text")
-					.text(text_func)
-					.attr("transform", transform_func)
-					.attr("class", "map-tag")
-					.style("font-size", font_size_func)
+			entered_tags.append("text").attr("class", "map-tag-stroke");
+			entered_tags.append("text").attr("class", "map-tag");
+			entered_tags.selectAll("text")
+				.text(text_func)
+				.attr("transform", transform_func)
+				.style("font-size", font_size_func);
 		},
 
 		family_fetch_enqueue: function(family) {

@@ -27,9 +27,6 @@ define(["require", "backbone", "InstanceCache", "model/DatapointCollection"], fu
 		get_datapoints: function(year) {
 			if(!InstanceCache) InstanceCache = require("InstanceCache");
 
-			if(!this.datapoints) this.datapoints = {};
-			var datapoints = this.datapoints[year];
-
 			if(!datapoints) {
 				var name = "DatapointCollection";
 				var key = this.id + "." + year;
@@ -40,7 +37,6 @@ define(["require", "backbone", "InstanceCache", "model/DatapointCollection"], fu
 				InstanceCache.set(name, key, datapoints);
 			}
 			
-			this.datapoints[year] = datapoints;
 			return datapoints;
 		},
 	});
