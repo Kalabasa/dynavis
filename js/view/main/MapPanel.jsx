@@ -195,17 +195,17 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			}[level];
 
 			var visual_zoom = {
-				"region": 6,
-				"province": 8,
-				"municipality": 10,
-				"barangay": 12,
+				"region": {target: 6, min: 5, max: 7},
+				"province": {target: 8, min: 6, max: 10},
+				"municipality": {target: 10, min: 8, max: 13},
+				"barangay": {target: 12, min: 11, max: 16},
 			}[level];
 
-			this.map.options.minZoom = visual_zoom - 3;
-			this.map.options.maxZoom = visual_zoom + 3;
+			this.map.options.minZoom = visual_zoom.max;
+			this.map.options.maxZoom = visual_zoom.min;
 
-			if(this.map.getZoom() !== visual_zoom) {
-				this.map.setZoom(visual_zoom);
+			if(this.map.getZoom() !== visual_zoom.target) {
+				this.map.setZoom(visual_zoom.target);
 			}else{
 				this.update_view();
 			}
