@@ -1,5 +1,5 @@
 "use strict";
-define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
+define(["underscore", "leaflet", "model/Area", "jsx!view/main/ChoroplethLegend"], function(_, L, Area, ChoroplethLegend) {
 	return L.LayerGroup.extend({
 		initialize: function(bus) {
 			L.LayerGroup.prototype.initialize.call(this);
@@ -188,7 +188,7 @@ define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 
 		get_color: function(variables) {
 			var black = {r:20, g:20, b:20};
-			var color = {r:255,g:255,b:255};
+			var color = null;
 			_.each(variables, function(variable, i) {
 				if(!variable) return;
 				var value = variable.value;
@@ -206,9 +206,7 @@ define(["underscore", "leaflet", "model/Area"], function(_, L, Area) {
 						break;
 					}
 				};
-				color = _.mapObject(color, function(v,k) {
-					return Math.ceil(v * class_color[k] / 255);
-				});
+				color = color ? ChoroplethLegend.combine_colors(color, class_color) : class_color;
 			}, this);
 			return color;
 		},

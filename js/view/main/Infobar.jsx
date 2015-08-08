@@ -4,7 +4,8 @@ define(function(require) {
 		React = require("react"),
 		InstanceCache = require("InstanceCache"),
 		AreaElectionCollection = require("model/AreaElectionCollection"),
-		Name = require("jsx!view/Name");
+		Name = require("jsx!view/Name"),
+		AreaElectionsList = require("jsx!view/main/AreaElectionsList");
 
 	return React.createClass({
 		getInitialState: function() {
@@ -24,7 +25,7 @@ define(function(require) {
 		},
 
 		render: function() {
-			var area = null, elections = [];
+			var area = null, elections = null;
 			if(this.state.selected && this.state.selected.area_code) {
 				area = InstanceCache.get("Area", this.state.selected.area_code, true);
 				elections = new AreaElectionCollection(null, {area: area});
@@ -33,10 +34,8 @@ define(function(require) {
 			return (
 				<div className="pure-g">
 					<div className="pure-u-4-5">
-						<h6><Name model={area}/></h6>
-						{_.map(elections, function(e) {
-							return <div>{e.id}</div>
-						})}
+						<h3><Name model={area}/></h3>
+						<AreaElectionsList collection={elections}/>
 					</div>
 					<div className="pure-u-1-5">
 						<button className="pull-right button button-flat button-close" onClick={this.handle_close}>&times;</button>

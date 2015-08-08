@@ -115,3 +115,22 @@ a.tile-container {
 		text-decoration: none;
 	}
 }
+
+.family-member-item {
+	padding: 0 1em;
+	span {
+		float: left;
+		padding: 0.5em;
+	}
+	button {
+		visibility: hidden;
+	}
+
+	&:hover {
+		background-color: $color-background;
+
+		button {
+			visibility: visible;
+		}
+	}
+}

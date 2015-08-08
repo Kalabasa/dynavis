@@ -3,8 +3,8 @@ define(["react", "jsx!view/OfficialName", "react.backbone"], function(React, Off
 	return React.createBackboneClass({
 		render: function() {
 			return (
-				<div className="field">
-					<OfficialName model={this.model()} /> <button className="button button-complement button-flat button-close" onClick={this.handle_delete}>&times;</button>
+				<div className="family-member-item field clearfix">
+					<OfficialName model={this.model()} /> <button className="pull-right button button-complement button-flat button-close" onClick={this.handle_delete}>&times;</button>
 				</div>
 			);
 		},

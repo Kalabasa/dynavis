@@ -53,10 +53,19 @@ define(["underscore", "jenks", "model/Area"], function(_, jenks, Area) {
 			}, this);
 		if(!datapoints.length) return null;
 		
-		var scales = [
-			[{r:254,g:235,b:226},{r:251,g:180,b:185},{r:247,g:104,b:161},{r:174,g:1,b:126}],
-			[{r:255,g:255,b:204},{r:194,g:230,b:153},{r:120,g:198,b:121},{r:35,g:132,b:67}],
+		var scales_hex = [
+			["#FFBFD5", "#F379A3", "#D9356D", "#A60038"],
+			["#BFF8FF", "#79E5F3", "#35C6D9", "#0094A6"],
 		];
+
+		var scales = _.map(scales_hex, function(scale_hex) {
+			return _.map(scale_hex, function(hex) {
+				var rr = hex.substr(1,2);
+				var gg = hex.substr(3,2);
+				var bb = hex.substr(5,2);
+				return {r:parseInt(rr,16), g:parseInt(gg,16), b:parseInt(bb,16)};
+			});
+		});
 
 		return {
 			name: dataset.get("name"),

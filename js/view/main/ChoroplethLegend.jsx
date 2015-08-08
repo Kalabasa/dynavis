@@ -5,6 +5,25 @@ define(function(require) {
 		React = require("react");
 
 	return React.createClass({
+		statics: {
+			combine_colors: function(c1, c2) {
+				return _.mapObject(c1, function(v,k) {
+					var w = c2[k];
+					// return Math.ceil((v + w) / 2); // alpha
+					// return Math.min(v, w); // darken
+					// return Math.ceil(v * w / 255); // multiply
+					
+					// v = 255 * 0.2 + v * 0.8;
+					// w = 255 * 0.2 + w * 0.8;
+					// return Math.min(Math.ceil(v * w * 1.5 / 255), 255); // lighten then multiply then brighten
+					
+					v = Math.min(v * 1.2, 255);
+					w = Math.min(w * 1.2, 255);
+					 return Math.ceil(v * w / 255); // brighten then multiply
+				});
+			},
+		},
+
 		getInitialState: function() {
 			return {data: [null, null]};
 		},
@@ -77,13 +96,11 @@ define(function(require) {
 									var y = scatterplot_height * (1 - (cy - min_y) / range_y);
 									var h = scatterplot_height * (cy - data_y.classes[j]) / range_y;
 									var cy = data_y.color_scale[j];
-									var c = _.mapObject(cx, function(v,k) {
-										return Math.ceil(v * cy[k] / 255);
-									});
+									var c = this.constructor.combine_colors(cx, cy);
 
 									return <rect
 										className="scatterplot-class-color"
-										x={x} y={y} width={w} height={h}
+										x={Math.floor(x)} y={Math.floor(y)} width={Math.ceil(w)} height={Math.ceil(h)}
 										fill={"rgb("+c.r+","+c.g+","+c.b+")"}/>;
 								}, this);
 							}, this)}
@@ -171,8 +188,8 @@ define(function(require) {
 									var h = histogram_height * (count - min_count) / (max_count - min_count);
 									return <rect
 										className="histogram-bar"
-										x={w * bin} y={histogram_height - h}
-										width={w} height={h} />;
+										x={Math.floor(w * bin)} y={histogram_height - h}
+										width={Math.ceil(w)} height={h} />;
 								})}
 							</g>
 							<g id="histogram-class-colors" transform={"translate("+0+","+histogram_height+")"}>
