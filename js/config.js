@@ -19,6 +19,7 @@ require.config({
 		"leaflet": "lib/leaflet",
 		"localStorage": "lib/localStorage",
 		"minivents": "lib/minivents.min",
+		"numf": "lib/numf",
 		"react": "lib/react",
 		"react.backbone": "lib/react.backbone",
 		"text": "lib/text",

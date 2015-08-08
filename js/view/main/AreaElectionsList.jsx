@@ -3,13 +3,15 @@ define(function(require){
 	var _ = require("underscore"),
 		React = require("react", "react.backbone"),
 		InstanceCache = require("InstanceCache"),
+		OfficialFamilyCollection = require("model/OfficialFamilyCollection"),
 		Name = require("jsx!view/Name"),
-		OfficialName = require("jsx!view/OfficialName");
+		OfficialName = require("jsx!view/OfficialName"),
+		OfficialFamilyList = require("jsx!view/main/OfficialFamilyList");
 
 	return React.createBackboneClass({
 		getInitialState: function() {
 			return {
-				year: null,
+				year: new Date().getFullYear(),
 			};
 		},
 
@@ -29,19 +31,20 @@ define(function(require){
 					}, this)
 					.map(function(e) {
 						var official = InstanceCache.get("Official", e.get("official_id"), true);
+						var families = new OfficialFamilyCollection(null, {official_id: official.id});
+						families.fetch();
 						return (
-							<div>
+							<li className="area-elections-item">
 								<OfficialName model={official}/>
-								<span>{e.get("position")}</span>
-								<span>{e.get("votes")}</span>
-							</div>
+							</li>
 						);
 					}, this)
 					.value();
 			}
 			return (
-				<div>
-					{list}
+				<div className="area-elections-list">
+					<h6 className="title">Elected Officials</h6>
+					<ol>{list}</ol>
 				</div>
 			);
 		},

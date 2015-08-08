@@ -8,6 +8,7 @@ define(function(require) {
 		Va = require("validator"),
 		ValidationMixin = require("mixin/ValidationMixin"),
 		ValidationMessages = require("jsx!view/ValidationMessages"),
+		Notification = require("jsx!view/Notification"),
 		ReactTransitionGroup = React.addons.TransitionGroup;
 		
 	return React.createBackboneClass({
@@ -132,7 +133,17 @@ define(function(require) {
 		},
 
 		handle_delete: function(e) {
-			this.model().destroy({wait: true});
+			var name = this.model().get("name");
+			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting {name}...</span>, 0);
+			this.model().destroy({
+				wait: true,
+				success: function(){
+					Notification.replace(notif, <span><i className="fa fa-trash"/>&ensp;{name} deleted</span>);
+				}
+				error: function(xhr) {
+					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {xhr.responseText}</span>, null, "error");
+				},
+			});
 		},
 	});
 });

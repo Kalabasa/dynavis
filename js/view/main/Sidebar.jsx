@@ -17,7 +17,7 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 			}, this);
 			this.handle_submit();
 
-			this.min_year = this.state.year;
+			this.min_year = 0;
 			this.max_year = this.state.year;
 
 			this.choropleth_data = [null, null];
@@ -27,8 +27,6 @@ define(["react", "InstanceCache", "jsx!view/main/ChoroplethSettingsPane", "jsx!v
 		componentDidMount: function() {
 			this.props.bus.choropleth_settings.on("update", this.update_choropleth_settings);
 			this.props.bus.tagcloud_settings.on("update", this.update_tagcloud_settings);
-
-			this.props.bus.main_settings.emit("update", {year: this.state.year});
 		},
 
 		componentWillUnmount: function() {

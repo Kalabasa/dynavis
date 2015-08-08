@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "react.backbone"], function(React) {
+define(["react", "jsx!view/Notification", "react.backbone"], function(React, Notification) {
 	return React.createBackboneClass({
 		render: function() {
 			var username = this.model().get("username");
@@ -26,7 +26,17 @@ define(["react", "react.backbone"], function(React) {
 		},
 
 		handle_delete: function() {
-			this.model().destroy({wait: true});
+			var name = this.model().get("name");
+			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting {name}...</span>, 0);
+			this.model().destroy({
+				wait: true,
+				success: function(){
+					Notification.replace(notif, <span><i className="fa fa-trash"/>&ensp;{name} deleted</span>);
+				}
+				error: function(xhr) {
+					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {xhr.responseText}</span>, null, "error");
+				},
+			});
 		},
 	});
 });
