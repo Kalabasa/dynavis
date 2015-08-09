@@ -8,6 +8,12 @@
 	width: 100%;
 }
 
+.logo-type {
+	width: 200px;
+	padding-bottom: 1em;
+	font-size: 20pt;
+}
+
 .login-box {
 	display: table-cell;
 	vertical-align: middle;
@@ -16,7 +22,7 @@
 .login-box > * {
 	margin-left: auto;
 	margin-right: auto; 
-	width: 12em;
+	width: 200px;
 }
 
 .input {

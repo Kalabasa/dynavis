@@ -17,15 +17,18 @@ define(["react", "InstanceCache", "model/Dataset", "jsx!view/HeaderSession"], fu
 		},
 
 		render: function() {
-			document.title = (this.state.title ? (this.state.title + (this.state.subtitle ? (" " + this.state.subtitle) : "") + " - ") : "") + "DynastyMap";
+			document.title = (this.state.title ? (this.state.title + (this.state.subtitle ? (" / " + this.state.subtitle) : "") + " - ") : "") + "DynastyMap";
 			if(this.state.subtitle) {
-				var subtitle = <h3 className="header-subtitle">{this.state.subtitle}</h3>
+				var subtitle = <h3 className="header-subtitle">{" / " + this.state.subtitle}</h3>
 			}
 			var token = InstanceCache.get_existing("Token", "session");
 			return (
 				<div className="clearfix">
-					<div id="logo">
-						<a href=".">DynastyMap</a>
+					<div id="header-logo">
+						<a href="." className="no-decor">
+							<div className="logo"></div>
+							<div className="logo-type">DynastyMap</div>
+						</a>
 					</div>
 					<div id="header-content">
 						<h2 className="header-title">{this.state.title}</h2>
@@ -46,6 +49,7 @@ define(["react", "InstanceCache", "model/Dataset", "jsx!view/HeaderSession"], fu
 
 		on_route: function(e) {
 			var title_map = {
+				"home": "Admin Home",
 				"elections": "Elections",
 				"officials": "Officials",
 				"families": "Families",

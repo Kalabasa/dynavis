@@ -24,7 +24,7 @@ define(function(require) {
 		},
 		onModelChange: function() {
 			if(!this.collection().size()) {
-				this.refs.toolbar.open();
+				if(this.refs.toolbar) this.refs.toolbar.open();
 			}
 			this.forceUpdate();
 		},

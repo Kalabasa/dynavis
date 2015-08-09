@@ -2,10 +2,14 @@
 $sidebar-width: 175px;
 
 .header {
-	color: $color-text-primary-1;
-	background-color: $color-primary-1;
-	#logo {
+	#header-logo {
 		width: $sidebar-width;
+		.logo {
+			width: 100%;
+		}
+		.logo-type {
+			display: none;
+		}
 	}
 }
 .sidebar {

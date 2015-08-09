@@ -150,7 +150,7 @@ define(function(require) {
 				var year = this.state.year + 1;
 				this.setState({year: year, year_input: year});
 
-				if(this.state.year + 1 >= this.state.max_year) {
+				if(year >= this.state.max_year) {
 					this.setState({playing: false});
 				}else{
 					setTimeout(step.bind(this), delay);

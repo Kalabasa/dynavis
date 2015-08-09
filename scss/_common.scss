@@ -71,7 +71,7 @@ a {
 	&:visited {
 		color: darken($color-primary-1, 10%);
 	}
-	&:hover {
+	&:not(.no-decor):hover {
 		text-decoration: underline;
 		color: lighten($color-primary-1, 20%);
 	}

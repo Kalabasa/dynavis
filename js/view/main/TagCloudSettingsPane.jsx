@@ -25,8 +25,8 @@ define(function(require) {
 			if(this.state.dataset) {
 				var selection_button = (
 					<div className="pure-u-1 group">
-						<button className="pure-u-7-8 group-component button" onClick={this.handle_select}>{this.state.dataset.get("name")}</button>
-						<button className="pure-u-1-8 group-component button" onClick={this.handle_remove}><i className="fa fa-close"/></button>
+						<button className="pure-u-5-6 group-component button" onClick={this.handle_select}>{this.state.dataset.get("name")}</button>
+						<button className="pure-u-1-6 group-component button" onClick={this.handle_remove}><i className="fa fa-close"/></button>
 					</div>
 				);
 			}else{

@@ -33,8 +33,8 @@ define(function(require) {
 				if(dataset) {
 					datasets_list.push(
 						<div key={i} className="pure-u-1 group">
-							<button className="pure-u-7-8 group-component button" onClick={this.select_handler(i+1)}>{dataset.get("name")}</button>
-							<button className="pure-u-1-8 group-component button" onClick={this.remove_handler(i+1)}><i className="fa fa-close"/></button>
+							<button className="pure-u-5-6 group-component button" onClick={this.select_handler(i+1)}>{dataset.get("name")}</button>
+							<button className="pure-u-1-6 group-component button" onClick={this.remove_handler(i+1)}><i className="fa fa-close"/></button>
 						</div>
 					);
 				}else{

@@ -1,4 +1,7 @@
 .header {
+	color: $color-text-primary-1;
+	background-color: $color-primary-1;
+
 	box-shadow: 0 0 8px 8px rgba(0,0,0,0.1),
 		0 2px 4px 0 rgba(0,0,0,0.4);
 
@@ -6,15 +9,30 @@
 		height: inherit;
 	}
 
-	#logo {
+	#header-logo {
+		float: left;
 		display: inline-block;
 		width: $sidebar-width;
 		height: $header-height;
+
+		background-color: #00ACC1;
 
 		a {
 			display: inline-block;
 			width: inherit;
 			height: inherit;
+		}
+
+		.logo {
+			float: left;
+			display: inline-block;
+		}
+		.logo-type {
+			float: left;
+			display: inline;
+			width: $sidebar-width - 90px;
+			line-height: $header-height;
+			vertical-align: baseline;
 		}
 	}
 
@@ -71,6 +89,28 @@
 			color: $color-text-primary-1 !important;
 		}
 	}
+}
+
+.logo {
+	width: 90px;
+	height: 75px;
+	background-image: url("../img/logo-small.png");
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.logo-large {
+	width: 200px;
+	height: 130px;
+	background-image: url("../img/logo-large.png");
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.logo-type {
+	text-align: center;
+	font-family: "Roboto Slab", serif;
+	font-size: 14pt;
+	font-weight: bold;
+	color: white;
 }
 
 .hider {
@@ -236,7 +276,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 	opacity: 0.6;
 	font-size: 140%;
 	font-weight: bold;
-	padding: 0.1em 0.3em;
+	padding: 0.1em 0.4em;
 
 	&:hover {
 		opacity: 1;
