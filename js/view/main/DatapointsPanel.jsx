@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/main/DatapointRow", "mixin/ScrollToTopMixin", "react.backbone"], function(React, Dataset, FileInput, SearchControls, PageControls, PanelToolbar, DatapointRow, ScrollToTopMixin) {
+define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/PanelToolbar", "jsx!view/main/DatapointRow", "mixin/ScrollToTopMixin", "jsx!view/Notification", "react.backbone"], function(React, Dataset, FileInput, SearchControls, PageControls, PanelToolbar, DatapointRow, ScrollToTopMixin, Notification) {
 	var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 	return React.createBackboneClass({
  		mixins: [React.addons.LinkedStateMixin, ScrollToTopMixin],
@@ -72,6 +72,8 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 			var file = this.refs.file.get_input().files[0];
 			fd.append("file", file);
 
+			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading data...</span>, 0);
+
 			$.ajax({
 				url: this.model().url() + "/datapoints",
 				data: fd,
@@ -82,6 +84,10 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 					React.findDOMNode(that.refs.form).reset();
 					that.refs.toolbar.close();
 					that.collection().fetch();
+					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Datapoints uploaded</span>, null, "success");
+				},
+				error: function(xhr) {
+					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Datapoints upload error: {xhr.responseText}</span>, null, "error");
 				},
 			});
 		},

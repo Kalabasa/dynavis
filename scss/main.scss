@@ -136,6 +136,18 @@ $infobar-height: 50%;
 	dominant-baseline: central;
 }
 
+.var-info { 
+	margin: 0.2em 1em;
+
+	.var-name {
+		margin: 0 0.5ch;
+	}
+	.var-value {
+		margin: 0 0.5ch;
+		font-weight: bold;
+	}
+}
+
 .area-elections-list,.area-families-list {
 	list-style: none;
 

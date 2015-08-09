@@ -45,16 +45,16 @@ define(function(require) {
 						if(datapoints.length) {
 							var value = datapoints[0].get("value");
 							return (
-								<span key={i} title={value}>
-									<span>{d.name}</span>
-									<span>{numf.format(value)}</span>
+								<span key={i} title={value} className="var-info">
+									<span className="var-name">{d.name}</span>
+									<span className="var-value">{numf.format(value)}</span>
 								</span>
 							);
 						}else{
 							return (
-								<span key={i}>
-									<span>{d.name}</span>
-									<span>No Data</span>
+								<span key={i} className="var-info">
+									<span className="var-name">{d.name}</span>
+									<span className="var-value">No Data</span>
 								</span>
 							);
 						}
