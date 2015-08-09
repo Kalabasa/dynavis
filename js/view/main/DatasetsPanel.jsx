@@ -109,7 +109,6 @@ define(function(require) {
 						type: "POST",
 						success: function(data){
 							React.findDOMNode(that.refs.form).reset();
-							that.refs.toolbar.close();
 							that.collection().fetch();
 							that.setState(that.getInitialState());
 							Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Dataset uploaded</span>, null, "success");
