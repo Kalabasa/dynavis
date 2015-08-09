@@ -59,7 +59,7 @@ define(function(require) {
 							</label>
 							<label className="pure-u-1 pad">
 								<div className="label">Description</div>
-								<input ref="description" className="pure-u-1" type="text" valueLink={this.linkState("description")} required />
+								<textarea ref="description" className="pure-u-1" type="text" valueLink={this.linkState("description")} required />
 							</label>
 						</div>
 						<div className="pure-g">

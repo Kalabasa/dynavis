@@ -202,7 +202,7 @@
 	}
 }
 
-.form input:not([type=file]), .form select, .input, .button {
+.form input:not([type=file]), .form select, .form textarea, .input, .button {
 	position: relative;
 	top: 0;
 
