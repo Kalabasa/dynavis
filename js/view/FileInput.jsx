@@ -11,7 +11,7 @@ define(["react"], function(React) {
 			return (
 				<span className="file-wrapper">
 					<label className="group">
-						<span className="group-component input" readOnly>
+						<span className="group-component input" title={this.state.filename} readOnly>
 							<div className="name">{this.state.filename}</div>
 						</span>
 						<span className="group-component button">Browse</span>

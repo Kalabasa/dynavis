@@ -41,7 +41,6 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 				url: this.collection().url,
 				type: "DELETE",
 				success: function(data){
-					that.refs.toolbar.open();
 					that.collection().fetch();
 					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;All families deleted</span>, null, "success");
 				},
