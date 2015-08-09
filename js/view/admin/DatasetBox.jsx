@@ -15,7 +15,7 @@ define(["react", "jsx!view/Notification", "react.backbone"], function(React, Not
 									<a href={url_datasets}>{username}</a>
 								</span>
 							</div>
-							<div className="field text">{this.model().get("description")}</div>
+							<div className="field text"><pre>{this.model().get("description")}</pre></div>
 						</div>
 						<div className="pure-u-1-6">
 							<button className="pull-right button button-flat button-complement" onClick={this.handle_delete}>Delete</button>

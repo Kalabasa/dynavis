@@ -94,6 +94,11 @@ h5,h6 {
 	font-size: 120%;
 }
 
+pre {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
 .text {
 	line-height: 1.6em;
 	text-align: justify;

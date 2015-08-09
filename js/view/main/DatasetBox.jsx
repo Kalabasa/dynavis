@@ -79,7 +79,7 @@ define(function(require) {
 						<div className="pure-g">
 							<div className="pure-u-5-6">
 								<div className="field text-large pad">{this.model().get("name")}</div>
-								<div className="field text pad">{this.model().get("description")}</div>
+								<div className="field text pad"><pre>{this.model().get("description")}</pre></div>
 							</div>
 							<div className="pure-u-1-6">
 								<button className="pull-right button button-flat" onClick={this.handle_edit}>Edit</button>
