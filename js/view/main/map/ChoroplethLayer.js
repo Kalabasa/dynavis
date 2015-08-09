@@ -65,6 +65,7 @@ define(["underscore", "leaflet", "model/Area", "jsx!view/main/ChoroplethLegend"]
 		},
 
 		on_data: function(data) {
+			this._dataset_number++;
 			this._datasets = data;
 			this.reset_polygons();
 		},
@@ -98,7 +99,6 @@ define(["underscore", "leaflet", "model/Area", "jsx!view/main/ChoroplethLegend"]
 		},
 
 		reset_polygons: function() {
-			this._dataset_number++;
 			var t = 0;
 			for (var i = this._geojson.length - 1; i >= 0; i--) {
 				var layers = this._geojson[i].getLayers();
@@ -110,7 +110,6 @@ define(["underscore", "leaflet", "model/Area", "jsx!view/main/ChoroplethLegend"]
 
 		// Sets polygon style based on the dataset
 		colorize_polygon: function(poly, gn){
-			poly.variables = [];
 			loop.call(this, poly, gn, 0, true);
 			function loop(poly, gn, dn, add) {
 				var intersects = poly.getBounds().pad(10).intersects(this.map.getBounds());

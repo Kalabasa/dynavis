@@ -185,11 +185,11 @@
 
 	@extend %floating-transitions;
 	&:not(.button-flat):not([disabled]):not([readonly]) {
-		top: -0.5px;
-		@include drop-shadow(1);
+		top: -1px;
+		@include drop-shadow(2);
 		&:hover {
-			top: -1.5px;
-			@include drop-shadow(3);
+			top: -2px;
+			@include drop-shadow(4);
 		}
 	}
 }
@@ -206,8 +206,8 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 		background-color: transparent;
 	}
 	&:active {
-		top: -0.5px;
-		@include drop-shadow(1);
+		top: -1px;
+		@include drop-shadow(2);
 	}
 	&.button-primary:not(x) {
 		color: $color-text-primary-1;
@@ -218,8 +218,8 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 		background-color: $color-complement;
 	}
 	&:active:not([disabled]):not([readonly]) {
-		top: -1px;
-		@include drop-shadow(2);
+		top: -1.5px;
+		@include drop-shadow(3);
 	}
 	&.button-flat:not(x) {
 		color: $color-primary-1;

@@ -81,7 +81,7 @@ define(function(require) {
 				var datasets_pane = (
 					<div key="pane_links" className="pane">
 						<div className="pane-content">
-							<a className="button button-flat" href="#datasets">Manage datasets</a>
+							<a href="#datasets"><button className="pure-u-1 button button-flat">Manage datasets</button></a>
 						</div>
 					</div>
 				);

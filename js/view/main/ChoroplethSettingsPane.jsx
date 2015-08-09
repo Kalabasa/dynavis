@@ -30,15 +30,20 @@ define(function(require) {
 			var datasets = [this.state.dataset1, this.state.dataset2];
 			for (var i = 0; i < datasets.length; i++) {
 				var dataset = datasets[i];
-				var text = "Select Dataset";
-				var close_button = null;
 				if(dataset) {
-					text = dataset.get("name");
-					close_button = <button className="button button-complement button-flat button-close" onClick={this.remove_handler(i+1)}>&times;</button>;
+					datasets_list.push(
+						<div key={i} className="pure-u-1 group">
+							<button className="pure-u-7-8 group-component button" onClick={this.select_handler(i+1)}>{dataset.get("name")}</button>
+							<button className="pure-u-1-8 group-component button" onClick={this.remove_handler(i+1)}><i className="fa fa-close"/></button>
+						</div>
+					);
+				}else{
+					datasets_list.push(
+						<div key={i} className="pure-u-1">
+							<button className="pure-u-1 button" onClick={this.select_handler(i+1)}>Select Dataset</button>
+						</div>
+					);
 				}
-				datasets_list.push(
-					<div key={i}><button className="button" onClick={this.select_handler(i+1)}>{text}</button>{close_button}</div>
-				);
 			}
 			return (
 				<div className="pane">

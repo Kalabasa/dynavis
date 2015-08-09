@@ -21,17 +21,26 @@ define(function(require) {
 
 		render: function() {
 			var text = "Select Dataset";
-			var close_button = null;
+			var selection_button = null;
 			if(this.state.dataset) {
-				text = this.state.dataset.get("name");
-				close_button = <button className="button button-complement button-flat button-close" onClick={this.handle_remove}>&times;</button>;
+				var selection_button = (
+					<div className="pure-u-1 group">
+						<button className="pure-u-7-8 group-component button" onClick={this.handle_select}>{this.state.dataset.get("name")}</button>
+						<button className="pure-u-1-8 group-component button" onClick={this.handle_remove}><i className="fa fa-close"/></button>
+					</div>
+				);
+			}else{
+				var selection_button = (
+					<div className="pure-u-1">
+						<button className="pure-u-1 button" onClick={this.handle_select}>Select Dataset</button>
+					</div>
+				);
 			}
-			var button = <div><button className="button" onClick={this.handle_select}>{text}</button>{close_button}</div>;
 			return (
 				<div className="pane">
 					<h6 className="pane-header">Tag Cloud Layer</h6>
 					<div className="pane-content">
-						{button}
+						{selection_button}
 						<TagCloudLegend bus={this.props.bus}/>
 					</div>
 				</div>

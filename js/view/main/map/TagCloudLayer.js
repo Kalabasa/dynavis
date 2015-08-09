@@ -6,8 +6,9 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 
 			this.bus = bus;
 			
-			this._reset_number = 0;
+			this._geojson_number = 0;
 			this._geojson = [];
+			this._dataset_number = 0;
 			this._dataset = null;
 
 			this._redraw_callback = _.debounce(this.redraw.bind(this), 200);
@@ -29,7 +30,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 
 		onAdd: function (map) {
 			this.map = map;
-			map.on("viewreset move", _.throttle(this.redraw.bind(this), 100));
+			map.on("move", _.throttle(this.redraw.bind(this), 100));
 
 			d3.select("#tag-cloud-overlay").remove();
 			d3.select(this.map.getPanes().shadowPane)
@@ -51,6 +52,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 		},
 
 		on_data: function(data) {
+			this._dataset_number++;
 			this._dataset = data;
 			this.calculate_minimum_size();
 			this.reset_tags();
@@ -62,7 +64,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 		},
 
 		reset_geojson: function() {
-			this._reset_number++;
+			this._geojson_number++;
 			this._geojson = [];
 			this.remove_tags();
 		},
@@ -75,25 +77,18 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			for (var i = 0; i < layers.length; i++) {
 				layers[i].tags = [];
 				if(this._dataset) {
-					setTimeout(this.tag_poly.bind(this), t += 10, layers[i], this._reset_number);
+					setTimeout(this.tag_poly.bind(this), t += 10, layers[i], this._geojson_number);
 				}
 			}
 		},
 
 		reset_tags: function() {
-			this._reset_number++;
-
-			if(this._dataset) {
-				var t = 0;
-				for (var i = this._geojson.length - 1; i >= 0; i--) {
-					var layers = this._geojson[i].getLayers();
-					for (var j = 0; j < layers.length; j++) {
-						setTimeout(this.tag_poly.bind(this), t += 10, layers[j], this._reset_number);
-					}
+			var t = 0;
+			for (var i = this._geojson.length - 1; i >= 0; i--) {
+				var layers = this._geojson[i].getLayers();
+				for (var j = 0; j < layers.length; j++) {
+					setTimeout(this.tag_poly.bind(this), t += 10, layers[j], this._geojson_number);
 				}
-			}else{
-				this.remove_tags();
-				this._redraw_callback();
 			}
 		},
 
@@ -106,48 +101,43 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			}
 		},
 
-		tag_poly: function(poly, rn) {
-			loop.call(this, poly, rn, true);
-			function loop(poly, rn, add) {
-				var bounds = poly.getBounds();
-				var intersects = bounds.pad(10).intersects(this.map.getBounds());
-				if(intersects && this._reset_number == rn) {
-					if(add) {
-						add = false;
+		tag_poly: function(poly, gn) {
+			loop.call(this, poly, gn, 0, true);
+			function loop(poly, gn, dn, add) {
+				var intersects = poly.getBounds().pad(10).intersects(this.map.getBounds());
+				if(intersects && this._geojson_number == gn) {
+					if(this._dataset_number != dn) {
+						dn = this._dataset_number;
 
-						if(!poly.tags.length && this._dataset) {
-							var top_left = bounds.getNorthWest();
-							var bottom_right = bounds.getSouthEast();
-							var top = bounds.getNorth();
-							var bottom = bounds.getSouth();
-							var center = bounds.getCenter();
-
+						poly.tags = [];
+						if(this._dataset) {
 							var area_code = parseInt(poly.feature.properties.PSGC, 10);
 							var datapoints = this.filter_datapoints(this._dataset.datapoints, area_code, this.minimum_size);
 							for (var i = 0; i < datapoints.length; i++) {
 								var p = datapoints[i];
 								var family = InstanceCache.get("Family", p.get("family_id"));
-								var lat = top*0.75 + bottom*0.25 + (bottom - top)*0.5 * ((i + 0.5) / datapoints.length);
-								var lng = center.lng;
 								poly.tags.push({
 									data: p,
 									area_code: area_code,
 									family: family,
-									coords: L.latLng(lat, lng),
+									poly: poly,
 								});
 							}
-							this._redraw_callback();
 						}
+					}
+					if(add) {
+						add = false;
+						poly.tags_visible = true;
+						this._redraw_callback();
 					}
 				}else{
 					if(!add) {
 						add = true;
-
-						poly.tags = [];
+						poly.tags_visible = false;
 						this._redraw_callback();
 					}
 				}
-				if(this._reset_number == rn) setTimeout(loop.bind(this), 1000, poly, rn, add);
+				if(this._geojson_number == gn) setTimeout(loop.bind(this), 1000, poly, gn, dn, add);
 			}
 		},
 
@@ -176,7 +166,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			for (var i = this._geojson.length - 1; i >= 0; i--) {
 				var layers = this._geojson[i].getLayers();
 				for (var j = 0; j < layers.length; j++) {
-					Array.prototype.push.apply(tags, layers[j].tags);
+					if(layers[j].tags_visible) Array.prototype.push.apply(tags, layers[j].tags);
 				}
 			}
 
@@ -186,8 +176,19 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 					return true;
 				}, this)
 				.map(function(tag) {
-					var point = this.map.latLngToLayerPoint(tag.coords);
 					if(!tag.family.has("name")) this.family_fetch_enqueue(tag.family);
+
+					var bounds = tag.poly.getBounds();
+					// var top_left = bounds.getNorthWest();
+					// var bottom_right = bounds.getSouthEast();
+					var top = bounds.getNorth();
+					var bottom = bounds.getSouth();
+					var center = bounds.getCenter();
+
+					var lat = top*0.75 + bottom*0.25 + (bottom - top)*0.5 * ((tag.poly.tags.indexOf(tag) + 0.5) / tag.poly.tags.length);
+					var lng = center.lng;
+					var point = this.map.latLngToLayerPoint([lat, lng]);
+
 					return {
 						key: tag.area_code + "|" + tag.family.id,
 						x: point.x,
@@ -203,21 +204,26 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 				if(tag.family.has("name")) return tag.family.get("name");
 				return "..."; // TODO: spinner
 			};
-			var transform_func = function(tag) { return "translate(" + tag.x + "," + tag.y + ")"; };
 			var font_size_func = function(tag) { return Math.sqrt(0.8 * tag.size) + "em"; };
+			var opacity_func= function(tag) { return tag.family.has("name") ? 1 : 0.5; };
 
 			var tags_data = g.selectAll("g").data(filtered_tags, function(tag){ return tag.key; });
 
 			var entered_tags = tags_data.enter().append("g"); // add new tags
 			entered_tags.append("text").attr("class", "map-tag-stroke").style("opacity", 0);
 			entered_tags.append("text").attr("class", "map-tag").style("opacity", 0);
+			entered_tags.selectAll("text")
+				.text(text_func)
+				.transition().duration(300)
+				.style("opacity", 0.5);
 
 			tags_data.selectAll("text") // update tags
 				.text(text_func)
 				.style("font-size", font_size_func)
-				.attr("transform", transform_func)
-				.transition().duration(400)
-				.style("opacity", 1);
+				.transition().duration(300)
+				.attr("x", function(tag){ return tag.x })
+				.attr("y", function(tag){ return tag.y })
+				.style("opacity", opacity_func);
 
 			tags_data.exit() // remove old tags
 				.transition().duration(300)
