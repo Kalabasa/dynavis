@@ -143,7 +143,7 @@ define(["underscore", "leaflet", "model/Area", "jsx!view/main/ChoroplethLegend"]
 						this.removeLayer(poly);
 					}
 				}
-				if(this._geojson_number == gn) setTimeout(loop.bind(this), 1000, poly, gn, dn, add);
+				if(this._geojson_number == gn || !add) setTimeout(loop.bind(this), 1000, poly, gn, dn, add);
 			}
 		},
 

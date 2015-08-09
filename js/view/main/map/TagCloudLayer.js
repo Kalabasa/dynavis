@@ -137,7 +137,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 						this._redraw_callback();
 					}
 				}
-				if(this._geojson_number == gn) setTimeout(loop.bind(this), 1000, poly, gn, dn, add);
+				if(this._geojson_number == gn || !add) setTimeout(loop.bind(this), 1000, poly, gn, dn, add);
 			}
 		},
 
@@ -204,26 +204,28 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 				if(tag.family.has("name")) return tag.family.get("name");
 				return "..."; // TODO: spinner
 			};
+			var transform_func = function(tag) { return "translate(" + tag.x + "," + tag.y + ")"; };
 			var font_size_func = function(tag) { return Math.sqrt(0.8 * tag.size) + "em"; };
 			var opacity_func= function(tag) { return tag.family.has("name") ? 1 : 0.5; };
 
 			var tags_data = g.selectAll("g").data(filtered_tags, function(tag){ return tag.key; });
 
-			var entered_tags = tags_data.enter().append("g"); // add new tags
-			entered_tags.append("text").attr("class", "map-tag-stroke").style("opacity", 0);
-			entered_tags.append("text").attr("class", "map-tag").style("opacity", 0);
-			entered_tags.selectAll("text")
-				.text(text_func)
-				.transition().duration(300)
-				.style("opacity", 0.5);
-
-			tags_data.selectAll("text") // update tags
-				.text(text_func)
-				.style("font-size", font_size_func)
-				.transition().duration(300)
-				.attr("x", function(tag){ return tag.x })
-				.attr("y", function(tag){ return tag.y })
+			tags_data.transition().duration(300) // update old tags
+				.attr("transform", transform_func)
 				.style("opacity", opacity_func);
+
+			var entered_tags = tags_data.enter().append("g"); // add new tags
+			entered_tags.append("text").attr("class", "map-tag-stroke");
+			entered_tags.append("text").attr("class", "map-tag");
+			entered_tags
+				.attr("transform", transform_func)
+				.style("opacity", 0)
+				.transition().duration(300)
+					.style("opacity", 0.5);
+
+			tags_data.selectAll("text") // update all tags
+				.text(text_func)
+				.style("font-size", font_size_func);
 
 			tags_data.exit() // remove old tags
 				.transition().duration(300)
