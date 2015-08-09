@@ -89,25 +89,23 @@ define(function(require) {
 			var settings_pane = (
 				<div key="pane_settings" className="pane">
 					<h6 className="pane-header">Visualization Settings</h6>
-					<div className="pane-content">
-						<div className="pure-g">
-							<select className="pure-u-1 input" onChange={this.handle_change_level} required>
-								<option value="region">Regional level</option>
-								<option value="province">Provincial level</option>
-								<option value="municipality">Municipal level</option>
-								<option value="barangay">Barangay level</option>
-							</select>
-						</div>
-						<form className="pure-g form" onSubmit={this.handle_submit_year}>
-							<input className="pure-u-2-3" type="number" valueLink={this.linkState("year_input")} required />
-							<input className="pure-u-1-3 button-primary" type="submit" value="Go" />
+					<div className="pane-content pure-g">
+						<select className="pure-u-1 input" onChange={this.handle_change_level} required>
+							<option value="region">Regional level</option>
+							<option value="province">Provincial level</option>
+							<option value="municipality">Municipal level</option>
+							<option value="barangay">Barangay level</option>
+						</select>
+						<form className="pure-u-1 group form" onSubmit={this.handle_submit_year}>
+							<input className="pure-u-2-3 group-component" type="number" valueLink={this.linkState("year_input")} required />
+							<input className="pure-u-1-3 group-component button-primary" type="submit" value="Go" />
 						</form>
-						<div className="pure-g">
-							<button className="pure-u-1-4 button" onClick={this.handle_backward}><i className="fa fa-step-backward"/></button>
+						<div className="pure-u-1 group">
+							<button className="pure-u-1-4 group-component button" onClick={this.handle_backward}><i className="fa fa-step-backward"/></button>
 							{this.state.playing
-								? <button className="pure-u-1-2 button" onClick={this.handle_pause}><i className="fa fa-pause"/>&ensp; Pause</button>
-								: <button className="pure-u-1-2 button" onClick={this.handle_play}><i className="fa fa-play"/>&ensp; Play</button>}
-							<button className="pure-u-1-4 button" onClick={this.handle_forward}><i className="fa fa-step-forward"/></button>
+								? <button className="pure-u-1-2 group-component button" onClick={this.handle_pause}><i className="fa fa-pause"/>&ensp; Pause</button>
+								: <button className="pure-u-1-2 group-component button" onClick={this.handle_play}><i className="fa fa-play"/>&ensp; Play</button>}
+							<button className="pure-u-1-4 group-component button" onClick={this.handle_forward}><i className="fa fa-step-forward"/></button>
 						</div>
 					</div>
 				</div>

@@ -48,7 +48,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 		on_main_settings: function(settings) {
 			if(settings.level) this.reset_geojson();
 			if(settings.zoom) this.calculate_minimum_size();
-			this._redraw_callback();
+			this.redraw();
 		},
 
 		on_data: function(data) {
@@ -197,7 +197,6 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 						family: tag.family,
 					};
 				}, this)
-				.sortBy(function(tag) { return tag.size; })
 				.value();
 
 			var text_func = function(tag) {
@@ -210,24 +209,25 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 
 			var tags_data = g.selectAll("g").data(filtered_tags, function(tag){ return tag.key; });
 
-			tags_data.transition().duration(300) // update old tags
-				.attr("transform", transform_func)
-				.style("opacity", opacity_func);
-
-			var entered_tags = tags_data.enter().append("g"); // add new tags
+			// add new tags
+			var entered_tags = tags_data.enter().append("g");
 			entered_tags.append("text").attr("class", "map-tag-stroke");
 			entered_tags.append("text").attr("class", "map-tag");
 			entered_tags
 				.attr("transform", transform_func)
-				.style("opacity", 0)
+				.style("opacity", 0);
+			
+			// update all tags
+			tags_data
+				.style("font-size", font_size_func)
 				.transition().duration(300)
-					.style("opacity", 0.5);
+				.attr("transform", transform_func)
+				.style("opacity", opacity_func);
+			tags_data.selectAll("text")
+				.text(text_func);
 
-			tags_data.selectAll("text") // update all tags
-				.text(text_func)
-				.style("font-size", font_size_func);
-
-			tags_data.exit() // remove old tags
+			// remove old tags
+			tags_data.exit()
 				.transition().duration(300)
 				.style("opacity", 0)
 				.remove();

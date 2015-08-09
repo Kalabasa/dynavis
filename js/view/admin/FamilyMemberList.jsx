@@ -12,9 +12,11 @@ define(["react", "jsx!view/TypeaheadInput", "jsx!view/admin/FamilyMemberItem", "
 				<div className="pure-g">
 					<div className="pure-u-1">
 						<div className="label">Members</div>
-						{this.collection().map(function(official) {
-							return <FamilyMemberItem key={official.cid} model={official} onDelete={that.props.onDeleteMember} />;
-						})}
+						<ol>
+							{this.collection().map(function(official, i) {
+								return <FamilyMemberItem key={official.cid} model={official} number={i+1} onDelete={that.props.onDeleteMember} />;
+							})}
+						</ol>
 						<form onSubmit={this.handle_submit}>
 							<div className="group">
 								<div className="group-component">

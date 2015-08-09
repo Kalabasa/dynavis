@@ -117,16 +117,24 @@ a.tile-container {
 }
 
 .family-member-item {
-	padding: 0 1em;
-	span {
+	list-style: none;
+	padding: 0 0.5em;
+
+	& > span {
 		float: left;
-		padding: 0.5em 1ch;
+		padding: 1em 1ch;
 	}
 	button {
 		visibility: hidden;
 	}
+
+	.number {
+		text-align: right;
+		opacity: 0.2;
+	}
 	.surname {
 		opacity: 0.6;
+		font-weight: bold;
 	}
 	.nickname {
 		opacity: 0.4;

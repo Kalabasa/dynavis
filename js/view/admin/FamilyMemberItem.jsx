@@ -3,9 +3,13 @@ define(["react", "jsx!view/OfficialName", "react.backbone"], function(React, Off
 	return React.createBackboneClass({
 		render: function() {
 			return (
-				<div className="family-member-item field clearfix">
-					<OfficialName model={this.model()} /> <button className="pull-right button button-complement button-flat button-close" onClick={this.handle_delete}>&times;</button>
-				</div>
+				<li className="family-member-item field clearfix">
+					<span className="number pure-u-1-12">{this.props.number}.</span>
+					<OfficialName className="pure-u-5-6" model={this.model()} />
+					<div className="pure-u-1-12">
+						<button className="pull-right button button-complement button-flat button-close" onClick={this.handle_delete}>&times;</button>
+					</div>
+				</li>
 			);
 		},
 
