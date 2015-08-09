@@ -106,6 +106,7 @@ $app->map("/users/:username/datasets/:id_/datapoints/:id", $auth_username, "put_
 
 $app->delete("/officials/:id", $auth_admin, function ($id) { generic_delete_item("Official", $id); } );
 $app->delete("/officials/:official_id/families/:id", $auth_admin, "delete_official_family");
+$app->delete("/families", $auth_admin, function () { generic_delete_all("Family"); } );
 $app->delete("/families/:id", $auth_admin, function ($id) { generic_delete_item("Family", $id); } );
 $app->delete("/families/:official_id/officials/:id", $auth_admin, "delete_family_official");
 $app->delete("/parties/:id", $auth_admin, function ($id) { generic_delete_item("Party", $id); } );

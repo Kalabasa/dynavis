@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/FamilyBox", "mixin/ScrollToTopMixin", "react.backbone"], function(React, SearchControls, PageControls, FamilyBox, ScrollToTopMixin) {
+define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/FamilyBox", "mixin/ScrollToTopMixin", "jsx!view/Notification", "react.backbone"], function(React, SearchControls, PageControls, FamilyBox, ScrollToTopMixin, Notification) {
 	var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 	return React.createBackboneClass({
 		mixins: [ScrollToTopMixin],
@@ -10,7 +10,7 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 				<div className="body-panel">
 					<button className="button button-primary mar" onClick={this.handle_add}>New Family</button>
 					{!this.empty_data() ?
-					<div>
+					<div className="clearfix">
 						<SearchControls ref="searcher" className="mar" collection={this.collection()} />
 						<ReactCSSTransitionGroup transitionName="fade">
 							{this.collection().map(function(family) {
@@ -18,6 +18,7 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 							})}
 						</ReactCSSTransitionGroup>
 						<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+						<button className="pull-right button button-complement mar" onClick={this.handle_delete_all}>Delete All</button>
 					</div>
 					:
 					<div className="text-center">
@@ -31,6 +32,23 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 
 		empty_data: function() {
 			return !this.collection().size() && (!this.refs.searcher || this.refs.searcher.state.query === null) && this.collection().getPage() === 0;
+		},
+
+		handle_delete_all: function() {
+			var that = this;
+			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting all families...</span>, 0);
+			$.ajax({
+				url: this.collection().url,
+				type: "DELETE",
+				success: function(data){
+					that.refs.toolbar.open();
+					that.collection().fetch();
+					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;All families deleted</span>, null, "success");
+				},
+				error: function(xhr) {
+					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {xhr.responseText}</span>, null, "error");
+				},
+			});
 		},
 
 		handle_add: function() {
