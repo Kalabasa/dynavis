@@ -5,7 +5,6 @@ define(function(require) {
 		FileInput = require("jsx!view/FileInput"),
 		SearchControls = require("jsx!view/SearchControls"),
 		PageControls = require("jsx!view/PageControls"),
-		PanelToolbar = require("jsx!view/PanelToolbar"),
 		DatasetBox = require("jsx!view/main/DatasetBox"),
 		Notification = require("jsx!view/Notification"),
 		ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
@@ -36,36 +35,32 @@ define(function(require) {
 					<div className="clearfix">
 						<a className="pull-left button button-complement" href="#">Back to Map</a>
 					</div>
-					<PanelToolbar ref="toolbar" toggle_text="Add Dataset">
-						<div className="pure-u-1 pad">
-							<form ref="form" onSubmit={this.handle_upload}>
-								<h6>Upload dataset</h6>
-								<div className="pure-g">
-									<div className="pure-u-5-12">
-										<div className="pure-g">
-											<div className="pure-u-1 pad">
-												<div className="label">CSV file</div>
-												<div><FileInput ref="file" type="file" /></div>
-											</div>
-										</div>
-										<div className="pure-g">
-											<div className="pure-u-1 pad">
-												<div className="label">Name</div>
-												<input className="input" ref="name" type="text" valueLink={this.linkState("name")} required />
-											</div>
-										</div>
-									</div>
-									<div className="pure-u-5-12 pad">
-										<div className="label">Description</div>
-										<textarea className="input" ref="description" valueLink={this.linkState("description")} required />
-									</div>
-									<div className="pure-u-1-6 pad">
-										<input className="button button-primary" type="submit" value="Upload" />
-									</div>
+					<div className="pure-u-1 pad">
+						<form ref="form" onSubmit={this.handle_upload}>
+							<h6>Upload dataset</h6>
+							<div className="pure-g">
+								<div className="pure-u-1-2 pad">
+									<div className="label">Name</div>
+									<input className="input" ref="name" type="text" valueLink={this.linkState("name")} required />
 								</div>
-							</form>
-						</div>
-					</PanelToolbar>
+								<div className="pure-u-1-2 pad">
+									<div className="label">CSV file</div>
+									<div><FileInput ref="file" type="file" /></div>
+								</div>
+							</div>
+							<div className="pure-g">
+								<div className="pure-u-1 pad">
+									<div className="label">Description</div>
+									<textarea className="input" ref="description" valueLink={this.linkState("description")} required />
+								</div>
+							</div>
+							<div className="pure-g">
+								<div className="pure-u-1 pad">
+									<input className="pull-right button button-primary" type="submit" value="Upload" />
+								</div>
+							</div>
+						</form>
+					</div>
 					{this.collection().size() ?
 					<div>
 						<SearchControls className="mar" collection={this.collection()} />

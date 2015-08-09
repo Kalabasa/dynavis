@@ -120,10 +120,18 @@ a.tile-container {
 	padding: 0 1em;
 	span {
 		float: left;
-		padding: 0.5em;
+		padding: 0.5em 0.2em;
 	}
 	button {
 		visibility: hidden;
+	}
+	.surname {
+		opacity: 0.6;
+	}
+	.nickname {
+		opacity: 0.4;
+		font-size: 90%;
+		font-weight: bold;
 	}
 
 	&:hover {
