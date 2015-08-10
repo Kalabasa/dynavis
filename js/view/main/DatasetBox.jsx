@@ -56,11 +56,11 @@ define(function(require) {
 						<div className="pure-g">
 							<label className="pure-u-1 pad">
 								<div className="label">Name</div>
-								<EditableName className="pure-u-1" ref="name" model={this.model()} />
+								<EditableName className="pure-u-1" ref="name" model={this.model()} autoFocus />
 							</label>
 							<label className="pure-u-1 pad">
 								<div className="label">Description</div>
-								<textarea ref="description" className="pure-u-1" type="text" valueLink={this.linkState("description")} required />
+								<textarea ref="description" className="pure-u-1 text" valueLink={this.linkState("description")} required />
 							</label>
 						</div>
 						<div className="pure-g">

@@ -71,7 +71,7 @@ define(function(require) {
 									display={display}
 									model={area}
 									placeholder="Area"
-									required />
+									required autoFocus />
 							</label>
 							<label className="pure-u-1-3 pad">
 								<input ref="year" className="pure-u-1" type="number" placeholder="Year" valueLink={this.linkState("year")} required />

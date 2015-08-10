@@ -110,7 +110,7 @@ define(function(require) {
 									ref="official"
 									display={display_official}
 									model={official}
-									required />
+									required autoFocus />
 							</label>
 							<label className="pure-u-1-2 pad">
 								<div className="label">Position</div>

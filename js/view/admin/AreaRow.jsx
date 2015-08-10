@@ -64,7 +64,7 @@ define(function(require) {
 						<div className="pure-g">
 							<label className="pure-u-1-2 pad">
 								<div className="label">Name</div>
-								<EditableName className="pure-u-1" ref="name" model={this.model()} />
+								<EditableName className="pure-u-1" ref="name" model={this.model()} autoFocus />
 							</label>
 							<label className="pure-u-1-2 pad">
 								<div className="label">Code</div>

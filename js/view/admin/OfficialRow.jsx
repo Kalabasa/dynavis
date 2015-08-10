@@ -60,7 +60,7 @@ define(function(require) {
 					<form onSubmit={this.handle_save}>
 						<ValidationMessages validation={this.state.validation} />
 						<div className="pure-g form">
-							<EditableOfficialName className="pure-u-1" ref="name" model={this.model()} />
+							<EditableOfficialName className="pure-u-1" ref="name" model={this.model()} autoFocus />
 						</div>
 						<div className="pure-g">
 							<div className="pure-u-1">
