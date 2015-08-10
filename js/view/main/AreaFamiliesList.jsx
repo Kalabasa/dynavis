@@ -14,23 +14,27 @@ define(function(require){
 			};
 		},
 
+		componentWillReceiveProps: function(nextProps) {
+			if(!nextProps.collection) {
+				this.setState({families: []});
+			}
+		},
+
 		onModelChange: function() {
 			this.setState({families: []});
-			if(this.collection()) {
-				this.collection().chain()
-					.filter(function(e){
-						return e.get("year") == this.state.year || e.get("year") < this.state.year && this.state.year < e.get("year_end");
-					}, this)
-					.each(function(e) {
-						var official = InstanceCache.get("Official", e.get("official_id"), true);
-						var families = new OfficialFamilyCollection(null, {official_id: official.id});
-						families.fetch({
-							success: function() {
-								this.setState({families: this.state.families.concat(families.models)});
-							}.bind(this),
-						});
-					}, this);
-			}
+			this.collection().chain()
+				.filter(function(e){
+					return e.get("year") == this.state.year || e.get("year") < this.state.year && this.state.year < e.get("year_end");
+				}, this)
+				.each(function(e) {
+					var official = InstanceCache.get("Official", e.get("official_id"), true);
+					var families = new OfficialFamilyCollection(null, {official_id: official.id});
+					families.fetch({
+						success: function() {
+							this.setState({families: this.state.families.concat(families.models)});
+						}.bind(this),
+					});
+				}, this);
 		},
 
 		componentDidMount: function() {
