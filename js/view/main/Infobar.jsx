@@ -49,11 +49,13 @@ define(function(require) {
 				var bg = this.get_color(variables);
 				if(bg) {
 					var fg = this.get_text_color(bg);
-					var titlebar_style = {backgroundColor: "rgb("+bg.r+","+bg.g+","+bg.b+")"};
-					var text_style = {color: "rgb("+fg.r+","+fg.g+","+fg.b+")"};
+					var titlebar_style = {
+						backgroundColor: "rgb("+bg.r+","+bg.g+","+bg.b+")",
+						color: "rgb("+fg.r+","+fg.g+","+fg.b+")"
+					};
 				}
 				var area_bar = (
-					<span style={text_style}>
+					<span>
 						<h3 key="title" className="inline"><Name model={area}/></h3>
 						<span key="variables">{_.map(variables, function(v, i) {
 							var d = v.dataset;
