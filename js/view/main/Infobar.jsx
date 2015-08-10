@@ -7,7 +7,8 @@ define(function(require) {
 		AreaElectionCollection = require("model/AreaElectionCollection"),
 		Name = require("jsx!view/Name"),
 		AreaElectionsList = require("jsx!view/main/AreaElectionsList"),
-		AreaFamiliesList = require("jsx!view/main/AreaFamiliesList");
+		AreaFamiliesList = require("jsx!view/main/AreaFamiliesList"),
+		ChoroplethLegend = require("jsx!view/main/ChoroplethLegend");
 
 	return React.createClass({
 		getInitialState: function() {
@@ -37,33 +38,47 @@ define(function(require) {
 				area = InstanceCache.get("Area", this.state.selected.area_code, true);
 				elections = new AreaElectionCollection(null, {area: area});
 				elections.fetch();
-
-				var area_bar = [
-					(<h3 key="title" className="inline"><Name model={area}/></h3>),
-					(<span key="variables">{_.map(_.filter(this.state.data), function(d, i) {
-						var datapoints = this.filter_datapoints(d.datapoints, area.get("code"));
-						if(datapoints.length) {
-							var value = datapoints[0].get("value");
-							return (
-								<span key={i} title={value} className="var-info">
-									<span className="var-name">{d.name}</span>
-									<span className="var-value">{numf.format(value)}</span>
-								</span>
-							);
-						}else{
-							return (
-								<span key={i} className="var-info">
-									<span className="var-name">{d.name}</span>
-									<span className="var-value">No Data</span>
-								</span>
-							);
-						}
-					}, this)}</span>),
-				];
+				
+				var variables = _.map(_.filter(this.state.data), function(d) {
+					var datapoints = this.filter_datapoints(d.datapoints, area.get("code"));
+					return {
+						value: datapoints.length ? datapoints[0].get("value") : null,
+						dataset: d,
+					};
+				}, this);
+				var bg = this.get_color(variables);
+				if(bg) {
+					var fg = this.get_text_color(bg);
+					var titlebar_style = {backgroundColor: "rgb("+bg.r+","+bg.g+","+bg.b+")"};
+					var text_style = {color: "rgb("+fg.r+","+fg.g+","+fg.b+")"};
+				}
+				var area_bar = (
+					<span style={text_style}>
+						<h3 key="title" className="inline"><Name model={area}/></h3>
+						<span key="variables">{_.map(variables, function(v, i) {
+							var d = v.dataset;
+							if(v) {
+								return (
+									<span key={i} title={v.value} className="var-info">
+										<span className="var-name">{d.name}</span>
+										<span className="var-value">{numf.format(v.value)}</span>
+									</span>
+								);
+							}else{
+								return (
+									<span key={i} className="var-info">
+										<span className="var-name">{d.name}</span>
+										<span className="var-value">No Data</span>
+									</span>
+								);
+							}
+						}, this)}</span>
+					</span>
+				);
 			}
 			return (
 				<div className="pure-g">
-					<div className="pure-u-1 infobar-title">
+					<div className="pure-u-1 infobar-title" style={titlebar_style}>
 						<div className="pure-u-4-5">
 							{area_bar}
 						</div>
@@ -137,6 +152,36 @@ define(function(require) {
 
 		is_hidden: function() {
 			return !$(React.findDOMNode(this).parentNode).hasClass("show");
+		},
+
+		get_color: function(variables) {
+			var black = {r:20, g:20, b:20};
+			var color = null;
+			_.each(variables, function(variable, i) {
+				if(!variable) return;
+				var value = variable.value;
+				if(!value) return;
+				var scale = variable.dataset.color_scale;
+				var classes = variable.dataset.classes;
+				if(scale.length + 1 !== classes.length) return;
+
+				var class_color = black;
+				for (var i = 1; i < classes.length; i++) {
+					var min = classes[i - 1];
+					var max = classes[i];
+					if(min <= value && value <= max) {
+						class_color = scale[i - 1];
+						break;
+					}
+				};
+				color = color ? ChoroplethLegend.combine_colors(color, class_color) : class_color;
+			}, this);
+			return color;
+		},
+
+		get_text_color: function(background_color) {
+			var o = Math.round((background_color.r * 299 + background_color.g * 587 + background_color.b * 114) /1000);
+			return (o > 125) ? {r:0,g:0,b:0} : {r:255,g:255,b:255}; //http://www.w3.org/TR/AERT#color-contrast
 		},
 	});
 });
