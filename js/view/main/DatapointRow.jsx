@@ -92,22 +92,17 @@ define(function(require) {
 				);
 			}else{
 				return (
-					<div className="data-row form">
+					<div className="data-row clicky form">
 					<ReactTransitionGroup><SliderTransitionGroupChild key="display">
-						<div className="pure-g">
-							<div className="pure-u-5-6">
-								<div className="pure-u-1-3">
-									<Name className="field pad" model={area} />
-								</div>
-								<div className="pure-u-1-3">
-									<span className="field pad">{this.model().get("year")}</span>
-								</div>
-								<div className="pure-u-1-3">
-									<span className="field pad">{this.model().get("value")}</span>
-								</div>
+						<div className="pure-g" onClick={this.handle_edit}>
+							<div className="pure-u-1-2">
+								<Name className="field pad" model={area} />
 							</div>
-							<div className="pure-u-1-6">
-								<button className="pull-right button button-flat" onClick={this.handle_edit}>Edit</button>
+							<div className="pure-u-1-4">
+								<span className="field pad">{this.model().get("year")}</span>
+							</div>
+							<div className="pure-u-1-4">
+								<span className="field pad">{this.model().get("value")}</span>
 							</div>
 						</div>
 					</SliderTransitionGroupChild></ReactTransitionGroup>

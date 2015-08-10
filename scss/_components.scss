@@ -348,7 +348,15 @@ textarea {
 	}
 
 	.text {
-		color: #404040;
+		color: #606060;
+	}
+
+	&.clicky {
+		cursor: pointer;
+		&:hover {
+			color: $color-text-primary-2;
+			background-color: $color-primary-2;
+		}
 	}
 
 	&.edit {
