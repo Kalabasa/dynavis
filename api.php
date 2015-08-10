@@ -1176,6 +1176,8 @@ function put_user_dataset($username, $dataset_id) {
 	}catch(DataException $e) {
 		$app->halt(400, "Invalid data. " . $e->getMessage());
 	}
+
+	echo json_encode($dataset);
 }
 
 function put_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
