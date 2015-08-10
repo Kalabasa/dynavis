@@ -18,7 +18,7 @@ define(function(require) {
 			return {
 				edit: this.model().isNew(),
 				code: this.format_code(this.model().get("code")),
-				level: this.model().get("level") || "barangay",
+				// level: this.model().get("level") || "barangay",
 			};
 		},
 
@@ -26,21 +26,21 @@ define(function(require) {
 			return {
 				name: Va.lidator().required().string(),
 				code: Va.lidator().required().length(9).integerish(),
-				level: Va.lidator().required(),
+				// level: Va.lidator().required(),
 			};
 		},
 		getObjectToValidate: function() {
 			return {
 				name: this.refs.name.state.name,
 				code: this.state.code,
-				level: this.state.level,
+				// level: this.state.level,
 			};
 		},
 		getValidationElementMap: function() {
 			return {
 				name: React.findDOMNode(this.refs.name),
 				code: React.findDOMNode(this.refs.code),
-				level: React.findDOMNode(this.refs.level),
+				// level: React.findDOMNode(this.refs.level),
 			};
 		},
 		validationCallback: function(key, valid, message) {
@@ -70,15 +70,15 @@ define(function(require) {
 								<div className="label">Code</div>
 								<input ref="code" className="pure-u-1" type="text" valueLink={this.linkState("code")} required />
 							</label>
-							<label className="pure-u-1-2 pad">
-								<div className="label">Type</div>
-								<select ref="level" className="pure-u-1" valueLink={this.linkState("level")} required>
-									<option value="region">Region</option>
-									<option value="province">Province</option>
-									<option value="municipality">City/Municipality</option>
-									<option value="barangay">Barangay</option>
-								</select>
-							</label>
+							// <label className="pure-u-1-2 pad">
+							// 	<div className="label">Type</div>
+							// 	<select ref="level" className="pure-u-1" valueLink={this.linkState("level")} required>
+							// 		<option value="region">Region</option>
+							// 		<option value="province">Province</option>
+							// 		<option value="municipality">City/Municipality</option>
+							// 		<option value="barangay">Barangay</option>
+							// 	</select>
+							// </label>
 						</div>
 						<div className="pure-g">
 							<div className="pure-u-1">
