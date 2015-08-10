@@ -1,5 +1,5 @@
 "use strict";
-define(["react", "jsx!view/Notification", "react.backbone"], function(React, Notification) {
+define(["underscore", "react", "jsx!view/Notification", "react.backbone"], function(_, React, Notification) {
 	return React.createBackboneClass({
 		render: function() {
 			var username = this.model().get("username");
@@ -10,12 +10,34 @@ define(["react", "jsx!view/Notification", "react.backbone"], function(React, Not
 						<div className="pure-u-5-6">
 							<div className="field text-large">{this.model().get("name")}</div>
 							<div className="field-group">
-								<span className="label">Uploaded by</span>
-								<span className="field">
+								<span className="pure-u-1-6 label">Uploaded by</span>
+								<span className="pure-u-5-6 field">
 									<a href={url_datasets}>{username}</a>
 								</span>
 							</div>
-							<div className="field text"><pre>{this.model().get("description")}</pre></div>
+							<div className="field-group">
+								<span className="pure-u-1-6 label">Range</span>
+								<span className="pure-u-5-6 field">
+									{this.model().get("min_year")}-{this.model().get("max_year")}
+								</span>
+							</div>
+							<div className="field-group">
+								<span className="pure-u-1-6 label">Level</span>
+								<span className="pure-u-5-6 field">
+									{_.chain(this.model().get("contained_levels"))
+										.pick(function(v){ return v; }).keys()
+										.map(function(k) {
+											return {
+												"region": "Regional",
+												"province": "Provincial",
+												"municipality": "Municipal",
+												"barangay": "Barangay",
+											}[k];
+										})
+										.values().join(", ")}
+								</span>
+							</div>
+							<div className="pure-u-1 field text"><pre>{this.model().get("description")}</pre></div>
 						</div>
 						<div className="pure-u-1-6">
 							<button className="pull-right button button-flat button-complement" onClick={this.handle_delete}>Delete</button>

@@ -3,6 +3,7 @@ define(function(require) {
 	var _ = require("underscore"),
 		React = require("react"),
 		InstanceCache = require("InstanceCache"),
+		Area = require("model/Area"),
 		ChoroplethSettingsPane = require("jsx!view/main/ChoroplethSettingsPane"),
 		TagCloudSettingsPane = require("jsx!view/main/TagCloudSettingsPane");
 
@@ -31,6 +32,12 @@ define(function(require) {
 
 			this.min_year = 0;
 			this.max_year = this.state.year;
+			this.allowed_levels = {
+				province: true,
+				region: true,
+				municipality: true,
+				barangay: true,
+			};
 
 			this.choropleth_data = [null, null];
 			this.tagcloud_data = null;
@@ -65,11 +72,14 @@ define(function(require) {
 			var datasets = _.filter(this.choropleth_data.concat(this.tagcloud_data));
 			if(_.isEmpty(datasets)) return;
 
+			var year = this.state.year;
 			this.min_year = _.max(datasets, function(d){ return d.get("min_year"); }).get("min_year");
 			this.max_year = _.min(datasets, function(d){ return d.get("max_year"); }).get("max_year");
 			if(this.state.year > this.max_year) {
+				year = this.max_year;
 				this.setState({year: this.max_year, year_input: this.max_year});
 			}else if(this.state.year < this.min_year) {
+				year = this.min_year;
 				this.setState({year: this.min_year, year_input: this.min_year});
 			}
 		},

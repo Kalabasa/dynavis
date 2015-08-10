@@ -70,15 +70,15 @@ define(function(require) {
 								<div className="label">Code</div>
 								<input ref="code" className="pure-u-1" type="text" valueLink={this.linkState("code")} required />
 							</label>
-							// <label className="pure-u-1-2 pad">
-							// 	<div className="label">Type</div>
-							// 	<select ref="level" className="pure-u-1" valueLink={this.linkState("level")} required>
-							// 		<option value="region">Region</option>
-							// 		<option value="province">Province</option>
-							// 		<option value="municipality">City/Municipality</option>
-							// 		<option value="barangay">Barangay</option>
-							// 	</select>
-							// </label>
+							<label className="pure-u-1-2 pad">
+								<div className="label">Type</div>
+								<select ref="level" className="pure-u-1" valueLink={this.linkState("level")} required>
+									<option value="region">Region</option>
+									<option value="province">Province</option>
+									<option value="municipality">City/Municipality</option>
+									<option value="barangay">Barangay</option>
+								</select>
+							</label>
 						</div>
 						<div className="pure-g">
 							<div className="pure-u-1">

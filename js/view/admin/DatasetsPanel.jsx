@@ -83,7 +83,7 @@ define(function(require) {
 
 			var descriptions = {
 				"DYNSHA": "Proportion of dynastic officials in each local government unit.",
-				"DYNLAR": "Proprtion of the dynasty with the largest proportion of dynastic officials in each local government unit.",
+				"DYNLAR": "Proportion of the dynasty with the largest proportion of dynastic officials in each local government unit.",
 				"DYNHERF": "Herfindal index on dynasties in each local government unit.",
 				"LocalDynastySize": "Number of members of each dynasty in each local government unit.",
 				"RecursiveDynastySize": "Number of members of each dynasty in each local government unit including members in subdivisions.",

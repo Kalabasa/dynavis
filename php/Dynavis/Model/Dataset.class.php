@@ -68,9 +68,6 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id(),
 		];
 
-		$min_year = Database::get()->min($class::TABLE, $join, $class::TABLE . ".year", $where);
-		$max_year = Database::get()->max($class::TABLE, $join, $class::TABLE . ".year", $where);
-
 		if(!is_null($year)) {
 			$where = ["AND" => array_merge($where, [$class::TABLE . ".year" => $year])];
 		}
@@ -96,10 +93,25 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			"\\Dynavis\\Model\\Datapoint",
 			"\\Dynavis\\Model\\TagDatapoint"
 		][$data["type"]];
+
 		$join = ["[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]];
 		$where = [static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()];
 		$data["min_year"] = Database::get()->min($class::TABLE, $join, $class::TABLE . ".year", $where);
 		$data["max_year"] = Database::get()->max($class::TABLE, $join, $class::TABLE . ".year", $where);
+
+		$levels = ["region", "province", "municipality", "barangay"];
+		$contained_levels = [];
+		$join = [
+			"[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY],
+			"[><]" . Area::TABLE => ["area_code" => "code"],
+		];
+		foreach ($levels as $key => $value) {
+			$contained_levels[$value] = Database::get()->has($class::TABLE,$join,["AND" => [
+				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id(),
+				Area::TABLE . ".type" => $key,
+			]]);
+		}
+		$data["contained_levels"] = $contained_levels;
 
 		$data["type"] = ["area", "tag"][$data["type"]];
 
