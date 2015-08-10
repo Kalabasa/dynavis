@@ -178,7 +178,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			for (var x = se_tile.x; x >= nw_tile.x; x--) {
 				for (var y = se_tile.y; y >= nw_tile.y; y--) {
 					var path = this.target_zoom + "/" + x + "/" + y;
-					setTimeout(this.add_geojson, t += 100, "api.php/geojson/" + this.last_level + "/" + path);
+					setTimeout(this.add_geojson, t += 10, "api.php/geojson/" + this.last_level + "/" + path);
 				}
 			}
 		},

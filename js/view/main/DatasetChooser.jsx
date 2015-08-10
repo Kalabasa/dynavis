@@ -32,7 +32,12 @@ define(function(require) {
 		},
 
 		select: function(dataset) {
-			this.setState({selected: dataset});
+			if(this.state.selected === dataset) {
+				// double-click
+				this.props.onSelect(this.state.selected);
+			}else{
+				this.setState({selected: dataset});
+			}
 		},
 
 		handle_select: function() {
