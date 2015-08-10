@@ -150,6 +150,20 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			});
 		},
 
+		position_tags: function(poly) {
+			var bounds = poly.getBounds();
+			var top = bounds.getNorth();
+			var bottom = bounds.getSouth();
+			var left = bounds.getWest();
+			var right = bounds.getEast();
+			var center = bounds.getCenter();
+			_.each(poly.tags, function(tag) {
+				var lat = top*0.75 + bottom*0.25 + (bottom - top)*0.5 * ((poly.tags.indexOf(tag) + 0.5) / poly.tags.length);
+				var lng = left*0.6 + right*0.4 + (right - left)*0.2 * ((tag.family.id % 16) / 16);
+				tag.coords = L.latLng(lat, lng);
+			});
+		},
+
 		redraw: function() {
 			var bounds = this.map.getBounds();
 			var size = this.map.getSize();
@@ -166,6 +180,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			for (var i = this._geojson.length - 1; i >= 0; i--) {
 				var layers = this._geojson[i].getLayers();
 				for (var j = 0; j < layers.length; j++) {
+					this.position_tags(layers[j]);
 					if(layers[j].tags_visible) Array.prototype.push.apply(tags, layers[j].tags);
 				}
 			}
@@ -177,18 +192,7 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 				}, this)
 				.map(function(tag) {
 					if(!tag.family.has("name")) this.family_fetch_enqueue(tag.family);
-
-					var bounds = tag.poly.getBounds();
-					// var top_left = bounds.getNorthWest();
-					// var bottom_right = bounds.getSouthEast();
-					var top = bounds.getNorth();
-					var bottom = bounds.getSouth();
-					var center = bounds.getCenter();
-
-					var lat = top*0.75 + bottom*0.25 + (bottom - top)*0.5 * ((tag.poly.tags.indexOf(tag) + 0.5) / tag.poly.tags.length);
-					var lng = center.lng;
-					var point = this.map.latLngToLayerPoint([lat, lng]);
-
+					var point = this.map.latLngToLayerPoint(tag.coords);
 					return {
 						key: tag.area_code + "|" + tag.family.id,
 						x: point.x,

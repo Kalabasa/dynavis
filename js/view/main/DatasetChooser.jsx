@@ -19,8 +19,8 @@ define(function(require) {
 					<div className="dataset-chooser-list-container">
 						<div className="dataset-chooser-list">
 							{this.collection().map(function(dataset) {
-									return <DatasetChoice key={dataset.cid} model={dataset} selected={that.state.selected===dataset} onClick={function(){ that.select(dataset); }}/>;
-								})}
+								return <DatasetChoice key={dataset.cid} model={dataset} selected={that.state.selected===dataset} onClick={function(){ that.select(dataset); }}/>;
+							})}
 						</div>
 						<div className="scroll-edge-fade"></div>
 					</div>

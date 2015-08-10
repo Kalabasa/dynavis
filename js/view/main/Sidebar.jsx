@@ -15,6 +15,12 @@ define(function(require) {
 				year: new Date().getFullYear(),
 				year_input: new Date().getFullYear(),
 				level: "region",
+				allowed_levels: {
+					province: true,
+					region: true,
+					municipality: true,
+					barangay: true,
+				},
 				playing: false,
 			};
 		},
@@ -32,12 +38,6 @@ define(function(require) {
 
 			this.min_year = 0;
 			this.max_year = this.state.year;
-			this.allowed_levels = {
-				province: true,
-				region: true,
-				municipality: true,
-				barangay: true,
-			};
 
 			this.choropleth_data = [null, null];
 			this.tagcloud_data = null;
@@ -70,7 +70,14 @@ define(function(require) {
 		},
 		on_update: function() {
 			var datasets = _.filter(this.choropleth_data.concat(this.tagcloud_data));
-			if(_.isEmpty(datasets)) return;
+			if(_.isEmpty(datasets)) {
+				this.min_year = 0;
+				this.max_year = new Date().getFullYear();
+				this.setState({
+					allowed_levels: _.mapObject(this.state.allowed_levels, function(){ return true; })
+				});
+				return;
+			}
 
 			var year = this.state.year;
 			this.min_year = _.max(datasets, function(d){ return d.get("min_year"); }).get("min_year");
@@ -82,13 +89,27 @@ define(function(require) {
 				year = this.min_year;
 				this.setState({year: this.min_year, year_input: this.min_year});
 			}
+
+			var allowed_levels = _.reduce(datasets, function(m,d){
+				return _.mapObject(m, function(v,k){
+					return v || d.get("contained_levels")[k];
+				});
+			}, _.mapObject(this.state.allowed_levels, function(){ return false; }));
+			
+			if(!_.isEqual(allowed_levels, this.state.allowed_levels)) {
+				this.setState({allowed_levels: allowed_levels});
+			}
+			
+			if(!allowed_levels[this.state.level]) {
+				this.setState({level: _.chain(allowed_levels).filter().keys().values()[0]});
+			}
 		},
 
 		render: function() {
 			var token = InstanceCache.get_existing("Token", "session");
 			var user = token ? token.get_user() : null;
 			if(user) {
-				var datasets_pane = (
+				var links_pane = (
 					<div key="pane_links" className="pane">
 						<div className="pane-content">
 							<a href="#datasets"><button className="pure-u-1 button button-flat">Manage datasets</button></a>
@@ -101,10 +122,10 @@ define(function(require) {
 					<h6 className="pane-header">Visualization Settings</h6>
 					<div className="pane-content pure-g">
 						<select className="pure-u-1 input" onChange={this.handle_change_level} required>
-							<option value="region">Regional level</option>
-							<option value="province">Provincial level</option>
-							<option value="municipality">Municipal level</option>
-							<option value="barangay">Barangay level</option>
+							{this.state.allowed_levels.region ? <option value="region">Regional level</option> : null}
+							{this.state.allowed_levels.province ? <option value="province">Provincial level</option> : null}
+							{this.state.allowed_levels.municipality ? <option value="municipality">Municipal level</option> : null}
+							{this.state.allowed_levels.barangay ? <option value="barangay">Barangay level</option> : null}
 						</select>
 						<form className="pure-u-1 group form" onSubmit={this.handle_submit_year}>
 							<input className="pure-u-2-3 group-component" type="number" valueLink={this.linkState("year_input")} required />
@@ -122,7 +143,7 @@ define(function(require) {
 			);
 			return (
 				<div>
-					{datasets_pane}
+					{links_pane}
 					<ChoroplethSettingsPane key="pane_choropleth" bus={this.props.bus} />
 					<TagCloudSettingsPane key="pane_tagcloud" bus={this.props.bus} />
 					{settings_pane}

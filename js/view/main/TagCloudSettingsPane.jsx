@@ -12,6 +12,10 @@ define(function(require) {
 				dataset: null,
 			};
 		},
+
+		shouldComponentUpdate: function(nextProps, nextState) {
+			return nextState.dataset !== this.state.dataset;
+		},
 		
 		componentWillUpdate: function(nextProps, nextState) {
 			this.props.bus.tagcloud_settings.emit("update", {
