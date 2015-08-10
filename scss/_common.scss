@@ -71,12 +71,15 @@ a {
 	&:visited {
 		color: darken($color-primary-1, 10%);
 	}
-	&:not(.no-decor):hover {
+	&:hover {
 		text-decoration: underline;
 		color: lighten($color-primary-1, 20%);
 	}
 	&:active {
 		color: darken($color-primary-1, 10%);
+	}
+	&.no-decor, &.no-decor:hover {
+		text-decoration: none;
 	}
 }
 
@@ -120,6 +123,12 @@ pre {
 }
 .pull-right {
 	float: right !important;
+}
+
+.one-line {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 .hidden {

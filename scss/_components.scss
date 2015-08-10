@@ -238,6 +238,7 @@ form input[type=button], form input[type=submit], form input[type=reset], .butto
 	font-size: 80%;
 	font-weight: bold;
 	text-transform: uppercase;
+	text-overflow: ellipsis;
 
 	&[disabled],&[readonly] {
 		opacity: 0.4;
@@ -360,7 +361,7 @@ textarea {
 .label {
 	font-size: 90%;
 	padding-right: 0.3em;
-	color: lighten($color-text, 40%);
+	opacity: 0.4;
 }
 .field {
 	&.text-large {
@@ -370,7 +371,7 @@ textarea {
 
 .token-list-input {
 	@extend .clearfix;
-	padding: 0 1em;
+	padding: 0 0.5em;
 	width: auto;
 	cursor: text;
 
@@ -394,7 +395,8 @@ textarea {
 	top: 0;
 
 	margin: 0.25em 3px;
-	border-radius: 2px;
+	height: 1.75em;
+	border-radius: 0.875em;
 	font-size: 90%;
 
 	color: $color-text-primary-2;
@@ -422,10 +424,12 @@ textarea {
 
 .group {
 	@extend .clearfix;
-	display: table;
+	&:not(.group-no-table) {
+		display: table;
+		.group-component { display: table-cell; }
+	}
 
 	.group-component {
-		display: table-cell;
 		height: 100%;
 		margin-left: 0;
 		margin-right: 0;

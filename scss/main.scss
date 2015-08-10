@@ -46,6 +46,43 @@ $infobar-height: 50%;
 	height: 100%;
 }
 
+.dataset-chooser-list-container {
+	position: relative;
+	height: 60vh;
+}
+.dataset-chooser-list {
+	overflow-y: auto;
+	height: 100%;
+	padding: 5px 0;
+}
+.dataset-chooser-item {
+	cursor: pointer;
+	padding: 1.2em 0.6em;
+
+	&.selected {
+		color: $color-text-primary-2;
+		background-color: $color-primary-2;
+
+		&:not(:first-child), &+.dataset-chooser-item {
+			border-color: transparent;
+		}
+	}
+
+	&:not(:first-child) {
+		border-top: solid 1px #e8e8e8;
+	}
+}
+.scroll-edge-fade {
+	position: absolute;
+	pointer-events: none;
+	content: "";
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: linear-gradient(0deg, white, transparent 10px), linear-gradient(180deg, white, transparent 10px);
+}
+
 .map-polygon {
 	transition: all 0.4s ease-out;
 

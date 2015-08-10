@@ -52,6 +52,7 @@ define(function(require) {
 				return (
 					<div className="edit data-row form">
 					<ReactTransitionGroup><SliderTransitionGroupChild key="edit">
+						<ValidationMessages validation={this.state.validation} />
 						<div className="pure-g">
 							<label className="pure-u-1 pad">
 								<div className="label">Name</div>
