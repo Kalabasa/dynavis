@@ -46,6 +46,8 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 			$input.bind("typeahead:select typeahead:autocomplete", function(e, s) {
 				that.handle_select(s);
 			});
+
+			if(this.props.autoFocus) $input.focus();
 		},
 
 		filter_search: function(data) {
@@ -61,7 +63,7 @@ define(["jquery", "react", "InstanceCache", "typeahead", "react.backbone"], func
 
 		render: function() {
 			return (
-				<input className={this.props.className} type="text" ref="input" value={this.state.value} onChange={this.handle_change} placeholder={this.props.placeholder} required={this.props.required} />
+				<input className={this.props.className} type="text" ref="input" value={this.state.value} onChange={this.handle_change} placeholder={this.props.placeholder} required={this.props.required} autoFocus={this.props.autoFocus} />
 			);
 		},
 
