@@ -85,7 +85,7 @@ define(function(require) {
 							{area_bar}
 						</div>
 						<div className="pure-u-1-5">
-							<button className="pull-right button button-flat button-close" onClick={this.handle_close}>&times;</button>
+							<button className="pull-right button button-flat button-close" style={_.pick(titlebar_style, "color"} onClick={this.handle_close}>&times;</button>
 						</div>
 					</div>
 					<div className="pure-u-1 infobar-content">
