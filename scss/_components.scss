@@ -324,6 +324,12 @@ textarea {
 	}
 }
 
+.data-table-header {
+	@extend .data-row;
+	font-weight: bold;
+	color: lighten($color-text, 60%);
+}
+
 .data-row {
 	position: relative;
 

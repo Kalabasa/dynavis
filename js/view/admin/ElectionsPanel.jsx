@@ -18,10 +18,9 @@ define(function(require) {
 			this.onModelChange();
 		},
 		onModelChange: function() {
-			if(this.empty_data()) {
-				this.refs.toolbar.open();
-			}else{
-				this.refs.toolbar.close();
+			if(this.refs.toolbar) {
+				if(this.empty_data()) this.refs.toolbar.open();
+				else this.refs.toolbar.close();
 			}
 			this.forceUpdate();
 		},

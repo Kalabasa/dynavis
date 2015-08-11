@@ -15,13 +15,23 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 			this.onModelChange();
 		},
 		onModelChange: function() {
-			if(this.empty_data()) {
-				if(this.refs.toolbar) this.refs.toolbar.open();
+			if(this.refs.toolbar) {
+				if(this.empty_data()) this.refs.toolbar.open();
+				else this.refs.toolbar.close();
 			}
 			this.forceUpdate();
 		},
 
 		render: function() {
+			var table_header = (
+				<div className="data-table-header">
+					<div className="pure-g">
+						<div className="pure-u-1-2 pad">Area</div>
+						<div className="pure-u-1-4 pad">Year</div>
+						<div className="pure-u-1-4 pad">Value</div>
+					</div>
+				</div>
+			);
 			return (
 				<div className="body-panel">
 					<div className="clearfix">
@@ -45,6 +55,7 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 					<div>
 						{/*<SearchControls ref="searcher" className="mar" collection={this.collection()} />*/}
 						<PageControls className="text-center mar" collection={this.collection()} />
+						{table_header}
 						<ReactCSSTransitionGroup transitionName="fade">
 							{this.collection().map(function(datapoint) {
 								return <DatapointRow key={datapoint.cid} model={datapoint} />;
@@ -58,7 +69,7 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 		},
 
 		empty_data: function() {
-			return !this.collection().size() && (!this.refs.searcher || this.refs.searcher.state.query === null) && this.collection().getPage() === 0;
+			return !this.collection().size() && /*(!this.refs.searcher || this.refs.searcher.state.query === null) && */this.collection().getPage() === 0;
 		},
 
 		handle_add: function() {
