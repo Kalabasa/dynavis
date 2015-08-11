@@ -47,6 +47,7 @@ define(["underscore", "leaflet", "model/Area", "jsx!view/main/ChoroplethLegend"]
 			this.bus.choropleth_data.on("update", this.on_data);
 			this.bus.main_settings.on("update", this.on_main_settings);
 			this.bus.main_settings.on("select", this.on_select);
+			this.bus.main_settings.on("select", this.on_select);
 		},
 
 		destruct: function() {

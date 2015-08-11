@@ -1,6 +1,7 @@
 "use strict";
 define(function(require) {
-	var React = require("react"),
+	var _ = require("underscore"),
+		React = require("react"),
 		DatasetCollection = require("model/DatasetCollection"),
 		Modal = require("jsx!view/Modal"),
 		DatasetChooser = require("jsx!view/main/DatasetChooser"),
@@ -15,7 +16,7 @@ define(function(require) {
 		},
 
 		shouldComponentUpdate: function(nextProps, nextState) {
-			return nextState.dataset1 !== this.state.dataset1 || nextState.dataset2 !== this.state.dataset2;
+			return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
 		},
 
 		componentWillUpdate: function(nextProps, nextState) {
@@ -33,14 +34,14 @@ define(function(require) {
 				if(dataset) {
 					datasets_list.push(
 						<div key={i} className="pure-u-1 group group-no-table">
-							<button className="pure-u-5-6 group-component one-line button" onClick={this.select_handler(i+1)}>{dataset.get("name")}</button>
-							<button className="pure-u-1-6 group-component button" onClick={this.remove_handler(i+1)}><i className="fa fa-close"/></button>
+							<button className="pure-u-5-6 group-component one-line button" onClick={this.select_handler(i+1)} disabled={this.props.disabled}>{dataset.get("name")}</button>
+							<button className="pure-u-1-6 group-component button" onClick={this.remove_handler(i+1)} disabled={this.props.disabled}><i className="fa fa-close"/></button>
 						</div>
 					);
 				}else{
 					datasets_list.push(
 						<div key={i} className="pure-u-1">
-							<button className="pure-u-1 button" onClick={this.select_handler(i+1)}>Select Dataset</button>
+							<button className="pure-u-1 button" onClick={this.select_handler(i+1)} disabled={this.props.disabled}>Select Dataset</button>
 						</div>
 					);
 				}

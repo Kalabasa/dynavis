@@ -112,29 +112,27 @@
 .hider {
 	white-space: nowrap;
 	.hider-handle {
-		padding: 0 8px;
 		float: right;
 		display: inline-block;
 		height: $header-height;
 		text-align: center;
 	}
 	.hider-handle-toggle {
-		max-width: $header-height;
 		overflow: hidden;
-		transition: max-width 0.6s ease-out 0.2s, padding 0.6s ease-out;
+		max-width: $header-height;
+		transition: max-width 0.4s ease-in;
 	}
 	&:hover .hider-handle-toggle {
 		max-width: 0;
-		padding: 0;
-		transition: max-width 0.4s ease-in;
+		transition: max-width 0.4s ease-out;
 	}
 
 	.hider-content {
 		float: left;
 		display: inline-block;
+		overflow: hidden;
 		max-width: 0;
 		padding: 0;
-		overflow: hidden;
 		transition: max-width 0.6s ease-out, padding 0.6s ease-out;
 	}
 	&:hover .hider-content {

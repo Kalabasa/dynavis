@@ -34,9 +34,10 @@ define(["backbone", "react", "InstanceCache"], function(Backbone, React, Instanc
 				var token = InstanceCache.get_existing("Token", "session");
 				var user = token ? token.get_user() : null;
 				if(!user) {
-					that.navigate("", true);
+					window.location.href = "login?n=." + encodeURIComponent(window.location.hash);
 					return;
 				}
+
 				var dataset_collection = new DatasetCollection(null, {type: "area", username: user.get("username")});
 				dataset_collection.fetch();
 				React.render(<DatasetsPanel collection={dataset_collection}/>, document.getElementById("body"));

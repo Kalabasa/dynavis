@@ -22,6 +22,7 @@ define(function(require) {
 					barangay: true,
 				},
 				playing: false,
+				disabled: false,
 			};
 		},
 
@@ -39,11 +40,13 @@ define(function(require) {
 		},
 
 		componentDidMount: function() {
+			this.props.bus.router.on("route", this.on_route);
 			this.props.bus.choropleth_settings.on("update", this.update_choropleth_settings);
 			this.props.bus.tagcloud_settings.on("update", this.update_tagcloud_settings);
 		},
 
 		componentWillUnmount: function() {
+			this.props.bus.router.off("route", this.on_route);
 			this.props.bus.choropleth_settings.off("update", this.update_choropleth_settings);
 			this.props.bus.tagcloud_settings.off("update", this.update_tagcloud_settings);
 		},
@@ -53,6 +56,10 @@ define(function(require) {
 				return this.state[key] === value;
 			}.bind(this));
 			if(!_.isEmpty(delta)) this.props.bus.main_settings.emit("update", delta);
+		},
+
+		on_route: function(e) {
+			this.setState({disabled: e.route !== "main"});
 		},
 
 		update_choropleth_settings: function(settings) {
@@ -104,30 +111,30 @@ define(function(require) {
 				<div key="pane_settings" className="pane">
 					<h6 className="pane-header">Visualization Settings</h6>
 					<div className="pane-content pure-g">
-						<select className="pure-u-1 input" onChange={this.handle_change_level} required>
+						<select className="pure-u-1 input" onChange={this.handle_change_level} required disabled={this.state.disabled}>
 							{this.state.allowed_levels.region ? <option value="region">Regional level</option> : null}
 							{this.state.allowed_levels.province ? <option value="province">Provincial level</option> : null}
 							{this.state.allowed_levels.municipality ? <option value="municipality">Municipal level</option> : null}
 							{this.state.allowed_levels.barangay ? <option value="barangay">Barangay level</option> : null}
 						</select>
 						<form className="pure-u-1 group form" onSubmit={this.handle_submit_year}>
-							<input className="pure-u-2-3 group-component" type="number" valueLink={this.linkState("year_input")} required />
-							<input className="pure-u-1-3 group-component button-primary" type="submit" value="Go" />
+							<input className="pure-u-2-3 group-component" type="number" valueLink={this.linkState("year_input")} required disabled={this.state.disabled} />
+							<input className="pure-u-1-3 group-component button-primary" type="submit" value="Go" disabled={this.state.disabled} />
 						</form>
 						<div className="pure-u-1 group">
-							<button className="pure-u-1-4 group-component button" onClick={this.handle_backward}><i className="fa fa-step-backward"/></button>
+							<button className="pure-u-1-4 group-component button" onClick={this.handle_backward} disabled={this.state.disabled}><i className="fa fa-step-backward"/></button>
 							{this.state.playing
-								? <button className="pure-u-1-2 group-component button" onClick={this.handle_pause}><i className="fa fa-pause"/>&ensp; Pause</button>
-								: <button className="pure-u-1-2 group-component button" onClick={this.handle_play}><i className="fa fa-play"/>&ensp; Play</button>}
-							<button className="pure-u-1-4 group-component button" onClick={this.handle_forward}><i className="fa fa-step-forward"/></button>
+								? <button className="pure-u-1-2 group-component button" onClick={this.handle_pause} disabled={this.state.disabled}><i className="fa fa-pause"/>&ensp; Pause</button>
+								: <button className="pure-u-1-2 group-component button" onClick={this.handle_play} disabled={this.state.disabled}><i className="fa fa-play"/>&ensp; Play</button>}
+							<button className="pure-u-1-4 group-component button" onClick={this.handle_forward} disabled={this.state.disabled}><i className="fa fa-step-forward"/></button>
 						</div>
 					</div>
 				</div>
 			);
 			return (
 				<div>
-					<ChoroplethSettingsPane key="pane_choropleth" bus={this.props.bus} />
-					<TagCloudSettingsPane key="pane_tagcloud" bus={this.props.bus} />
+					<ChoroplethSettingsPane key="pane_choropleth" bus={this.props.bus} disabled={this.state.disabled} />
+					<TagCloudSettingsPane key="pane_tagcloud" bus={this.props.bus} disabled={this.state.disabled} />
 					{settings_pane}
 				</div>
 			);

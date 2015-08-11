@@ -1,7 +1,7 @@
 "use strict";
 define(["react", "InstanceCache", "model/Dataset", "jsx!view/HeaderSession"], function(React, InstanceCache, Dataset, HeaderSession) {
 	return React.createClass({
-		componentWillMount: function() {
+		componentDidMount: function() {
 			this.props.bus.router.on("route", this.on_route);
 		},
 

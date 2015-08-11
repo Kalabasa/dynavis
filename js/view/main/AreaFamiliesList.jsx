@@ -48,7 +48,7 @@ define(function(require){
 		render: function() {
 			return (
 				<div className="area-families-list">
-					<h4 className="title">Local Families</h4>
+					<h4 className="title">Top Local Families</h4>
 					<ol>
 						{_.chain(this.state.families)
 							.groupBy(function(f){ return f.id; })

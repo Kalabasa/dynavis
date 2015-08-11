@@ -16,8 +16,9 @@ define(["jquery", "react", "InstanceCache", "react.backbone"], function($, React
 						<div className="hider">
 							<div className="hider-handle hider-handle-toggle">
 								<span className="login-text">
-									<i className="fa fa-user"/>
-									<span className="login-username">&ensp; {user.get("username")}</span>
+									<i className="fa fa-caret-right fa-fw"/>
+									<i className="fa fa-user fa-fw"/>
+									<span className="login-username">{user.get("username")}</span>
 								</span>
 							</div>
 							<div className="hider-content">
@@ -26,6 +27,7 @@ define(["jquery", "react", "InstanceCache", "react.backbone"], function($, React
 									{admin_link}
 								</span>
 								<button className="button button-flat" onClick={this.handle_logout}>Sign Out</button>
+								<i className="fa fa-caret-left fa-fw"/>
 							</div>
 						</div>
 					</div>
