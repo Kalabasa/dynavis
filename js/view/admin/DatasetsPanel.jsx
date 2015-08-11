@@ -108,7 +108,7 @@ define(function(require) {
 				processData: false,
 				dataType: "json",
 				success: function(data) {
-					that.refs.toolbar.close();
+					if(that.refs.toolbar) that.refs.toolbar.close();
 					that.collection().fetch();
 					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;{indicator} variable generated</span>, null, "success");
 				},

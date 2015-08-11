@@ -23,10 +23,14 @@ define(function(require) {
 			this.onModelChange();
 		},
 		onModelChange: function() {
-			if(!this.collection().size()) {
+			if(this.empty_data()) {
 				if(this.refs.toolbar) this.refs.toolbar.open();
 			}
 			this.forceUpdate();
+		},
+
+		empty_data: function() {
+			return !this.collection().size() && (!this.refs.searcher || this.refs.searcher.state.query === null) && this.collection().getPage() === 0;
 		},
 
 		render: function() {
@@ -61,9 +65,9 @@ define(function(require) {
 							</div>
 						</form>
 					</div>
-					{this.collection().size() ?
+					{!this.empty_data() ?
 					<div>
-						<SearchControls className="mar" collection={this.collection()} />
+						<SearchControls ref="searcher" className="mar" collection={this.collection()} />
 						<ReactCSSTransitionGroup transitionName="fade">
 							{this.collection().map(function(dataset) {
 								return <DatasetBox key={dataset.cid} model={dataset} />;
@@ -108,7 +112,7 @@ define(function(require) {
 						contentType: false,
 						type: "POST",
 						success: function(data){
-							React.findDOMNode(that.refs.form).reset();
+							if(that.refs.form) React.findDOMNode(that.refs.form).reset();
 							that.collection().fetch();
 							that.setState(that.getInitialState());
 							Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Dataset uploaded</span>, null, "success");

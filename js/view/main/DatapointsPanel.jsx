@@ -57,7 +57,7 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 				});*/
 				this.collection().page(0, {
 					complete: function() {
-						that.refs.toolbar.close();
+						if(that.refs.toolbar) that.refs.toolbar.close();
 						that.collection().add({}, {at: 0});
 					},
 				});
@@ -81,8 +81,8 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 				contentType: false,
 				type: "POST",
 				success: function(data){
-					React.findDOMNode(that.refs.form).reset();
-					that.refs.toolbar.close();
+					if(that.refs.form) React.findDOMNode(that.refs.form).reset();
+					if(that.refs.toolbar) that.refs.toolbar.close();
 					that.collection().fetch();
 					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Datapoints uploaded</span>, null, "success");
 				},
