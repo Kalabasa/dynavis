@@ -72,14 +72,14 @@ abstract class Entity implements \JsonSerializable{
 		if(is_null($query)) {
 			$uquery = [];
 		}else{
-			$search_clause = " 0 ";
+			$search_clause = " 1 ";
 			$uquery = array_unique($query);
-			foreach (static::QUERY_FIELDS as $f) {
-				$field_conditions = " 1 ";
-				foreach ($uquery as $k => $v) {
-					$field_conditions .= " and $f like :query_$k";
+			foreach ($uquery as $k => $v) {
+				$word_conditions = " 0 ";
+				foreach (static::QUERY_FIELDS as $f) {
+					$word_conditions .= " or $f like :query_$k";
 				}
-				$search_clause .= " or ($field_conditions) ";
+				$search_clause .= " and ($word_conditions) ";
 			}
 			$where .= " and ($search_clause) ";
 		}
