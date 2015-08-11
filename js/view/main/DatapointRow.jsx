@@ -92,9 +92,9 @@ define(function(require) {
 				);
 			}else{
 				return (
-					<div className="data-row clicky form">
+					<div className="data-row clicky form" onClick={this.handle_edit}>
 					<ReactTransitionGroup><SliderTransitionGroupChild key="display">
-						<div className="pure-g" onClick={this.handle_edit}>
+						<button className="pure-g full-button">
 							<div className="pure-u-1-2">
 								<Name className="field pad" model={area} />
 							</div>
@@ -104,7 +104,7 @@ define(function(require) {
 							<div className="pure-u-1-4">
 								<span className="field pad">{this.model().get("value")}</span>
 							</div>
-						</div>
+						</button>
 					</SliderTransitionGroupChild></ReactTransitionGroup>
 					</div>
 				);
