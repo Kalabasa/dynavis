@@ -29,10 +29,6 @@ define(function(require) {
 			this.forceUpdate();
 		},
 
-		empty_data: function() {
-			return !this.collection().size() && (!this.refs.searcher || this.refs.searcher.state.query === null) && this.collection().getPage() === 0;
-		},
-
 		render: function() {
 			return (
 				<div className="body-panel">
@@ -80,6 +76,10 @@ define(function(require) {
 			);
 		},
 
+		empty_data: function() {
+			return !this.collection().size() && (!this.refs.searcher || this.refs.searcher.state.query === null) && this.collection().getPage() === 0;
+		},
+
 		handle_upload: function(e) {
 			var that = this;
 			e.preventDefault();
@@ -93,35 +93,44 @@ define(function(require) {
 			var file = this.refs.file.get_input().files[0];
 			fd.append("file", file);
 
+			var username = this.collection().username;
 			var dataset = new Dataset({
-				username: this.collection().username,
+				username: username,
 				name: this.state.name,
 				type: "area",
 				description: this.state.description,
 			});
 
-			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading metadata...</span>, 0);
+			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Creating dataset...</span>, 0);
 
 			dataset.save(null, {
-				success: function() {
-					Notification.replace(notif, <span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading data...</span>, 0);
-					$.ajax({
-						url: dataset.url() + "/datapoints",
-						data: fd,
-						processData: false,
-						contentType: false,
-						type: "POST",
-						success: function(data){
-							if(that.refs.form) React.findDOMNode(that.refs.form).reset();
-							that.collection().fetch();
-							that.setState(that.getInitialState());
-							Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Dataset uploaded</span>, null, "success");
-						},
-						error: function(xhr) {
-							dataset.destroy();
-							Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Datapoints upload error: {xhr.responseText}</span>, null, "error");
-						},
-					});
+				success: function(model) {
+					if(!file) {
+						if(that.refs.form) React.findDOMNode(that.refs.form).reset();
+						that.collection().fetch();
+						that.setState(that.getInitialState());
+						Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Empty dataset created</span>, null, "success");
+						window.location.href = "#datasets/" + username + "/" + model.id;
+					}else{
+						Notification.replace(notif, <span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading data...</span>, 0);
+						$.ajax({
+							url: dataset.url() + "/datapoints",
+							data: fd,
+							processData: false,
+							contentType: false,
+							type: "POST",
+							success: function(data){
+								if(that.refs.form) React.findDOMNode(that.refs.form).reset();
+								that.collection().fetch();
+								that.setState(that.getInitialState());
+								Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Dataset uploaded</span>, null, "success");
+							},
+							error: function(xhr) {
+								dataset.destroy();
+								Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Datapoints upload error: {xhr.responseText}</span>, null, "error");
+							},
+						});
+					}
 				},
 				error: function(m,r,o) {
 					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Dataset upload error: {r.responseText}</span>, null, "error");

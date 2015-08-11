@@ -11,6 +11,16 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
  			};
  		},
 
+		componentDidMount: function() {
+			this.onModelChange();
+		},
+		onModelChange: function() {
+			if(this.empty_data()) {
+				if(this.refs.toolbar) this.refs.toolbar.open();
+			}
+			this.forceUpdate();
+		},
+
 		render: function() {
 			return (
 				<div className="body-panel">
@@ -31,16 +41,24 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 							</form>
 						</div>
 					</PanelToolbar>
-					{/*<SearchControls ref="searcher" className="mar" collection={this.collection()} />*/}
-					<PageControls className="text-center mar" collection={this.collection()} />
-					<ReactCSSTransitionGroup transitionName="fade">
-						{this.collection().map(function(datapoint) {
-							return <DatapointRow key={datapoint.cid} model={datapoint} />;
-						})}
-					</ReactCSSTransitionGroup>
-					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					{!this.empty_data() ?
+					<div>
+						{/*<SearchControls ref="searcher" className="mar" collection={this.collection()} />*/}
+						<PageControls className="text-center mar" collection={this.collection()} />
+						<ReactCSSTransitionGroup transitionName="fade">
+							{this.collection().map(function(datapoint) {
+								return <DatapointRow key={datapoint.cid} model={datapoint} />;
+							})}
+						</ReactCSSTransitionGroup>
+						<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
+					</div>
+					: null}
 				</div>
 			);
+		},
+
+		empty_data: function() {
+			return !this.collection().size() && (!this.refs.searcher || this.refs.searcher.state.query === null) && this.collection().getPage() === 0;
 		},
 
 		handle_add: function() {
