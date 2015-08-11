@@ -30,9 +30,8 @@ define(function(require){
 						return e.get("year") == this.state.year || e.get("year") < this.state.year && this.state.year < e.get("year_end");
 					}, this)
 					.map(function(e, i) {
-						var official = InstanceCache.get("Official", e.get("official_id"), true);
-						var families = new OfficialFamilyCollection(null, {official_id: official.id});
-						families.fetch();
+						var official = InstanceCache.get("Official", e.get("official_id"));
+						if(!official.has("name")) official.fetch();
 						return (
 							<li key={official.cid} className="area-elections-item">
 								<span className="pure-u-1-12 number">{(i+1) + "."}</span>

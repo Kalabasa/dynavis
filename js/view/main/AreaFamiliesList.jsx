@@ -27,13 +27,20 @@ define(function(require){
 					return e.get("year") == this.state.year || e.get("year") < this.state.year && this.state.year < e.get("year_end");
 				}, this)
 				.each(function(e) {
-					var official = InstanceCache.get("Official", e.get("official_id"), true);
-					var families = new OfficialFamilyCollection(null, {official_id: official.id});
-					families.fetch({
-						success: function() {
-							this.setState({families: this.state.families.concat(families.models)});
-						}.bind(this),
-					});
+					var official_id = e.get("official_id");
+					var name = "OfficialFamilyCollection";
+					var families = InstanceCache.get_existing(name, official_id);
+					if(families) {
+						this.setState({families: this.state.families.concat(families.models)});
+					}else{
+						families = new OfficialFamilyCollection(null, {official_id: official_id});
+						InstanceCache.set(name, official_id, families);
+						families.fetch({
+							success: function() {
+								this.setState({families: this.state.families.concat(families.models)});
+							}.bind(this),
+						});
+					}
 				}, this);
 		},
 
