@@ -26,11 +26,6 @@ define(function(require) {
 		},
 
 		componentWillMount: function() {
-			var token = InstanceCache.get_existing("Token", "session");
-			token.on("change", function() {
-				this.forceUpdate();
-			}, this);
-
 			this.props.bus.main_settings.emit("update", {
 				year: this.state.year,
 				level: this.state.level,
@@ -105,17 +100,6 @@ define(function(require) {
 		},
 
 		render: function() {
-			var token = InstanceCache.get_existing("Token", "session");
-			var user = token ? token.get_user() : null;
-			if(user) {
-				var links_pane = (
-					<div key="pane_links" className="pane">
-						<div className="pane-content">
-							<a href="#datasets"><button className="pure-u-1 button button-flat">Manage datasets</button></a>
-						</div>
-					</div>
-				);
-			}
 			var settings_pane = (
 				<div key="pane_settings" className="pane">
 					<h6 className="pane-header">Visualization Settings</h6>
@@ -142,7 +126,6 @@ define(function(require) {
 			);
 			return (
 				<div>
-					{links_pane}
 					<ChoroplethSettingsPane key="pane_choropleth" bus={this.props.bus} />
 					<TagCloudSettingsPane key="pane_tagcloud" bus={this.props.bus} />
 					{settings_pane}
@@ -180,7 +163,7 @@ define(function(require) {
 				var year = this.state.year + 1;
 				this.setState({year: year, year_input: year});
 
-				if(year >= this.state.max_year) {
+				if(year >= this.max_year) {
 					this.setState({playing: false});
 				}else{
 					setTimeout(step.bind(this), delay);

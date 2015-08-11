@@ -1,30 +1,42 @@
 @import "common";
 
 #body {
-	background-color: $color-background-alt;
+	// background-color: $color-background-alt;
 	display: table;
 	position: absolute;
 	height: 100%;
 	width: 100%;
+	color: $color-text;
+	background-color: $color-background;
 }
 
+.logo-large {
+	width: 100%;
+}
 .logo-type {
-	width: 200px;
+	width: 100%;
 	padding-bottom: 1em;
 	font-size: 20pt;
+	color: $color-text;
 }
 
-.login-box {
+.login-container {
 	display: table-cell;
 	vertical-align: middle;
 }
-
-.login-box > * {
+.login-container > * {
 	margin-left: auto;
 	margin-right: auto; 
-	width: 200px;
+	width: 300px;
+}
+
+.login-box {
 }
 
 .input {
 	width: 100%;
+}
+
+.login-buttons {
+	margin-top: 1em;
 }

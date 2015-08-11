@@ -1109,7 +1109,7 @@ function post_user_dataset_datapoint($username, $dataset_id) {
 		$app->halt(400, "Invalid area code.");
 	}
 
-	$datapoint = new Datapoint([
+	$datapoint = new Datapoint(null, [
 		"dataset" => $dataset,
 		"area" => $area,
 	]);

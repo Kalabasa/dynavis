@@ -7,20 +7,24 @@ define(function(require){
 		InstanceCache = require("InstanceCache"),
 		LoginPage = require("jsx!view/login/LoginPage");
 
-	var MainApp = function() {
+	var LoginApp = function() {
 		this.token = new Token();
 		InstanceCache.set("Token", "session", this.token);
 	};
 
-	MainApp.prototype.start = function() {
-		this.login = React.render(<LoginPage model={this.token} onLogin={this.on_login} />, document.getElementById("body"));
-		Backbone.history.start();
+	LoginApp.prototype.start = function() {
+		if(this.token.get_user()) {
+			this.on_login();
+		}else{
+			this.login = React.render(<LoginPage model={this.token} onLogin={this.on_login} />, document.getElementById("body"));
+			Backbone.history.start();
+		}
 	};
 
-	MainApp.prototype.on_login = function() {
+	LoginApp.prototype.on_login = function() {
 		var target = (location.search.split("n=")[1]||"").split("&")[0] || ".";
 		window.location.href = decodeURIComponent(target);
 	};
 
-	return MainApp;
+	return LoginApp;
 });

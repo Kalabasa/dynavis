@@ -13,6 +13,10 @@ define(function(require) {
 			};
 		},
 
+		initialize: function() {
+			this.clicked = null;
+		},
+
 		onModelChange: function() {
 			if(this.props.onLogin && this.model().get_user()) {
 				this.props.onLogin();
@@ -21,27 +25,42 @@ define(function(require) {
 
 		render: function() {
 			return (
-				<div className="login-box">
-					<div className="pure-g">
-						<a className="pure-u-1 no-decor" href=".">
-							<div className="logo-large"></div>
-							<div className="logo-type">DynastyMap</div>
-						</a>
+				<div className="login-container">
+					<div className="login-box">
+						<div className="pure-g">
+							<a className="pure-u-1 no-decor" href=".">
+								<div className="logo-large"></div>
+								<div className="logo-type">DynastyMap</div>
+							</a>
+						</div>
+						<form ref="form" className="pure-g" onSubmit={this.handle_submit}>
+							<div className="pure-u-1">
+								<input className="input" id="username" type="text" placeholder="Username" valueLink={this.linkState("username")} required />
+							</div>
+							<div className="pure-u-1">
+								<input className="input" id="password" type="password" placeholder="Password" required />
+							</div>
+							<div className="pure-u-1 login-buttons">
+								<input className="pull-right button button-primary" name="login" type="submit" onClick={this.click_login} value="Sign In" />
+								<input className="pull-left button" name="register" type="submit" onClick={this.click_register} value="Create Account" />
+							</div>
+						</form>
 					</div>
-					<form className="pure-g" onSubmit={this.handle_login}>
-						<div className="pure-u-1">
-							<input className="input" id="username" type="text" placeholder="Username" valueLink={this.linkState("username")} required />
-						</div>
-						<div className="pure-u-1">
-							<input className="input" id="password" type="password" placeholder="Password" required />
-						</div>
-						<div className="pure-u-1">
-							<input className="pull-left button" type="button" onClick={this.handle_register} value="Register" />
-							<input className="pull-right button button-primary" type="submit" value="Login" />
-						</div>
-					</form>
 				</div>
 			);
+		},
+
+		click_login: function() {
+			this.clicked = "login";
+		},
+		click_register: function() {
+			this.clicked = "register";
+		},
+
+		handle_submit: function(e) {
+			e.preventDefault();
+			this["handle_" + this.clicked](e);
+			this.clicked = null;
 		},
 
 		handle_register: function() {
@@ -71,10 +90,6 @@ define(function(require) {
 			this.model().login(username, password, null, function(xhr) {
 				Notification.open(<span><i className="fa fa-exclamation-circle"/>&ensp;Login error: {xhr.responseText}</span>, null, "error");
 			});
-		},
-
-		handle_logout: function(e) {
-			this.model().logout();
 		},
 	});
 });

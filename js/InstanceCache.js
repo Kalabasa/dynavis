@@ -56,6 +56,7 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 	InstanceCache.prototype.get = function(name, id, fetch) {
 		if(id !== id) return null; // for NaN
 
+		this.set_active(name, id);
 		this.remove_expired();
 		
 		if(this.hash[name]) {
@@ -75,8 +76,6 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 
 		if(fetch) instance.fetch();
 
-		this.set_active(name, id);
-
 		return instance;
 	};
 
@@ -85,10 +84,12 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 		return null;
 	};
 
-	InstanceCache.prototype.set = function(name, key, value) {
+	InstanceCache.prototype.set = function(name, key, value, expires) {
+		if(typeof expires === "undefined") expires = true;
+
 		if(!this.hash[name]) this.hash[name] = {};
 		this.hash[name][key] = value;
-		this.set_active(name, key);
+		if(expires) this.set_active(name, key);
 	};
 
 	InstanceCache.prototype.delete = function(name, key) {

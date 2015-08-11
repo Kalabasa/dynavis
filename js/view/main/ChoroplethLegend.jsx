@@ -89,13 +89,13 @@ define(function(require) {
 					<g transform={"translate("+margin+","+margin+")"}>
 						<g id="scatterplot-class-colors">
 							{_.map(_.initial(data_x.classes), function(cx,i) {
-								var x = scatterplot_margin + scatterplot_width * (cx - min_x) / range_x;
-								var w = scatterplot_width * (data_x.classes[i+1] - cx) / range_x;
+								var x = scatterplot_margin + (range_x == 0 ? 0 : scatterplot_width * (cx - min_x) / range_x);
+								var w = range_x == 0 ? scatterplot_width : scatterplot_width * (data_x.classes[i+1] - cx) / range_x;
 								var cx = data_x.color_scale[i];
 
 								return _.map(_.rest(data_y.classes), function(cy,j) {
-									var y = scatterplot_height * (1 - (cy - min_y) / range_y);
-									var h = scatterplot_height * (cy - data_y.classes[j]) / range_y;
+									var y = scatterplot_height * (range_y == 0 ? 0 : (1 - (cy - min_y) / range_y));
+									var h = range_y == 0 ? scatterplot_height : scatterplot_height * (cy - data_y.classes[j]) / range_y;
 									var cy = data_y.color_scale[j];
 									var c = this.constructor.combine_colors(cx, cy);
 
@@ -108,8 +108,8 @@ define(function(require) {
 						</g>
 						<g id="scatterplot-point-shadows">
 							{_.map(scatterplot_points, function(point, i) { // shadows
-								var x = scatterplot_margin + scatterplot_width * (point.x - min_x) / range_x;
-								var y = scatterplot_height * (1 - (point.y - min_y) / range_y);
+								var x = scatterplot_margin + (range_x == 0 ? 0 : scatterplot_width * (point.x - min_x) / range_x);
+								var y = (range_y == 0 ? 0 : scatterplot_height * (1 - (point.y - min_y) / range_y));
 								return <circle key={i}
 									className="scatterplot-point-shadow"
 									cx={x} cy={y} r={4}/>
@@ -117,8 +117,8 @@ define(function(require) {
 						</g>
 						<g id="scatterplot-points">
 							{_.map(scatterplot_points, function(point, i) {
-								var x = scatterplot_margin + scatterplot_width * (point.x - min_x) / range_x;
-								var y = scatterplot_height * (1 - (point.y - min_y) / range_y);
+								var x = scatterplot_margin + (range_x == 0 ? 0 : scatterplot_width * (point.x - min_x) / range_x);
+								var y = (range_y == 0 ? 0 : scatterplot_height * (1 - (point.y - min_y) / range_y));
 								return <circle key={i}
 									className="scatterplot-point"
 									cx={x} cy={y} r={3}/>
@@ -126,7 +126,7 @@ define(function(require) {
 						</g>
 						<g id="scatterplot-labels-x" transform={"translate("+scatterplot_margin+","+scatterplot_height+")"}>
 							{_.map(data_x.classes, function(c,i) {
-								var x = scatterplot_width * (c - min_x) / range_x;
+								var x = scatterplot_width * (range_x == 0 ? 0 : (c - min_x) / range_x);
 								return <text key={i}
 									className="scatterplot-label scatterplot-label-x"
 									x={x} y={0}>
@@ -139,7 +139,7 @@ define(function(require) {
 						</g>
 						<g id="scatterplot-labels-y" transform={"translate("+scatterplot_margin+","+0+")"}>
 							{_.map(data_y.classes, function(c,i) {
-								var y = scatterplot_height * (1 - (c - min_y) / range_y);
+								var y = (range_y == 0 ? scatterplot_height : scatterplot_height * (1 - (c - min_y) / range_y));
 								return <text key={i}
 									className="scatterplot-label scatterplot-label-y"
 									x={0} y={y}>
@@ -186,7 +186,7 @@ define(function(require) {
 									var bin = m[0];
 									var count = m[1];
 									var w = histogram_width / bins;
-									var h = histogram_height * (count - min_count) / (max_count - min_count);
+									var h = histogram_height * (count - min_count) / (1 + max_count - min_count);
 									return <rect key={m}
 										className="histogram-bar"
 										x={Math.floor(w * bin)} y={histogram_height - h}
@@ -196,8 +196,8 @@ define(function(require) {
 							<g id="histogram-class-colors" transform={"translate("+0+","+histogram_height+")"}>
 								{_.map(_.initial(dataset.classes), function(c,i) {
 									var range = max - min;
-									var x = legend_width * (c - min) / range;
-									var w = legend_width * (dataset.classes[i+1] - c) / range;
+									var x = range == 0 ? 0 : legend_width * (c - min) / range;
+									var w = range == 0 ? legend_width : legend_width * (dataset.classes[i+1] - c) / range;
 									var c = dataset.color_scale[i];
 									return <rect key={i}
 										className="histogram-class-color"
@@ -207,7 +207,8 @@ define(function(require) {
 							</g>
 							<g id="histogram-labels" transform={"translate("+0+","+histogram_height+")"}>
 								{_.map(dataset.classes, function(c,i) {
-									var x = legend_width * (c - min) / (max - min);
+									var range = max - min;
+									var x = range == 0 ? 0 : legend_width * (c - min) / range;
 									return <text key={i}
 										className="histogram-label"
 										x={x} y={bar_height}>

@@ -58,22 +58,12 @@ define(function(require) {
 					<span>
 						<h3 key="title" className="inline"><Name model={area}/></h3>
 						<span key="variables">{_.map(variables, function(v, i) {
-							var d = v.dataset;
-							if(v) {
-								return (
-									<span key={i} title={v.value} className="var-info">
-										<span className="var-name">{d.name}</span>
-										<span className="var-value">{numf.format(v.value)}</span>
-									</span>
-								);
-							}else{
-								return (
-									<span key={i} className="var-info">
-										<span className="var-name">{d.name}</span>
-										<span className="var-value">No Data</span>
-									</span>
-								);
-							}
+							return (
+								<span key={i} title={v.value} className="var-info">
+									<span className="var-name">{v.dataset.name}</span>
+									<span className="var-value">{v.value ? numf.format(v.value) : "No Data"}</span>
+								</span>
+							);
 						}, this)}</span>
 					</span>
 				);

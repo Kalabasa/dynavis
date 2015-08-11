@@ -82,8 +82,10 @@ define(["underscore", "jenks", "model/Area"], function(_, jenks, Area) {
 			.map(function(p) { return p.get("value"); })
 			.value();
 
-		var breaks = jenks(data, n);
-		if(breaks && !_.some(breaks, function(b){ return isNaN(b); })) return breaks;
+		if(data.length > n + 1) {
+			var breaks = jenks(data, n);
+			if(breaks && !_.some(breaks, function(b){ return isNaN(b); })) return breaks;
+		}
 
 		var min = _.min(data);
 		var max = _.max(data);
