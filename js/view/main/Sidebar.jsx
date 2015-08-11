@@ -98,10 +98,9 @@ define(function(require) {
 			
 			if(!_.isEqual(allowed_levels, this.state.allowed_levels)) {
 				this.setState({allowed_levels: allowed_levels});
-			}
-			
-			if(!allowed_levels[this.state.level]) {
-				this.setState({level: _.chain(allowed_levels).filter().keys().values()[0]});
+				if(!allowed_levels[this.state.level]) {
+					this.setState({level: _.chain(allowed_levels).keys().findWhere(function(k){ return allowed_levels[k]; }).value()});
+				}
 			}
 		},
 
