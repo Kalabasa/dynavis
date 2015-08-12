@@ -210,6 +210,10 @@
 	color: $color-text;
 	background-color: white;
 
+	&[disabled],&[readonly] {
+		color: rgba($color-text, 0.6);
+	}
+
 	&.validation-error, .validation-error & {
 		border: solid 1px red;
 	}
