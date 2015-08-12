@@ -153,4 +153,8 @@ a.tile-container {
 			visibility: visible;
 		}
 	}
+
+	&:not(:first-child) {
+		border-top: solid 1px $color-background;
+	}
 }

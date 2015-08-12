@@ -73,7 +73,7 @@ $infobar-height: 50%;
 	}
 
 	&:not(:first-child) {
-		border-top: solid 1px #e8e8e8;
+		border-top: solid 1px $color-background;
 	}
 }
 .scroll-edge-fade {
