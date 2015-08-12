@@ -1,4 +1,4 @@
-/js/config.map.js
+/js-src/config.map.js
 /php/db_config.include.php
 /scripts/scrape-elections.conf
 
@@ -7,5 +7,6 @@
 /css/main.css
 /css/admin.css
 /css/login.css
+/js-build/
 
 /data/

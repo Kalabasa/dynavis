@@ -1,8 +1,8 @@
 "use strict";
 require.config({
-	urlArgs: "bust=" + (new Date()).getTime(),
+	// urlArgs: "bust=" + (new Date()).getTime(),
 	
-	baseUrl: "js",
+	baseUrl: "js-build",
 
 	paths: {
 		"backbone": "lib/backbone",
