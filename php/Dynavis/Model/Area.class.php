@@ -315,7 +315,8 @@ class Area extends \Dynavis\Core\Entity {
 					if(!isset($candidates[$area_code])) {
 						$candidates[$area_code] = 0;
 					}
-					$candidates[$area_code] += 1.0/$c;
+					$level = static::extract_level($area_code);
+					$candidates[$area_code] += (4.0 - $level)/$c;
 				}
 			}
 		}
