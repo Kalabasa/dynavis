@@ -210,10 +210,6 @@
 	color: $color-text;
 	background-color: white;
 
-	&[disabled],&[readonly] {
-		color: rgba($color-text, 0.6);
-	}
-
 	&.validation-error, .validation-error & {
 		border: solid 1px red;
 	}
@@ -226,6 +222,14 @@
 			top: -2px;
 			@include drop-shadow(4);
 		}
+	}
+}
+.form input:not([type=button]):not([type=password]):not([type=submit]), .form select, .form textarea, .input {
+	&[disabled] {
+		color: rgba($color-text, 0.6);
+	}
+	&[readonly] {
+		color: rgba($color-text, 0.7);
 	}
 }
 form input[type=button], form input[type=submit], form input[type=reset], .button {
