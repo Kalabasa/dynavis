@@ -1,5 +1,5 @@
 "use strict";
-define(["backbone", "react", "InstanceCache"], function(Backbone, React, InstanceCache) {
+define(["backbone", "react", "InstanceCache", "jsx!view/Spinner"], function(Backbone, React, InstanceCache, Spinner) {
 	return Backbone.Router.extend({
 		initialize: function(options) {
 			this.bus = options.bus;
@@ -7,6 +7,7 @@ define(["backbone", "react", "InstanceCache"], function(Backbone, React, Instanc
 		},
 
 		on_route: function(route, params) {
+			React.render(<Spinner/>, document.getElementById("body"));
 			this.bus.router.emit("route", {
 				route: route,
 				params: params,
