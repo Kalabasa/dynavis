@@ -387,6 +387,9 @@ textarea {
 	opacity: 0.4;
 }
 .field {
+	&.text {
+		opacity: 0.8;
+	}
 	&.text-large {
 		font-size: 120%;
 	}
