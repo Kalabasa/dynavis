@@ -45,6 +45,11 @@ define(function(require) {
 								<input className="pull-left button" name="register" type="submit" onClick={this.click_register} value="Create Account" />
 							</div>
 						</form>
+						<div className="pure-g">
+							<div className="pure-u-1">
+								<a className="pull-right text-small" href=".">Go to the main page</a>
+							</div>
+						</div>
 					</div>
 				</div>
 			);
