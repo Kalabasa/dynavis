@@ -72,7 +72,7 @@ define(function(require) {
 				url: this.collection().url,
 				type: "DELETE",
 				success: function(data){
-					that.refs.toolbar.open();
+					if(that.refs.toolbar) that.refs.toolbar.open();
 					that.collection().fetch();
 					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;All election records and related data deleted</span>, null, "success");
 				},
@@ -90,7 +90,7 @@ define(function(require) {
 			}else{
 				this.refs.searcher.set_query(null, {
 					complete: function() {
-						that.refs.toolbar.close();
+						if(that.refs.toolbar) that.refs.toolbar.close();
 						that.collection().add({}, {at: 0});
 					},
 				});
@@ -114,8 +114,8 @@ define(function(require) {
 				contentType: false,
 				type: "POST",
 				success: function(data){
-					React.findDOMNode(that.refs.upload_form).reset();
-					that.refs.toolbar.close();
+					if(that.refs.upload_form) React.findDOMNode(that.refs.upload_form).reset();
+					if(that.refs.toolbar) that.refs.toolbar.close();
 					that.collection().fetch();
 					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Election records uploaded</span>, null, "success");
 				},

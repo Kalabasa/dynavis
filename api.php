@@ -325,7 +325,11 @@ function generic_delete_item($class, $id) {
 function generic_delete_all($class) {
 	global $app;
 	$class = "\\Dynavis\\Model\\" . $class;
-	$class::delete_all();
+	try {
+		$class::delete_all();
+	}catch(DataException $e) {
+		$app->halt(400, $e->getMessage());
+	}
 	$app->response->setStatus(204);
 }
 

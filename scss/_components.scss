@@ -118,8 +118,9 @@
 		text-align: center;
 	}
 	.hider-handle-toggle {
+		max-width: $header-height * 2;
 		overflow: hidden;
-		max-width: $header-height;
+		text-overflow: ellipsis;
 		transition: max-width 0.4s ease-in;
 	}
 	&:hover .hider-handle-toggle {
