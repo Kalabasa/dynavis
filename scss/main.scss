@@ -59,6 +59,10 @@ $infobar-height: 50%;
 	cursor: pointer;
 	padding: 1.4em;
 
+	&:hover {
+		background-color: $color-background;
+	}
+
 	&.selected {
 		color: $color-text-primary-2;
 		background-color: $color-primary-2;

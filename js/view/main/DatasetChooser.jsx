@@ -28,7 +28,7 @@ define(function(require) {
 						<div className="scroll-edge-fade"></div>
 					</div>
 					<div className="clearfix">
-						<button className="pull-right button button-primary" onClick={this.handle_select}>Select</button>
+						<button className="pull-right button button-primary" onClick={this.handle_select} disabled={!this.state.selected}>Select</button>
 					</div>
 				</div>
 			);

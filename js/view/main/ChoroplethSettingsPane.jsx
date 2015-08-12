@@ -69,7 +69,7 @@ define(function(require) {
 			return function() {
 				var dataset_collection = new DatasetCollection();
 				dataset_collection.fetch({data: {type: "area"}});
-				that.modal = Modal.open("Select dataset", (
+				that.modal = Modal.open("Select a dataset to visualize", (
 					<DatasetChooser collection={dataset_collection} onSelect={function(dataset) {
 						that.select_dataset(i, dataset);
 						that.modal.close();

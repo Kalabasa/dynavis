@@ -2,16 +2,16 @@
 define(["jquery", "react", "bootstrap"], function($, React) {
 	var Modal = React.createClass({
 		componentDidMount: function() {
-			var that = this;
-			$(React.findDOMNode(this)).modal();
-			$(React.findDOMNode(this.refs.modal)).on("hidden.bs.modal", function() {
-				that.props.onClose();
-			});
+			var $this = $(React.findDOMNode(this));
+			$this.modal();
+			$this.on("hidden.bs.modal", function() {
+				this.props.onClose();
+			}.bind(this));
 		},
 
 		render: function() {
 			return (
-				<div ref="modal" className="modal fade">
+				<div className="modal fade">
 					<div className="modal-dialog">
 						<div className="modal-content">
 							<div className="modal-header">

@@ -56,7 +56,7 @@ define(function(require) {
 			var that = this;
 			var dataset_collection = new DatasetCollection();
 			dataset_collection.fetch({data: {type: "tag"}});
-			that.modal = Modal.open("Select dataset", (
+			that.modal = Modal.open("Select a dataset to visualize", (
 				<DatasetChooser collection={dataset_collection} onSelect={function(dataset) {
 					that.select_dataset(dataset);
 					that.modal.close();
