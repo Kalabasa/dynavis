@@ -11,7 +11,7 @@ define(function(require){
 
 	var AdminApp = function() {
 		this.token = new Token();
-		InstanceCache.set("Token", "session", this.token);
+		InstanceCache.set("Token", "session", this.token, false);
 
 		this.bus = {
 			router: new Events(),

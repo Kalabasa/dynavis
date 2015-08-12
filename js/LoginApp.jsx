@@ -9,7 +9,7 @@ define(function(require){
 
 	var LoginApp = function() {
 		this.token = new Token();
-		InstanceCache.set("Token", "session", this.token);
+		InstanceCache.set("Token", "session", this.token, false);
 	};
 
 	LoginApp.prototype.start = function() {
