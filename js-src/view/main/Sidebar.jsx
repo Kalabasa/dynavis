@@ -160,32 +160,30 @@ define(function(require) {
 
 		handle_play: function() {
 			var to_step = _.after(2, function() {
-				this.props.bus.choropleth_settings.off("update", to_step);
-				this.props.bus.tagcloud_settings.off("update", to_step);
+				this.props.bus.choropleth_data.off("update", to_step);
+				this.props.bus.tagcloud_data.off("update", to_step);
 				this.setState({year_input: this.state.year});
 				setTimeout(step.bind(this), 1000);
 			}.bind(this));
 
 			this.setState({playing: true});
 			if(this.state.year >= this.max_year) {
-				this.setState({year: this.min_year, year_input: this.min_year});
-				this.props.bus.choropleth_settings.on("update", to_step);
-				this.props.bus.tagcloud_settings.on("update", to_step);
+				this.props.bus.choropleth_data.on("update", to_step);
+				this.props.bus.tagcloud_data.on("update", to_step);
+				this.setState({year: this.min_year});
 			}else{
-				step();
+				step.call(this);
 			}
 
 			function step() {
-				if(!this.state.playing) return;
-
 				var year = this.state.year + 1;
 				this.setState({year: year});
 
 				if(year >= this.max_year) {
-					this.setState({playing: false});
+					this.setState({playing: false, year_input: year});
 				}else{
-					this.props.bus.choropleth_settings.on("update", to_step);
-					this.props.bus.tagcloud_settings.on("update", to_step);
+					this.props.bus.choropleth_data.on("update", to_step);
+					this.props.bus.tagcloud_data.on("update", to_step);
 				}
 			}
 		},
