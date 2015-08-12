@@ -159,25 +159,11 @@ define(function(require) {
 		},
 
 		handle_play: function() {
-			var step = function() {
-				if(!this.state.playing) return;
-
-				var year = this.state.year + 1;
-				this.setState({year: year});
-
-				if(year >= this.max_year) {
-					this.setState({playing: false});
-				}else{
-					this.props.bus.choropleth_settings.on("update", to_step);
-					this.props.bus.tagcloud_settings.on("update", to_step);
-				}
-			}.bind(this);
-			
 			var to_step = _.after(2, function() {
 				this.props.bus.choropleth_data.off("update", to_step);
 				this.props.bus.tagcloud_data.off("update", to_step);
 				this.setState({year_input: this.state.year});
-				setTimeout(step, 1000);
+				setTimeout(step.bind(this), 1000);
 			}.bind(this));
 
 			this.setState({playing: true});
