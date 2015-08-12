@@ -60,6 +60,9 @@ define(function(require) {
 
 		on_route: function(e) {
 			this.setState({disabled: e.route !== "main"});
+			if(e.route == "main") {
+				this.setState({level: "region"});
+			}
 		},
 
 		update_choropleth_settings: function(settings) {
@@ -111,7 +114,7 @@ define(function(require) {
 				<div key="pane_settings" className="pane">
 					<h6 className="pane-header">Visualization Settings</h6>
 					<div className="pane-content pure-g">
-						<select className="pure-u-1 input" onChange={this.handle_change_level} required disabled={this.state.disabled}>
+						<select className="pure-u-1 input" value={this.state.level} onChange={this.handle_change_level} required disabled={this.state.disabled}>
 							{this.state.allowed_levels.region ? <option value="region">Regional level</option> : null}
 							{this.state.allowed_levels.province ? <option value="province">Provincial level</option> : null}
 							{this.state.allowed_levels.municipality ? <option value="municipality">Municipal level</option> : null}

@@ -14,6 +14,6 @@ css/login.css: scss/login.scss scss/_*
 
 js-build/: $(shell find js-src/)
 	cp -r js-src/ js-build/
-	jsx --harmony --extension jsx js-build/ js-build/
+	jsx --harmony --extension jsx js-src/ js-build/
 	find js-build/ -type f -name "*.jsx" -delete
 	find js-build/ -type f -print0 | xargs -0 sed -i 's/jsx!//g'
