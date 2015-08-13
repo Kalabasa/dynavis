@@ -47,7 +47,7 @@ define(function(require) {
 						</form>
 						<div className="pure-g">
 							<div className="pure-u-1">
-								<a className="pull-right text-small" href=".">Go to the main page</a>
+								<a className="pull-right text-small" href=".">Go to the home page</a>
 							</div>
 						</div>
 					</div>

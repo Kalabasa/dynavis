@@ -22,7 +22,7 @@ define(function(require){
 	};
 
 	LoginApp.prototype.on_login = function() {
-		var target = (location.search.split("n=")[1]||"").split("&")[0] || ".";
+		var target = (location.search.split("n=")[1]||"").split("&")[0] || (this.token.get_user_role() == "admin" ? "admin" : "app");
 		window.location.href = decodeURIComponent(target);
 	};
 
