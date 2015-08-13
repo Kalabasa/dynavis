@@ -5,6 +5,7 @@ use \Dynavis\Database;
 class User extends \Dynavis\Core\Entity {
 	const TABLE = "user";
 	const FIELDS = [
+		"active",
 		"username",
 		"pw_hash",
 		"type",
@@ -93,13 +94,28 @@ class User extends \Dynavis\Core\Entity {
 		return password_hash($password . substr($this->salt,4,4), PASSWORD_BCRYPT, ["salt" => $this->salt]);
 	}
 
+	public static function list_items($count, $start) {
+		if($count < 0 || $start < -1) return false;
+		$where = $count == 0 ? [] : ["LIMIT" => [(int) $start , (int) $count]];
+		$where["ORDER"] = "active ASC";
+		return [
+			"total" => static::count(),
+			"data" => Database::get()->select(static::TABLE, array_merge(static::FIELDS, [static::PRIMARY_KEY]), $where),
+		];
+	}
+
 	public function save() {
-		if(static::count() == 0) $this->type = 1; // First user is admin
+		if(static::count() == 0) {
+			// First user is admin
+			$this->active = true;
+			$this->type = 1;
+		}
 		parent::save();
 	}
 
 	public function jsonSerialize() {
 		$data = parent::jsonSerialize();
+		$data["active"] = $data["active"] != "0";
 		$data["role"] = ["user", "admin"][$data["type"]];
 		unset($data["id"]);
 		unset($data["type"]);

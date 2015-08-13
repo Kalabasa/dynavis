@@ -852,6 +852,10 @@ function put_user($username) {
 		$app->halt(404, $e->getMessage());
 	}
 
+	if(array_key_exists("active", $data)) {
+		$user->active = (bool) $data["active"];
+	}
+
 	if(array_key_exists("password", $data)) {
 		if(!isset($data["old_password"])) {
 			$app->halt(400, "No old_password parameter found. The current password is needed to change password.");

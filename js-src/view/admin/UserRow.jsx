@@ -14,23 +14,29 @@ define(function(require) {
 		},
 
 		render: function() {
+			var active = this.model().get("active");
 			var username = this.model().get("username");
 			var url_datasets = "#users/" + username + "/datasets";
 			return (
-				<div className="data-row">
+				<div className={"data-row " + (active ? "active" : "inactive")}>
 					<div className="pure-g">
-						<div className="pure-u-1-4 field text-large">{username}</div>
-						<div className="pure-u-1-4">
-							<a href={url_datasets}><CollectionCount collection={this.datasets} /> Datasets</a>
-						</div>
-						<div className="pure-u-1-4">
+						<div className="pure-u-1-8 pad">
 							<label>
-								<span className="label">Admin</span>
-								<Toggle type="checkbox" checked={this.model().get("role")==="admin"} disabled={this.user_in()} onChange={this.handle_toggle_admin} />
+								<Toggle title="active status" checked={active} disabled={this.user_in()} onChange={this.handle_toggle_active} />
 							</label>
 						</div>
-						<div className="pure-u-1-4 clearfix">
-							<button className="pull-right button button-flat button-complement" disabled={this.user_in()} onClick={this.handle_delete}>Delete</button>
+						<div className="pure-u-3-8 pad field text-large">{username}</div>
+						<div className="pure-u-1-6 pad">
+							<a href={url_datasets}><CollectionCount collection={this.datasets} /> datasets</a>
+						</div>
+						<div className="pure-u-1-6 pad clearfix">
+							<label className="pull-right">
+								<input type="checkbox" checked={this.model().get("role")==="admin"} disabled={this.user_in() || !active} onChange={this.handle_toggle_admin} />
+								<span> admin</span>
+							</label>
+						</div>
+						<div className="pure-u-1-6 clearfix">
+							<button className={"pull-right button button-complement" + (active ? " button-flat" : "")} disabled={this.user_in()} onClick={this.handle_delete}>Delete</button>
 						</div>
 					</div>
 				</div>
@@ -43,6 +49,12 @@ define(function(require) {
 			if(!user) return false;
 			var username = user.get("username");
 			return username == this.model().get("username");
+		},
+
+		handle_toggle_active: function(e) {
+			if(!this.user_in()) {
+				this.model().save({active: !this.model().get("active")}, {wait: true});
+			}
 		},
 
 		handle_toggle_admin: function(e) {
