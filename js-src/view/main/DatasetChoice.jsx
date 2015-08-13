@@ -1,6 +1,6 @@
 "use strict";
 define(function(require) {
-	var React = require("react", "react.backbone");
+	var React = require("react.backbone", "react");
 
 	return React.createBackboneClass({
 		render: function() {
