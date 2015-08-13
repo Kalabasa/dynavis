@@ -24,6 +24,7 @@ define(["jquery", "react", "InstanceCache", "react.backbone"], function($, React
 								<span className="login-text">
 									{datasets_link}
 									{admin_link}
+									&ensp;
 								</span>
 								<button className="button button-flat" onClick={this.handle_logout}>Sign Out</button>
 								<i className="fa fa-caret-left fa-fw"/>
