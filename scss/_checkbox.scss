@@ -1,0 +1,186 @@
+// Adapted from Materialize CSS
+// https://github.com/Dogfalo/materialize/blob/43d43c27960ba7fd6eff16b4daadcd7e2dba6294/sass/components/_form.scss
+/***************
+	 Checkboxes
+***************/
+
+/* CUSTOM CSS CHECKBOXES */
+form p {
+	margin-bottom: 10px;
+	text-align: left;
+}
+form p:last-child {
+	margin-bottom: 0;
+}
+
+/* Remove default checkbox */
+[type="checkbox"]:not(:checked),
+[type="checkbox"]:checked {
+	position: absolute;
+	left: -9999px;
+	visibility: hidden;
+}
+
+
+// Checkbox Styles
+[type="checkbox"]:not(.toggle-checkbox) {
+
+	// Text Label Style
+	+ * {
+		position: relative;
+		padding-left: 28px;
+		display: inline-block;
+
+		-webkit-user-select: none; /* webkit (safari, chrome) browsers */
+		-moz-user-select: none; /* mozilla browsers */
+		-khtml-user-select: none; /* webkit (konqueror) browsers */
+		-ms-user-select: none; /* IE10+ */
+	}
+
+	&:not(:disabled) {
+		cursor: pointer;
+	}
+	&:disabled + * {
+		opacity: 0.6;
+	}
+
+	/* checkbox aspect */
+	+ *:before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 18px;
+		height: 18px;
+		z-index: 0;
+		border: 2px solid $color-primary-2;
+		border-radius: 1px;
+		margin-top: 2px;
+	}
+
+	&:not(:checked):disabled + *:before {
+		border: none;
+		background-color: $color-primary-2;
+	}
+
+	&:checked {
+		+ *:before {
+			top: -4px;
+			left: -3px;
+			width: 12px; height: 22px;
+			border-top: 2px solid transparent;
+			border-left: 2px solid transparent;
+			border-right: 2px solid $color-primary-1;
+			border-bottom: 2px solid $color-primary-1;
+			transform: rotate(40deg);
+			transform-origin: 100% 100%;
+		}
+
+		&:disabled + *:before {
+			border-right: 2px solid white;
+			border-bottom: 2px solid white;
+		}
+
+	}
+
+	/* Indeterminate checkbox */
+	&:indeterminate {
+		+label:before {
+			left: -10px;
+			top: -11px;
+			width: 10px; height: 22px;
+			border-top: none;
+			border-left: none;
+			border-right: 2px solid $color-primary-1;
+			border-bottom: none;
+			transform: rotate(90deg);
+			transform-origin: 100% 100%;
+		}
+
+		// Disabled indeterminate
+		&:disabled + *:before {
+			border-right: 2px solid desaturate($color-primary-1, 100%);
+			background-color: transparent;
+		}
+	}
+
+  // General
+  + *:after {
+    border-radius: 2px;
+  }
+  + *:before,
+  + *:after {
+    content: '';
+    left: 0;
+    position: absolute;
+    /* .1s delay is for check animation */
+    transition: border .25s, background-color .25s, width .20s .1s, height .20s .1s, top .20s .1s, left .20s .1s;
+    z-index: 1;
+  }
+  // Unchecked style
+  &:not(:checked) + *:before {
+    width: 0;
+     height: 0;
+     border: 3px solid transparent;
+     left: 6px;
+     top: 10px;
+
+     -webkit-transform: rotateZ(37deg);
+             transform: rotateZ(37deg);
+     -webkit-transform-origin: 20% 40%;
+             transform-origin: 100% 100%;
+  }
+  &:not(:checked) + *:after {
+    height: 20px;
+    width: 20px;
+    background-color: transparent;
+    border: 2px solid desaturate($color-primary-1, 100%);
+    top: 0px;
+    z-index: 0;
+  }
+  // Checked style
+  &:checked {
+    + *:before {
+      top: 0;
+      left: 1px;
+      width: 8px;
+      height: 13px;
+      border-top: 2px solid transparent;
+      border-left: 2px solid transparent;
+      border-right: 2px solid white;
+      border-bottom: 2px solid white;
+      -webkit-transform: rotateZ(37deg);
+      transform: rotateZ(37deg);
+
+      -webkit-transform-origin: 100% 100%;
+      transform-origin: 100% 100%;
+    }
+    + *:after {
+      top: 0px;
+      width: 20px;
+      height: 20px;
+      border: 2px solid $color-primary-1;
+      background-color: $color-primary-1;
+      z-index: 0;
+    }
+  }
+  // Disabled style
+  &:disabled:not(:checked) + *:before {
+
+    background-color: transparent;
+    border: 2px solid transparent;
+  }
+  &:disabled:not(:checked) + *:after {
+    border-color: transparent;
+    background-color: mix(desaturate($color-primary-1,100%), white, 40%);
+  }
+  &:disabled:checked + *:before {
+    background-color: transparent;
+
+  }
+  &:disabled:checked + *:after {
+    background-color: mix(desaturate($color-primary-1,100%), white, 40%);
+    border-color: mix(desaturate($color-primary-1,100%), white, 40%);
+  }
+
+}

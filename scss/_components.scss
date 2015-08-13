@@ -1,4 +1,5 @@
 @import "spinner";
+@import "checkbox";
 
 .header {
 	color: $color-text-primary-1;
@@ -492,7 +493,7 @@ textarea {
 .toggle label {
 	color: lighten($color-text, 40%);
 	font-size: 80%;
-	padding: 8px 11px;
+	padding: 8px;
 
 	.toggle-lever {
 		content: "";
@@ -504,7 +505,6 @@ textarea {
 		border-radius: 15px;
 		transition: background 0.3s ease-out;
 		vertical-align: middle;
-		margin: 0 11px;
 
 		&:after {
 			content: "";
@@ -544,10 +544,10 @@ textarea {
 		}
 		&:disabled {
 			& + .toggle-lever {
-				background-color: mix(desaturate($color-primary-2, 40%), white, 50%);
+				background-color: mix(desaturate($color-primary-2, 60%), white, 40%);
 			}
 			& + .toggle-lever:after {
-				background-color: mix(desaturate($color-primary-1, 40%), white, 50%);
+				background-color: mix(desaturate($color-primary-1, 60%), white, 40%);
 			}
 		}
 	}

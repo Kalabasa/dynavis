@@ -3,12 +3,10 @@ define(["jquery", "react"], function($, React) {
 	return React.createClass({
 		render: function() {
 			return (
-				<span className="toggle">
+				<span className="toggle" title={this.props.title}>
 					<label>
-						✘
-						<input type="checkbox" {...this.props} />
+						<input className="toggle-checkbox" type="checkbox" {...this.props} />
 						<span className="toggle-lever"></span>
-						✔
 					</label>
 				</span>
 			);
