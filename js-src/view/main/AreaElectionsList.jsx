@@ -44,7 +44,7 @@ define(function(require){
 			return (
 				<div className="area-elections-list">
 					<h4 className="title">Elected Officials</h4>
-					<ol>{list}</ol>
+					{list && list.length ? <ol>{list}</ol> : <span>None</span>}
 				</div>
 			);
 		},

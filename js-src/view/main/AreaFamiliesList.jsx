@@ -56,25 +56,26 @@ define(function(require){
 			return (
 				<div className="area-families-list">
 					<h4 className="title">Top Local Families</h4>
-					<ol>
-						{_.chain(this.state.families)
-							.groupBy(function(f){ return f.id; })
-							.pairs()
-							.sortBy(function(p){ return -p[1].length; })
-							.map(function(p, i){
-								return (
-									<li key={p[0]} className="area-families-item">
-										<span className="pure-u-1-6 number">{(i+1) + "."}</span>
-										<span className="pure-u-5-6">
-											<Name className="pure-u-1-2 name" model={p[1][0]}/>
-											<span className="pure-u-1-2 count">{p[1].length + " officials"}</span>
-										</span>
-									</li>
-								);
-							})
-							.value()
-						}
-					</ol>
+					{this.collection() && this.collection().size() ? <ol>
+							{_.chain(this.state.families)
+								.groupBy(function(f){ return f.id; })
+								.pairs()
+								.sortBy(function(p){ return -p[1].length; })
+								.map(function(p, i){
+									return (
+										<li key={p[0]} className="area-families-item">
+											<span className="pure-u-1-6 number">{(i+1) + "."}</span>
+											<span className="pure-u-5-6">
+												<Name className="pure-u-1-2 name" model={p[1][0]}/>
+												<span className="pure-u-1-2 count">{p[1].length + " officials"}</span>
+											</span>
+										</li>
+									);
+								})
+								.value()
+							}
+						</ol>
+						: <span>None</span>}
 				</div>
 			);
 		},
