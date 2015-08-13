@@ -7,9 +7,9 @@ define(["jquery", "react", "InstanceCache", "react.backbone"], function($, React
 			var user = this.model() ? this.model().get_user() : null;
 			if(user) {
 				if(!window.location.pathname.match(/^.*?\/admin(\.html)?((\?|#).*)?$/) && this.model().get_user_role() == "admin") {
-					var admin_link = (
-						<a className="button button-flat mar" href="admin">Admin</a>
-					);
+					var admin_link = <a className="button button-flat mar" href="admin">Admin</a>;
+				}else{
+					var datasets_link = <a className="button button-flat" href="#datasets">Datasets</a>;
 				}
 				return (
 					<div className="session">
@@ -23,7 +23,7 @@ define(["jquery", "react", "InstanceCache", "react.backbone"], function($, React
 							</div>
 							<div className="hider-content">
 								<span className="login-text">
-									<a className="button button-flat" href="#datasets">Datasets</a>
+									{datasets_link}
 									{admin_link}
 								</span>
 								<button className="button button-flat" onClick={this.handle_logout}>Sign Out</button>
