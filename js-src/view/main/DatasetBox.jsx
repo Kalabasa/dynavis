@@ -9,6 +9,7 @@ define(function(require) {
 		ValidationMixin = require("mixin/ValidationMixin"),
 		ValidationMessages = require("jsx!view/ValidationMessages"),
 		Notification = require("jsx!view/Notification"),
+		ConfirmationDialog = require("jsx!view/ConfirmationDialog"),
 		ReactTransitionGroup = React.addons.TransitionGroup;
 		
 	return React.createBackboneClass({
@@ -156,17 +157,30 @@ define(function(require) {
 		},
 
 		handle_delete: function(e) {
-			var name = this.model().get("name");
-			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting {name}...</span>, 0);
-			this.model().destroy({
-				wait: true,
-				success: function(){
-					Notification.replace(notif, <span><i className="fa fa-trash"/>&ensp;{name} deleted</span>);
+			var that = this;
+			ConfirmationDialog.open("Are you sure you want to delete this dataset?", [
+				{
+					display: "Cancel",
+					type: "close",
 				},
-				error: function(xhr) {
-					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {xhr.responseText}</span>, null, "error");
+				{
+					display: "Delete",
+					type: "secondary",
+					callback: function() {
+						var name = that.model().get("name");
+						var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting {name}...</span>, 0);
+						that.model().destroy({
+							wait: true,
+							success: function(){
+								Notification.replace(notif, <span><i className="fa fa-trash"/>&ensp;{name} deleted</span>);
+							},
+							error: function(xhr) {
+								Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {xhr.responseText}</span>, null, "error");
+							},
+						});
+					},
 				},
-			});
+			]);
 		},
 	});
 });

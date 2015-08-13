@@ -1,6 +1,14 @@
 "use strict";
-define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/admin/FamilyBox", "mixin/ScrollToTopMixin", "jsx!view/Notification", "react.backbone"], function(React, SearchControls, PageControls, FamilyBox, ScrollToTopMixin, Notification) {
-	var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+define(function(require) {
+	var React = require("react", "react.backbone"),
+		SearchControls = require("jsx!view/SearchControls"),
+		PageControls = require("jsx!view/PageControls"),
+		FamilyBox = require("jsx!view/admin/FamilyBox"),
+		ScrollToTopMixin = require("mixin/ScrollToTopMixin"),
+		Notification = require("jsx!view/Notification"),
+		ConfirmationDialog = require("jsx!view/ConfirmationDialog"),
+		ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+
 	return React.createBackboneClass({
 		mixins: [ScrollToTopMixin],
 
@@ -36,18 +44,30 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 
 		handle_delete_all: function() {
 			var that = this;
-			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting all families...</span>, 0);
-			$.ajax({
-				url: this.collection().url,
-				type: "DELETE",
-				success: function(data){
-					that.collection().fetch();
-					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;All families deleted</span>, null, "success");
+			ConfirmationDialog.open("Are you sure you want to delete all family data?", [
+				{
+					display: "Cancel",
+					type: "close",
 				},
-				error: function(xhr) {
-					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {xhr.responseText}</span>, null, "error");
+				{
+					display: "Delete All",
+					type: "secondary",
+					callback: function() {
+						var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting all families...</span>, 0);
+						$.ajax({
+							url: that.collection().url,
+							type: "DELETE",
+							success: function(data){
+								that.collection().fetch();
+								Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;All families deleted</span>, null, "success");
+							},
+							error: function(xhr) {
+								Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {xhr.responseText}</span>, null, "error");
+							},
+						});
+					},
 				},
-			});
+			]);
 		},
 
 		handle_add: function() {

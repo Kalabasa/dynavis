@@ -1,6 +1,21 @@
 "use strict";
 define(["jquery", "react", "bootstrap"], function($, React) {
 	var Modal = React.createClass({
+		statics: {
+			open: function(title, children) {
+				var node = document.createElement("div");
+				document.body.appendChild(node);
+				var modal = React.createElement(Modal,{
+					title: title,
+					onClose: function() {
+						React.unmountComponentAtNode(node);
+						document.body.removeChild(node);
+					},
+				}, null, children);
+				return React.render(modal, node);
+			},
+		},
+
 		componentDidMount: function() {
 			var $this = $(React.findDOMNode(this));
 			$this.modal();
@@ -35,19 +50,5 @@ define(["jquery", "react", "bootstrap"], function($, React) {
 			$(React.findDOMNode(this)).modal("hide");
 		},
 	});
-
-	Modal.open = function(title, children) {
-		var node = document.createElement("div");
-		document.body.appendChild(node);
-		var modal = React.createElement(Modal,{
-			title: title,
-			onClose: function() {
-				React.unmountComponentAtNode(node);
-				document.body.removeChild(node);
-			},
-		}, null, children);
-		return React.render(modal, node);
-	};
-
 	return Modal;
 });

@@ -1,5 +1,12 @@
 "use strict";
-define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Toggle", "jsx!view/CollectionCount", "react.backbone"], function(React, InstanceCache, DatasetCollection, Toggle, CollectionCount) {
+define(function(require) {
+	var React = require("react", "react.backbone"),
+		InstanceCache = require("InstanceCache"),
+		DatasetCollection = require("model/DatasetCollection"),
+		Toggle = require("jsx!view/Toggle"),
+		CollectionCount = require("jsx!view/CollectionCount"),
+		ConfirmationDialog = require("jsx!view/ConfirmationDialog");
+
 	return React.createBackboneClass({
 		componentWillMount: function() {
 			this.datasets = new DatasetCollection(null, {username: this.model().get("username")});
@@ -50,7 +57,20 @@ define(["react", "InstanceCache", "model/DatasetCollection", "jsx!view/Toggle", 
 
 		handle_delete: function(e) {
 			if(!this.user_in()) {
-				this.model().destroy({wait: true});
+				var that = this;
+				ConfirmationDialog.open("Are you sure you want to delete this user and of their uploaded datasets?", [
+					{
+						display: "Cancel",
+						type: "close",
+					},
+					{
+						display: "Delete",
+						type: "secondary",
+						callback: function() {
+							that.model().destroy({wait: true});
+						},
+					},
+				]);
 			}
 		},
 	});

@@ -9,6 +9,7 @@ define(function(require) {
 		ElectionRow = require("jsx!view/admin/ElectionRow"),
 		ScrollToTopMixin = require("mixin/ScrollToTopMixin"),
 		Notification = require("jsx!view/Notification"),
+		ConfirmationDialog = require("jsx!view/ConfirmationDialog"),
 		ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
 
 	return React.createBackboneClass({
@@ -67,19 +68,31 @@ define(function(require) {
 
 		handle_delete_all: function() {
 			var that = this;
-			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting all election records and related data...</span>, 0);
-			$.ajax({
-				url: this.collection().url,
-				type: "DELETE",
-				success: function(data){
-					if(that.refs.toolbar) that.refs.toolbar.open();
-					that.collection().fetch();
-					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;All election records and related data deleted</span>, null, "success");
+			ConfirmationDialog.open("Are you sure you want to delete all records?", [
+				{
+					display: "Cancel",
+					type: "close",
 				},
-				error: function(xhr) {
-					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {xhr.responseText}</span>, null, "error");
+				{
+					display: "Delete All",
+					type: "secondary",
+					callback: function() {
+						var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting all election records and related data...</span>, 0);
+						$.ajax({
+							url: that.collection().url,
+							type: "DELETE",
+							success: function(data){
+								if(that.refs.toolbar) that.refs.toolbar.open();
+								that.collection().fetch();
+								Notification.replace(notif, <span><i className="fa fa-trash"/>&ensp;All election records and related data deleted</span>, null, "success");
+							},
+							error: function(xhr) {
+								Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {xhr.responseText}</span>, null, "error");
+							},
+						});
+					},
 				},
-			});
+			]);
 		},
 
 		handle_add: function() {

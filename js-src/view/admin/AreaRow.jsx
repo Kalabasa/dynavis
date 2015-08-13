@@ -9,6 +9,8 @@ define(function(require) {
 		Va = require("validator"),
 		ValidationMixin = require("mixin/ValidationMixin"),
 		ValidationMessages = require("jsx!view/ValidationMessages"),
+		Notification = require("jsx!view/Notification"),
+		ConfirmationDialog = require("jsx!view/ConfirmationDialog"),
 		ReactTransitionGroup = React.addons.TransitionGroup;
 
 	return React.createBackboneClass({
@@ -181,7 +183,25 @@ define(function(require) {
 		},
 
 		handle_delete: function() {
-			this.model().destroy({wait: true});
+			var that = this;
+			ConfirmationDialog.open("Are you sure you want to delete this area?", [
+				{
+					display: "Cancel",
+					type: "close",
+				},
+				{
+					display: "Delete",
+					type: "secondary",
+					callback: function() {
+						that.model().destroy({
+							wait: true,
+							error: function(xhr) {
+								Notification.open(<span><p><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {xhr.responseText}</p><p>Make sure there are no election records or datapoints that reference this area.</p></span>, null, "error");
+							},
+						});
+					},
+				},
+			]);
 		},
 	});
 });

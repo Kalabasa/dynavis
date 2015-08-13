@@ -10,6 +10,7 @@ define(function(require) {
 		Va = require("validator"),
 		ValidationMixin = require("mixin/ValidationMixin"),
 		ValidationMessages = require("jsx!view/ValidationMessages"),
+		ConfirmationDialog = require("jsx!view/ConfirmationDialog"),
 		ReactTransitionGroup = React.addons.TransitionGroup;
 
 	return React.createBackboneClass({
@@ -133,7 +134,20 @@ define(function(require) {
 		},
 
 		handle_delete: function(e) {
-			this.model().destroy({wait: true});
+			var that = this;
+			ConfirmationDialog.open("Are you sure you want to delete this family?", [
+				{
+					display: "Cancel",
+					type: "close",
+				},
+				{
+					display: "Delete",
+					type: "secondary",
+					callback: function() {
+						that.model().destroy({wait: true});
+					},
+				},
+			]);
 		},
 	});
 });
