@@ -123,7 +123,7 @@ abstract class Entity implements \JsonSerializable{
 	public static function delete_all() {
 		$ret = Database::get()->query("delete from " . static::TABLE);
 		if(!$ret){
-			throw new DataException("Error deleting entities from the database. " . get_called_class() . ":" . Database::get()->error()[2]);
+			throw new DataException("Error deleting entities from the database. " . get_called_class());
 		}
 	}
 
@@ -143,7 +143,7 @@ abstract class Entity implements \JsonSerializable{
 		$ret = Database::get()->delete(static::TABLE, [static::PRIMARY_KEY => $this->_id]);
 
 		if(!$ret){
-			throw new DataException("Error deleting entity from the database. " . get_class($this) . ":" . Database::get()->error()[2]);
+			throw new DataException("Error deleting entity from the database. " . get_class($this));
 		}
 
 		$this->_data = null;
@@ -204,7 +204,7 @@ abstract class Entity implements \JsonSerializable{
 			$ret = Database::get()->update(static::TABLE, $update_data, [static::PRIMARY_KEY => $this->_id]);
 
 			if(!$ret) {
-				throw new DataException("Error updating entity in the database. " . get_class($this) . ":" . Database::get()->error()[2]);
+				throw new DataException("Error updating entity in the database. " . get_class($this));
 			}
 
 			foreach ($update_data as $key => $value) {
@@ -226,7 +226,7 @@ abstract class Entity implements \JsonSerializable{
 
 		if(!in_array(static::PRIMARY_KEY, static::FIELDS)) {
 			if(!$ret) {
-				throw new DataException("Error adding entity to the database. " . get_class($this) . ":" . Database::get()->error()[2]);
+				throw new DataException("Error adding entity to the database. " . get_class($this));
 			}
 
 			$this->_id = (int) $ret;
