@@ -152,6 +152,9 @@ define(function(require) {
 					success: function() {
 						that.setState({edit: false});
 					},
+					error: function(m,r,o) {
+						Notification.open(<span><i className="fa fa-exclamation-circle"/>&ensp;Save error: {r.responseText}</span>, null, "error");
+					},
 				});
 			}
 		},

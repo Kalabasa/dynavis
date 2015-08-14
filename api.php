@@ -14,6 +14,7 @@ use \Dynavis\Model\Elect;
 use \Dynavis\Model\User;
 use \Dynavis\Model\Dataset;
 use \Dynavis\Model\Datapoint;
+use \Dynavis\Model\TagDatapoint;
 use \Dynavis\Model\Token;
 
 use \Dynavis\DataProcessor;
@@ -1073,7 +1074,17 @@ function post_user_dataset($username) {
 	}
 
 	if(!$user->active) {
-		$app->halt(403, "Deactivated users are not allowed to upload datasets.");
+		$app->halt(403, "Deactivated users are not allowed to upload data.");
+	}
+
+	$total_data = Database::get()->count(Dataset::TABLE, [
+		"[><]" . Datapoint::TABLE => [Dataset::PRIMARY_KEY => "dataset_id"],
+		"[><]" . TagDatapoint::TABLE => [Dataset::PRIMARY_KEY => "dataset_id"],
+	], "*", [
+		Dataset::TABLE . ".user_id" => $user->get_id()
+	]);
+	if($total_data > 200000) {
+		$app->halt(403, "Data limit reached.");
 	}
 
 	$dataset = new Dataset(null, ["user" => $user]);
@@ -1114,6 +1125,20 @@ function post_user_dataset_datapoint($username, $dataset_id) {
 
 	if($dataset->user_id != $user->get_id()) {
 		$app->halt(404);
+	}
+
+	if(!$user->active) {
+		$app->halt(403, "Deactivated users are not allowed to upload data.");
+	}
+
+	$total_data = Database::get()->count(Dataset::TABLE, [
+		"[>]" . Datapoint::TABLE => [Dataset::PRIMARY_KEY => "dataset_id"],
+		"[>]" . TagDatapoint::TABLE => [Dataset::PRIMARY_KEY => "dataset_id"],
+	], "*", [
+		Dataset::TABLE . ".user_id" => $user->get_id()
+	]);
+	if($total_data > 200000) {
+		$app->halt(403, "Data limit reached.");
 	}
 
 	if(!isset($data["year"], $data["area_code"], $data["value"])) {
