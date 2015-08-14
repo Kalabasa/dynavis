@@ -29,5 +29,9 @@ define(["react"], function(React) {
 		get_input: function() {
 			return React.findDOMNode(this.refs.file);
 		},
+
+		get_filename: function() {
+			return this.state.filename;
+		},
 	});
 });
