@@ -20,7 +20,7 @@ define(function(require) {
 			return {
 				edit: this.model().isNew(),
 				code: this.format_code(this.model().get("code")),
-				// level: this.model().get("level") || "barangay",
+				level: this.model().get("level") || "barangay",
 			};
 		},
 
@@ -28,21 +28,21 @@ define(function(require) {
 			return {
 				name: Va.lidator().required().string(),
 				code: Va.lidator().required().length(9).integerish(),
-				// level: Va.lidator().required(),
+				level: Va.lidator().required(),
 			};
 		},
 		getObjectToValidate: function() {
 			return {
 				name: this.refs.name.state.name,
 				code: this.state.code,
-				// level: this.state.level,
+				level: this.state.level,
 			};
 		},
 		getValidationElementMap: function() {
 			return {
 				name: React.findDOMNode(this.refs.name),
 				code: React.findDOMNode(this.refs.code),
-				// level: React.findDOMNode(this.refs.level),
+				level: React.findDOMNode(this.refs.level),
 			};
 		},
 		validationCallback: function(key, valid, message) {

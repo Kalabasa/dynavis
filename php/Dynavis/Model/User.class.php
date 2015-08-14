@@ -115,7 +115,7 @@ class User extends \Dynavis\Core\Entity {
 
 	public function jsonSerialize() {
 		$data = parent::jsonSerialize();
-		$data["active"] = $data["active"] != "0";
+		$data["active"] = $data["active"] != 0;
 		$data["role"] = ["user", "admin"][$data["type"]];
 		unset($data["id"]);
 		unset($data["type"]);

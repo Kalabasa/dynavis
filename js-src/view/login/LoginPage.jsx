@@ -79,10 +79,12 @@ define(function(require) {
 				processData: false,
 				dataType: "json",
 				success: function(data) {
-					this.model().login(username, password);
+					this.model().login(username, password, null, function(xhr) {
+						Notification.open(<span><i className="fa fa-exclamation-circle"/>&ensp;Login error: {xhr.responseText}</span>, null, "error");
+					});
 				}.bind(this),
 				error: function(xhr) {
-					Notification.open(<span><i className="fa fa-exclamation-circle"/>&ensp;Registration error: {xhr.responseText}</span>, null, "error");
+					Notification.open(<span><p><i className="fa fa-exclamation-circle"/>&ensp;Registration error: {xhr.responseText}</p><p>Your username is possibly already in use.</p></span>, null, "error");
 				},
 			});
 		},

@@ -163,7 +163,11 @@ function authenticator($options) {
 			$app->halt(401);
 		}
 
-		$token = \Dynavis\Model\Token::get_by_token($token_string);
+		try {
+			$token = \Dynavis\Model\Token::get_by_token($token_string);
+		}catch(NotFoundException $e) {
+			$app->halt(404);
+		}
 		if(!$token || !$token->valid()) {
 			$app->halt(401);
 		}
@@ -826,6 +830,7 @@ function post_user() {
 	}
 
 	$user = new User();
+	$user->active = false;
 	$user->username = $data["username"];
 	$user->set_password($data["password"]);
 	$user->type = 0;
@@ -1065,6 +1070,10 @@ function post_user_dataset($username) {
 		$user = User::get_by_username($username);
 	}catch(NotFoundException $e) {
 		$app->halt(404, $e->getMessage());
+	}
+
+	if(!$user->active) {
+		$app->halt(403, "Deactivated users are not allowed to upload datasets.");
 	}
 
 	$dataset = new Dataset(null, ["user" => $user]);

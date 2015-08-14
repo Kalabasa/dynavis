@@ -70,7 +70,7 @@ define(function(require) {
 		handle_delete: function(e) {
 			if(!this.user_in()) {
 				var that = this;
-				ConfirmationDialog.open("Are you sure you want to delete this user and all of their uploaded datasets?", [
+				ConfirmationDialog.open("Are you sure you want to delete this user and all of its datasets?", [
 					{
 						display: "Cancel",
 						type: "close",

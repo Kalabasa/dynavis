@@ -1,6 +1,7 @@
 "use strict";
-define(function(require) {
-	var Backbone = require("backbone"),
+define(["require", "react.backbone"], function(require) {
+	var _ = require("underscore"),
+		Backbone = require("backbone"),
 		React = require("react", "react.backbone");
 
 	return React.createBackboneClass({

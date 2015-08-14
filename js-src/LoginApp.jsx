@@ -16,7 +16,7 @@ define(function(require){
 		if(this.token.get_user()) {
 			this.on_login();
 		}else{
-			this.login = React.render(<LoginPage model={this.token} onLogin={this.on_login} />, document.getElementById("body"));
+			this.login = React.render(<LoginPage model={this.token} onLogin={this.on_login.bind(this)} />, document.getElementById("body"));
 			Backbone.history.start();
 		}
 	};

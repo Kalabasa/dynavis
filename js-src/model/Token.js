@@ -83,7 +83,15 @@ define(["jquery", "localStorage", "backbone", "InstanceCache", "model/User"], fu
 				},
 				error: function() {
 					console.error("Error logout");
-					that.fetch();
+					that.fetch({
+						error: function(m,r,o) {
+							if(r.status == 404) {
+								$.ajaxSetup();
+								that.clear();
+								localStorage.removeItem("dynavis_token");
+							}
+						},
+					});
 				},
 			});
 		},

@@ -37,17 +37,13 @@ require.config({
 			deps: ["backbone"],
 			exports: "Backbone.PageableCollection"
 		},
-		"bez": {
-			deps: ["jquery"],
-			exports: "$.bez"
-		},
 		"bootstrap": { deps: ["jquery"], },
 		"jenks": { exports: "jenks" },
 		"JSXTransformer": "JSXTransformer",
 		"localStorage": { exports: "localStorage" },
 		"minivents": { exports: "Events" },
 		"react": { exports: "React" },
-		"react.backbone": { deps: ["react"] },
+		"react.backbone": { deps: ["react", "backbone"] },
 		"underscore": { exports: "_" },
 	},
 
