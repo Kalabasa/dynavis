@@ -35,7 +35,7 @@ define(["backbone", "react", "InstanceCache", "jsx!view/Spinner"], function(Back
 				var token = InstanceCache.get_existing("Token", "session");
 				var user = token ? token.get_user() : null;
 				if(!user) {
-					window.location.href = "login?n=." + encodeURIComponent(window.location.hash);
+					window.location.href = "login?n=app" + encodeURIComponent(window.location.hash);
 					return;
 				}
 
@@ -52,7 +52,7 @@ define(["backbone", "react", "InstanceCache", "jsx!view/Spinner"], function(Back
 				var token = InstanceCache.get_existing("Token", "session");
 				var user = token ? token.get_user() : null;
 				if(!user) {
-					that.navigate("", true);
+					window.location.href = "login?n=app" + encodeURIComponent(window.location.hash);
 					return;
 				}
 				var dataset = new Dataset({username: username, id: id});

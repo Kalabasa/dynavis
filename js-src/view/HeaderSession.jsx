@@ -35,11 +35,12 @@ define(["jquery", "react", "InstanceCache", "react.backbone"], function($, React
 					</div>
 				);
 			}else{
+				var n = encodeURIComponent(window.location.pathname);
 				return (
 					<div className="session">
 						<span className="login-text">
-							<a className="button button-flat mar" href="login">Create Account</a>
-							<a className="button mar" href="login">Sign In</a>
+							<a className="button button-flat mar" href={"login?n=" + n}>Create Account</a>
+							<a className="button mar" href={"login?n=" + n}>Sign In</a>
 						</span>
 					</div>
 				);
