@@ -101,7 +101,7 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 			var file = this.refs.file.get_input().files[0];
 			fd.append("file", file);
 
-			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading data...</span>, 0);
+			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading {this.refs.file.get_filename()}...</span>, 0);
 
 			$.ajax({
 				url: this.model().url() + "/datapoints",
@@ -113,10 +113,10 @@ define(["react", "model/Dataset", "jsx!view/FileInput", "jsx!view/SearchControls
 					if(that.refs.form) React.findDOMNode(that.refs.form).reset();
 					if(that.refs.toolbar) that.refs.toolbar.close();
 					that.collection().fetch();
-					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Datapoints uploaded</span>, null, "success");
+					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Uploaded datapoints: {that.refs.file.get_filename()}</span>, null, "success");
 				},
 				error: function(xhr) {
-					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Datapoints upload error: {xhr.responseText}</span>, null, "error");
+					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Datapoints upload error: {that.refs.file.get_filename()}: {xhr.responseText}</span>, null, "error");
 				},
 			});
 		},

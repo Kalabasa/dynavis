@@ -112,7 +112,7 @@ define(function(require) {
 						Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Empty dataset created</span>, null, "success");
 						window.location.href = "#datasets/" + username + "/" + model.id;
 					}else{
-						Notification.replace(notif, <span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading data...</span>, 0);
+						Notification.replace(notif, <span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading {that.refs.file.get_filename()}...</span>, 0);
 						$.ajax({
 							url: dataset.url() + "/datapoints",
 							data: fd,
@@ -123,11 +123,11 @@ define(function(require) {
 								if(that.refs.form) React.findDOMNode(that.refs.form).reset();
 								that.collection().fetch();
 								that.setState(that.getInitialState());
-								Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Dataset uploaded</span>, null, "success");
+								Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Uploaded dataset: {that.refs.file.get_filename()}</span>, null, "success");
 							},
 							error: function(xhr) {
 								dataset.destroy();
-								Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Datapoints upload error: {xhr.responseText}</span>, null, "error");
+								Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Datapoints upload error: {that.refs.file.get_filename()}: {xhr.responseText}</span>, null, "error");
 							},
 						});
 					}

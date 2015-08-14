@@ -118,7 +118,7 @@ define(function(require) {
 			var file = this.refs.file.get_input().files[0];
 			fd.append("file", file);
 
-			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading...</span>, 0);
+			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Uploading {this.refs.file.get_filename()}...</span>, 0);
 
 			$.ajax({
 				url: this.collection().url,
@@ -130,10 +130,10 @@ define(function(require) {
 					if(that.refs.upload_form) React.findDOMNode(that.refs.upload_form).reset();
 					if(that.refs.toolbar) that.refs.toolbar.close();
 					that.collection().fetch();
-					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Election records uploaded</span>, null, "success");
+					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Uploaded election records: {that.refs.file.get_filename()}</span>, null, "success");
 				},
 				error: function(xhr) {
-					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Upload error: {xhr.responseText}</span>, null, "error");
+					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Upload error: {that.refs.file.get_filename()}: {xhr.responseText}</span>, null, "error");
 				},
 			});
 		},
