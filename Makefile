@@ -1,10 +1,13 @@
-all: css/main.css css/admin.css css/login.css js-build/
+all: css/index.css css/app.css css/admin.css css/login.css js-build/
 clean:
-	rm css/main.css css/admin.css css/login.css
+	rm css/app.css css/admin.css css/login.css
 	rm -r js-build/
 
-css/main.css: scss/main.scss scss/_*
-	scss scss/main.scss css/main.css
+css/index.css: scss/index.scss scss/_*
+	scss scss/index.scss css/index.css
+
+css/app.css: scss/app.scss scss/_*
+	scss scss/app.scss css/app.css
 
 css/admin.css: scss/admin.scss scss/_*
 	scss scss/admin.scss css/admin.css

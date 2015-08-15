@@ -9,8 +9,84 @@
 	<link rel="stylesheet" type="text/css" href="css/index.css" />
 </head>
 <body>
-	<a href="login">Login</a>
-	<a href="admin">Admin</a>
-	<a href="app">App</a>
+	<div class="splash-container">
+		<div class="splash">
+			<div class="pure-g">
+				<div class="pure-u-1 logo-container">
+					<div class="logo-large"></div>
+					<div class="logo-type">DynastyMap</div>
+				</div>
+				<div class="pure-u-1 launch-container">
+					<div><a href="app"><button class="splash-button button button-primary no-decor">Launch App</button></a></div>
+					<div>or <a href="login">Sign In</a></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="pure-g content">
+		<div class="pure-u-1 text">
+			<h1>Create Visualizations</h1>
+			DynastyMap lets you create interactive visualizations of Philippine political dynasty data and geographic data.
+		</div>
+		<div class="pure-u-1-2 img-box fill-1" id="img-choropleth">
+			<img src="img/choropleth.png"/>
+			<div class="img-box-caption">Visualize geographic data using choropleth maps.</div>
+		</div>
+		<div class="pure-u-1-2 img-box fill-1" id="img-bivariate">
+			<img src="img/bivariate.png"/>
+			<div class="img-box-caption">Compare and contrast geographic data using bivariate choropleth maps.</div>
+		</div>
+		<div class="pure-u-1 dark">
+			<div class="pure-u-1 text">
+				<h1>Visualize Political Dynasties</h1>
+				<p>Political dynasties are active in the Philippines, but how prevalent are they? In what ways do they affect the country?</p>
+				<p>DynastyMap enables you to visualize and compare local political dynasties with Philippines geographic datasets such as poverty, population, and crime rate.</p>
+			</div>
+		</div>
+		<div class="pure-u-1-2 img-box fill-2" id="img-tag-map">
+			<img src="img/tag-map.png"/>
+			<div class="img-box-caption">See the relative prevalence of local political dynasties using the tag cloud map.</div>
+		</div>
+		<div class="pure-u-1-2 img-box fill-2" id="img-tag-map-overlay">
+			<img src="img/tag-map-overlay.png"/>
+			<div class="img-box-caption">Compare local political dynasties with geographic data using layers of visualization.</div>
+		</div>
+		<div class="pure-u-1 text">
+			<h1>Use Your Own Data</h1>
+			<p>Got your own dataset that you wish to compare with political dynasties? Do you wish to visualize the results of a survey?</p>
+			<p>DynastyMap allows approved users to upload their own geographic datasets for visualization and comparison with other datasets.</p>
+		</div>
+		<div class="pure-u-1-2 img-box fill-3" id="img-upload">
+			<img src="img/upload.png"/>
+			<div class="img-box-caption">Use any Philippine geographical dataset at any administrative level &dash; regional, provincial, municipal, and barangay levels.</div>
+		</div>
+		<div class="pure-u-1-2 img-box fill-3" id="img-upload-result">
+			<img src="img/upload-result.png"/>
+			<div class="img-box-caption">Visualize your own datasets along with other datasets for comparison.</div>
+		</div>
+		<div class="pure-u-1 about-section">
+			<div class="text">
+				<h1>About DynastyMap</h1>
+				<p>DynastyMap is an interactive data visualization tool on political dynasties in the Philippines. The software uses choropleth maps and tag cloud maps to visualize Philippine datasets. Geographic datasets are uploaded by the users, but the political dynasty datasets are provided by the software.</p>
+				<p>The software adapts the DYNSHA, DYNLAR, and DYNHERF metrics developed by Mendoza et al<a href="#[1]">[1]</a> for quantifying local political dynasties. These metrics are used by the software to provide the political dynasty visualization.</p>
+				<p>This project was developed by Lean Rada as a degree requirement (Special Problem) in B.S. Computer Science at the University of the Philppines Manila.</p>
+				<p>Ⓒ 2015</p>
+			</div>
+		</div>
+		<div class="pure-u-1 attribution-section">
+			<div class="text">
+				<h1>Attributions</h1>
+				<ul>
+					<li>CartoDB</li>
+					<li>OpenStreetMap</li>
+					<li>FontAwesome</li>
+					<li>and several software libraries</li>
+				</ul>
+				<ol>
+					<li><a name="[1]"></a>Mendoza, R.; Beja, E. Jr.; Venida, V.; Yap, D. (2013). “Political dynasties and poverty: Resolving the “chicken or the egg” question”.</li>
+				</ol>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
