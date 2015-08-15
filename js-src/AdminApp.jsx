@@ -39,10 +39,10 @@ define(function(require){
 		}
 
 		if(!this.token.get_user()) {
-			go("login?n=admin" + encodeURIComponent(window.location.hash));
+			go(".");
 			return false;
 		}else if(this.token.get_user_role() && this.token.get_user_role() != "admin") {
-			go(".");
+			go("login?n=admin" + encodeURIComponent(window.location.hash));
 			return false;
 		}
 		return true;

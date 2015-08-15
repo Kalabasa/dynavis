@@ -10,7 +10,7 @@ define(function(require) {
 	return React.createBackboneClass({
 		componentWillMount: function() {
 			this.datasets = new DatasetCollection(null, {username: this.model().get("username")});
-			this.datasets.fetch({count: 1}); // FIXME: this is ugly, but... whatever, just need the datasets count
+			this.datasets.fetch({data: {count: 1}}); // FIXME: this is ugly, but... whatever, just need the datasets count
 		},
 
 		render: function() {
@@ -79,6 +79,7 @@ define(function(require) {
 						display: "Delete",
 						type: "secondary",
 						callback: function() {
+							if(that.props.onDelete) that.props.onDelete(that.model());
 							that.model().destroy({wait: true});
 						},
 					},
