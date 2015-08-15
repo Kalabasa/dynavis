@@ -2,15 +2,21 @@
 define(function(require) {
 	var React = require("react", "react.backbone"),
 		InstanceCache = require("InstanceCache"),
-		DatasetCollection = require("model/DatasetCollection"),
 		Toggle = require("jsx!view/Toggle"),
 		CollectionCount = require("jsx!view/CollectionCount"),
 		ConfirmationDialog = require("jsx!view/ConfirmationDialog");
 
 	return React.createBackboneClass({
+		getInitialState: function() {
+			return {
+				datasets_count: 0,
+			};
+		},
+
 		componentWillMount: function() {
-			this.datasets = new DatasetCollection(null, {username: this.model().get("username")});
-			this.datasets.fetch({data: {count: 1}}); // FIXME: this is ugly, but... whatever, just need the datasets count
+			$.get("api.php/users/" + this.model().get("username") + "/datasets", {count: 1}, function(data){
+				this.setState({datasets_count: data.total});
+			}.bind(this), "json");
 		},
 
 		render: function() {
@@ -27,7 +33,7 @@ define(function(require) {
 						</div>
 						<div className="pure-u-3-8 pad field text-large">{username}</div>
 						<div className="pure-u-1-6 pad">
-							<a href={url_datasets}><CollectionCount collection={this.datasets} /> datasets</a>
+							<a href={url_datasets}>{this.state.datasets_count} datasets</a>
 						</div>
 						<div className="pure-u-1-6 pad clearfix">
 							<label className="pull-right">
@@ -79,7 +85,6 @@ define(function(require) {
 						display: "Delete",
 						type: "secondary",
 						callback: function() {
-							if(that.props.onDelete) that.props.onDelete(that.model());
 							that.model().destroy({wait: true});
 						},
 					},

@@ -8,18 +8,16 @@ define(["react", "jsx!view/SearchControls", "jsx!view/PageControls", "jsx!view/a
 			return (
 				<div className="body-panel">
 					<SearchControls className="mar" collection={this.collection()} />
-					<ReactCSSTransitionGroup transitionName="fade">
+					<div>
+					{/*<ReactCSSTransitionGroup transitionName="fade">*/}
 						{this.collection().map(function(user) {
-							return <UserRow key={user.cid} model={user} onDelete={this.handle_delete_user}/>;
+							return <UserRow key={user.cid} model={user}/>;
 						}, this)}
-					</ReactCSSTransitionGroup>
+					{/*</ReactCSSTransitionGroup>*/}
+					</div>
 					<PageControls className="text-center mar" collection={this.collection()} onNext={this.scroll_to_top} onPrev={this.scroll_to_top} />
 				</div>
 			);
-		},
-		
-		handle_delete_user: function() {
-			this.collection().fetch();
 		},
 	});
 });
