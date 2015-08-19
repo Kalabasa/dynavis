@@ -97,7 +97,7 @@ class DataProcessor {
 	}
 
 	private static function calculate_dynsha($year) {
-		// DYNSHA(a,t) = | Officials(a,t) ∩ IsMembers(t) |
+		// DYNSHA(a,t) = | Officials(a,t) union IsMembers(t) |
 		$query =
 			" select "
 				. Area::TABLE . ".code "
