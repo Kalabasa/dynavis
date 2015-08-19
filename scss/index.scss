@@ -11,6 +11,7 @@
 	height: 80vh;
 
 	color: white;
+	text-shadow: 0 0 20px rgba(0,0,0,0.8);
 
 	background: url("../img/header.png");
 	background-attachment: fixed;
@@ -28,6 +29,11 @@
 			font-size: 3rem;
 		}
 	}
+
+	.splash-title {
+		font-size: 1.5em;
+	}
+
 	.launch-container {
 		margin: 2.5em;
 
@@ -40,6 +46,13 @@
 			&:hover {
 				box-shadow: 0 3px 48px 2px rgba(0,0,20,0.6) !important;
 			}
+		}
+
+		a, a:visited {
+			color: $color-primary-2;
+		}
+		a:hover, a:active {
+			color: white;
 		}
 	}
 }
@@ -144,13 +157,26 @@ $img-box-names: "choropleth", "bivariate", "upload", "upload-result", "tag-map",
 	padding-top: 1em;
 	padding-bottom: 1em;
 	@extend .dark;
+
+	.text-small {
+		font-size: 60%;
+	}
 }
 
-.attribution-section {
-	ul li {
-		list-style-type: square;
-	}
-	ol li {
-		list-style-type: decimal;
-	}
+ol li {
+	list-style-type: decimal;
+}
+ul li {
+	list-style-type: square;
+}
+
+.footer-section {
+	color: #909090;
+	background-color: black;
+	padding: 1em 10%;
+}
+
+.up-logo {
+	width: 60px;
+	height: 60px;
 }

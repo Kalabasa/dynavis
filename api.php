@@ -1083,7 +1083,7 @@ function post_user_dataset($username) {
 	], "*", [
 		Dataset::TABLE . ".user_id" => $user->get_id()
 	]);
-	if($total_data > 200000) {
+	if($total_data > 20) {
 		$app->halt(403, "Data limit reached.");
 	}
 
@@ -1137,7 +1137,7 @@ function post_user_dataset_datapoint($username, $dataset_id) {
 	], "*", [
 		Dataset::TABLE . ".user_id" => $user->get_id()
 	]);
-	if($total_data > 200000) {
+	if($total_data > 20) {
 		$app->halt(403, "Data limit reached.");
 	}
 

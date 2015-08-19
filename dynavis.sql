@@ -1,6 +1,11 @@
 -- phpMyAdmin SQL Dump
+-- version 4.4.12deb1
 -- http://www.phpmyadmin.net
 --
+-- Host: 
+-- Generation Time: Aug 19, 2015 at 09:42 PM
+-- Server version: 
+-- PHP Version: 
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -156,6 +161,7 @@ CREATE TABLE IF NOT EXISTS `token` (
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL,
   `username` varchar(48) COLLATE utf8_unicode_ci NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '0',
   `pw_hash` char(60) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `type` int(11) NOT NULL,
   `salt` char(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL
