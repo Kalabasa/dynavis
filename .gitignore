@@ -4,7 +4,8 @@
 
 /.sass-cache/
 /css/*.map
-/css/main.css
+/css/app.css
+/css/index.css
 /css/admin.css
 /css/login.css
 /js-build/
