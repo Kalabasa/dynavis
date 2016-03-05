@@ -3,41 +3,41 @@ namespace Dynavis\Model;
 use \Dynavis\Database;
 
 class Official extends \Dynavis\Core\Entity {
-	const TABLE = "official";
-	const FIELDS = ["surname", "name", "nickname"];
-	const QUERY_FIELDS = ["surname", "name", "nickname"];
+	public static $TABLE = "official";
+	public static $FIELDS = ["surname", "name", "nickname"];
+	public static $QUERY_FIELDS = ["surname", "name", "nickname"];
 
-	const TABLE_FAMILY_MEMBERSHIP = "family_membership";
+	public static $TABLE_FAMILY_MEMBERSHIP = "family_membership";
 
 	public function get_families() {
 		$fields = array_map(function($f) {
-			return Family::TABLE . ".$f";
-		}, array_merge(Family::FIELDS, [Family::PRIMARY_KEY]));
+			return Family::$TABLE . ".$f";
+		}, array_merge(Family::$FIELDS, [Family::$PRIMARY_KEY]));
 
 		return array_map(
 			function ($data) {
 				return new Family($data, false);
 			},
-			Database::get()->select(Family::TABLE, [
-				"[><]" . static::TABLE_FAMILY_MEMBERSHIP => [Family::PRIMARY_KEY => "family_id"],
-				"[><]" . static::TABLE => [static::TABLE_FAMILY_MEMBERSHIP . ".official_id" => static::PRIMARY_KEY],
+			Database::get()->select(Family::$TABLE, [
+				"[><]" . static::$TABLE_FAMILY_MEMBERSHIP => [Family::$PRIMARY_KEY => "family_id"],
+				"[><]" . static::$TABLE => [static::$TABLE_FAMILY_MEMBERSHIP . ".official_id" => static::$PRIMARY_KEY],
 			], $fields, [
-				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+				static::$TABLE . "." . static::$PRIMARY_KEY => $this->get_id()
 			])
 		);
 	}
 
 	public function get_elections() {
 		$fields = array_map(function($f) {
-			return Elect::TABLE . ".$f";
-		}, array_merge(Elect::FIELDS, [Elect::PRIMARY_KEY]));
+			return Elect::$TABLE . ".$f";
+		}, array_merge(Elect::$FIELDS, [Elect::$PRIMARY_KEY]));
 		
 		return array_map(
 			function ($data) {
 				return new Elect($data, false);
 			},
-			Database::get()->select(Elect::TABLE, $fields, [
-				Elect::TABLE . ".official_id" => $this->get_id()
+			Database::get()->select(Elect::$TABLE, $fields, [
+				Elect::$TABLE . ".official_id" => $this->get_id()
 			])
 		);
 	}
@@ -56,8 +56,8 @@ class Official extends \Dynavis\Core\Entity {
 	}
 
 	public function autodelete() {
-		$elections = Database::get()->count(Elect::TABLE, [
-			Elect::TABLE . ".official_id" => $this->get_id()
+		$elections = Database::get()->count(Elect::$TABLE, [
+			Elect::$TABLE . ".official_id" => $this->get_id()
 		]);
 		
 		if($elections === 0) {
@@ -86,7 +86,7 @@ class Official extends \Dynavis\Core\Entity {
 	}
 
 	public static function get_by_name($surname, $name) {
-		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, ["AND" => [
+		$ret = Database::get()->get(static::$TABLE, static::$PRIMARY_KEY, ["AND" => [
 			"surname" => Database::normalize_string($surname),
 			"name" => Database::normalize_string($name),
 		]]);

@@ -2,9 +2,9 @@
 namespace Dynavis\Model;
 
 class Datapoint extends \Dynavis\Core\RefEntity {
-	const TABLE = "datapoint";
-	const FIELDS = ["dataset_id", "year", "area_code", "value"];
-	const QUERY_FIELDS = null;
+	public static $TABLE = "datapoint";
+	public static $FIELDS = ["dataset_id", "year", "area_code", "value"];
+	public static $QUERY_FIELDS = null;
 
 	public function set($param) {
 		$dataset = $param["dataset"];

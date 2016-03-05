@@ -2,9 +2,9 @@
 namespace Dynavis\Model;
 
 class TagDatapoint extends \Dynavis\Core\RefEntity {
-	const TABLE = "tag_datapoint";
-	const FIELDS = ["dataset_id", "year", "area_code", "family_id", "value"];
-	const QUERY_FIELDS = null;
+	public static $TABLE = "tag_datapoint";
+	public static $FIELDS = ["dataset_id", "year", "area_code", "family_id", "value"];
+	public static $QUERY_FIELDS = null;
 
 	public function set($param) {
 		$dataset = $param["dataset"];

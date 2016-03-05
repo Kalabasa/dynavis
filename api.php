@@ -265,7 +265,7 @@ function generic_post_item($class, $name) {
 	}
 
 	$item = new $class();
-	foreach ($class::FIELDS as $field) {
+	foreach ($class::$FIELDS as $field) {
 		if(!isset($data[$field])) {
 			$app->halt(400, "Incomplete data. " . $field);
 		}
@@ -296,7 +296,7 @@ function generic_put_item($class, $id) {
 		$app->halt(404);
 	}
 	foreach ($data as $key => $value) {
-		if(!in_array($key, $class::FIELDS)) {
+		if(!in_array($key, $class::$FIELDS)) {
 			$app->halt(400, "Invalid property. " . $key);
 		}
 		$item->$key = $value;
@@ -648,7 +648,7 @@ function put_area($id) {
 	}
 
 	foreach ($data as $key => $value) {
-		if(!in_array($key, Area::FIELDS)) {
+		if(!in_array($key, Area::$FIELDS)) {
 			$app->halt(400, "Invalid property. " . $key);
 		}
 		$area->$key = $value;
@@ -800,7 +800,7 @@ function delete_all_elections() { // Deletes EVERYTHING! except areas,datasets,e
 	global $app;
 	Elect::delete_all();
 	Party::delete_all();
-	Database::get()->query("delete from " . Family::TABLE_FAMILY_MEMBERSHIP);
+	Database::get()->query("delete from " . Family::$TABLE_FAMILY_MEMBERSHIP);
 	Official::delete_all();
 	Family::delete_all();
 	$app->response->setStatus(204);
@@ -1077,11 +1077,11 @@ function post_user_dataset($username) {
 		$app->halt(403, "Deactivated users are not allowed to upload data.");
 	}
 
-	$total_data = Database::get()->count(Dataset::TABLE, [
-		"[><]" . Datapoint::TABLE => [Dataset::PRIMARY_KEY => "dataset_id"],
-		"[><]" . TagDatapoint::TABLE => [Dataset::PRIMARY_KEY => "dataset_id"],
+	$total_data = Database::get()->count(Dataset::$TABLE, [
+		"[><]" . Datapoint::$TABLE => [Dataset::$PRIMARY_KEY => "dataset_id"],
+		"[><]" . TagDatapoint::$TABLE => [Dataset::$PRIMARY_KEY => "dataset_id"],
 	], "*", [
-		Dataset::TABLE . ".user_id" => $user->get_id()
+		Dataset::$TABLE . ".user_id" => $user->get_id()
 	]);
 	if($total_data > 20) {
 		$app->halt(403, "Data limit reached.");
@@ -1131,11 +1131,11 @@ function post_user_dataset_datapoint($username, $dataset_id) {
 		$app->halt(403, "Deactivated users are not allowed to upload data.");
 	}
 
-	$total_data = Database::get()->count(Dataset::TABLE, [
-		"[>]" . Datapoint::TABLE => [Dataset::PRIMARY_KEY => "dataset_id"],
-		"[>]" . TagDatapoint::TABLE => [Dataset::PRIMARY_KEY => "dataset_id"],
+	$total_data = Database::get()->count(Dataset::$TABLE, [
+		"[>]" . Datapoint::$TABLE => [Dataset::$PRIMARY_KEY => "dataset_id"],
+		"[>]" . TagDatapoint::$TABLE => [Dataset::$PRIMARY_KEY => "dataset_id"],
 	], "*", [
-		Dataset::TABLE . ".user_id" => $user->get_id()
+		Dataset::$TABLE . ".user_id" => $user->get_id()
 	]);
 	if($total_data > 20) {
 		$app->halt(403, "Data limit reached.");
@@ -1208,7 +1208,7 @@ function put_user_dataset($username, $dataset_id) {
 	}
 
 	foreach ($data as $key => $value) {
-		if(!in_array($key, Dataset::FIELDS)) {
+		if(!in_array($key, Dataset::$FIELDS)) {
 			$app->halt(400, "Invalid property. " . $key);
 		}
 		$dataset->$key = $value;
@@ -1241,7 +1241,7 @@ function put_user_dataset_datapoint($username, $dataset_id, $datapoint_id) {
 	}
 
 	foreach ($data as $key => $value) {
-		if(!in_array($key, Datapoint::FIELDS)) {
+		if(!in_array($key, Datapoint::$FIELDS)) {
 			$app->halt(400, "Invalid property. " . $key);
 		}
 		$datapoint->$key = $value;

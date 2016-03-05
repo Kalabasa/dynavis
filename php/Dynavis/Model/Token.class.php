@@ -3,13 +3,13 @@ namespace Dynavis\Model;
 use \Dynavis\Database;
 
 class Token extends \Dynavis\Core\RefEntity {
-	const TABLE = "token";
-	const FIELDS = [
+	public static $TABLE = "token";
+	public static $FIELDS = [
 		"user_id",
 		"token",
 		"expiry",
 	];
-	const QUERY_FIELDS = null;
+	public static $QUERY_FIELDS = null;
 
 	public function set($param) {
 		$user = $param["user"];
@@ -24,7 +24,7 @@ class Token extends \Dynavis\Core\RefEntity {
 	}
 
 	public static function get_by_token($token) {
-		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, ["token" => $token]);
+		$ret = Database::get()->get(static::$TABLE, static::$PRIMARY_KEY, ["token" => $token]);
 		if($ret === false) throw new \Dynavis\Core\NotFoundException("Token not found. $token");
 		return new Token((int) $ret, false);
 	}
@@ -59,6 +59,6 @@ class Token extends \Dynavis\Core\RefEntity {
 
 	public static function cleanup() {
 		$dt = new \DateTime("-10 hours");
-		Database::get()->delete(static::TABLE, ["expiry[<]" => $dt->format("Y-m-d H:i:s")]);
+		Database::get()->delete(static::$TABLE, ["expiry[<]" => $dt->format("Y-m-d H:i:s")]);
 	}
 }

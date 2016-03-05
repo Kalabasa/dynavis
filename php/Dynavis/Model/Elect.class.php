@@ -4,8 +4,8 @@ use \PDO;
 use \Dynavis\Database;
 
 class Elect extends \Dynavis\Core\RefEntity {
-	const TABLE = "elect";
-	const FIELDS = [
+	public static $TABLE = "elect";
+	public static $FIELDS = [
 		"official_id",
 		"year",
 		"year_end",
@@ -14,7 +14,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		"area_code",
 		"party_id",
 	];
-	const QUERY_FIELDS = ["year", "position"];
+	public static $QUERY_FIELDS = ["year", "position"];
 
 	public function set($param) {
 		$official = $param["official"];
@@ -46,21 +46,21 @@ class Elect extends \Dynavis\Core\RefEntity {
 		if(is_null($query)) {
 			$uquery = null;
 		}else{
-			$joins = " inner join " . Official::TABLE
-					. " on " . static::TABLE . ".official_id = " . Official::TABLE . "." . Official::PRIMARY_KEY
-				. " inner join " . Area::TABLE
-					. " on " . static::TABLE . ".area_code = " . Area::TABLE . ".code "
-				." left join " . Party::TABLE
-					. " on " . static::TABLE . ".party_id = " . Party::TABLE . "." . Party::PRIMARY_KEY;
+			$joins = " inner join " . Official::$TABLE
+					. " on " . static::$TABLE . ".official_id = " . Official::$TABLE . "." . Official::$PRIMARY_KEY
+				. " inner join " . Area::$TABLE
+					. " on " . static::$TABLE . ".area_code = " . Area::$TABLE . ".code "
+				." left join " . Party::$TABLE
+					. " on " . static::$TABLE . ".party_id = " . Party::$TABLE . "." . Party::$PRIMARY_KEY;
 
 			$search_clause = " 0 ";
 			$uquery = array_unique($query);
 			foreach ($classes as $class) {
 				$full_class = "\\Dynavis\\Model\\$class";
-				foreach ($full_class::QUERY_FIELDS as $f) {
+				foreach ($full_class::$QUERY_FIELDS as $f) {
 					$field_conditions = " 1 ";
 					foreach ($uquery as $k => $v) {
-						$field_conditions .= " and " . $full_class::TABLE . ".$f like :query_{$class}_{$f}_{$k}";
+						$field_conditions .= " and " . $full_class::$TABLE . ".$f like :query_{$class}_{$f}_{$k}";
 					}
 					$search_clause .= " or ($field_conditions) ";
 				}
@@ -72,7 +72,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 			if(!is_null($uquery)) {
 				foreach ($classes as $class) {
 					$full_class = "\\Dynavis\\Model\\$class";
-					foreach ($full_class::QUERY_FIELDS as $f) {
+					foreach ($full_class::$QUERY_FIELDS as $f) {
 						foreach ($uquery as $k => $v) {
 							$statement->bindValue(":query_{$class}_{$f}_{$k}", "%$v%", PDO::PARAM_STR);
 						}
@@ -82,7 +82,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 		}
 
 		$count_query = " select count(*) "
-			. " from " . static::TABLE
+			. " from " . static::$TABLE
 			. $joins
 			. " where $where ";
 
@@ -92,11 +92,11 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$total = (int) $count_st->fetch()[0];
 
 		$fields = array_map(function($f) {
-			return static::TABLE . ".$f";
-		}, array_merge(static::FIELDS, [static::PRIMARY_KEY]));
+			return static::$TABLE . ".$f";
+		}, array_merge(static::$FIELDS, [static::$PRIMARY_KEY]));
 
 		$select_query = " select " . join(",", $fields)
-			. " from " . static::TABLE
+			. " from " . static::$TABLE
 			. $joins
 			. " where $where ";
 		if($count != 0) {
@@ -126,8 +126,8 @@ class Elect extends \Dynavis\Core\RefEntity {
 		$this->position = $this->position && trim($this->position) ? Database::normalize_string($this->position) : null;
 
 		// Official cannot be in two posts simultaneously
-		$official_overlaps = Database::get()->select(static::TABLE, static::PRIMARY_KEY, ["AND" => [
-			static::PRIMARY_KEY . "[!]" => $this->get_id(),
+		$official_overlaps = Database::get()->select(static::$TABLE, static::$PRIMARY_KEY, ["AND" => [
+			static::$PRIMARY_KEY . "[!]" => $this->get_id(),
 			"year[<]" => $this->year_end,
 			"year_end[>]" => $this->year,
 			"official_id" => $this->official_id,
@@ -204,7 +204,7 @@ class Elect extends \Dynavis\Core\RefEntity {
 			$insert_data
 		)) . ")";
 
-		$ret = Database::get()->query("insert into " . static::TABLE . " (official_id,year,year_end,position,votes,area_code,party_id) values " . $values_string);
+		$ret = Database::get()->query("insert into " . static::$TABLE . " (official_id,year,year_end,position,votes,area_code,party_id) values " . $values_string);
 
 		if(!$ret) {
 			throw new \Dynavis\Core\DataException("Error adding file data to database.");

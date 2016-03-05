@@ -4,9 +4,9 @@ use \Dynavis\Database;
 use \Dynavis\PSGC;
 
 class Dataset extends \Dynavis\Core\RefEntity {
-	const TABLE = "dataset";
-	const FIELDS = ["user_id", "type", "name", "description"];
-	const QUERY_FIELDS = ["name", "description"];
+	public static $TABLE = "dataset";
+	public static $FIELDS = ["user_id", "type", "name", "description"];
+	public static $QUERY_FIELDS = ["name", "description"];
 
 	public function set($param) {
 		$user = $param["user"];
@@ -37,14 +37,14 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			$where = ["AND" => array_merge($where, ["name[~]" => array_unique($query)])];
 		}
 
-		$total = Database::get()->count(static::TABLE, $where);
+		$total = Database::get()->count(static::$TABLE, $where);
 		if($count != 0) {
 			$where["LIMIT"] = [(int) $start , (int) $count];
 		}
 
 		return [
 			"total" => $total,
-			"data" => Database::get()->select(static::TABLE, array_merge(static::FIELDS, [static::PRIMARY_KEY]), $where),
+			"data" => Database::get()->select(static::$TABLE, array_merge(static::$FIELDS, [static::$PRIMARY_KEY]), $where),
 		];
 	}
 
@@ -58,28 +58,28 @@ class Dataset extends \Dynavis\Core\RefEntity {
 		][$this->type];
 
 		$join = [
-			"[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]
+			"[><]" . static::$TABLE => ["dataset_id" => static::$PRIMARY_KEY]
 		];
 
-		$fields = array_merge($class::FIELDS, [$class::TABLE . "." . $class::PRIMARY_KEY]);
+		$fields = array_merge($class::$FIELDS, [$class::$TABLE . "." . $class::$PRIMARY_KEY]);
 		unset($fields[0]);
 
 		$where = [
-			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id(),
+			static::$TABLE . "." . static::$PRIMARY_KEY => $this->get_id(),
 		];
 
 		if(!is_null($year)) {
-			$where = ["AND" => array_merge($where, [$class::TABLE . ".year" => $year])];
+			$where = ["AND" => array_merge($where, [$class::$TABLE . ".year" => $year])];
 		}
 
-		$total = Database::get()->count($class::TABLE, $join, "*", $where);
+		$total = Database::get()->count($class::$TABLE, $join, "*", $where);
 		if($count != 0) {
 			$where["LIMIT"] = [(int) $start , (int) $count];
 		}
 		
 		return [
 			"total" => $total,
-			"data" => Database::get()->select($class::TABLE, $join, $fields, $where)
+			"data" => Database::get()->select($class::$TABLE, $join, $fields, $where)
 		];
 	}
 
@@ -94,21 +94,21 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			"\\Dynavis\\Model\\TagDatapoint"
 		][$data["type"]];
 
-		$join = ["[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY]];
-		$where = [static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()];
-		$data["min_year"] = Database::get()->min($class::TABLE, $join, $class::TABLE . ".year", $where);
-		$data["max_year"] = Database::get()->max($class::TABLE, $join, $class::TABLE . ".year", $where);
+		$join = ["[><]" . static::$TABLE => ["dataset_id" => static::$PRIMARY_KEY]];
+		$where = [static::$TABLE . "." . static::$PRIMARY_KEY => $this->get_id()];
+		$data["min_year"] = Database::get()->min($class::$TABLE, $join, $class::$TABLE . ".year", $where);
+		$data["max_year"] = Database::get()->max($class::$TABLE, $join, $class::$TABLE . ".year", $where);
 
 		$levels = ["region", "province", "municipality", "barangay"];
 		$contained_levels = [];
 		$join = [
-			"[><]" . static::TABLE => ["dataset_id" => static::PRIMARY_KEY],
-			"[><]" . Area::TABLE => ["area_code" => "code"],
+			"[><]" . static::$TABLE => ["dataset_id" => static::$PRIMARY_KEY],
+			"[><]" . Area::$TABLE => ["area_code" => "code"],
 		];
 		foreach ($levels as $key => $value) {
-			$contained_levels[$value] = Database::get()->has($class::TABLE,$join,["AND" => [
-				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id(),
-				Area::TABLE . ".type" => $key,
+			$contained_levels[$value] = Database::get()->has($class::$TABLE,$join,["AND" => [
+				static::$TABLE . "." . static::$PRIMARY_KEY => $this->get_id(),
+				Area::$TABLE . ".type" => $key,
 			]]);
 		}
 		$data["contained_levels"] = $contained_levels;
@@ -196,7 +196,7 @@ class Dataset extends \Dynavis\Core\RefEntity {
 			$insert_data
 		)) . ")";
 
-		$ret = Database::get()->query("insert into " . Datapoint::TABLE . " (dataset_id,year,area_code,value) values " . $values_string);
+		$ret = Database::get()->query("insert into " . Datapoint::$TABLE . " (dataset_id,year,area_code,value) values " . $values_string);
 
 		if(!$ret) {
 			throw new \Dynavis\Core\DataException("Error adding file data to the database.");

@@ -3,29 +3,29 @@ namespace Dynavis\Model;
 use \Dynavis\Database;
 
 class Party extends \Dynavis\Core\Entity {
-	const TABLE = "party";
-	const FIELDS = ["name"];
-	const QUERY_FIELDS = ["name"];
+	public static $TABLE = "party";
+	public static $FIELDS = ["name"];
+	public static $QUERY_FIELDS = ["name"];
 
 	public function get_elections() {
 		$fields = array_map(function($f) {
-			return Elect::TABLE . ".$f";
-		}, array_merge(Elect::FIELDS, [Elect::PRIMARY_KEY]));
+			return Elect::$TABLE . ".$f";
+		}, array_merge(Elect::$FIELDS, [Elect::$PRIMARY_KEY]));
 		
 		return array_map(
 			function ($data) {
 				return new Elect($data, false);
 			},
-			Database::get()->select(Elect::TABLE, [
-				"[><]" . static::TABLE => ["party_id" => static::PRIMARY_KEY]
+			Database::get()->select(Elect::$TABLE, [
+				"[><]" . static::$TABLE => ["party_id" => static::$PRIMARY_KEY]
 			], $fields, [
-				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+				static::$TABLE . "." . static::$PRIMARY_KEY => $this->get_id()
 			])
 		);
 	}
 
 	public static function get_by_name($name) {
-		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, [
+		$ret = Database::get()->get(static::$TABLE, static::$PRIMARY_KEY, [
 			"name" => Database::normalize_string($name),
 		]);
 		if($ret === false) throw new \Dynavis\Core\NotFoundException("Name not found. $name");

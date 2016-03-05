@@ -12,7 +12,7 @@ use \Dynavis\Model\TagDatapoint;
 use \Dynavis\Model\User;
 
 class DataProcessor {
-	const INDICATORS = [
+	public static $INDICATORS = [
 		"DYNSHA" => ["calculate_dynsha", ["code"]],
 		"DYNLAR" => ["calculate_dynlar", ["code"]],
 		"DYNHERF" => ["calculate_dynherf", ["code"]],
@@ -34,9 +34,9 @@ class DataProcessor {
 		)) . ")";
 
 		if($dataset->type === 0) {
-			$ret = Database::get()->query("insert into " . Datapoint::TABLE . " (dataset_id,year,area_code,value) values " . $values_string);
+			$ret = Database::get()->query("insert into " . Datapoint::$TABLE . " (dataset_id,year,area_code,value) values " . $values_string);
 		}else{
-			$ret = Database::get()->query("insert into " . TagDatapoint::TABLE . " (dataset_id,year,area_code,family_id,value) values " . $values_string);
+			$ret = Database::get()->query("insert into " . TagDatapoint::$TABLE . " (dataset_id,year,area_code,family_id,value) values " . $values_string);
 		}
 
 		if(!$ret) {
@@ -49,7 +49,7 @@ class DataProcessor {
 		// Intensive data processing ahead, set a longer time limit
 		set_time_limit(120); // 2 minutes
 
-		$p = static::INDICATORS[$name];
+		$p = static::$INDICATORS[$name];
 		$calc_function = $p[0];
 		$variables = $p[1];
 
@@ -62,8 +62,8 @@ class DataProcessor {
 		$dataset->save();
 
 		$did = $dataset->get_id();
-		$min_year = Database::get()->min(Elect::TABLE, "year");
-		$max_year = Database::get()->max(Elect::TABLE, "year_end") - 1;
+		$min_year = Database::get()->min(Elect::$TABLE, "year");
+		$max_year = Database::get()->max(Elect::$TABLE, "year_end") - 1;
 
 		$insert_data = [];
 		$count = 0;
@@ -100,23 +100,23 @@ class DataProcessor {
 		// DYNSHA(a,t) = | Officials(a,t) union IsMembers(t) |
 		$query =
 			" select "
-				. Area::TABLE . ".code "
-				. " , count(" . Family::TABLE_FAMILY_MEMBERSHIP . ".family_id) AS Size "
+				. Area::$TABLE . ".code "
+				. " , count(" . Family::$TABLE_FAMILY_MEMBERSHIP . ".family_id) AS Size "
 				. " , count(*) AS Total "
-				. " , 100 * count(" . Family::TABLE_FAMILY_MEMBERSHIP . ".family_id) / count(*) AS DYNSHA "
-			. " from " . Area::TABLE
+				. " , 100 * count(" . Family::$TABLE_FAMILY_MEMBERSHIP . ".family_id) / count(*) AS DYNSHA "
+			. " from " . Area::$TABLE
 
-			. " inner join " . Elect::TABLE
-				. " on " . Area::TABLE . ".code = " . Elect::TABLE . ".area_code "
-			. " inner join " . Official::TABLE
-				. " on " . Elect::TABLE . ".official_id = " . Official::TABLE . "." . Official::PRIMARY_KEY
-			. " left join " . Family::TABLE_FAMILY_MEMBERSHIP
-				. " on " . Official::TABLE . "." . Official::PRIMARY_KEY . " = " . Family::TABLE_FAMILY_MEMBERSHIP . ".official_id "
+			. " inner join " . Elect::$TABLE
+				. " on " . Area::$TABLE . ".code = " . Elect::$TABLE . ".area_code "
+			. " inner join " . Official::$TABLE
+				. " on " . Elect::$TABLE . ".official_id = " . Official::$TABLE . "." . Official::$PRIMARY_KEY
+			. " left join " . Family::$TABLE_FAMILY_MEMBERSHIP
+				. " on " . Official::$TABLE . "." . Official::$PRIMARY_KEY . " = " . Family::$TABLE_FAMILY_MEMBERSHIP . ".official_id "
 			
 			. " where "
-				. Elect::TABLE . ".year <= :year "
-				. " and " . Elect::TABLE . ".year_end > :year "
-			. " group by " . Area::TABLE . ".code ";
+				. Elect::$TABLE . ".year <= :year "
+				. " and " . Elect::$TABLE . ".year_end > :year "
+			. " group by " . Area::$TABLE . ".code ";
 
 		$st = Database::get()->pdo->prepare($query);
 		$st->bindParam(":year", $year, PDO::PARAM_INT);
@@ -130,45 +130,45 @@ class DataProcessor {
 		// Gets the total elected of each area -> Total
 		$subsubquery = 
 			" select "
-				. Area::TABLE . ".code "
+				. Area::$TABLE . ".code "
 				. " , count(*) AS Total "
-			. " from " . Area::TABLE
+			. " from " . Area::$TABLE
 
-			. " inner join " . Elect::TABLE
-				. " on " . Area::TABLE . ".code = " . Elect::TABLE . ".area_code "
-			. " inner join " . Official::TABLE
-				. " on " . Elect::TABLE . ".official_id = " . Official::TABLE . "." . Official::PRIMARY_KEY
+			. " inner join " . Elect::$TABLE
+				. " on " . Area::$TABLE . ".code = " . Elect::$TABLE . ".area_code "
+			. " inner join " . Official::$TABLE
+				. " on " . Elect::$TABLE . ".official_id = " . Official::$TABLE . "." . Official::$PRIMARY_KEY
 			
 			. " where "
-				. Elect::TABLE . ".year <= :year "
-				. " and " . Elect::TABLE . ".year_end > :year "
-			. " group by " . Area::TABLE . ".code ";
+				. Elect::$TABLE . ".year <= :year "
+				. " and " . Elect::$TABLE . ".year_end > :year "
+			. " group by " . Area::$TABLE . ".code ";
 
 		// Gets the share of each dynasty in an area -> Size
 		$subquery = 
 			" select "
 				. " code "
-				. " , " . Family::TABLE . "." . Family::PRIMARY_KEY
-				. " , count( " . Family::TABLE . "." . Family::PRIMARY_KEY . ") AS Size "
+				. " , " . Family::$TABLE . "." . Family::$PRIMARY_KEY
+				. " , count( " . Family::$TABLE . "." . Family::$PRIMARY_KEY . ") AS Size "
 				. " , Total "
 			. " from "
 				. " ( " . $subsubquery . " ) T "
 
-			. " inner join " . Elect::TABLE
-				. " on T.code = " . Elect::TABLE . ".area_code "
-			. " inner join " . Official::TABLE
-				. " on " . Elect::TABLE . ".official_id = " . Official::TABLE . "." . Official::PRIMARY_KEY
-			. " left join " . FAMILY::TABLE_FAMILY_MEMBERSHIP
-				. " on " . Official::TABLE . "." . Official::PRIMARY_KEY . " = " . Family::TABLE_FAMILY_MEMBERSHIP . ".official_id "
-			. " left join " . Family::TABLE
-				. " on " . Family::TABLE . "." . Family::PRIMARY_KEY . " = " . Family::TABLE_FAMILY_MEMBERSHIP . ".family_id "
+			. " inner join " . Elect::$TABLE
+				. " on T.code = " . Elect::$TABLE . ".area_code "
+			. " inner join " . Official::$TABLE
+				. " on " . Elect::$TABLE . ".official_id = " . Official::$TABLE . "." . Official::$PRIMARY_KEY
+			. " left join " . FAMILY::$TABLE_FAMILY_MEMBERSHIP
+				. " on " . Official::$TABLE . "." . Official::$PRIMARY_KEY . " = " . Family::$TABLE_FAMILY_MEMBERSHIP . ".official_id "
+			. " left join " . Family::$TABLE
+				. " on " . Family::$TABLE . "." . Family::$PRIMARY_KEY . " = " . Family::$TABLE_FAMILY_MEMBERSHIP . ".family_id "
 			
 			. " where "
-				. Elect::TABLE . ".year <= :year "
-				. " and " . Elect::TABLE . ".year_end > :year "
+				. Elect::$TABLE . ".year <= :year "
+				. " and " . Elect::$TABLE . ".year_end > :year "
 			. " group by "
 				. " code "
-				. " , " . Family::TABLE_FAMILY_MEMBERSHIP . ".family_id "
+				. " , " . Family::$TABLE_FAMILY_MEMBERSHIP . ".family_id "
 			. " order by Size desc ";
 
 		// Gets the dynasty with the largest share in each area
@@ -190,44 +190,44 @@ class DataProcessor {
 		// Gets the total elected of each area -> Total
 		$subsubquery = 
 			" select "
-				. Area::TABLE . ".code "
+				. Area::$TABLE . ".code "
 				. " , count(*) AS Total "
-			. " from " . Area::TABLE
+			. " from " . Area::$TABLE
 
-			. " inner join " . Elect::TABLE
-				. " on " . Area::TABLE . ".code = " . Elect::TABLE . ".area_code "
-			. " inner join " . Official::TABLE
-				. " on " . Elect::TABLE . ".official_id = " . Official::TABLE . "." . Official::PRIMARY_KEY
+			. " inner join " . Elect::$TABLE
+				. " on " . Area::$TABLE . ".code = " . Elect::$TABLE . ".area_code "
+			. " inner join " . Official::$TABLE
+				. " on " . Elect::$TABLE . ".official_id = " . Official::$TABLE . "." . Official::$PRIMARY_KEY
 			
 			. " where "
-				. Elect::TABLE . ".year <= :year "
-				. " and " . Elect::TABLE . ".year_end > :year "
-			. " group by " . Area::TABLE . ".code ";
+				. Elect::$TABLE . ".year <= :year "
+				. " and " . Elect::$TABLE . ".year_end > :year "
+			. " group by " . Area::$TABLE . ".code ";
 
 		// Gets the share of each dynasty in an area -> Size
 		$subquery = 
 			" select "
 				. " code "
-				. " , count( " . Family::TABLE . "." . Family::PRIMARY_KEY . ") AS Size "
+				. " , count( " . Family::$TABLE . "." . Family::$PRIMARY_KEY . ") AS Size "
 				. " , Total "
 			. " from "
 				. " ( " . $subsubquery . " ) T "
 
-			. " inner join " . Elect::TABLE
-				. " on T.code = " . Elect::TABLE . ".area_code "
-			. " inner join " . Official::TABLE
-				. " on " . Elect::TABLE . ".official_id = " . Official::TABLE . "." . Official::PRIMARY_KEY
-			. " left join " . FAMILY::TABLE_FAMILY_MEMBERSHIP
-				. " on " . Official::TABLE . "." . Official::PRIMARY_KEY . " = " . Family::TABLE_FAMILY_MEMBERSHIP . ".official_id "
-			. " left join " . Family::TABLE
-				. " on " . Family::TABLE . "." . Family::PRIMARY_KEY . " = " . Family::TABLE_FAMILY_MEMBERSHIP . ".family_id "
+			. " inner join " . Elect::$TABLE
+				. " on T.code = " . Elect::$TABLE . ".area_code "
+			. " inner join " . Official::$TABLE
+				. " on " . Elect::$TABLE . ".official_id = " . Official::$TABLE . "." . Official::$PRIMARY_KEY
+			. " left join " . FAMILY::$TABLE_FAMILY_MEMBERSHIP
+				. " on " . Official::$TABLE . "." . Official::$PRIMARY_KEY . " = " . Family::$TABLE_FAMILY_MEMBERSHIP . ".official_id "
+			. " left join " . Family::$TABLE
+				. " on " . Family::$TABLE . "." . Family::$PRIMARY_KEY . " = " . Family::$TABLE_FAMILY_MEMBERSHIP . ".family_id "
 			
 			. " where "
-				. Elect::TABLE . ".year <= :year "
-				. " and " . Elect::TABLE . ".year_end > :year "
+				. Elect::$TABLE . ".year <= :year "
+				. " and " . Elect::$TABLE . ".year_end > :year "
 			. " group by "
 				. " code "
-				. " , " . Family::TABLE_FAMILY_MEMBERSHIP . ".family_id ";
+				. " , " . Family::$TABLE_FAMILY_MEMBERSHIP . ".family_id ";
 
 		// Computes the Herfindahl index
 		$query = 
@@ -245,26 +245,26 @@ class DataProcessor {
 		// LocalDynastySize(a,f,t) = | DynOfficials(a,f,t) |
 		$query = 
 			" select "
-				. Area::TABLE . ".code "
-				. " , " . Family::TABLE . "." . Family::PRIMARY_KEY
+				. Area::$TABLE . ".code "
+				. " , " . Family::$TABLE . "." . Family::$PRIMARY_KEY
 				. " , COUNT(*) AS LocalDynastySize "
-			. " from " . Area::TABLE
+			. " from " . Area::$TABLE
 
-			. " inner join " . Elect::TABLE
-				. " on " . Area::TABLE . ".code = " . Elect::TABLE . ".area_code "
-			. " inner join " . Official::TABLE
-				. " on " . Elect::TABLE . ".official_id = " . Official::TABLE . "." . Official::PRIMARY_KEY
-			. " inner join " . Family::TABLE_FAMILY_MEMBERSHIP
-				. " on " . Official::TABLE . "." . Official::PRIMARY_KEY . " = " . Family::TABLE_FAMILY_MEMBERSHIP . ".official_id "
-			. " inner join " . Family::TABLE
-				. " on " . Family::TABLE . "." . Family::PRIMARY_KEY . " = " . Family::TABLE_FAMILY_MEMBERSHIP . ".family_id "
+			. " inner join " . Elect::$TABLE
+				. " on " . Area::$TABLE . ".code = " . Elect::$TABLE . ".area_code "
+			. " inner join " . Official::$TABLE
+				. " on " . Elect::$TABLE . ".official_id = " . Official::$TABLE . "." . Official::$PRIMARY_KEY
+			. " inner join " . Family::$TABLE_FAMILY_MEMBERSHIP
+				. " on " . Official::$TABLE . "." . Official::$PRIMARY_KEY . " = " . Family::$TABLE_FAMILY_MEMBERSHIP . ".official_id "
+			. " inner join " . Family::$TABLE
+				. " on " . Family::$TABLE . "." . Family::$PRIMARY_KEY . " = " . Family::$TABLE_FAMILY_MEMBERSHIP . ".family_id "
 			
 			. " where "
-				. Elect::TABLE . ".year <= :year "
-				. " and " . Elect::TABLE . ".year_end > :year "
+				. Elect::$TABLE . ".year <= :year "
+				. " and " . Elect::$TABLE . ".year_end > :year "
 			. " group by "
-				. Area::TABLE . ".code "
-				. " , " . Family::TABLE . "." . Family::PRIMARY_KEY;
+				. Area::$TABLE . ".code "
+				. " , " . Family::$TABLE . "." . Family::$PRIMARY_KEY;
 
 		$st = Database::get()->pdo->prepare($query);
 		$st->bindParam(":year", $year, PDO::PARAM_INT);

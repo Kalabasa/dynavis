@@ -5,12 +5,12 @@ use \Dynavis\Database;
 use \Dynavis\PSGC;
 
 class Area extends \Dynavis\Core\Entity {
-	const TABLE = "area";
-	const FIELDS = ["code", "name", "type"];
-	const QUERY_FIELDS = ["code", "name"];
+	public static $TABLE = "area";
+	public static $FIELDS = ["code", "name", "type"];
+	public static $QUERY_FIELDS = ["code", "name"];
 
 	public static function get_by_code($code) {
-		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, [
+		$ret = Database::get()->get(static::$TABLE, static::$PRIMARY_KEY, [
 			"code" => $code,
 		]);
 		if($ret === false) throw new \Dynavis\Core\NotFoundException("Code does not exist. " . $code);
@@ -18,7 +18,7 @@ class Area extends \Dynavis\Core\Entity {
 	}
 
 	public static function has_code($code) {
-		return Database::get()->has(static::TABLE, ["code" => $code]);
+		return Database::get()->has(static::$TABLE, ["code" => $code]);
 	}
 
 	public static function list_areas($count, $start, $level = null, $query = null) {
@@ -45,7 +45,7 @@ class Area extends \Dynavis\Core\Entity {
 			$uquery = array_unique($query);
 			foreach ($uquery as $k => $v) {
 				$word_conditions = " 0 ";
-				foreach (static::QUERY_FIELDS as $f) {
+				foreach (static::$QUERY_FIELDS as $f) {
 					$word_conditions .= " or $f like :query_$k";
 				}
 				$search_clause .= " and ($word_conditions) ";
@@ -54,7 +54,7 @@ class Area extends \Dynavis\Core\Entity {
 		}
 
 		$count_query = " select count(*) "
-			. " from " . static::TABLE
+			. " from " . static::$TABLE
 			. " where $where ";
 
 		$count_st = Database::get()->pdo->prepare($count_query);
@@ -65,8 +65,8 @@ class Area extends \Dynavis\Core\Entity {
 		$count_st->execute();
 		$total = (int) $count_st->fetch()[0];
 
-		$select_query = " select " . join(",", array_merge(static::FIELDS,  [static::PRIMARY_KEY]))
-			. " from " . static::TABLE
+		$select_query = " select " . join(",", array_merge(static::$FIELDS,  [static::$PRIMARY_KEY]))
+			. " from " . static::$TABLE
 			. " where $where ";
 		if($count != 0) {
 			$select_query .= " limit :start , :count ";
@@ -104,42 +104,42 @@ class Area extends \Dynavis\Core\Entity {
 			$where = ["type" => $type];
 		}
 		
-		return Database::get()->count(static::TABLE, $where);
+		return Database::get()->count(static::$TABLE, $where);
 	}
 
 	public function get_elections() {
 		$fields = array_map(function($f) {
-			return Elect::TABLE . ".$f";
-		}, array_merge(Elect::FIELDS, [Elect::PRIMARY_KEY]));
+			return Elect::$TABLE . ".$f";
+		}, array_merge(Elect::$FIELDS, [Elect::$PRIMARY_KEY]));
 		
 		return array_map(
 			function ($data) {
 				return new Elect($data, false);
 			},
-			Database::get()->select(Elect::TABLE, [
-				"[><]" . static::TABLE => ["area_code" => "code"]
+			Database::get()->select(Elect::$TABLE, [
+				"[><]" . static::$TABLE => ["area_code" => "code"]
 			], $fields, [
-				static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+				static::$TABLE . "." . static::$PRIMARY_KEY => $this->get_id()
 			])
 		);
 	}
 
 	public function get_officials($year = False) {
 		$fields = array_map(function($f) {
-			return Official::TABLE . ".$f";
-		}, array_merge(Official::FIELDS, [Official::PRIMARY_KEY]));
+			return Official::$TABLE . ".$f";
+		}, array_merge(Official::$FIELDS, [Official::$PRIMARY_KEY]));
 
 		$query =
 			" select " . join(",", $fields)
-			. " from " . Official::TABLE
+			. " from " . Official::$TABLE
 
-			. " inner join " . Elect::TABLE
-				. " on " . Official::TABLE . "." . Official::PRIMARY_KEY . " = " . Elect::TABLE . ".official_id "
-			. " inner join " . static::TABLE
-				. " on " . Elect::TABLE . ".area_code = " . static::TABLE . ".code "
+			. " inner join " . Elect::$TABLE
+				. " on " . Official::$TABLE . "." . Official::$PRIMARY_KEY . " = " . Elect::$TABLE . ".official_id "
+			. " inner join " . static::$TABLE
+				. " on " . Elect::$TABLE . ".area_code = " . static::$TABLE . ".code "
 
 			. " where "
-				. static::TABLE . "." . static::PRIMARY_KEY . " = " . Database::get()->quote($this->get_id());
+				. static::$TABLE . "." . static::$PRIMARY_KEY . " = " . Database::get()->quote($this->get_id());
 
 		if($year) {
 			$query .= " and year <= " . Database::get()->quote($year)
@@ -233,7 +233,7 @@ class Area extends \Dynavis\Core\Entity {
 			$insert_data
 		)) . ")";
 
-		$ret = Database::get()->query("replace into " . static::TABLE . " (code,name,type) values " . $values_string);
+		$ret = Database::get()->query("replace into " . static::$TABLE . " (code,name,type) values " . $values_string);
 
 		if(!$ret) {
 			throw new \Dynavis\Core\DataException("Error adding file data to database.");
@@ -309,9 +309,9 @@ class Area extends \Dynavis\Core\Entity {
 
 		$candidates = [];
 		foreach ($names as $n) {
-			if(array_key_exists($n, PSGC::MAP)) {
-				$c = count(PSGC::MAP[$n]);
-				foreach (PSGC::MAP[$n] as $area_code) {
+			if(array_key_exists($n, PSGC::$MAP)) {
+				$c = count(PSGC::$MAP[$n]);
+				foreach (PSGC::$MAP[$n] as $area_code) {
 					if(!isset($candidates[$area_code])) {
 						$candidates[$area_code] = 0;
 					}

@@ -5,16 +5,16 @@ use \Dynavis\Database;
 
 abstract class Entity implements \JsonSerializable{
 	// Table name
-	const TABLE = null;
+	public static $TABLE = null;
 
 	// Array of non-autoincrement fields in the database table
-	const FIELDS = null;
+	public static $FIELDS = null;
 
 	// Name of primary key field
-	const PRIMARY_KEY = "id";
+	public static $PRIMARY_KEY = "id";
 
 	// Fields to query when searching
-	const QUERY_FIELDS = ["id"];
+	public static $QUERY_FIELDS = ["id"];
 
 	// ID of this entity
 	private $_id = null;
@@ -27,13 +27,13 @@ abstract class Entity implements \JsonSerializable{
 			if(is_array($id_or_data)) { // assume assoc array
 				$this->_data = [];
 				foreach ($id_or_data as $k => $v) {
-					if(in_array($k, static::FIELDS, true)) {
+					if(in_array($k, static::$FIELDS, true)) {
 						$this->$k = $v;
 						if(!$check) $this->_data[$k] = $v;
 					}
 				}
-				if(!$check && isset($id_or_data[static::PRIMARY_KEY])) {
-					$this->_id = $id_or_data[static::PRIMARY_KEY];
+				if(!$check && isset($id_or_data[static::$PRIMARY_KEY])) {
+					$this->_id = $id_or_data[static::$PRIMARY_KEY];
 				}
 			}else{ // not data, then id
 				if(!$check || static::has($id_or_data)) {
@@ -48,11 +48,11 @@ abstract class Entity implements \JsonSerializable{
 	}
 
 	public static function has($id) {
-		return Database::get()->has(static::TABLE, [static::PRIMARY_KEY => $id]);
+		return Database::get()->has(static::$TABLE, [static::$PRIMARY_KEY => $id]);
 	}
 
 	public static function count() {
-		return Database::get()->count(static::TABLE);
+		return Database::get()->count(static::$TABLE);
 	}
 
 	public static function list_items($count, $start) {
@@ -60,7 +60,7 @@ abstract class Entity implements \JsonSerializable{
 		$limit = $count == 0 ? null : ["LIMIT" => [(int) $start , (int) $count]];
 		return [
 			"total" => static::count(),
-			"data" => Database::get()->select(static::TABLE, array_merge(static::FIELDS, [static::PRIMARY_KEY]), $limit),
+			"data" => Database::get()->select(static::$TABLE, array_merge(static::$FIELDS, [static::$PRIMARY_KEY]), $limit),
 		];
 	}
 
@@ -76,7 +76,7 @@ abstract class Entity implements \JsonSerializable{
 			$uquery = array_unique($query);
 			foreach ($uquery as $k => $v) {
 				$word_conditions = " 0 ";
-				foreach (static::QUERY_FIELDS as $f) {
+				foreach (static::$QUERY_FIELDS as $f) {
 					$word_conditions .= " or $f like :query_$k";
 				}
 				$search_clause .= " and ($word_conditions) ";
@@ -91,7 +91,7 @@ abstract class Entity implements \JsonSerializable{
 		}
 
 		$count_query = " select count(*) "
-			. " from " . static::TABLE
+			. " from " . static::$TABLE
 			. " where $where ";
 
 		$count_st = Database::get()->pdo->prepare($count_query);
@@ -99,8 +99,8 @@ abstract class Entity implements \JsonSerializable{
 		$count_st->execute();
 		$total = (int) $count_st->fetch()[0];
 
-		$select_query = " select " . join(",", array_merge(static::FIELDS, [static::PRIMARY_KEY]))
-			. " from " . static::TABLE
+		$select_query = " select " . join(",", array_merge(static::$FIELDS, [static::$PRIMARY_KEY]))
+			. " from " . static::$TABLE
 			. " where $where ";
 		if($count != 0) {
 			$select_query .= " limit :start , :count ";
@@ -121,7 +121,7 @@ abstract class Entity implements \JsonSerializable{
 	}
 
 	public static function delete_all() {
-		$ret = Database::get()->query("delete from " . static::TABLE);
+		$ret = Database::get()->query("delete from " . static::$TABLE);
 		if(!$ret){
 			throw new DataException("Error deleting entities from the database. " . get_called_class());
 		}
@@ -140,7 +140,7 @@ abstract class Entity implements \JsonSerializable{
 			throw new \RuntimeException("Cannot delete a new entity.");
 		}
 
-		$ret = Database::get()->delete(static::TABLE, [static::PRIMARY_KEY => $this->_id]);
+		$ret = Database::get()->delete(static::$TABLE, [static::$PRIMARY_KEY => $this->_id]);
 
 		if(!$ret){
 			throw new DataException("Error deleting entity from the database. " . get_class($this));
@@ -153,9 +153,9 @@ abstract class Entity implements \JsonSerializable{
 
 	protected function load() {
 		if(is_null($this->_data) && isset($this->_id)) {
-			$this->_data = Database::get()->get(static::TABLE, static::FIELDS, [static::PRIMARY_KEY => $this->_id]);
+			$this->_data = Database::get()->get(static::$TABLE, static::$FIELDS, [static::$PRIMARY_KEY => $this->_id]);
 			// TODO: cast values to field types
-			foreach (static::FIELDS as $f) {
+			foreach (static::$FIELDS as $f) {
 				$this->$f = $this->_data[$f];
 			}
 		}
@@ -168,12 +168,12 @@ abstract class Entity implements \JsonSerializable{
 
 		if(is_null($this->_data)) $this->load();
 		$data = $this->_data;
-		$data[static::PRIMARY_KEY] = $this->_id;
+		$data[static::$PRIMARY_KEY] = $this->_id;
 		return $data;
 	}
 
 	public function __get($prop) {
-		if(!in_array($prop, static::FIELDS, true) && !property_exists($this, $prop)){
+		if(!in_array($prop, static::$FIELDS, true) && !property_exists($this, $prop)){
 			throw new \RuntimeException("Property is not accessible. " . get_class($this) . "::" . $prop);
 		}
 
@@ -182,7 +182,7 @@ abstract class Entity implements \JsonSerializable{
 	}
 
 	public function __set($prop, $value) {
-		if(!in_array($prop, static::FIELDS, true) && !property_exists($this, $prop)){
+		if(!in_array($prop, static::$FIELDS, true) && !property_exists($this, $prop)){
 			throw new \RuntimeException("Property is not accessible. " . get_class($this) . "::" . $prop);
 		}
 
@@ -194,14 +194,14 @@ abstract class Entity implements \JsonSerializable{
 		if(is_null($this->_data)) return;
 
 		$update_data = [];
-		foreach (static::FIELDS as $f) {
+		foreach (static::$FIELDS as $f) {
 			if($this->_data[$f] != $this->$f) {
 				$update_data[$f] = $this->$f;
 			}
 		}
 
 		if(!empty($update_data)){
-			$ret = Database::get()->update(static::TABLE, $update_data, [static::PRIMARY_KEY => $this->_id]);
+			$ret = Database::get()->update(static::$TABLE, $update_data, [static::$PRIMARY_KEY => $this->_id]);
 
 			if(!$ret) {
 				throw new DataException("Error updating entity in the database. " . get_class($this));
@@ -215,23 +215,23 @@ abstract class Entity implements \JsonSerializable{
 
 	private function insert() {
 		$insert_data = [];
-		foreach (static::FIELDS as $f) {
+		foreach (static::$FIELDS as $f) {
 			if(!property_exists($this, $f)) {
 				$this->$f = null;
 			}
 			$insert_data[$f] = $this->$f;
 		}
 
-		$ret = Database::get()->insert(static::TABLE, $insert_data);
+		$ret = Database::get()->insert(static::$TABLE, $insert_data);
 
-		if(!in_array(static::PRIMARY_KEY, static::FIELDS)) {
+		if(!in_array(static::$PRIMARY_KEY, static::$FIELDS)) {
 			if(!$ret) {
 				throw new DataException("Error adding entity to the database. " . get_class($this));
 			}
 
 			$this->_id = (int) $ret;
 		}else{
-			$this->_id = (int) $insert_data[static::PRIMARY_KEY];
+			$this->_id = (int) $insert_data[static::$PRIMARY_KEY];
 		}
 
 		$this->_data = $insert_data;

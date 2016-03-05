@@ -3,18 +3,18 @@ namespace Dynavis\Model;
 use \Dynavis\Database;
 
 class User extends \Dynavis\Core\Entity {
-	const TABLE = "user";
-	const FIELDS = [
+	public static $TABLE = "user";
+	public static $FIELDS = [
 		"active",
 		"username",
 		"pw_hash",
 		"type",
 		"salt",
 	];
-	const QUERY_FIELDS = ["username"];
+	public static $QUERY_FIELDS = ["username"];
 
 	public static function get_by_username($username) {
-		$ret = Database::get()->get(static::TABLE, static::PRIMARY_KEY, [
+		$ret = Database::get()->get(static::$TABLE, static::$PRIMARY_KEY, [
 			"username" => Database::normalize_string($username)
 		]);
 		if($ret === false) throw new \Dynavis\Core\NotFoundException("Username not found. $username");
@@ -23,7 +23,7 @@ class User extends \Dynavis\Core\Entity {
 
 	public function count_datasets($type = null) {
 		$where = [
-			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+			static::$TABLE . "." . static::$PRIMARY_KEY => $this->get_id()
 		];
 
 		if(!is_null($type)) {
@@ -35,16 +35,16 @@ class User extends \Dynavis\Core\Entity {
 			$where = ["AND" => array_merge($where, ["type" => $type])];
 		}
 
-		return Database::get()->count(Dataset::TABLE, [
-			"[><]" . static::TABLE => ["user_id" => static::PRIMARY_KEY]
-		], Dataset::TABLE . "." . Dataset::PRIMARY_KEY, $where);
+		return Database::get()->count(Dataset::$TABLE, [
+			"[><]" . static::$TABLE => ["user_id" => static::$PRIMARY_KEY]
+		], Dataset::$TABLE . "." . Dataset::$PRIMARY_KEY, $where);
 	}
 
 	public function get_datasets($count, $start, $type = null) {
 		if($count < 0 || $start < -1) return false;
 
 		$where = [
-			static::TABLE . "." . static::PRIMARY_KEY => $this->get_id()
+			static::$TABLE . "." . static::$PRIMARY_KEY => $this->get_id()
 		];
 		
 		if(!is_null($type)) {
@@ -53,7 +53,7 @@ class User extends \Dynavis\Core\Entity {
 				case "tag": $type = 1; break;
 				default: $app->halt(400, "Invalid type. " . $type);
 			}
-			$where = ["AND" => array_merge($where, [Dataset::TABLE . ".type" => $type])];
+			$where = ["AND" => array_merge($where, [Dataset::$TABLE . ".type" => $type])];
 		}
 
 		if($count != 0) {
@@ -61,15 +61,15 @@ class User extends \Dynavis\Core\Entity {
 		}
 
 		$fields = array_map(function($f) {
-			return Dataset::TABLE . ".$f";
-		}, array_merge(Dataset::FIELDS, [Dataset::PRIMARY_KEY]));
+			return Dataset::$TABLE . ".$f";
+		}, array_merge(Dataset::$FIELDS, [Dataset::$PRIMARY_KEY]));
 
 		return array_map(
 			function ($data) {
 				return new Dataset($data, false);
 			},
-			Database::get()->select(Dataset::TABLE, [
-				"[><]" . static::TABLE => ["user_id" => static::PRIMARY_KEY]
+			Database::get()->select(Dataset::$TABLE, [
+				"[><]" . static::$TABLE => ["user_id" => static::$PRIMARY_KEY]
 			], $fields, $where)
 		);
 	}
@@ -100,7 +100,7 @@ class User extends \Dynavis\Core\Entity {
 		$where["ORDER"] = "active ASC";
 		return [
 			"total" => static::count(),
-			"data" => Database::get()->select(static::TABLE, array_merge(static::FIELDS, [static::PRIMARY_KEY]), $where),
+			"data" => Database::get()->select(static::$TABLE, array_merge(static::$FIELDS, [static::$PRIMARY_KEY]), $where),
 		];
 	}
 
