@@ -1,5 +1,5 @@
 <?php
-const DB_CONFIG = [
+return [
 	'database_type' => 'mysql',
 	'database_name' => 'datab',
 	'server' => 'localhost',

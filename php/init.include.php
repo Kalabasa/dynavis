@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/lib/Slim/Slim.php';
 require_once __DIR__ . '/lib/medoo.min.php';
-require_once __DIR__ . '/db_config.include.php';
 
 \Slim\Slim::registerAutoloader();
 
