@@ -40,11 +40,15 @@
 		.splash-button {
 			font-size: 1.5em;
 			margin: 1em 0;
-			padding: 1.5em 3em;
+			padding: 1em 2em;
+			border-radius: 4px;
 			box-shadow: 0 2px 44px 2px rgba(0,0,0,0.6) !important;
+			color: $color-text-complement;
+			background-color: $color-complement;
 
 			&:hover {
-				box-shadow: 0 3px 48px 2px rgba(0,0,20,0.6) !important;
+				box-shadow: 0 3px 48px 2px rgba(0,0,0,0.6) !important;
+				background-color: lighten($color-complement, 5%);
 			}
 		}
 
@@ -60,13 +64,13 @@
 .content {
 	color: $color-text;
 	background-color: white;
-	font-size: 1.5em;
+	font-size: 1.2em;
 
 	box-shadow: 0 -2px 44px 0 rgba(0,0,0,0.6);
 
 	.text {
-		padding-left: 12%;
-		padding-right: 12%;
+		padding-left: 24%;
+		padding-right: 24%;
 		margin: 6% 0;
 	}
 	.img-text {
@@ -85,21 +89,21 @@
 	.img-box {
 		position: relative;
 		overflow: hidden;
-		min-height: 300px;
+		min-height: 50vh;
 		transition: background-position 0.3s $ease-swift;
 
 		&:before {
 			content: "";
 			display: block;
 			width: 100%;
-			min-height: 300px;
+			min-height: inherit;
 			transition: background-color 0.2s linear;
 		}
 		&.fill-1:before {
 			background-color: rgba($color-primary-1, 0.8);
 		}
 		&.fill-2:before {
-			background-color: rgba($color-complement, 0.8);
+			background-color: rgba($color-primary-1, 0.8);
 		}
 		&.fill-3:before {
 			background-color: rgba($color-primary-1, 0.8);
@@ -112,7 +116,7 @@
 			bottom: -100%;
 			color: white;
 			text-shadow: 0 0 0.5em rgba(0,0,0,1);
-			background-color: rgba(0,0,0,0.6);
+			background-color: rgba(0,0,0,0.8);
 			transition: all 0.3s $ease-swift;
 			transition-properties: top, bottom, background;
 		}
@@ -173,10 +177,11 @@ ul li {
 .footer-section {
 	color: #909090;
 	background-color: black;
-	padding: 1em 10%;
+	padding: 2em 10%;
 }
 
 .up-logo {
-	width: 60px;
-	height: 60px;
+	width: 70px;
+	height: 70px;
+	opacity: 0.2;
 }

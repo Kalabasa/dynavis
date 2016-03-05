@@ -14,7 +14,7 @@
    height="16"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="logo16.svg"
    style="enable-background:new">
   <defs
@@ -136,29 +136,6 @@
        id="linearGradient4292"
        xlink:href="#linearGradient4311"
        inkscape:collect="always" />
-    <filter
-       inkscape:collect="always"
-       id="filter4422"
-       color-interpolation-filters="sRGB">
-      <feBlend
-         inkscape:collect="always"
-         mode="multiply"
-         in2="BackgroundImage"
-         id="feBlend4424" />
-    </filter>
-    <filter
-       inkscape:collect="always"
-       id="filter4426"
-       x="-0.45141974"
-       width="1.9028395"
-       y="-0.51244384"
-       height="2.0248878"
-       color-interpolation-filters="sRGB">
-      <feGaussianBlur
-         inkscape:collect="always"
-         stdDeviation="10.976534"
-         id="feGaussianBlur4428" />
-    </filter>
     <linearGradient
        y2="852.36218"
        x2="140"
@@ -198,18 +175,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="8"
-     inkscape:cx="-9.9032865"
-     inkscape:cy="-12.952429"
+     inkscape:zoom="7.9999999"
+     inkscape:cx="-26.291755"
+     inkscape:cy="-3.8456742"
      inkscape:document-units="px"
      inkscape:current-layer="g4552"
      showgrid="false"
      showguides="false"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1024"
-     inkscape:window-height="768"
+     inkscape:window-width="1600"
+     inkscape:window-height="864"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="36"
      inkscape:window-maximized="1"
      inkscape:snap-global="false">
     <inkscape:grid
@@ -320,7 +297,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -336,37 +313,37 @@
          inkscape:connector-curvature="0"
          id="path3795"
          d="m 15.130001,1040.5478 -4,-1.06 0,9.54 4,1.06 z"
-         style="color:#000000;fill:#2f9df2;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+         style="color:#000000;fill:#607d8b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
       <path
          inkscape:connector-curvature="0"
          id="path3797"
          d="m 11.130001,1039.4878 -6.3600001,1.06 0,9.54 6.3600001,-1.06 z"
-         style="color:#000000;fill:#0f89e8;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+         style="color:#000000;fill:#4c636e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
       <path
          inkscape:connector-curvature="0"
          id="path3799"
          d="m 4.7609206,1040.5478 -3.99999918,-1.06 0,9.54 3.99999918,1.06 z"
-         style="color:#000000;fill:#2f9df2;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+         style="color:#000000;fill:#607d8b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
       <path
          inkscape:connector-curvature="0"
          id="path3964"
          d="m 9.473751,1039.7644 -4.70375,0.7834 0,2.5374 c 0.158276,-0.023 0.678077,-0.1242 1.166,-0.5234 0.583,-0.477 2.491,-0.053 2.491,-0.053 0,0 1.431,-0.583 1.218999,-1.961 -0.0506,-0.3289 -0.110739,-0.5836 -0.172249,-0.7834 z"
-         style="color:#000000;fill:#66d50e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+         style="color:#000000;fill:#cc441a;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
       <path
          inkscape:connector-curvature="0"
          id="path3966"
          d="m 11.130001,1045.7418 c 0,0 -0.636,0.212 -1.113,0.636 -0.477,0.424 -0.5829991,1.961 -0.5829991,1.961 l 1.6959991,0.053 0,-2.65 z"
-         style="color:#000000;fill:#66d50e;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+         style="color:#000000;fill:#cc441a;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
       <path
          inkscape:connector-curvature="0"
          id="path3966-7"
          d="m 11.130001,1045.7418 0,2.65 c 0,0 0.252091,0.3716 0.70139,0.8215 l 3.29861,0.8745 0,-4.0744 c -0.237062,0.411 -0.311112,1.3714 -0.311112,1.3714 0,0 -1.066667,0.371 -1.51111,0.371 -0.444445,0 0.222222,-2.014 -0.799999,-1.749 -1.022224,0.265 -1.377779,-0.265 -1.377779,-0.265 z"
-         style="color:#000000;fill:#79f01c;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+         style="color:#000000;fill:#ff5722;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
       <path
          inkscape:connector-curvature="0"
          id="path3964-1"
          d="m 0.76092142,1039.4878 0,7.3803 c 1.92690608,0.5989 2.97777718,-0.8613 2.97777718,-0.8613 l -0.08889,-2.014 c 0,0 0.6666665,-1.59 0.8888895,-1.113 0.2222221,0.477 0.1777768,0.212 0.1777768,0.212 0,0 0.018583,0 0.044444,-0.01 l 0,-2.5373 -3.99999832,-1.06 z"
-         style="color:#000000;fill:#79f01c;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+         style="color:#000000;fill:#ff5722;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
       <g
          transform="matrix(1.5692488,0,0,1.5692488,-3.9833518,-590.80553)"
          id="g4507"
@@ -378,13 +355,13 @@
            inkscape:connector-curvature="0"
            sodipodi:nodetypes="ccccc" />
         <path
-           style="color:#000000;fill:#f20065;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+           style="color:#000000;fill:#ff5722;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
            d="m 6.97482,1040.3605 c 0.294063,-0.063 0.539113,0.04 0.881629,1.5141 0.342516,1.4744 0.05227,1.7321 -0.122789,1.8469 -0.126379,0.083 -0.212935,-0.4826 -0.50239,-1.5967 -0.289454,-1.1142 -0.482334,-1.7042 -0.25645,-1.7643 z"
            id="path3036"
            inkscape:connector-curvature="0"
            sodipodi:nodetypes="csssc" />
         <path
-           style="color:#000000;fill:#f20065;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+           style="color:#000000;fill:#ff5722;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
            d="m 8.861446,1041.236 c 0.104364,0.1346 -0.208619,0.273 -1.330315,0.9269 -1.076376,0.6274 -1.362887,1.0735 -1.469607,0.9431 -0.07036,-0.086 0.06892,-0.9043 1.124218,-1.5666 1.055303,-0.6623 1.579752,-0.5044 1.675704,-0.3034 z"
            id="path3038"
            inkscape:connector-curvature="0"

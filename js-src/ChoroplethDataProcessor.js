@@ -50,8 +50,8 @@ define(["underscore", "jenks", "model/Area"], function(_, jenks, Area) {
 		if(!datapoints.length) return null;
 		
 		var scales_hex = [
-			["#FFBFD5", "#F379A3", "#D9356D", "#A60038"],
-			["#BFF8FF", "#79E5F3", "#35C6D9", "#0094A6"],
+			["#fed5c9", "#ffa286", "#ff6d41", "#e43500"],
+			["#caf2fe", "#87e4ff", "#41d4ff", "#00b1e4"],
 		];
 
 		var scales = _.map(scales_hex, function(scale_hex) {

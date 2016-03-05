@@ -18,7 +18,7 @@
 		width: $sidebar-width;
 		height: $header-height;
 
-		background-color: #00ACC1;
+		background-color: darken($color-primary-1, 25%);
 
 		a {
 			display: inline-block;

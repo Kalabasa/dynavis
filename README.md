@@ -1,6 +1,22 @@
 # dynavis
 Philippine political dynasty visualization system
 
+## Requirements
+
+The server requires the following software:
+* Apache 2.4
+* MySQL 5.5
+* PHP 5.6 (possibly 5.5)
+* Python 2.7
+	* Python Requests 2.7
+	* Python GeoJSON 1.2
+
+## Building
+
+_TODO_
+
+## License
+
 &copy; 2016 Lean Rada
 
 This program is free software: you can redistribute it and/or modify
