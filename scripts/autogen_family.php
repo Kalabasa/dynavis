@@ -1,5 +1,5 @@
 <?php
-require '../php/init.include.php';
+require 'php/init.include.php';
 
 use \Dynavis\Database;
 use \Dynavis\DataProcessor;
