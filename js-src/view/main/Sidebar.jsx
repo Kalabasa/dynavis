@@ -124,13 +124,15 @@ define(function(require) {
 							<input className="pure-u-2-3 group-component" type="number" valueLink={this.linkState("year_input")} required disabled={this.state.disabled} />
 							<input className="pure-u-1-3 group-component button-primary" type="submit" value="Go" disabled={this.state.disabled} />
 						</form>
-						<div className="pure-u-1 group" style={{display: "none"}}>
+						{/* Disabled because unpolished
+						<div className="pure-u-1 group">
 							<button className="pure-u-1-4 group-component button" onClick={this.handle_backward} disabled={this.state.disabled}><i className="fa fa-step-backward"/></button>
 							{this.state.playing
 								? <button className="pure-u-1-2 group-component button" onClick={this.handle_pause} disabled={this.state.disabled}><i className="fa fa-pause"/>&ensp; Pause</button>
 								: <button className="pure-u-1-2 group-component button" onClick={this.handle_play} disabled={this.state.disabled}><i className="fa fa-play"/>&ensp; Play</button>}
 							<button className="pure-u-1-4 group-component button" onClick={this.handle_forward} disabled={this.state.disabled}><i className="fa fa-step-forward"/></button>
 						</div>
+						*/}
 					</div>
 				</div>
 			);
