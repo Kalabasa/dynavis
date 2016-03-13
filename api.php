@@ -120,6 +120,7 @@ $app->delete("/users/:username", $auth_username_or_admin, "delete_user");
 $app->delete("/users/:username/datasets/:id", $auth_username_or_admin, "delete_user_dataset");
 $app->delete("/users/:username/datasets/:id_/datapoints/:id", $auth_username, "delete_user_dataset_datapoint");
 $app->delete("/tokens/:id", $auth_token, function ($id) { generic_delete_item("Token", $id); } );
+$app->delete("/geojson/:level", $auth_admin, "delete_geojson");
 
 $app->run();
 
@@ -1438,6 +1439,37 @@ function post_geojson($level) {
 	exec(escapeshellcmd("./scripts/process_geojson.py " . escapeshellarg($dest) . " " . escapeshellarg($level) . " &"));
 
 	$app->response->setStatus(204);
+}
+
+function delete_geojson($level) {
+	global $app;
+
+	$dir = "./data";
+	$file = "$dir/$level.json";
+	$data_dir = "$dir/$level";
+
+	if (is_file($file)) {
+		unlink($file);
+	}
+
+	rrmdir($data_dir);
+
+	$app->response->setStatus(204);
+}
+
+function rrmdir($dir) {
+	if (is_dir($dir)) { 
+		$objects = scandir($dir); 
+		foreach ($objects as $object) { 
+			if ($object != "." && $object != "..") { 
+				if (is_dir($dir."/".$object))
+					rrmdir($dir."/".$object);
+				else
+					unlink($dir."/".$object); 
+			} 
+		}
+		rmdir($dir); 
+	} 
 }
 
 

@@ -12,7 +12,7 @@ DATA_DIR = "./data/"
 LOG_FILE = DATA_DIR + "log"
 
 try:
-	file_handle = os.open(LOG_FILE, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+	file_handle = os.open(LOG_FILE, os.O_CREAT | os.O_APPEND | os.O_WRONLY)
 except OSError as e:
 	if e.errno == errno.EEXIST:
 		pass
@@ -20,13 +20,16 @@ except OSError as e:
 		raise
 
 logging.basicConfig(filename=LOG_FILE)
-logger = logging.getLogger("process_geojson")
-logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.DEBUG)
 
 def main():
 	filepath = sys.argv[1]
 	level = sys.argv[2]
+
+	logger = logging.getLogger("(" + filepath + "," + level + ")")
+	logger.addHandler(logging.StreamHandler())
+	logger.setLevel(logging.DEBUG)
+
+	logger.info("GeoJSON processing started")
 
 	zoom = { # These zoom levels must match the server
 		"region": 0,
@@ -57,19 +60,25 @@ def main():
 			key = (int(center[0]), int(center[1]))
 			tiles[key].append(feature)
 
+		logger.info("Read " + str(len(gj.features)) + " features")
+		logger.info("Compiled " + str(len(tiles)) + " tiles")
+
 		# Save tiles
 		root = os.path.join(DATA_DIR, level)
 		if(os.path.exists(root)):
 			shutil.rmtree(root)
+			logger.info("Removed old tile data")
 		for tile,features in tiles.iteritems():
 			fc = geojson.FeatureCollection(features)
 
 			dirpath = os.path.join(root, str(tile[0]))
-			filepath = os.path.join(dirpath, str(tile[1]) + ".json")
+			tilepath = os.path.join(dirpath, str(tile[1]) + ".json")
 
 			mkdir_p(dirpath, 0775)
-			with os.fdopen(os.open(filepath, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0664), "w") as outfile:
+			with os.fdopen(os.open(tilepath, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0664), "w") as outfile:
 				outfile.write(geojson.dumps(fc))
+
+	logger.info("GeoJSON processing finished")
 
 # http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Python
 def deg2num(lat_deg, lon_deg, zoom):
@@ -88,4 +97,7 @@ def mkdir_p(path, mode):
 			pass
 		else: raise
 
-main()
+try:
+	main()
+except Exception:
+	logging.exception("GeoJSON processing failed!")

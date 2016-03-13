@@ -59,6 +59,7 @@ define(function(require) {
 									<option value="barangay">Barangays</option>
 								</select>
 								<input className="button button-primary" type="submit" value="Update" />
+								<button className="button button-flat button-complement" onClick={this.handle_delete_geojson}>Delete</button>
 							</form>
 						</div>
 					</PanelToolbar>
@@ -177,6 +178,26 @@ define(function(require) {
 				},
 				error: function(xhr) {
 					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Update error: {that.refs.file_geojson.get_filename()}: {xhr.responseText}</span>, null, "error");
+				},
+			});
+		},
+
+		handle_delete_geojson: function(e) {
+			var that = this;
+			e.preventDefault();
+
+			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting {this.state.upload_level}...</span>, 0);
+
+			$.ajax({
+				url: "api.php/geojson/" + this.state.upload_level,
+				type: "DELETE",
+				success: function(data){
+					React.findDOMNode(that.refs.geojson_form).reset();
+					that.refs.toolbar.close();
+					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Deleted GeoJSON: {that.state.upload_level}</span>, null, "success");
+				},
+				error: function(xhr) {
+					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {that.state.upload_level}: {xhr.responseText}</span>, null, "error");
 				},
 			});
 		},
