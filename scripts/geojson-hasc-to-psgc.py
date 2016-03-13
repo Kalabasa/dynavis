@@ -48,6 +48,6 @@ def main():
 			logger.error("No HASC property for " + pprint(props))
 
 	with open(params.output, "w") as output:
-		json.dump(geojson, output, indent=2)
+		json.dump(geojson, output)
 
 main()
