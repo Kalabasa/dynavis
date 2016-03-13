@@ -224,7 +224,6 @@ define(["underscore", "d3", "leaflet", "InstanceCache", "view/main/map/Choroplet
 			// update all tags
 			tags_data
 				.style("font-size", font_size_func)
-				.transition().duration(300)
 				.attr("transform", transform_func)
 				.style("opacity", opacity_func);
 			tags_data.selectAll("text")
