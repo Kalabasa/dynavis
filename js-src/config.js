@@ -5,7 +5,8 @@ require.config({
 	baseUrl: "js-build",
 
 	paths: {
-		"backbone": "lib/backbone",
+		"backbone": "lib/backbone-wrapper",
+		"backbone-original": "lib/backbone",
 		"backbone-pagec": "lib/backbone-pagec",
 		"jquery.bez": "lib/jquery.bez.min",
 		"bloodhound": "lib/bloodhound",
@@ -30,8 +31,10 @@ require.config({
 
 	shim : {
 		"backbone": {
-			deps: ["underscore", "jquery"],
 			exports: "Backbone"
+		},
+		"backbone-original": {
+			deps: ["underscore", "jquery"]
 		},
 		"backbone-pagec": {
 			deps: ["backbone"],

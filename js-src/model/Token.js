@@ -74,7 +74,8 @@ define(["jquery", "localStorage", "backbone", "InstanceCache", "model/User"], fu
 		logout: function() {
 			var that = this;
 			$.ajax({
-				method: "DELETE",
+				method: "POST", // Fake method for compatibility
+				headers: { "X-HTTP-Method-Override": "DELETE" },
 				url: that.url(),
 				success: function() {
 					$.ajaxSetup();

@@ -97,7 +97,8 @@ define(function(require) {
 						var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting all areas...</span>, 0);
 						$.ajax({
 							url: that.collection().url,
-							type: "DELETE",
+							method: "POST", // Fake method for compatibility
+							headers: { "X-HTTP-Method-Override": "DELETE" },
 							success: function(data){
 								if(that.refs.toolbar) that.refs.toolbar.open();
 								that.collection().fetch();
@@ -190,7 +191,8 @@ define(function(require) {
 
 			$.ajax({
 				url: "api.php/geojson/" + this.state.upload_level,
-				type: "DELETE",
+				method: "POST", // Fake method for compatibility
+				headers: { "X-HTTP-Method-Override": "DELETE" },
 				success: function(data){
 					React.findDOMNode(that.refs.geojson_form).reset();
 					that.refs.toolbar.close();

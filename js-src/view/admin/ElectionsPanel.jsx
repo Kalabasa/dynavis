@@ -80,7 +80,8 @@ define(function(require) {
 						var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting all election records and related data...</span>, 0);
 						$.ajax({
 							url: that.collection().url,
-							type: "DELETE",
+							method: "POST", // Fake method for compatibility
+							headers: { "X-HTTP-Method-Override": "DELETE" },
 							success: function(data){
 								if(that.refs.toolbar) that.refs.toolbar.open();
 								that.collection().fetch();

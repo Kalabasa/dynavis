@@ -56,7 +56,8 @@ define(function(require) {
 						var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Deleting all families...</span>, 0);
 						$.ajax({
 							url: that.collection().url,
-							type: "DELETE",
+							method: "POST", // Fake method for compatibility
+							headers: { "X-HTTP-Method-Override": "DELETE" },
 							success: function(data){
 								that.collection().fetch();
 								Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;All families deleted</span>, null, "success");
