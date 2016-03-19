@@ -194,7 +194,7 @@ define(function(require) {
 				success: function(data){
 					React.findDOMNode(that.refs.geojson_form).reset();
 					that.refs.toolbar.close();
-					Notification.replace(notif, <span><i className="fa fa-check-circle"/>&ensp;Deleted GeoJSON: {that.state.upload_level}</span>, null, "success");
+					Notification.replace(notif, <span><i className="fa fa-trash"/>&ensp;Deleted GeoJSON: {that.state.upload_level}</span>, null, "success");
 				},
 				error: function(xhr) {
 					Notification.replace(notif, <span><i className="fa fa-exclamation-circle"/>&ensp;Delete error: {that.state.upload_level}: {xhr.responseText}</span>, null, "error");
