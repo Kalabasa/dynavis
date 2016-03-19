@@ -88,7 +88,6 @@ define(["underscore", "leaflet", "model/Area", "jsx!view/main/ChoroplethLegend"]
 		},
 
 		add_geojson: function(geojson) {
-			console.log(geojson);
 			this._geojson.push(geojson);
 
 			var t = 0;
