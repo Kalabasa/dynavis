@@ -62,7 +62,7 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			this.labels.getContainer().style.pointerEvents = "none";
 
 			this.last_level = "region";
-			this.target_zoom = 0;
+			this.target_zoom = 6; // [GEOJSON_ZOOM_CONST]
 			this.update_view();
 			
 			this.map.on("viewreset moveend zoomend", this.update_view);
@@ -190,8 +190,8 @@ define(["react", "underscore", "leaflet", "config.map", "view/main/map/Choroplet
 			if(level != this.last_level) this.reset_geojson(level);
 			this.last_level = level;
 
-			this.target_zoom = { // These zoom levels must match with the server
-				"region": 0,
+			this.target_zoom = { // [GEOJSON_ZOOM_CONST] These zoom levels must match with the server
+				"region": 6,
 				"province": 8,
 				"municipality": 10,
 				"barangay": 12,

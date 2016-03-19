@@ -1353,8 +1353,8 @@ function post_token() {
 function get_geojson($level, $zoom, $x, $y) {
 	global $app;
 
-	$target_zoom = [ // These zoom levels must match with the client
-		"region" => 0,
+	$target_zoom = [ // [GEOJSON_ZOOM_CONST] These zoom levels must match with the client
+		"region" => 6,
 		"province" => 8,
 		"municipality" => 10,
 		"barangay" => 12,

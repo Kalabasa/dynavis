@@ -31,8 +31,8 @@ def main():
 
 	logger.info("GeoJSON processing started")
 
-	zoom = { # These zoom levels must match the server
-		"region": 0,
+	zoom = { # [GEOJSON_ZOOM_CONST] These zoom levels must match the server
+		"region": 6,
 		"province": 8,
 		"municipality": 10,
 		"barangay": 12,
