@@ -70,11 +70,11 @@ define(function(require) {
 			}
 			return (
 				<div className="pure-g">
-					<div className="pure-u-1 infobar-title" style={titlebar_style}>
-						<div className="pure-u-4-5">
+					<div className="pure-u-1 infobar-titlebar" style={titlebar_style}>
+						<div className="pure-u-4-5 infobar-title-container">
 							{area_bar}
 						</div>
-						<div className="pure-u-1-5">
+						<div className="pure-u-1-5 infobar-button-container">
 							<button className="pull-right button button-flat button-close" style={_.pick(titlebar_style, "color")} onClick={this.handle_close}>&times;</button>
 						</div>
 					</div>

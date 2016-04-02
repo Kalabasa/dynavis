@@ -1,6 +1,6 @@
 @import "common";
 
-$infobar-height: 50%;
+$infobar-height: 40%;
 $scroll-fade-length: 210px;
 
 .header {
@@ -28,14 +28,19 @@ $scroll-fade-length: 210px;
 	transition: height 0.6s $ease-swift;
 }
 
-.infobar .infobar-title {
-	padding: 8px 22px;
+.infobar .infobar-titlebar {
 	color: $color-text-complement;
 	background-color: $color-complement;
 
-	button {
-		color: $color-text-complement;
-		font-size: 160%;
+	.infobar-title-container {
+		padding: 12px 22px;
+	}
+	.infobar-button-container {
+		padding: 8px;
+		button {
+			color: $color-text-complement;
+			font-size: 160%;
+		}
 	}
 }
 .infobar .infobar-content {
