@@ -79,10 +79,10 @@ define(function(require) {
 						</div>
 					</div>
 					<div className="pure-u-1 infobar-content">
-						<div className="pure-u-2-3">
+						<div className="pure-u-3-5">
 							<AreaElectionsList bus={this.props.bus} collection={elections}/>
 						</div>
-						<div className="pure-u-1-3">
+						<div className="pure-u-2-5">
 							<AreaFamiliesList bus={this.props.bus} collection={elections}/>
 						</div>
 					</div>

@@ -1,6 +1,6 @@
 @import "common";
 
-$infobar-height: 40%;
+$infobar-width: 40%;
 $scroll-fade-length: 210px;
 
 .header {
@@ -14,18 +14,18 @@ $scroll-fade-length: 210px;
 	background-color: $color-background;
 }
 .infobar {
-	bottom: 0;
-	left: $sidebar-width;
-	height: 0;
+	right: -$infobar-width;
+	top: $header-height;
+	width: $infobar-width;
 	z-index: 50;
 
 	background-color: white;
 	box-shadow: 0 0 4px 0 rgba(0,0,0,0.4);
-	transition: height 0.4s ease-in;
+	transition: right 0.4s ease-in;
 }
 .infobar.show {
-	height: $infobar-height;
-	transition: height 0.6s $ease-swift;
+	right: 0;
+	transition: right 0.6s $ease-swift;
 }
 
 .infobar .infobar-titlebar {
