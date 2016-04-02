@@ -1,6 +1,7 @@
 @import "common";
 
 $infobar-height: 50%;
+$scroll-fade-length: 210px;
 
 .header {
 }
@@ -53,7 +54,6 @@ $infobar-height: 50%;
 .dataset-chooser-list {
 	overflow-y: auto;
 	height: 100%;
-	padding: 5px 0;
 }
 .dataset-chooser-item {
 	cursor: pointer;
@@ -76,6 +76,7 @@ $infobar-height: 50%;
 		border-top: solid 1px $color-background;
 	}
 }
+
 .scroll-edge-fade {
 	position: absolute;
 	pointer-events: none;
@@ -84,7 +85,24 @@ $infobar-height: 50%;
 	bottom: 0;
 	left: 0;
 	right: 0;
-	background: linear-gradient(0deg, white, transparent 40px), linear-gradient(180deg, white, transparent 20px);
+}
+.scroll-edge-fade.edge-fade-top {
+	background: linear-gradient(
+		180deg,
+		white 1px,
+		rgba(white, 0.5) $scroll-fade-length/9,
+		rgba(white, 0.25) $scroll-fade-length/3,
+		transparent $scroll-fade-length
+	);
+}
+.scroll-edge-fade.edge-fade-bottom {
+	background: linear-gradient(
+		0deg,
+		white 1px,
+		rgba(white, 0.5) $scroll-fade-length/9,
+		rgba(white, 0.25) $scroll-fade-length/3,
+		transparent $scroll-fade-length
+	);
 }
 
 .map-polygon {
