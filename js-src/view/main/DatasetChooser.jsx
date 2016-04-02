@@ -1,6 +1,7 @@
 "use strict";
 define(function(require) {
-	var React = require("react", "react.backbone"),
+	var _ = require("underscore"),
+		React = require("react", "react.backbone"),
 		SearchControls = require("jsx!view/SearchControls"),
 		DatasetChoice = require("jsx!view/main/DatasetChoice");
 
@@ -12,11 +13,24 @@ define(function(require) {
 		},
 
 		componentDidMount: function() {
-			React.findDOMNode(this.refs.dataset_list).addEventListener("scroll", this.handle_scroll);
+			var dataset_list = React.findDOMNode(this.refs.dataset_list);
+
+			dataset_list.addEventListener("scroll", this.update_scroll_fades);
+
+			if (MutationObserver) {
+				this.mutation_observer = new MutationObserver(this.update_scroll_fades);
+				this.mutation_observer.observe(dataset_list, {attributes: true, childList: true, characterData: true, subtree: true});
+			} else {
+				_.delay(this.update_scroll_fades, 0);
+			}
 		},
 
 		componentWillUnmount: function() {
-			React.findDOMNode(this.refs.dataset_list).removeEventListener("scroll", this.handle_scroll);
+			React.findDOMNode(this.refs.dataset_list).removeEventListener("scroll", this.update_scroll_fades);
+
+			if (this.mutation_observer) {
+				this.mutation_observer.disconnect();
+			}			
 		},
 
 		render: function() {
@@ -60,7 +74,7 @@ define(function(require) {
 			this.props.onSelect(this.state.selected);
 		},
 
-		handle_scroll: function() {
+		update_scroll_fades: function() {
 			var $top_edge = $(React.findDOMNode(this.refs.scroll_edge_fade_top));
 			var $bottom_edge = $(React.findDOMNode(this.refs.scroll_edge_fade_bottom));
 			var $dataset_list = $(React.findDOMNode(this.refs.dataset_list));
