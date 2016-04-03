@@ -1178,6 +1178,10 @@ function post_dataset_file($username, $dataset_id, $file) {
 		$app->halt(404, $e->getMessage());
 	}
 
+	if(!$user->active) {
+		$app->halt(403, "Deactivated users are not allowed to upload data.");
+	}
+
 	Database::get()->pdo->beginTransaction();
 	try {
 		$dataset->file($_FILES["file"]);
