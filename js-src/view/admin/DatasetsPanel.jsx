@@ -83,10 +83,10 @@ define(function(require) {
 
 			var descriptions = {
 				"DYNSHA": "Proportion of dynastic officials in each local government unit.",
-				"DYNLAR": "Proportion of the dynasty with the largest proportion of dynastic officials in each local government unit.",
+				"DYNLAR": "Proportion of the dynasty having the largest proportion of dynastic officials in each local government unit.",
 				"DYNHERF": "Herfindal index on dynasties in each local government unit.",
 				"LocalDynastySize": "Number of members of each dynasty in each local government unit.",
-				"RecursiveDynastySize": "Number of members of each dynasty in each local government unit including members in subdivisions.",
+				"RecursiveDynastySize": "Number of members of each dynasty in each local government unit including members in subunits.",
 			};
 
 			var token = InstanceCache.get_existing("Token", "session");
@@ -96,7 +96,7 @@ define(function(require) {
 			var props = {
 				username: user.get("username"),
 				indicator: indicator,
-				description: descriptions[indicator] + " Generated on " + new Date(),
+				description: descriptions[indicator] + "\n\nGenerated on " + new Date(),
 			};
 
 			var notif = Notification.open(<span><i className="fa fa-circle-o-notch fa-spin"/>&ensp;Generating {indicator} variable...</span>, 0);

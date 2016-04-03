@@ -22,6 +22,8 @@ define(function(require){
 
 		onModelChange: function() {
 			this.setState({families: []});
+			var result_families = [];
+			console.log(this.collection());
 			this.collection().chain()
 				.filter(function(e){
 					return e.get("year") == this.state.year || e.get("year") < this.state.year && this.state.year < e.get("year_end");
@@ -31,13 +33,15 @@ define(function(require){
 					var name = "OfficialFamilyCollection";
 					var families = InstanceCache.get_existing(name, official_id);
 					if(families) {
-						this.setState({families: this.state.families.concat(families.models)});
+						result_families = result_families.concat(families.models);
+						this.setState({families: result_families});
 					}else{
 						families = new OfficialFamilyCollection(null, {official_id: official_id});
 						InstanceCache.set(name, official_id, families);
 						families.fetch({
 							success: function() {
-								this.setState({families: this.state.families.concat(families.models)});
+								result_families = result_families.concat(families.models);
+								this.setState({families: result_families});
 							}.bind(this),
 						});
 					}
