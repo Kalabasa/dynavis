@@ -130,7 +130,7 @@ define(["require", "underscore", "bloodhound"].concat(MODEL_PATHS_VALUES), funct
 	};
 
 	InstanceCache.prototype.set_active = function(name, key, time) {
-		if (typeof time === "undefined") time = 60000;
+		if (typeof time === "undefined") time = 10000;
 
 		var obj = _.findWhere(this.active_list, {name: name, key: key});
 		if(obj) {
